@@ -1,0 +1,191 @@
+/*
+Theme Name:   Neve-child
+Theme URI:    https://themeisle.com
+Description:  Neve is a super fast, easily customizable, multi-purpose theme. It’s perfect for blogs, small business, startups, agencies, firms, e-commerce shops (WooCommerce storefront) as well as personal portfolio sites and most types of projects. A fully AMP optimized and responsive theme, Neve will load in mere seconds and adapt perfectly on any viewing device. While it is lightweight and has a minimalist design, the theme is highly extendable, it has a highly SEO optimized code, resulting in top rankings in Google search results. Neve works perfectly with Gutenberg and the most popular page builders (Elementor, Brizy, Beaver Builder, Visual Composer, SiteOrigin, Divi). Neve is also WooCommerce ready, responsive, RTL & translation ready. Look no further. Neve is the perfect theme for you!
+Version:        3.5.4
+Author:         ThemeIsle
+Author URI:     https://themeisle.com 
+Template:     neve
+License:        GNU General Public License v2 or later
+License URI:    http://www.gnu.org/licenses/gpl-2.0.html
+Tags:         light, dark, two-columns, right-sidebar, responsive-layout, accessibility-ready
+Text Domain:  neve
+*/
+
+
+/*-- rateCandidate Section CSS --*/
+#rateCandidate {
+    padding: 30px 0px 20px;    
+}
+#rateCandidate h2 {
+    font-style: italic;    
+    font-size: 26px;
+}
+#rateCandidate .client-img {
+    width: 80px;
+    height: 80px;
+    overflow: hidden;
+    margin: 0px auto;
+    border-radius: 100%;
+    position: absolute;
+    left: 0px;
+}
+#rateCandidate .carousel-content {
+    padding: 20px 0px 20px 100px;
+    width: 70%;
+    margin: 0 auto;
+    position: relative;
+}
+#rateCandidate h3 {
+    font-size: 17px;
+    color: #000;
+    margin-bottom: 10px;
+    font-style: italic;
+  
+}
+.reratcand {
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 10px;
+}
+.reratcand span {
+    border: 1px solid blue;
+    padding: 9px;
+    border-radius: 50px;
+    line-height: 10px;
+    height: 30px;
+    width: 30px;
+    display: inline-block;
+}
+.reratcand span a{ color:#000; }
+.resume-manager-education {
+    border-bottom: 1px solid #ccc;
+}
+.resume-manager-education dd {
+    padding: 0px;
+}
+.resume-manager-experience dd {
+    padding: 0px;
+}
+.resume-manager-education dt small.date {
+    padding-bottom: 10px;
+    display: block;
+}
+.resume-manager-experience dt small.date {
+    display: block;
+    padding-bottom: 10px;
+}
+#rateCandidate .client-img img {
+    width: 100%;
+}
+#rateCandidate .carousel-control-prev,
+#rateCandidate .carousel-control-next {
+    font-size: 36px;
+}
+ #rateCandidate .job-title {
+    color: #000;
+    font-weight: bold;
+    font-size: 16px;
+    margin: 0px;
+}
+ #rateCandidate .location{
+  margin: 0px;
+ }
+ #rateCandidate .location a {
+    color: #fcaf3b;
+    font-size: 16px;
+}
+
+/*.page-template-template-all-resume .resume-aside .job-title:before {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    -webkit-font-smoothing: antialiased;
+    font-family: job-manager!important;
+    text-decoration: none;
+    font-weight: 400;
+    font-style: normal;
+    vertical-align: top;
+    font-size: 16px;
+    margin: 0 3px 0 0;
+    content: '\e807';
+}
+.page-template-template-all-resume .resume-aside .location a:before {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    -webkit-font-smoothing: antialiased;
+    font-family: job-manager!important;
+    text-decoration: none;
+    font-weight: 400;
+    font-style: normal;
+    vertical-align: top;
+    font-size: 16px;
+    margin: 0 3px 0 0;
+    content: '\e81d';
+}
+.page-template-template-all-resume .resume-aside .resume-links .resume-link a:before {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    -webkit-font-smoothing: antialiased;
+    font-family: job-manager!important;
+    text-decoration: none;
+    font-weight: 400;
+    font-style: normal;
+    vertical-align: top;
+    font-size: 16px;
+    margin: 0 3px 0 0;
+    content: '\e809';
+}*/
+.top-bar-sec {
+    display: flex;
+    justify-content: space-between;
+}
+.top-bar-sec-right ul li a{ color: #fcaf3b; }
+.top-bar-sec-left {
+    display: flex;
+    gap: 30px;
+}
+.top-bar-sec-left img.candidate_photo {
+    width: 100px;
+    height: 80px;
+}
+.page-template-template-all-resume .bottom-arrow .carousel-control-next, .page-template-template-all-resume .bottom-arrow .carousel-control-prev {
+    top: 50%; color:#000; 
+    bottom: auto;
+}
+.recoButton {
+    background-color: #eb6a74;
+    color: #fff;
+    padding: 15px;
+    padding-left: 32px;
+    padding-right: 32px;
+    font-family: Arial,sans-serif;
+    font-size: 14px;
+    text-align: center;
+    display: inline;
+    border-radius: 4px;
+    cursor: pointer;
+}
+fieldset.fieldset-databricks_video label {
+    display: block;
+    margin: 0;
+    width: 29%;
+    float: left;
+    vertical-align: middle;
+}
+
+
+@media (max-width: 576px) {
+#rateCandidate .carousel-content {
+    padding: 20px 0px 20px 0px;
+    width: 100%;
+}
+#rateCandidate .client-img {
+    margin: 20px auto;
+    position: static;
+}
+#rateCandidate h3, #rateCandidate p {
+    text-align: center;
+}
+}

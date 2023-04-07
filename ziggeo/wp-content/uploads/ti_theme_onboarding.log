@@ -1,0 +1,24 @@
+[05/Apr/2023:07:35:47] (I): WordPress Instance Info:
+[05/Apr/2023:07:35:47] (I): Home URL : https://ziggeo.yakresume.com
+[05/Apr/2023:07:35:47] (I): Site URL : https://ziggeo.yakresume.com
+[05/Apr/2023:07:35:47] (I): WordPress Version : 6.1.1
+[05/Apr/2023:07:35:47] (I): Onboarding Version : 1.1.35
+[05/Apr/2023:07:35:47] (I): Multisite : No
+[05/Apr/2023:07:35:47] (I): Server Info : LiteSpeed
+[05/Apr/2023:07:35:47] (I): PHP Version : 8.0.26
+[05/Apr/2023:07:35:47] (I): HTTPS : Yes
+[05/Apr/2023:07:35:47] (I): PHP Max Execution Time : 120
+[05/Apr/2023:07:35:47] (I): PHP Max Input Vars : 5000
+[05/Apr/2023:07:35:47] (I): Max Upload Size : 2147483648
+[05/Apr/2023:07:35:47] (I): Plugins:
+[05/Apr/2023:07:35:47] (I): [PLUGIN] All-in-One WP Migration : v7.72 (ServMask)
+[05/Apr/2023:07:35:47] (I): [PLUGIN] Hostinger : v1.1.0 (Hostinger)
+[05/Apr/2023:07:35:47] (I): [PLUGIN] LiteSpeed Cache : v5.3.3 (LiteSpeed Technologies)
+[05/Apr/2023:07:35:47] (I): [PLUGIN] Templates Patterns Collection : v1.1.35 (ThemeIsle)
+[05/Apr/2023:07:35:47] (I): [PLUGIN] WP Job Manager - Applications : v2.5.0 (Automattic)
+[05/Apr/2023:07:35:47] (I): [PLUGIN] WP Job Manager Field Editor : v1.8.2 (Myles McNamara)
+[05/Apr/2023:07:35:47] (I): [PLUGIN] WP Job Manager - Resume Manager : v1.18.1 (Automattic)
+[05/Apr/2023:07:35:47] (I): [PLUGIN] WP Job Manager : v1.39.0 (Automattic)
+[05/Apr/2023:07:35:47] (I): [PLUGIN] WPForms Lite : v1.8.0.2 (WPForms)
+[05/Apr/2023:07:35:47] (I): [PLUGIN] Ziggeo Video for Job Manager : v1.9 (Ziggeo)
+[05/Apr/2023:07:35:47] (I): [PLUGIN] Ziggeo Video Posts and Comments : v3.0 (Ziggeo)
