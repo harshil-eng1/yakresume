@@ -47,7 +47,7 @@ Text Domain:  neve
     border-bottom: 1px solid #ccc;
     padding-bottom: 10px;
 }
-.reratcand span {
+.reratcand a {
     border: 1px solid blue;
     padding: 9px;
     border-radius: 50px;
@@ -56,9 +56,13 @@ Text Domain:  neve
     width: 30px;
     display: inline-block;
 }
-.reratcand span a{ color:#000; }
+.reratcand a{ color:#000; }
 .resume-manager-education {
     border-bottom: 1px solid #ccc;
+}
+a.resRateCandid.selected {
+    background: #000;
+    color: #fff;
 }
 .resume-manager-education dd {
     padding: 0px;
@@ -188,4 +192,16 @@ fieldset.fieldset-databricks_video label {
 #rateCandidate h3, #rateCandidate p {
     text-align: center;
 }
+}
+
+fieldset.topQuestion .field {
+    position: relative;
+    margin-top: 70px
+}
+.topQuestion small.description {
+    position: absolute;
+    top: -94px;
+    z-index: 999;
+    font-size: 16px !important;
+    font-weight: bold;
 }

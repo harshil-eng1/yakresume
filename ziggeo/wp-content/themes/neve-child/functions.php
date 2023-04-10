@@ -89,8 +89,35 @@ add_action("wp_ajax_nopriv_sp_resumeRateCandidate", "sp_resumeRateCandidate");
 function sp_resumeRateCandidate() {
 	$res_post_id = $_POST['post_id'];
 	$rateCandidVal = $_POST['rate_candidate'];
+	$emailCandid = $_POST['email_candidate'];
+	$candidJobId = $_POST['jobId_candidate'];
 
-	if($res_post_id && $rateCandidVal){		
+	if($candidJobId && $rateCandidVal){
+
+		$args = array(
+		    'post_type'  => 'job_application',
+		    'post_status' => 'new',
+		    'meta_query' => array(
+		        'relation' => 'AND', // "OR" or "AND" (default)
+		        array(
+		            'key' => '_candidate_email',
+		            'value' => $emailCandid,
+		        ),
+		        array(
+		            'key' => '_job_appliedID',
+		            'value' => $candidJobId,
+		            'compare' => 'IN',
+		        )
+		    )
+		);
+		$argsQuery = new WP_Query( $args );
+
+		foreach ($argsQuery->posts as $key => $value) {			
+			update_post_meta($value->ID,'_rating',$rateCandidVal);
+		}
+	}
+
+	if($res_post_id && $rateCandidVal ){		
 		update_post_meta($res_post_id,'_resume_rate_candidate',$rateCandidVal);
 		echo 'success';
 	}

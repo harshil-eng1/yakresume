@@ -77,11 +77,8 @@ if(get_the_ID() == 64){
     <script type="text/javascript">
         jQuery(document).ready(function(){
 
-
-
             jQuery('fieldset[class*="_video"]').hide();
             jQuery('.fieldset-candidate_video').show();
-
             
             jQuery('body').on('change', '#resume_languages', function(){                
 
@@ -93,9 +90,13 @@ if(get_the_ID() == 64){
                 jQuery('fieldset[class*="_video"]').hide();
                 jQuery('.fieldset-candidate_video').show();
                
-               for (var i=0; i < languages.length; i++) {                    
+               for (var i=0; i < languages.length; i++) {  
+
+                                 
 
                 var toLowerCaseVal = languages[i].toLowerCase();
+
+               jQuery('.fieldset-'+toLowerCaseVal+'_video').addClass('topQuestion');
 
                 console.log(toLowerCaseVal);  
 
@@ -104,7 +105,7 @@ if(get_the_ID() == 64){
 
                     if(jQuery('#'+toLowerCaseVal+'_videoRec').length == 0){
                         var recorederButton = '<div class="recoButton '+toLowerCaseVal+'_videoRec11">Start Recorder</div>';
-                        var recorederdiv = '<div id="'+toLowerCaseVal+'_videoRec" class="hideVideo"></div>';
+                        var recorederdiv = '<div id="'+toLowerCaseVal+'_videoRec" class="hideVideo topqueset"></div>';
                         
                         jQuery('#'+toLowerCaseVal+'_video').after(recorederdiv);
                         jQuery('#'+toLowerCaseVal+'_video').after(recorederButton);
@@ -116,7 +117,8 @@ if(get_the_ID() == 64){
                                 timelimit:"30",
                                 allowscreen: true,
                                 allowupload : false,
-                                allowscreen:false
+                                allowscreen:false,
+                                countdown : 30,
                             }
                         });
                         recorder.activate();                
@@ -158,8 +160,10 @@ if(get_the_ID() == 64){
                                 theCount = theCount + 1;
                             }
                             jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).show();   
+                            jQuery("."+toLowerCaseVal+"_videoRec11").next().removeClass("hideVideo"); 
+                            recorder.record(); 
 
-                            setTimeout(function(){ recorder.record();  jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).hide(); jQuery("."+toLowerCaseVal+"_videoRec11").next().removeClass("hideVideo");    }, 5000);          
+                            setTimeout(function(){ /*recorder.record();  jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).hide(); */   }, 30000);          
                         });
 
                         recorder.on("rerecord", function () {
@@ -175,7 +179,10 @@ if(get_the_ID() == 64){
                                 theCount = theCount + 1;
                             }
                              jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).show(); 
-                              setTimeout(function(){ recorder.record();  jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).hide(); jQuery("."+toLowerCaseVal+"_videoRec11").next().removeClass("hideVideo");    }, 5000);    
+                             jQuery("."+toLowerCaseVal+"_videoRec11").next().removeClass("hideVideo"); 
+                             recorder.record(); 
+
+                              setTimeout(function(){  /*jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).hide();*/    }, 30000);    
 
                         });
 

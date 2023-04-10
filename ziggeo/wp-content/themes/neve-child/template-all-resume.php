@@ -10,31 +10,19 @@ get_header();
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
 
 <?php 
-/*$filter = $_GET['filter'];
-$args1 = array(
-    'post_type' => 'resume',
-    'post_status' => 'publish',
-    'posts_per_page' => -1, 
-    'order' => 'ASC', 
-    if($filter){
-        'meta_query'      => array(
-            array(
-              'key'         => '_candidate_title',
-              'value'       => $filter,
-              'compare'     => 'LIKE',
-            ),
-        )
-    }
-
-);
-$query1 = new WP_Query( $args1 ); 
-
-echo "<pre>";
-print_r($query1);*/
+$metaquery = array();
+if($_GET['jobId']){
+    $jobPostId = $_GET['jobId'];
+    $skillLang = get_post_meta( $jobPostId, '_skill_language', true );
+    
+    $metaquery['relation'] = 'OR';
+    foreach($skillLang as $key => $skill){
+        $metaquery[$key]['key'] = '_resume_languages';
+        $metaquery[$key]['value'] = $skill;
+        $metaquery[$key]['compare'] = 'LIKE';
+    }   
+}
 ?>
-
-
-
 <div class="single-resume-content">
     <!-- rateCandidates Section -->
     <section id="rateCandidate">
@@ -46,10 +34,11 @@ print_r($query1);*/
                         <!-- Slide Indicators -->
                             <?php 
                             $args1 = array(
-                                'post_type' => 'resume',
+                                'post_type'  => 'resume',
                                 'post_status' => 'publish',
                                 'posts_per_page' => -1, 
-                                'order' => 'ASC', 
+                                'order'      => 'ASC',
+                                'meta_query' => $metaquery,
                             );
                             $query1 = new WP_Query( $args1 );                            
                             $j = 0;
@@ -66,10 +55,11 @@ print_r($query1);*/
                         <div class="carousel-inner" role="listbox">
                             <?php 
                             $args = array(
-                                'post_type' => 'resume',
+                                'post_type'  => 'resume',
                                 'post_status' => 'publish',
                                 'posts_per_page' => -1, 
-                                'order' => 'ASC', 
+                                'order'      => 'ASC',
+                                'meta_query' => $metaquery,
                             );
                             $query = new WP_Query( $args );                            
                             $i = 1;
@@ -93,13 +83,14 @@ print_r($query1);*/
                                     <?php the_candidate_video(); ?>
                                 </div>
 
-                                <div class="reratcand">                                    
+                                <div class="reratcand">  
+                                <?php $candEmail = get_post_meta($post->ID,'_candidate_email', true); ?>                                  
                                     <h2><?php _e( 'Rate a Candidate', 'wp-job-manager-resumes' ); ?></h2>
-                                    <span><a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="1" data-post_id="<?php echo $post->ID; ?>">1</a></span>
-                                    <span><a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="2" data-post_id="<?php echo $post->ID; ?>">2</a></span>
-                                    <span><a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="3" data-post_id="<?php echo $post->ID; ?>">3</a></span>
-                                    <span><a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="4" data-post_id="<?php echo $post->ID; ?>">4</a></span>
-                                    <span><a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="5" data-post_id="<?php echo $post->ID; ?>">5</a></span>
+                                    <a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="1" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">1</a>
+                                    <a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="2" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">2</a>
+                                    <a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="3" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">3</a>
+                                    <a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="4" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">4</a>
+                                    <a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="5" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">5</a>
                                 
                                 </div>  
 
@@ -155,6 +146,43 @@ print_r($query1);*/
                                     
                             </div>
                             <?php
+                            /******** Post Type 'job_application' Insert Post Custom Query *********/
+                            if($_GET['jobId']){                               
+                                $candidateEmail = get_post_meta($post->ID,'_candidate_email', true); 
+                                $queryPost = $wpdb->prepare(
+                                    'SELECT post_author, post_parent FROM ' . $wpdb->posts . '
+                                    WHERE post_author = '.$post->post_author.'
+                                    AND post_parent='.$_GET['jobId'].' AND post_type = \'job_application\'',
+                                );
+
+                                $wpdb->query($queryPost);
+                                //echo $wpdb->num_rows;
+                                if ($wpdb->num_rows == 0 ) {        
+                             
+                                    $jobAppPostId = wp_insert_post(array (
+                                        'post_type' => 'job_application',
+                                        'post_title' => get_the_candidate_title(),
+                                        'post_content' => get_the_content(),
+                                        'post_parent' => $_GET['jobId'],
+                                        'post_author' => $post->post_author,
+                                        'post_status' => 'new',
+                                        'comment_status' => 'closed',   // if you prefer
+                                        'ping_status' => 'closed',      // if you prefer
+                                    ));
+                                    if ($jobAppPostId) {
+                                        // insert post meta
+                                        update_post_meta($jobAppPostId, '_job_applied_for', get_the_title($_GET['jobId']));
+                                        update_post_meta($jobAppPostId, '_candidate_email', $candidateEmail);
+                                        update_post_meta($jobAppPostId, '_candidate_user_id', $post->post_author);
+                                        update_post_meta($jobAppPostId, '_rating', 0);
+                                        update_post_meta($jobAppPostId, 'Full name', $post->post_title);
+                                        update_post_meta($jobAppPostId, 'Email address', $candidateEmail);
+                                        add_post_meta($jobAppPostId, '_job_appliedID', $_GET['jobId']);
+                                    }
+
+                                }
+                            }
+
                             $i++; endwhile;
                             wp_reset_postdata();
                             ?>      
@@ -182,15 +210,30 @@ print_r($query1);*/
 jQuery(document).ready( function() {
 
    jQuery(".resRateCandid").click( function(e) {
+
+    jQuery(".resRateCandid").each(function( index ) {
+        if(jQuery(this).hasClass( "selected" )){
+            jQuery(this).removeClass( "selected");
+        }
+    });
+
+        if(jQuery(this).hasClass( "selected" )){
+
+        }else{
+            jQuery(this).addClass('selected');
+        }
+        
       e.preventDefault(); 
       var post_id = jQuery(this).attr("data-post_id");
       var rate_candidate = jQuery(this).attr("data-rate_candidate");
+      var email_candidate = jQuery(this).attr("data-email_candidate");
+      var jobId_candidate = jQuery(this).attr("data-jobId_candidate");
 
       jQuery.ajax({
          type : "post",
          //dataType : "json",
          url : '<?php echo admin_url( 'admin-ajax.php' );?>',
-         data : {action: "sp_resumeRateCandidate", post_id : post_id, rate_candidate: rate_candidate},
+         data : {action: "sp_resumeRateCandidate", post_id : post_id, rate_candidate: rate_candidate, email_candidate : email_candidate, jobId_candidate: jobId_candidate},
          success: function(res) {
             //console.log(res);
             if(res){
