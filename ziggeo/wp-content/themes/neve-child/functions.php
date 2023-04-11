@@ -123,5 +123,4 @@ function sp_resumeRateCandidate() {
 	}
 	die;
 }
-
 ?>

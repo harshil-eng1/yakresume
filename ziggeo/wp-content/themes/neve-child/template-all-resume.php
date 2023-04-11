@@ -204,13 +204,9 @@ if($_GET['jobId']){
     </section>
 </div>
 
-
-<script type="text/javascript">
-    
+<script type="text/javascript">    
 jQuery(document).ready( function() {
-
    jQuery(".resRateCandid").click( function(e) {
-
     jQuery(".resRateCandid").each(function( index ) {
         if(jQuery(this).hasClass( "selected" )){
             jQuery(this).removeClass( "selected");
@@ -246,9 +242,6 @@ jQuery(document).ready( function() {
 
    })
 
-});
-    
+});    
 </script>
-
-
 <?php get_footer(); ?>

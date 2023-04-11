@@ -36,26 +36,26 @@ do_action( 'neve_after_primary' );
  */
 if ( apply_filters( 'neve_filter_toggle_content_parts', true, 'footer' ) === true ) {
 
-	/**
-	 * Executes actions before the footer was rendered.
-	 *
-	 * @since 1.0.0
-	 */
-	do_action( 'neve_before_footer_hook' );
+    /**
+     * Executes actions before the footer was rendered.
+     *
+     * @since 1.0.0
+     */
+    do_action( 'neve_before_footer_hook' );
 
-	/**
-	 * Executes the rendering function for the footer.
-	 *
-	 * @since 1.0.0
-	 */
-	do_action( 'neve_do_footer' );
+    /**
+     * Executes the rendering function for the footer.
+     *
+     * @since 1.0.0
+     */
+    do_action( 'neve_do_footer' );
 
-	/**
-	 * Executes actions after the footer was rendered.
-	 *
-	 * @since 1.0.0
-	 */
-	do_action( 'neve_after_footer_hook' );
+    /**
+     * Executes actions after the footer was rendered.
+     *
+     * @since 1.0.0
+     */
+    do_action( 'neve_after_footer_hook' );
 }
 ?>
 
@@ -90,13 +90,11 @@ if(get_the_ID() == 64){
                 jQuery('fieldset[class*="_video"]').hide();
                 jQuery('.fieldset-candidate_video').show();
                
-               for (var i=0; i < languages.length; i++) {  
-
-                                 
+               for (var i=0; i < languages.length; i++) {                                   
 
                 var toLowerCaseVal = languages[i].toLowerCase();
 
-               jQuery('.fieldset-'+toLowerCaseVal+'_video').addClass('topQuestion');
+                jQuery('.fieldset-'+toLowerCaseVal+'_video').addClass('topQuestion');
 
                 console.log(toLowerCaseVal);  
 
@@ -104,92 +102,79 @@ if(get_the_ID() == 64){
                 jQuery('.text-'+toLowerCaseVal+'_video').hide();      
 
                     if(jQuery('#'+toLowerCaseVal+'_videoRec').length == 0){
-                        var recorederButton = '<div class="recoButton '+toLowerCaseVal+'_videoRec11">Start Recorder</div>';
-                        var recorederdiv = '<div id="'+toLowerCaseVal+'_videoRec" class="hideVideo topqueset"></div>';
+
+                        var recoredButText = '<div class="recoButTxt '+toLowerCaseVal+'_butTxt">A question will appear on the video based on the skill selected. Please press Start Recording</div>';
+                        var recorederButton = '<div class="recoButton '+toLowerCaseVal+'_videoRec11" data-lang="'+toLowerCaseVal+'">Start Recorder</div>';
+                        var recorederdiv = '<div id="'+toLowerCaseVal+'_videoRec" class="topMagClas hideVideo topqueset"></div>';
                         
+                        jQuery('#'+toLowerCaseVal+'_video').before(recoredButText);
                         jQuery('#'+toLowerCaseVal+'_video').after(recorederdiv);
                         jQuery('#'+toLowerCaseVal+'_video').after(recorederButton);
-                        var recorder = new ZiggeoApi.V2.Recorder({
-                            element: document.getElementById(toLowerCaseVal+"_videoRec"),
-                            attrs: {
-                                theme: "modern",
-                                themecolor: "red",
-                                timelimit:"30",
-                                allowscreen: true,
-                                allowupload : false,
-                                allowscreen:false,
-                                countdown : 30,
-                            }
-                        });
-                        recorder.activate();                
 
-                        var recorder = ZiggeoApi.V2.Recorder.findByElement(jQuery('#'+toLowerCaseVal+'_videoRec'));
-
-
-                        //
-                        recorder.on("verified", function(){
-                            //console.log(recorder.get("video"));                           
-
-                            var videoRecUrl = 'https://video-cdn.ziggeo.com/v1/applications/' +
-                                  ziggeoGetApplicationOptions().token +
-                                  '/videos/' + recorder.get("video")+'/video.mp4';  
-
-                            jQuery('#'+toLowerCaseVal+'_video').val(videoRecUrl);
-                            //console.log(videoRecUrl);
-                            //alert(videoRecUrl);
-                        })
-
-                        jQuery("."+toLowerCaseVal+"_videoRec11").click(function(){                            
-                            jQuery("."+toLowerCaseVal+"_videoRec11").hide(); 
-                            jQuery('.mylist-'+toLowerCaseVal).show();
-                        });  
-
-                        jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(0).hide();            
-                        var theCount  = <?php echo rand(1,10); ?>;
-                        jQuery("."+toLowerCaseVal+"_videoRec11").click(function(){                
-                            jQuery("ul.mylist-"+toLowerCaseVal+" li").hide();
-
-                            var theLength = jQuery("ul.mylist-"+toLowerCaseVal+" li").length;
-                            console.log('list '+theLength);
-                            if(theCount == theLength)
-                            {
-                                theCount = 1;
-                            }
-                            else
-                            {
-                                theCount = theCount + 1;
-                            }
-                            jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).show();   
-                            jQuery("."+toLowerCaseVal+"_videoRec11").next().removeClass("hideVideo"); 
-                            recorder.record(); 
-
-                            setTimeout(function(){ /*recorder.record();  jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).hide(); */   }, 30000);          
-                        });
-
-                        recorder.on("rerecord", function () {
-                        //Your code goes here
-                        jQuery('#'+toLowerCaseVal+'_videoRec').addClass("hideVideo");
-                            var theLength = jQuery("ul.mylist-"+toLowerCaseVal+" li").length;
-                            if(theCount == theLength)
-                            {
-                                theCount = 1;
-                            }
-                            else
-                            {
-                                theCount = theCount + 1;
-                            }
-                             jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).show(); 
-                             jQuery("."+toLowerCaseVal+"_videoRec11").next().removeClass("hideVideo"); 
-                             recorder.record(); 
-
-                              setTimeout(function(){  /*jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).hide();*/    }, 30000);    
-
-                        });
-
+                        jQuery("ul.mylist-"+toLowerCaseVal+" li").hide(); 
 
                     }
                     
                }
+            });
+      
+
+            jQuery("body").on('click', '.recoButton', function(){
+                //console.log('sdfsd');
+                var toLowerCaseVal = jQuery(this).attr('data-lang');
+                //console.log('ssss '+toLowerCaseVal);
+
+                var recorder = new ZiggeoApi.V2.Recorder({
+                    element: document.getElementById(toLowerCaseVal+"_videoRec"),
+                    attrs: {
+                        theme: "modern",
+                        themecolor: "red",
+                        timelimit:"30",
+                        allowscreen: true,
+                        allowupload : false,
+                        allowscreen:false,
+                        countdown : 30,
+                    }
+                });
+                recorder.activate();                
+
+                var recorder = ZiggeoApi.V2.Recorder.findByElement(jQuery('#'+toLowerCaseVal+'_videoRec'));
+                
+                recorder.on("verified", function(){
+                    //console.log(recorder.get("video"));
+                    var videoRecUrl = 'https://video-cdn.ziggeo.com/v1/applications/' +
+                          ziggeoGetApplicationOptions().token +
+                          '/videos/' + recorder.get("video")+'/video.mp4';  
+
+                    jQuery('#'+toLowerCaseVal+'_video').val(videoRecUrl);
+                    console.log(videoRecUrl);
+                    //alert(videoRecUrl);
+                });             
+
+                jQuery("."+toLowerCaseVal+"_butTxt").hide(); 
+                jQuery("."+toLowerCaseVal+"_videoRec11").hide(); 
+                           
+                var theCount  = <?php echo rand(1,10); ?>;
+
+                recorder.record(); 
+
+                jQuery('#'+toLowerCaseVal+'_videoRec').addClass("hideVideo");
+                var theLength = jQuery("ul.mylist-"+toLowerCaseVal+" li").length;
+                if(theCount == theLength){
+                    theCount = 1;
+                }else{
+                    theCount = theCount + 1;
+                }
+                jQuery("ul.mylist-"+toLowerCaseVal+" li").hide();
+                jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).show(); 
+                jQuery("."+toLowerCaseVal+"_videoRec11").next().removeClass("hideVideo");           
+
+                recorder.on("rerecord", function () {
+                    console.log('asdfsdf');
+                    //Your code goes here
+                    setTimeout(function(){  /*jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).hide();*/    }, 5000);    
+
+                });
             });
 
         });

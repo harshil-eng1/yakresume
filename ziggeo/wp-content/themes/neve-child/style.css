@@ -178,7 +178,29 @@ fieldset.fieldset-databricks_video label {
     float: left;
     vertical-align: middle;
 }
+fieldset.fieldset-databricks_video .field {
+    position: relative;
+    width: 70%;
+    float: right;
+    vertical-align: middle;
+}
 
+fieldset.topQuestion .field {
+    position: relative;    
+}
+.topQuestion small.description {
+    position: absolute;
+    top: -36px;
+    z-index: 999;
+    font-size: 16px !important;
+    font-weight: bold;
+}
+.topMagClas{
+    margin-top: 70px;
+}
+.recoButTxt {
+    margin-bottom: 10px;
+}
 
 @media (max-width: 576px) {
 #rateCandidate .carousel-content {
@@ -192,16 +214,4 @@ fieldset.fieldset-databricks_video label {
 #rateCandidate h3, #rateCandidate p {
     text-align: center;
 }
-}
-
-fieldset.topQuestion .field {
-    position: relative;
-    margin-top: 70px
-}
-.topQuestion small.description {
-    position: absolute;
-    top: -94px;
-    z-index: 999;
-    font-size: 16px !important;
-    font-weight: bold;
 }
