@@ -31,26 +31,7 @@ if($_GET['jobId']){
 
                 <div class="col-12">
                     <div id="rateCandidateCarousel" class="carousel slide" data-ride="carousel">
-                        <!-- Slide Indicators -->
-                            <?php 
-                            $args1 = array(
-                                'post_type'  => 'resume',
-                                'post_status' => 'publish',
-                                'posts_per_page' => -1, 
-                                'order'      => 'ASC',
-                                'meta_query' => $metaquery,
-                            );
-                            $query1 = new WP_Query( $args1 );                            
-                            $j = 0;
-                            ?>                        
-                            <ol class="carousel-indicators">
-                                <?php while ( $query1->have_posts() ) : $query1->the_post(); ?>
-                                <li data-target="#rateCandidateCarousel" data-slide-to="<?php echo $j; ?>" <?php if($i==0){ ?>class="active" <?php } ?> ></li>   
-                                <?php
-                                $j++; endwhile;
-                                wp_reset_postdata();
-                                ?>                                                                      
-                            </ol>
+                        <!-- Slide Indicators -->       
    
                         <div class="carousel-inner" role="listbox">
                             <?php 
