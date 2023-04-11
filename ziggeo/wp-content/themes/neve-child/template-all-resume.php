@@ -84,13 +84,25 @@ if($_GET['jobId']){
                                 </div>
 
                                 <div class="reratcand">  
-                                <?php $candEmail = get_post_meta($post->ID,'_candidate_email', true); ?>                                  
+                                <?php $candEmail = get_post_meta($post->ID,'_candidate_email', true); 
+
+                                $candidateEmail = get_post_meta($post->ID,'_candidate_email', true); 
+                                $ApplicatepostID = getApplicantRating($candidateEmail, $_GET['jobId']);
+                                   
+                                $rating = get_post_meta($ApplicatepostID,'_rating', true); 
+
+                                if($rating == 1){ $selected1 = 'selected'; }else{ $selected1 = ''; }
+                                if($rating == 2){ $selected2 = 'selected'; }else{  $selected2 = '' ;}
+                                if($rating == 3){ $selected3 = 'selected'; }else{  $selected3 = '';}
+                                if($rating == 4){ $selected4 = 'selected'; }else{  $selected4 = '';}
+                                if($rating == 5){ $selected5 = 'selected'; }else{  $selected5 = '';}
+                                ?>                                  
                                     <h2><?php _e( 'Rate a Candidate', 'wp-job-manager-resumes' ); ?></h2>
-                                    <a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="1" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">1</a>
-                                    <a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="2" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">2</a>
-                                    <a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="3" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">3</a>
-                                    <a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="4" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">4</a>
-                                    <a href="javascript:void(0)" class="resRateCandid" data-rate_candidate="5" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">5</a>
+                                    <a href="javascript:void(0)"  class="resRateCandid <?php echo $selected1 ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="1" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">1</a>
+                                    <a href="javascript:void(0)" class="resRateCandid <?php echo $selected2 ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="2" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">2</a>
+                                    <a href="javascript:void(0)" class="resRateCandid <?php echo $selected3 ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="3" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">3</a>
+                                    <a href="javascript:void(0)" class="resRateCandid <?php echo $selected4 ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="4" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">4</a>
+                                    <a href="javascript:void(0)" class="resRateCandid <?php echo $selected5 ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="5" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">5</a>
                                 
                                 </div>  
 
@@ -148,7 +160,7 @@ if($_GET['jobId']){
                             <?php
                             /******** Post Type 'job_application' Insert Post Custom Query *********/
                             if($_GET['jobId']){                               
-                                $candidateEmail = get_post_meta($post->ID,'_candidate_email', true); 
+                                
                                 $queryPost = $wpdb->prepare(
                                     'SELECT post_author, post_parent FROM ' . $wpdb->posts . '
                                     WHERE post_author = '.$post->post_author.'
@@ -207,9 +219,12 @@ if($_GET['jobId']){
 <script type="text/javascript">    
 jQuery(document).ready( function() {
    jQuery(".resRateCandid").click( function(e) {
-    jQuery(".resRateCandid").each(function( index ) {
-        if(jQuery(this).hasClass( "selected" )){
-            jQuery(this).removeClass( "selected");
+
+    var rID = jQuery(this).attr('data-post_id');
+    console.log(rID);
+    jQuery(".resume_"+rID).each(function( index ) {
+        if(jQuery(this).hasClass("selected")){
+            jQuery(this).removeClass("selected");
         }
     });
 

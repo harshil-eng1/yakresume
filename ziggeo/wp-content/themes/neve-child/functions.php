@@ -123,4 +123,29 @@ function sp_resumeRateCandidate() {
 	}
 	die;
 }
+
+function getApplicantRating($emailCandid, $candidJobId){
+		$args = array(
+		    'post_type'  => 'job_application',
+		    'post_status' => 'new',
+		    'meta_query' => array(
+		        'relation' => 'AND', // "OR" or "AND" (default)
+		        array(
+		            'key' => '_candidate_email',
+		            'value' => $emailCandid,
+		        ),
+		        array(
+		            'key' => '_job_appliedID',
+		            'value' => $candidJobId,
+		            'compare' => 'IN',
+		        )
+		    )
+		);
+		$argsQuery = new WP_Query( $args );
+
+		foreach ($argsQuery->posts as $key => $value) {			
+			return $value->ID;
+		}
+
+}
 ?>

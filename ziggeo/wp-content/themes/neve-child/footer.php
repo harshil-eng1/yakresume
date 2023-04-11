@@ -118,7 +118,7 @@ if(get_the_ID() == 64){
                }
             });
       
-
+            /********* On click Function ********/
             jQuery("body").on('click', '.recoButton', function(){
                 //console.log('sdfsd');
                 var toLowerCaseVal = jQuery(this).attr('data-lang');
