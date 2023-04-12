@@ -61,7 +61,7 @@ function resume_rate_candidate_metabox(){
 }
 
 /**
- * Save product_public_year_metabox metabox
+ * Save sp_resume_rate_candidate_save_meta_box metabox
  * 
  */
 add_action( 'save_post', 'sp_resume_rate_candidate_save_meta_box' );
@@ -81,7 +81,7 @@ function sp_resume_rate_candidate_save_meta_box($post_id){
     
 }
 
-/****** Custom Post type update resume******/
+/****** Custom Post type 'Resume' update Rating ******/
 
 add_action("wp_ajax_sp_resumeRateCandidate", "sp_resumeRateCandidate");
 add_action("wp_ajax_nopriv_sp_resumeRateCandidate", "sp_resumeRateCandidate");
@@ -123,7 +123,7 @@ function sp_resumeRateCandidate() {
 	}
 	die;
 }
-
+/******* Get job application Post Id ********/
 function getApplicantRating($emailCandid, $candidJobId){
 		$args = array(
 		    'post_type'  => 'job_application',

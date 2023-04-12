@@ -96,7 +96,7 @@ if(get_the_ID() == 64){
 
                 jQuery('.fieldset-'+toLowerCaseVal+'_video').addClass('topQuestion');
 
-                console.log(toLowerCaseVal);  
+                //console.log(toLowerCaseVal);  
 
                 jQuery('.fieldset-'+toLowerCaseVal+'_video').show(); 
                 jQuery('.text-'+toLowerCaseVal+'_video').hide();      
@@ -120,7 +120,6 @@ if(get_the_ID() == 64){
       
             /********* On click Function ********/
             jQuery("body").on('click', '.recoButton', function(){
-                //console.log('sdfsd');
                 var toLowerCaseVal = jQuery(this).attr('data-lang');
                 //console.log('ssss '+toLowerCaseVal);
 
@@ -147,7 +146,7 @@ if(get_the_ID() == 64){
                           '/videos/' + recorder.get("video")+'/video.mp4';  
 
                     jQuery('#'+toLowerCaseVal+'_video').val(videoRecUrl);
-                    console.log(videoRecUrl);
+                    //console.log(videoRecUrl);
                     //alert(videoRecUrl);
                 });             
 
@@ -170,7 +169,7 @@ if(get_the_ID() == 64){
                 jQuery("."+toLowerCaseVal+"_videoRec11").next().removeClass("hideVideo");           
 
                 recorder.on("rerecord", function () {
-                    console.log('asdfsdf');
+                    //console.log('asdfsdf');
                     //Your code goes here
                     setTimeout(function(){  /*jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).hide();*/    }, 5000);    
 

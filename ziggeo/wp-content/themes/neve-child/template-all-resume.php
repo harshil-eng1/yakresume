@@ -31,8 +31,7 @@ if($_GET['jobId']){
 
                 <div class="col-12">
                     <div id="rateCandidateCarousel" class="carousel slide" data-ride="carousel">
-                        <!-- Slide Indicators -->       
-   
+                        <!-- Slide Indicators -->             
                         <div class="carousel-inner" role="listbox">
                             <?php 
                             $args = array(
