@@ -123,6 +123,8 @@ if(get_the_ID() == 64){
                 var toLowerCaseVal = jQuery(this).attr('data-lang');
                 //console.log('ssss '+toLowerCaseVal);
 
+                jQuery("ul.mylist-"+toLowerCaseVal+" li").hide(); 
+
                 var recorder = new ZiggeoApi.V2.Recorder({
                     element: document.getElementById(toLowerCaseVal+"_videoRec"),
                     attrs: {
@@ -152,22 +154,25 @@ if(get_the_ID() == 64){
 
                 jQuery("."+toLowerCaseVal+"_butTxt").hide(); 
                 jQuery("."+toLowerCaseVal+"_videoRec11").hide(); 
-                           
-                var theCount  = <?php echo rand(1,10); ?>;
 
+                var quesLength = jQuery("ul.mylist-"+toLowerCaseVal+" li").length;                
+                           
+                var theCount  = Math.floor((Math.random() * quesLength) + 1);
+                
                 recorder.record(); 
 
                 jQuery('#'+toLowerCaseVal+'_videoRec').addClass("hideVideo");
                 var theLength = jQuery("ul.mylist-"+toLowerCaseVal+" li").length;
-                if(theCount == theLength){
+                /*if(theCount == theLength){
                     theCount = 1;
                 }else{
                     theCount = theCount + 1;
-                }
-                jQuery("ul.mylist-"+toLowerCaseVal+" li").hide();
-                jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).show(); 
-                jQuery("."+toLowerCaseVal+"_videoRec11").next().removeClass("hideVideo");           
-
+                }*/
+                //jQuery("ul.mylist-"+toLowerCaseVal+" li").show();
+                jQuery("ul.mylist-"+toLowerCaseVal+" li:nth-child("+theCount+")").show(); 
+                
+                jQuery("."+toLowerCaseVal+"_videoRec11").next().removeClass("hideVideo"); 
+                
                 recorder.on("rerecord", function () {
                     //console.log('asdfsdf');
                     //Your code goes here
