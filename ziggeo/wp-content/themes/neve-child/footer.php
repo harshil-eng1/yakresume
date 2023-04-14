@@ -158,11 +158,12 @@ if(get_the_ID() == 64){
                 var quesLength = jQuery("ul.mylist-"+toLowerCaseVal+" li").length;                
                            
                 var theCount  = Math.floor((Math.random() * quesLength) + 1);
+                console.log(theCount+'aaaaaaMain')
                 
                 recorder.record(); 
 
                 jQuery('#'+toLowerCaseVal+'_videoRec').addClass("hideVideo");
-                var theLength = jQuery("ul.mylist-"+toLowerCaseVal+" li").length;
+               // var theLength = jQuery("ul.mylist-"+toLowerCaseVal+" li").length;
                 /*if(theCount == theLength){
                     theCount = 1;
                 }else{
@@ -174,14 +175,42 @@ if(get_the_ID() == 64){
                 jQuery("."+toLowerCaseVal+"_videoRec11").next().removeClass("hideVideo"); 
                 
                 recorder.on("rerecord", function () {
+
+                     var theCount1  = getRandomNumber(quesLength);
+                   // console.log(theCount+'aaaaaa');
+
+                   jQuery("ul.mylist-"+toLowerCaseVal+" li").hide(); 
+                     
+
+                   // var theCount  = Math.floor((Math.random() * quesLength) + 1);
+                    recorder.record(); 
+                    jQuery('#'+toLowerCaseVal+'_videoRec').addClass("hideVideo");
+                    jQuery("ul.mylist-"+toLowerCaseVal+" li:nth-child("+theCount1+")").show(); 
+                    jQuery("."+toLowerCaseVal+"_videoRec11").next().removeClass("hideVideo"); 
+
                     //console.log('asdfsdf');
                     //Your code goes here
-                    setTimeout(function(){  /*jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).hide();*/    }, 5000);    
+                   // setTimeout(function(){  /*jQuery("ul.mylist-"+toLowerCaseVal+" li").slice(theCount-1,theCount).hide();*/    }, 5000);
 
                 });
             });
 
         });
+
+    function getRandomNumber(quesLength){
+        var checkv = localStorage.getItem('lastValue');
+        console.log(checkv+'checkv');
+        var random =  Math.floor((Math.random() * quesLength) + 1);
+        console.log(random+'random');
+        if(random === checkv){
+            getRandomNumber(quesLength);
+        }else if(typeof random === "undefined"){
+            getRandomNumber(quesLength);
+        }else{
+            localStorage.setItem('lastValue',random);
+            return random;
+        }
+    }
     </script>
 <?php } ?>
 </body>

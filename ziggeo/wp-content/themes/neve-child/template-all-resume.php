@@ -15,8 +15,7 @@ $jobPostId = '';
 if(isset($_GET['jobId'])){
     $jobPostId = $_GET['jobId'];
     $skillLang = get_post_meta( $jobPostId, '_skill_language', true );
-    
-    $metaquery['relation'] = 'OR';
+    $metaquery['relation'] = 'AND';
     foreach($skillLang as $key => $skill){
         $metaquery[$key]['key'] = '_resume_languages';
         $metaquery[$key]['value'] = $skill;
@@ -43,7 +42,19 @@ if(isset($_GET['jobId'])){
                             );
                             $query = new WP_Query( $args );                            
                             $i = 1;
-                            while ( $query->have_posts() ) : $query->the_post(); ?>
+                            while ( $query->have_posts() ) : $query->the_post(); 
+
+
+                            $resumeLanguages = get_post_meta($post->ID,'_resume_languages', true);  
+
+
+
+                            /*echo ' <pre>';
+                            print_r($resumeLanguages);
+                            echo ' </pre>';  */
+
+                            //if (empty(array_diff($skillLang, $resumeLanguages))) {
+                            ?>
                             <!-- Slide -->
 
                             <div class="carousel-item <?php if($i==1){ ?>active<?php } ?>">
@@ -175,7 +186,7 @@ if(isset($_GET['jobId'])){
 
                                 }
                             }
-
+                            //}  
                             $i++; endwhile;
                             wp_reset_postdata();
                             ?>      
