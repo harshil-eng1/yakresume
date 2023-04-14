@@ -156,7 +156,8 @@ a.resRateCandid.selected {
     height: 80px;
 }
 .page-template-template-all-resume .bottom-arrow .carousel-control-next, .page-template-template-all-resume .bottom-arrow .carousel-control-prev {
-    top: 440px; color:#000; 
+    top: 440px; 
+    color:#000 !important; 
     bottom: auto;
 }
 .recoButton {
@@ -204,15 +205,15 @@ fieldset.topQuestion .field {
 }
 
 @media (max-width: 576px) {
-#rateCandidate .carousel-content {
-    padding: 20px 0px 20px 0px;
-    width: 100%;
-}
-#rateCandidate .client-img {
-    margin: 20px auto;
-    position: static;
-}
-#rateCandidate h3, #rateCandidate p {
-    text-align: center;
-}
+    #rateCandidate .carousel-content {
+        padding: 20px 0px 20px 0px;
+        width: 100%;
+    }
+    #rateCandidate .client-img {
+        margin: 20px auto;
+        position: static;
+    }
+    #rateCandidate h3, #rateCandidate p {
+        text-align: center;
+    }
 }

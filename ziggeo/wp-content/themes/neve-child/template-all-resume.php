@@ -11,7 +11,8 @@ get_header();
 
 <?php 
 $metaquery = array();
-if($_GET['jobId']){
+$jobPostId = '';
+if(isset($_GET['jobId'])){
     $jobPostId = $_GET['jobId'];
     $skillLang = get_post_meta( $jobPostId, '_skill_language', true );
     
@@ -30,8 +31,7 @@ if($_GET['jobId']){
             <div class="row">
 
                 <div class="col-12">
-                    <div id="rateCandidateCarousel" class="carousel slide" data-ride="carousel">
-                        <!-- Slide Indicators -->             
+                    <div id="rateCandidateCarousel" class="carousel slide" data-ride="carousel">   
                         <div class="carousel-inner" role="listbox">
                             <?php 
                             $args = array(
@@ -67,7 +67,8 @@ if($_GET['jobId']){
                                 <?php $candEmail = get_post_meta($post->ID,'_candidate_email', true); 
 
                                 $candidateEmail = get_post_meta($post->ID,'_candidate_email', true); 
-                                $ApplicatepostID = getApplicantRating($candidateEmail, $_GET['jobId']);
+
+                                $ApplicatepostID = getApplicantRating($candidateEmail, $jobPostId);
                                    
                                 $rating = get_post_meta($ApplicatepostID,'_rating', true); 
 
@@ -78,11 +79,11 @@ if($_GET['jobId']){
                                 if($rating == 5){ $selected5 = 'selected'; }else{  $selected5 = '';}
                                 ?>                                  
                                     <h2><?php _e( 'Rate a Candidate', 'wp-job-manager-resumes' ); ?></h2>
-                                    <a href="javascript:void(0)"  class="resRateCandid <?php echo $selected1 ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="1" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">1</a>
-                                    <a href="javascript:void(0)" class="resRateCandid <?php echo $selected2 ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="2" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">2</a>
-                                    <a href="javascript:void(0)" class="resRateCandid <?php echo $selected3 ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="3" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">3</a>
-                                    <a href="javascript:void(0)" class="resRateCandid <?php echo $selected4 ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="4" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">4</a>
-                                    <a href="javascript:void(0)" class="resRateCandid <?php echo $selected5 ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="5" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $_GET['jobId']; ?>">5</a>
+                                    <a href="javascript:void(0)"  class="resRateCandid <?php echo $selected1; ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="1" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $jobPostId; ?>">1</a>
+                                    <a href="javascript:void(0)" class="resRateCandid <?php echo $selected2; ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="2" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $jobPostId; ?>">2</a>
+                                    <a href="javascript:void(0)" class="resRateCandid <?php echo $selected3; ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="3" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $jobPostId; ?>">3</a>
+                                    <a href="javascript:void(0)" class="resRateCandid <?php echo $selected4; ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="4" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $jobPostId; ?>">4</a>
+                                    <a href="javascript:void(0)" class="resRateCandid <?php echo $selected5; ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="5" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $jobPostId; ?>">5</a>
                                 
                                 </div>  
 
@@ -139,7 +140,7 @@ if($_GET['jobId']){
                             </div>
                             <?php
                             /******** Post Type 'job_application' Insert Post Custom Query *********/
-                            if($_GET['jobId']){                               
+                            if(isset($_GET['jobId'])){                               
                                 
                                 $queryPost = $wpdb->prepare(
                                     'SELECT post_author, post_parent FROM ' . $wpdb->posts . '
@@ -236,6 +237,10 @@ jQuery(document).ready( function() {
       })   
 
    })
+
+    jQuery('.carousel').carousel({
+        wrap: false
+    });  
 
 });    
 </script>
