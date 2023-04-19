@@ -92,37 +92,54 @@ function sp_resumeRateCandidate() {
 	$emailCandid = $_POST['email_candidate'];
 	$candidJobId = $_POST['jobId_candidate'];
 
+	//echo $res_post_id." res_post_id".' === '. $rateCandidVal." rateCandidVal".' === '.$emailCandid." emailCandid".' === '. $candidJobId." candidJobId".' === ';
+ 	$data_lang = $_POST['data_lang'];
+
+
+ 	
+
 	if($candidJobId && $rateCandidVal){
+		$appliID = getApplicantRating($emailCandid, $candidJobId);
+		if($data_lang){
+				$data_langl = strtolower($data_lang);
+				$language_ratings = get_post_meta($appliID, '_language_ratings' , true);
+				$language_ratingsArr = json_decode($language_ratings, true);
+				$language_ratingsArr[$data_langl] = $rateCandidVal;
 
-		$args = array(
-		    'post_type'  => 'job_application',
-		    'post_status' => 'new',
-		    'meta_query' => array(
-		        'relation' => 'AND', // "OR" or "AND" (default)
-		        array(
-		            'key' => '_candidate_email',
-		            'value' => $emailCandid,
-		        ),
-		        array(
-		            'key' => '_job_appliedID',
-		            'value' => $candidJobId,
-		            'compare' => 'IN',
-		        )
-		    )
-		);
-		$argsQuery = new WP_Query( $args );
+				$language_ratingsJ = json_encode($language_ratingsArr);
+				update_post_meta($appliID,'_language_ratings', $language_ratingsJ);
+				echo 'success';
+		}else{
+				update_post_meta($appliID,'_rating',$rateCandidVal);
+			if($res_post_id && $rateCandidVal ){		
+				update_post_meta($res_post_id,'_resume_rate_candidate',$rateCandidVal);
+				echo 'success';
+			}
 
-		foreach ($argsQuery->posts as $key => $value) {			
-			update_post_meta($value->ID,'_rating',$rateCandidVal);
 		}
-	}
 
-	if($res_post_id && $rateCandidVal ){		
-		update_post_meta($res_post_id,'_resume_rate_candidate',$rateCandidVal);
+	}
+	die;
+}
+
+
+/****** Custom Post type 'job_application' Candidate video seen update ******/
+
+add_action("wp_ajax_sp_catedidatvideoseen", "sp_catedidateVideoSeen");
+add_action("wp_ajax_nopriv_sp_catedidatvideoseen", "sp_catedidateVideoSeen");
+
+function sp_catedidateVideoSeen() {
+
+	$jobApp_post_id = $_POST['japost_id'];
+
+	if($jobApp_post_id){		
+		update_post_meta($jobApp_post_id,'_candidateVideoSeen', 'seen');
 		echo 'success';
 	}
 	die;
 }
+
+
 /******* Get job application Post Id ********/
 function getApplicantRating($emailCandid, $candidJobId){
 		$args = array(
