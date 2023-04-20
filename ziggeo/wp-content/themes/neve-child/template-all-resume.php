@@ -22,7 +22,14 @@ get_header();
     function gotopage(selval){
         var value = selval.options[selval.selectedIndex].value;
         window.location.href=value;
-    }    
+    }  
+    /************/
+    function clearFilters(){ 
+        console.log('ddfgfg');
+        var clearUrl = jQuery('.clearbut').attr('data-clearurl');   
+        console.log(clearUrl);
+        window.location.href = clearUrl;
+    }
 </script>
 <?php 
 $metaquery = array();
@@ -38,6 +45,7 @@ if(isset($_GET['jobId'])){
         $metaquery[$key]['compare'] = 'LIKE';
     }   
 }
+
 ?>
 <div class="single-resume-content">
     <!-- rateCandidates Section -->
@@ -45,113 +53,70 @@ if(isset($_GET['jobId'])){
         <div class="container">
             <div class="row">
                 <div class="leftsidefilt col-3">
-                    <div class="filterRatingRe">
-                        <h3>Filter Rating</h3>
-                        <?php if(isset($_GET['postseen'])){ $postseen = '&postseen='.$_GET['postseen'] ; } ?>
-                        <?php if(isset($_GET['rating'])){ $rating = '&rating='.$_GET['rating'] ; } ?>
-                        <?php if(isset($_GET['skills'])){ $skills = '&skills='.$_GET['skills'] ; } ?>
+                    <form method="get">
+                        <div class="filterRatingRe">
+                            <h3>Filter Rating</h3>
+                            <?php //if(isset($_GET['postseen'])){ $postseen = '&postseen='.$_GET['postseen'] ; } ?>
+                            <?php //if(isset($_GET['rating'])){ $rating = '&rating='.$_GET['rating'] ; } ?>
+                            <?php //if(isset($_GET['skills'])){ $skills = '&skills='.$_GET['skills'] ; } ?>
+                             <input type="hidden" name="jobId" value="<?php echo $jobPostId; ?>">   
 
-                        <select class="selRatFilt" onchange="gotopage(this)">
-                            <option value="?jobId=<?php echo $jobPostId; ?><?php echo $postseen; echo $skills; ?>">All</option>
-                            <option class="resfiltCandid" data-rate_candidate="Notrated" value="?jobId=<?php echo $jobPostId; ?><?php echo $postseen; echo $skills; ?>">Not rated</option>
-                            <option class="resfiltCandid" data-rate_candidate="1" value="?jobId=<?php echo $jobPostId; ?>&rating=1<?php echo $postseen; echo $skills; ?>" <?php if($_GET['rating'] == 1){ ?>selected <?php } ?>>1</option>
-                            <option class="resfiltCandid" data-rate_candidate="2" value="?jobId=<?php echo $jobPostId; ?>&rating=2<?php echo $postseen; echo $skills; ?>" <?php if($_GET['rating'] == 2){ ?>selected <?php } ?>>2</option>
-                            <option class="resfiltCandid" data-rate_candidate="3" value="?jobId=<?php echo $jobPostId; ?>&rating=3<?php echo $postseen; echo $skills; ?>" <?php if($_GET['rating'] == 3){ ?>selected <?php } ?>>3</option>
-                            <option class="resfiltCandid" data-rate_candidate="4" value="?jobId=<?php echo $jobPostId; ?>&rating=4<?php echo $postseen; echo $skills; ?>" <?php if($_GET['rating'] == 4){ ?>selected <?php } ?>>4</option>
-                            <option class="resfiltCandid" data-rate_candidate="5" value="?jobId=<?php echo $jobPostId; ?>&rating=5<?php echo $postseen; echo $skills; ?>" <?php if($_GET['rating'] == 5){ ?>selected <?php } ?>>5</option>
-                        </select> 
-                    </div>
+                            <select class="selRatFilt" name="rating">
+                                <option value="">All</option>
+                                <option class="resfiltCandid" data-rate_candidate="Notrated" value="">Not rated</option>
+                                <option class="resfiltCandid" data-rate_candidate="1" value="1" <?php if($_GET['rating'] == 1){ ?>selected <?php } ?>>1</option>
+                                <option class="resfiltCandid" data-rate_candidate="2" value="2" <?php if($_GET['rating'] == 2){ ?>selected <?php } ?>>2</option>
+                                <option class="resfiltCandid" data-rate_candidate="3" value="3" <?php if($_GET['rating'] == 3){ ?>selected <?php } ?>>3</option>
+                                <option class="resfiltCandid" data-rate_candidate="4" value="4" <?php if($_GET['rating'] == 4){ ?>selected <?php } ?>>4</option>
+                                <option class="resfiltCandid" data-rate_candidate="5" value="5" <?php if($_GET['rating'] == 5){ ?>selected <?php } ?>>5</option>
+                            </select> 
+                        </div>
 
-                    <div class="filterRatingVideo">
-                        <h3>Filter Seen Video</h3> 
-                        <select class="selSeenVidFilt" onchange="gotopage(this)">
-                            <option value="?jobId=<?php echo $jobPostId; ?><?php echo $rating; echo $skills; ?>">All</option>
-                            <option class="seenVideo" data-video_seen="seen" value="?jobId=<?php echo $jobPostId; ?>&postseen=seen<?php echo $rating; echo $skills; ?>" <?php if($_GET['postseen'] == 'seen'){ ?>selected <?php } ?>>Seen Video</option>
-                            <option class="unSeenVideo" data-video_unseen="unseen" value="?jobId=<?php echo $jobPostId; ?>&postseen=unseen<?php echo $rating; echo $skills; ?>" <?php if($_GET['postseen'] == 'unseen'){ ?>selected <?php } ?>>Unseen Video</option>
-                        </select>                                          
-                    </div>  
-
-                    <div class="filterSkillLan">
-                        <h3>Filter Skill</h3>
-
-                        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-                        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-                        <select class="js-example-basic-multiple selSkillFilt" name="states[]" multiple="multiple">
-                            <option value="">All</option>                    
-                            <?php  if(isset($_GET['skills'])) { $sk = explode(',', $_GET['skills']); }  foreach($skillLang as $key1 => $skillval){
-                                if(isset($_GET['skills'])) {
-                                    if(in_array($skillval, $sk)){
-                                        $sel = 'selected';
-                                        $dis = 'disabled';
-                                    }else{
-                                        $sel = '';
-                                        $dis = '';
+                        <div class="filterRatingVideo">
+                            <h3>Filter Seen Video</h3> 
+                            <select class="selSeenVidFilt" name="postseen">
+                                <option value="">All</option>
+                                <option class="seenVideo" data-video_seen="seen" value="seen" <?php if($_GET['postseen'] == 'seen'){ ?>selected <?php } ?>>Seen Video</option>
+                                <option class="unSeenVideo" data-video_unseen="unseen" value="unseen" <?php if($_GET['postseen'] == 'unseen'){ ?>selected <?php } ?>>Unseen Video</option>
+                            </select>                                          
+                        </div> 
+                        <div class="filterSkillLan">
+                            <h3>Filter Skill</h3>
+                            <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+                            <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+                            <select class="js-example-basic-multiple selSkillFilt" name="skills[]" multiple="multiple">
+                                <option value="">All</option>    
+                                <?php    
+                                if(isset($_GET['skills'])) { $sk =  $_GET['skills']; }  foreach($skillLang as $key1 => $skillval){
+                                    if(isset($_GET['skills'])) {
+                                        if(in_array($skillval, $sk)){
+                                            $sel = 'selected';
+                                            //$dis = 'disabled';
+                                        }else{
+                                            $sel = '';
+                                           // $dis = '';
+                                        }
                                     }
-                                }
-                            ?>
+                                ?>
+                                <option class="skillLang" <?php echo $sel ?> <?php echo $dis ?> data-skill-lang="<?php echo $skillval; ?>" value="<?php echo $skillval; ?>"><?php echo $skillval; ?></option>
+                                    ?>"
+                                <?php } ?>
+                            </select>
+                            <script type="text/javascript">
+                                jQuery(document).ready(function() {
+                                    jQuery('.js-example-basic-multiple').select2();
 
-                                <option class="skillLang" <?php echo $sel ?> <?php echo $dis ?>  data-skill-lang="<?php echo $skillval; ?>" value="<?php echo $skillval; ?>"><?php echo $skillval; ?></option>
-                                ?>"
-                            <?php } ?>
-                        </select>
-                        <script type="text/javascript">
-                            jQuery(document).ready(function() {
-                                jQuery('.js-example-basic-multiple').select2();
-
-                            });
-
-                           
-                            jQuery(".selSkillFilt").change(function () {
-                                //console.log(jQuery(this).val());
-                                //jQuery("#MultiSelect_Preview").val(jQuery(this).val());
-
-                                var skilfind = jQuery(this).val();
-
-                                //console.log(jQuery(this).select2('data')); 
-
-                                if(skilfind == ''){
-                                    var getSkill = '';
-                                     var seleced = jQuery(this).select2('data');
-
-                                    jQuery.each(seleced, function(  index, value  ) {
-                                        jQuery.each(value, function(  indexs, values  ) {
-                                            //console.log(indexs+'='+values);
-                                            if(indexs == 'text'){
-                                                getSkill +=values+',';
-                                            }
-                                        });
-                                    });
-                                    getSkill = getSkill.replace(/,$/g, '');
-                                }else{
-                                    var getSkill = '<?php echo $_GET['skills']; ?>';
-
-                                    <?php if(isset($_GET['skills'])) { ?>
-                                        getSkill = '<?php echo $_GET['skills']; ?>'+','+skilfind;
-                                    <?php } ?>
-                                }
-                                if(getSkill ==''){
-                                    var urlfilt= '?jobId=<?php echo $jobPostId; ?>&skills='+skilfind+'<?php echo $postseen; echo $rating; ?> ';
-                                }else {
-                                    var urlfilt= '?jobId=<?php echo $jobPostId; ?>&skills='+getSkill+'<?php echo $postseen; echo $rating; ?> ';
-                                }
-                                //console.log(urlfilt);
-                                window.location.href = urlfilt;
-                                
-
-                                
-                            });
-
-
-
-                        </script> 
-
-                    </div>     
-     
-
-                     
+                                });                        
+                            </script>
+                        </div> 
+                        <div class="allfilterCl">
+                        <button type="submit" id="applyFilter" class="btn applyFilter">Apply</button> 
+                        <div class="clearbut" data-clearurl="<?php echo home_url(); ?>/all-resume/?jobId=<?php echo $jobPostId; ?>" onclick="clearFilters()">Clear Filter</div>    
+                        </div>                  
+                    </form>                     
+                                      
                 </div>
-                <div class="col-9">
+                <div class="col-9">                    
                     <div id="rateCandidateCarousel" class="carousel slide" data-ride="carousel">   
                         <div class="owl-carousel owl-theme sp-outer-slider-box" id="firstslider" style="background: #f7f7f7">
                             <?php 
@@ -175,9 +140,14 @@ if(isset($_GET['jobId'])){
                             if($_GET['rating']){
                                 $filterbyrating = true;
                             }
-                            if($_GET['skills']){
-                                $filterbyskills = true;
+                            if(isset($_GET['skills'])){
+
+                                $getskills = implode(",", $_GET['skills']);
+
                             }
+                            if($getskills){
+                                $filterbyskills = true;
+                            }                          
 
                             $resumeArray = array();
                          
@@ -332,7 +302,7 @@ if(isset($_GET['jobId'])){
                                              <?php the_resume_links(); ?>
                                          </div>
                                        </div>
-                                       <?php if(!isset($_GET['skills'])){ ?>
+                                       <?php if(!isset($getskills)){ ?>
                                        <?php if($i == 1){ ?>
                                        <div id="candidateVideo">
                                         <?php } ?>
@@ -380,10 +350,12 @@ if(isset($_GET['jobId'])){
                                             
                                             </div>                                            
                                         </div>   
-                                        <?php   
 
+                                        <?php   
+                                        //echo $filterbyskills .' _ssssssss';
                                         if($filterbyskills){
-                                            $filterkill = strtolower($_GET['skills']);
+                                            
+                                            $filterkill = strtolower($getskills);
                                             $filterkillArr = explode(",",$filterkill);
 
                                             $resumeLanguages = get_post_meta($post->ID,'_resume_languages', true);
@@ -399,6 +371,15 @@ if(isset($_GET['jobId'])){
                                                     if($langvideoid != ''){
                                                     ?>
                                                     <div class="item">
+                                                        <?php 
+                                                        $allSkillQues = get_post_meta($post->ID,'_'.$langName.'_skill_question', true);
+
+                                                        //$pythonSkillQues = get_post_meta($post->ID,'_python_skill_question', true);
+                                                        //$databricksSkillQues = get_post_meta($post->ID,'_databricks_skill_question', true);
+                                                        ?>
+                                                        <div class="skillLangQues"><?php echo $allSkillQues; ?></div>
+
+
                                                         <ziggeoplayer ziggeo-video="<?php echo  $langvideoid; ?>" ziggeo-width=100% ziggeo-theme="modern" ziggeo-themecolor="red"> </ziggeoplayer>
 
                                                     <div class="reratcand">  
@@ -443,7 +424,7 @@ if(isset($_GET['jobId'])){
                                         </div>
                                     <?php } ?> 
                                     </div> 
-                                    <?php if(!isset($_GET['skills'])){ ?>
+                                    <?php if(!isset($getskills)){ ?>
                                     <div class="reratcand">  
                                     <?php $candEmail = get_post_meta($post->ID,'_candidate_email', true); 
 
@@ -675,25 +656,7 @@ jQuery(document).ready( function() {
             }
         })
 
-        
-        /*jQuery('.owl-carousel2 .owl-next').click(function() {
-             //console.log('ddddddddddd'); /            
-                  
-             setTimeout(function() {
-                var vid = jQuery('.owl-item.active').find('ziggeoplayer').attr('ziggeo-video');
-                console.log(vid);
-                if(vid != ''){   
-                    jQuery(".owl-item.active .ba-player-playbutton-button").trigger('click');
-                }
-            },1000);
-            
-        });  */ 
-
-        /*owl2.on('click', '.owl-next', function() {
-          owl2.trigger('next.owl.carousel', [300]);
-        }); 
-*/
-        jQuery('body').on('click', '.owl-next', function(){
+/*        jQuery('body').on('click', '.owl-next', function(){
             //console.log('ffffffffff');
             $this = jQuery(this);
 
@@ -713,7 +676,7 @@ jQuery(document).ready( function() {
                 }
                 
             },1000);
-        })
+        })*/
 
 
     })

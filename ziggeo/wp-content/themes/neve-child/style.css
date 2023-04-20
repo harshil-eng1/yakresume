@@ -329,7 +329,27 @@ span.notavil {
     background: #fff;
 }
 
-
+.allfilterCl {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.allfilterCl button.applyFilter {
+    background: #fcaf3b;
+}
+.allfilterCl .clearbut {
+    background: #eb6a74;
+    color: #fff;
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+}
+.skillLangQues {
+    margin: 10px;
+    padding: 10px;
+    font-size: 20px;
+}
 @media (max-width: 576px) {
     #rateCandidate .carousel-content {
         padding: 20px 0px 20px 0px;

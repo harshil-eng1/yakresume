@@ -150,6 +150,12 @@ if(get_the_ID() == 64){
                     jQuery('#'+toLowerCaseVal+'_video').val(videoRecUrl);
                     //console.log(videoRecUrl);
                     //alert(videoRecUrl);
+
+                    /** Question addd hidden filed**/
+                    var res = jQuery('.text-'+toLowerCaseVal+'_video-description .mylist-'+toLowerCaseVal+' li[style=""]').text();
+                    jQuery('#'+toLowerCaseVal+'_skill_question').val(res);
+                   
+                    
                 });             
 
                 jQuery("."+toLowerCaseVal+"_butTxt").hide(); 
@@ -158,7 +164,7 @@ if(get_the_ID() == 64){
                 var quesLength = jQuery("ul.mylist-"+toLowerCaseVal+" li").length;                
                            
                 var theCount  = Math.floor((Math.random() * quesLength) + 1);
-                console.log(theCount+'aaaaaaMain')
+                //console.log(theCount+'aaaaaaMain')
                 
                 recorder.record(); 
 
