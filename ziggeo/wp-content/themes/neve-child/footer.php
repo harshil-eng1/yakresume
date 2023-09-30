@@ -172,16 +172,15 @@ jQuery(document).ready(function() {
         recorder.on("recording", function() {
             console.log('recording startedddd');
             //jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'button').hide();
-            jQuery("#submit-resume-form [name='submit_resume']").val('Video Still Processing…');
-            jQuery("#submit-resume-form [name='submit_resume']").addClass('butGrayAdd');
+            //jQuery("#submit-resume-form [name='submit_resume']").val('Video Still Processing…');
+            jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'button').val('Video Still Processing…').addClass('butGrayAdd');
+            //jQuery("#submit-resume-form [name='submit_resume']").addClass('butGrayAdd');
         });
 
         recorder.on("processed", function() {
             console.log('processedddd');
-            setTimeout(() => {
-                jQuery("#submit-resume-form [name='submit_resume']").attr("type",'submit').show();
-                jQuery("#submit-resume-form [name='submit_resume']").val('Preview →');
-                jQuery("#submit-resume-form [name='submit_resume']").removeClass('butGrayAdd');
+            setTimeout(() => {                
+                jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'submit').removeClass('butGrayAdd').val('Preview →').show();                
             }, 500);
         });
 
@@ -492,17 +491,17 @@ jQuery(document).ready(function($) {
     embedding.on("recording", function() {
         console.log('recording started');
         //$("#submit-resume-form [name='submit_resume']").attr("type", 'button').hide();
-        $("#submit-resume-form [name='submit_resume']").val('Video Still Processing…');
-        $("#submit-resume-form [name='submit_resume']").addClass('butGrayAdd');
+        $("#submit-resume-form [name='submit_resume']").attr("type", 'button').val('Video Still Processing…').addClass('butGrayAdd');
+        // $("#submit-resume-form [name='submit_resume']").addClass('butGrayAdd');
 
     });
 
     embedding.on("processed", function() {
         console.log('processed');
         setTimeout(() => {
-            $("#submit-resume-form [name='submit_resume']").attr("type", 'submit').show();
-            $("#submit-resume-form [name='submit_resume']").val('Preview →');
-            $("#submit-resume-form [name='submit_resume']").removeClass('butGrayAdd');
+            $("#submit-resume-form [name='submit_resume']").attr("type", 'submit').removeClass('butGrayAdd').val('Preview →').show();
+            // $("#submit-resume-form [name='submit_resume']").val('Preview →');
+            // $("#submit-resume-form [name='submit_resume']").removeClass('butGrayAdd');
         }, 500);
 
     });

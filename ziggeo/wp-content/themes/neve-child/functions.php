@@ -25,7 +25,6 @@ function neve_child_theme()
 }
 
 /*********** Custom RSPL ***********/
-
 function wpdocs_theme_name_scripts() {       
     wp_localize_script( 'custom_script', 'my_ajax_object',
             array( 'ajax_url' => admin_url( 'admin-ajax.php' ) ) );
