@@ -30,12 +30,13 @@ class WP_Resume_Manager_Ajax {
 
 		ob_start();
 
-		$search_location   = sanitize_text_field( stripslashes( $_POST['search_location'] ) );
-		$search_keywords   = sanitize_text_field( stripslashes( $_POST['search_keywords'] ) );
+		$search_location   = isset( $_POST['search_location'] ) ? sanitize_text_field( wp_unslash( $_POST['search_location'] ) ) : '';
+		$search_keywords   = isset( $_POST['search_keywords'] ) ? sanitize_text_field( wp_unslash( $_POST['search_keywords'] ) ) : '';
 		$search_categories = isset( $_POST['search_categories'] ) ? $_POST['search_categories'] : '';
+		$search_skills     = isset( $_POST['search_skills'] ) ? sanitize_text_field( wp_unslash( $_POST['search_skills'] ) ) : '';
 
 		if ( is_array( $search_categories ) ) {
-			$search_categories = array_map( 'sanitize_text_field', array_map( 'stripslashes', $search_categories ) );
+			$search_categories = array_map( 'sanitize_text_field', array_map( 'wp_unslash', $search_categories ) );
 		} else {
 			$search_categories = [ sanitize_text_field( stripslashes( $search_categories ) ), 0 ];
 		}
@@ -46,11 +47,19 @@ class WP_Resume_Manager_Ajax {
 			'search_location'   => $search_location,
 			'search_keywords'   => $search_keywords,
 			'search_categories' => $search_categories,
+			'search_skills'     => $search_skills,
 			'orderby'           => sanitize_text_field( $_POST['orderby'] ),
 			'order'             => sanitize_text_field( $_POST['order'] ),
-			'offset'            => ( absint( $_POST['page'] ) - 1 ) * absint( $_POST['per_page'] ),
 			'posts_per_page'    => absint( $_POST['per_page'] ),
 		];
+
+		if ( ! empty( $_POST['exclude_ids'] ) ) {
+			$args['post__not_in'] = array_map( 'absint', $_POST['exclude_ids'] );
+		}
+
+		if ( ! in_array( $_POST['orderby'], ['rand', 'rand_featured'], true ) ) {
+			$args['offset'] = ( absint( $_POST['page'] ) - 1 ) * absint( $_POST['per_page'] );
+		}
 
 		if ( isset( $_POST['featured'] ) && ( $_POST['featured'] === 'true' || $_POST['featured'] === 'false' ) ) {
 			$args['featured'] = $_POST['featured'] === 'true' ? true : false;
@@ -60,6 +69,7 @@ class WP_Resume_Manager_Ajax {
 
 		$result                  = [];
 		$result['found_resumes'] = false;
+		$result['post_ids']      = [];
 
 		if ( $resumes->have_posts() ) :
 			$result['found_resumes'] = true; ?>
@@ -67,6 +77,7 @@ class WP_Resume_Manager_Ajax {
 			<?php
 			while ( $resumes->have_posts() ) :
 				$resumes->the_post();
+				$result['post_ids'][] = the_resume_id();
 				?>
 
 				<?php get_job_manager_template_part( 'content', 'resume', 'wp-job-manager-resumes', RESUME_MANAGER_PLUGIN_DIR . '/templates/' ); ?>

@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
 * @param Object--refrence
@@ -18,7 +19,7 @@
 			}
 			?>
 			<div class="wpjobportal-resume-logo">
-            	<img src="<?php echo esc_url($photo); ?>" alt="<?php echo __('logo','wp-job-portal'); ?>" />
+            	<img src="<?php echo esc_url($photo); ?>" alt="<?php echo esc_html(__('logo','wp-job-portal')); ?>" />
                 <div class="wpjobportal-resume-crt-date">
                     <?php echo esc_html(date_i18n(wpjobportal::$_configuration['date_format'], strtotime($data->apply_date))); ?>
                 </div>
@@ -39,7 +40,7 @@
                 <div class="wpjobportal-resume-middle-wrp">
                     <div class="wpjobportal-resume-data">
                         <span class="wpjobportal-resume-job-type" style="background: <?php echo esc_attr($data->jobtypecolor); ?>;">
-                            <?php echo __(esc_html($data->jobtypetitle),'wp-job-portal'); ?>
+                            <?php echo esc_html(__(esc_html($data->jobtypetitle),'wp-job-portal')); ?>
                         </span>
                     </div>    
                     <div class="wpjobportal-resume-data">
@@ -55,7 +56,7 @@
                     <div class="wpjobportal-resume-data">
                         <div class="wpjobportal-resume-data-text">
                             <span class="wpjobportal-resume-data-title">
-                                <?php echo __('Desired Salary').' : '; ?>
+                                <?php echo esc_html(__('Desired Salary', 'wp-job-portal')).' : '; ?>
                             </span>
                             <span class="wpjobportal-resume-data-value">
                                 <?php echo esc_html($data->salary); ?>
@@ -64,7 +65,7 @@
                         <?php if(in_array('advanceresumebuilder', wpjobportal::$_active_addons)){ ?>
                             <div class="wpjobportal-resume-data-text">
                                 <span class="wpjobportal-resume-data-title">
-                                    <?php echo __('Total Experience', 'wp-job-portal') . ' :'; ?>
+                                    <?php echo esc_html(__('Total Experience', 'wp-job-portal')) . ' :'; ?>
                                 </span>
                                 <span class="wpjobportal-resume-data-value">
                                     <?php echo esc_html(wpjobportal::$_common->getTotalExp($data->resumeid)); ?>
@@ -72,7 +73,7 @@
                             </div>
                             <div class="wpjobportal-resume-data-text">
                                 <span class="wpjobportal-resume-data-title">
-                                    <?php echo __('Location', 'wp-job-portal') . ' : '; ?>
+                                    <?php echo esc_html(__('Location', 'wp-job-portal')) . ' : '; ?>
                                 </span>
                                 <span class="wpjobportal-resume-data-value">
                                     <?php echo esc_html($data->location); ?>
@@ -81,7 +82,7 @@
                         <?php } else {?>
                             <div class="wpjobportal-resume-data-text">
                                 <span class="wpjobportal-resume-data-title">
-                                    <?php echo __('Category', 'wp-job-portal') . ' : '; ?>
+                                    <?php echo esc_html(__('Category', 'wp-job-portal')) . ' : '; ?>
                                 </span>
                                 <span class="wpjobportal-resume-data-value">
                                     <?php echo esc_html($data->cat_title); ?>
@@ -89,7 +90,7 @@
                             </div>
                             <div class="wpjobportal-resume-data-text">
                                 <span class="wpjobportal-resume-data-title">
-                                    <?php echo __('Type', 'wp-job-portal') . ' : '; ?>
+                                    <?php echo esc_html(__('Type', 'wp-job-portal')) . ' : '; ?>
                                 </span>
                                 <span class="wpjobportal-resume-data-value">
                                     <?php echo esc_html($data->jobtypetitle); ?>
@@ -102,6 +103,30 @@
                 <div class="wpjobportal-resume-right-wrp">
                     <?php do_action('wpjobportal_addons_rating_resume_applied',$data); ?>
                     <?php  do_action('wpjobportal_addons_credit_applied_resume_ratting_admin',$data); ?>
+                    <?php
+                        if(in_array('coverletter', wpjobportal::$_active_addons)){
+                                 $cover_letter_title = '';
+                                 $cover_letter_desc = '';
+                                 if( isset($data->coverletterdata) && !empty($data->coverletterdata) ){
+
+                                     $cover_letter_title = $data->coverletterdata->title;
+                                     $cover_letter_desc = $data->coverletterdata->description;
+                                 }
+                                if(isset($data->coverletterid) && is_numeric($data->coverletterid) && $data->coverletterid > 0){
+                                     echo '<div id="cover_letter_data_title_'.$data->coverletterid.'" style="display:none;" >'.$cover_letter_title.'</div>';
+                                     echo '<div id="cover_letter_data_desc_'.$data->coverletterid.'" style="display:none;" >'.$cover_letter_desc.'</div>';
+
+                                     echo '
+                                     <a class="wpjobportal-viewcover-act-btn" href="#" onClick="showCoverLetterData('.$data->coverletterid.')" title='. esc_html(__('view coverletter', 'wp-job-portal')) .'>
+                                         '. esc_html(__('View Cover Letter', 'wp-job-portal')) .'
+                                     </a>';
+                                }else{
+                                    echo '
+                                    <span class="wjportal-no-coverletter-btn">
+                                        '. esc_html(__('No Cover Letter', 'wp-job-portal')) .'
+                                    </span>';
+                                }
+                           }?>
                 </div>
             </div>
             <div id="<?php echo esc_attr($data->appid); ?>" ></div>

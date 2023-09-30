@@ -38,8 +38,7 @@ class WPJOBPORTALResumeFormlayout {
     }
 
     function getFieldTitleByField($field){
-
-        return __(wpjobportal::$_data['fieldtitles'][$field],'wp-job-portal');
+        return wpjobportal::wpjobportal_getVariableValue(wpjobportal::$_data['fieldtitles'][$field]);
     }
 
     function getResumeFormUserFieldJobManager($title, $field,$required) {
@@ -66,7 +65,7 @@ class WPJOBPORTALResumeFormlayout {
             if(null !=$themecall){
                 $data .= '<div class="resume-row-wrapper form resumefieldswrapper">';
                 $data .= '  <label class="resumefieldtitle" for="">';
-                $data .=        __($result['title'],'wp-job-portal');
+                $data .=        wpjobportal::wpjobportal_getVariableValue($result['title']);
                                 if($field->required == 1){
                 $data .= '          <span class="error-msg">*</span>';
                                 }
@@ -79,7 +78,7 @@ class WPJOBPORTALResumeFormlayout {
             }else{
                 $data .= '<div class="resume-row-wrapper form resumefieldswrapper">';
                 $data .= '  <label class="resumefieldtitle" for="">';
-                $data .=        __($result['title'],'wp-job-portal');
+                $data .=        wpjobportal::wpjobportal_getVariableValue($result['title']);
                                 if($field->required == 1){
                 $data .= '          <span class="error-msg">*</span>';
                                 }
@@ -105,16 +104,16 @@ class WPJOBPORTALResumeFormlayout {
             <div class="resume-row-wrapper form wjportal-form-row">
                 <div class="row-title wjportal-form-title">';
                     if ($required == 1) {
-                        $data .= __($fieldtitle,'wp-job-portal') . ' <font color="red"> *</font>';
+                        $data .= wpjobportal::wpjobportal_getVariableValue($fieldtitle) . ' <font color="red"> *</font>';
                         $cssclass = "required";
                     }else {
-                        $data .= __($fieldtitle,'wp-job-portal');
+                        $data .= wpjobportal::wpjobportal_getVariableValue($fieldtitle);
                         $cssclass = "";
                     }
                 $data .= '</div>
                 <div class="row-value wjportal-form-value">
                     <div class="checkbox-field wpjp-form-value wjportal-searchable-wrp">';
-                        $data .= WPJOBPORTALformfield::checkbox($name, array('1' => __($fieldtitle, 'wp-job-portal')), $fieldValue);
+                        $data .= WPJOBPORTALformfield::checkbox($name, array('1' => wpjobportal::wpjobportal_getVariableValue($fieldtitle)), $fieldValue);
                         $data .= '
                     </div>
                 </div>
@@ -153,7 +152,7 @@ class WPJOBPORTALResumeFormlayout {
             $data = '
                 <div class="wjportal-form-row">
                     <div class="wjportal-form-title">
-                        <label " for="' . $fieldName . '">' . __($fieldtitle,'wp-job-portal');
+                        <label " for="' . $fieldName . '">' . wpjobportal::wpjobportal_getVariableValue($fieldtitle);
                             if ($required == 1) {
                                 $data .= '<span class="error-msg" style="color: red;"> *</span>';
                             }
@@ -168,7 +167,7 @@ class WPJOBPORTALResumeFormlayout {
             $data = '
                 <div class="wjportal-form-row">
                     <div class="wjportal-form-title">
-                        <label " for="' . $fieldName . '">' . __($fieldtitle,'wp-job-portal');
+                        <label " for="' . $fieldName . '">' . wpjobportal::wpjobportal_getVariableValue($fieldtitle);
                             if ($required == 1) {
                                 $data .= '<span class="error-msg" style="color: red;"> *</span>';
                             }
@@ -184,7 +183,7 @@ class WPJOBPORTALResumeFormlayout {
     }
     function getResumeSectionTitleJobPortal($sectionid,$title) {
 
-        $html='<h2 id="jsresume_sectionid'.$sectionid.'" class="wjportal-resume-section-title">' . __($title, 'wp-job-portal') . '</h2>';
+        $html='<h2 id="jsresume_sectionid'.$sectionid.'" class="wjportal-resume-section-title">' . wpjobportal::wpjobportal_getVariableValue($title) . '</h2>';
 
         return $html;
     }
@@ -198,14 +197,14 @@ class WPJOBPORTALResumeFormlayout {
                 if(null!=$themecall){
                     $html=$this->getResumeSectionTitleJobPortal($sectionid,$title);
                 }else{
-                    $html = '<div id="jsresume_sectionid'.$sectionid.'" class="wjportal-resume-section-title">' . __($title, 'wp-job-portal') . '</div>';
+                    $html = '<div id="jsresume_sectionid'.$sectionid.'" class="wjportal-resume-section-title">' . wpjobportal::wpjobportal_getVariableValue($title) . '</div>';
                 }
             break;
             case 'address':
                 if(null!=$themecall){
                     $html=$this->getResumeSectionTitleJobPortal($sectionid,$title);
                 }else{
-                    $html = '<div id="jsresume_sectionid'.$sectionid.'" class="wjportal-resume-section-title">' . __($title, 'wp-job-portal') . '</div>';
+                    $html = '<div id="jsresume_sectionid'.$sectionid.'" class="wjportal-resume-section-title">' . wpjobportal::wpjobportal_getVariableValue($title) . '</div>';
                 }
 
             break;
@@ -221,7 +220,7 @@ class WPJOBPORTALResumeFormlayout {
                 if(null!=$themecall){
                     $html=$this->getResumeSectionTitleJobPortal($sectionid,$title);
                 }else{
-                    $html = '<div id="jsresume_sectionid'.$sectionid.'" class="wjportal-resume-section-title">' . __($title, 'wp-job-portal') . '</div>';
+                    $html = '<div id="jsresume_sectionid'.$sectionid.'" class="wjportal-resume-section-title">' . wpjobportal::wpjobportal_getVariableValue($title) . '</div>';
                 }
 
             break;
@@ -255,7 +254,7 @@ class WPJOBPORTALResumeFormlayout {
             $data .= '<div class="js-col-md-12 js-form-wrapper">';
         }
         $data .= '
-            <div class="js-col-md-12 js-form-title '.$this->class_prefix.'-bigfont">' . __($fieldtitle,'wp-job-portal');
+            <div class="js-col-md-12 js-form-title '.$this->class_prefix.'-bigfont">' . wpjobportal::wpjobportal_getVariableValue($fieldtitle);
             if ($required == 1) {
                 $data .= '<span class="'.$this->class_prefix.'-error-msg"     color: redstyle="color: red;"> *</span>';
             }
@@ -307,7 +306,7 @@ class WPJOBPORTALResumeFormlayout {
                 <div class="wjportal-form-row'.$style.'">
                     <div class="wjportal-form-title">
                         <label for="' . $fieldName . '">';
-                        $data .= __($fieldtitle,'wp-job-portal');
+                        $data .= wpjobportal::wpjobportal_getVariableValue($fieldtitle);
                             if ($required == 1) {
                                         $data .= '<span class="error-msg" style="color: red;"> *</span>';
                             }
@@ -344,7 +343,7 @@ class WPJOBPORTALResumeFormlayout {
                 <div class="wjportal-form-row'.$style.'">
                     <div class="wjportal-form-title">
                         <label for="' . $fieldName . '">';
-                        $data .= __($fieldtitle,'wp-job-portal');
+                        $data .= wpjobportal::wpjobportal_getVariableValue($fieldtitle);
                             if ($required == 1) {
                                         $data .= '<span class="error-msg" style="color: red;"> *</span>';
                             }
@@ -384,7 +383,7 @@ class WPJOBPORTALResumeFormlayout {
     }
     function getFieldForMultiSectionJobManager($fieldtitle,$fieldName,$required,$fieldValue,$field_id_for,$section, $sectionid, $ishidden){
             $html = '<div class="js-col-md-12 js-form-wrapper">
-            <div class="js-col-md-12 js-form-title '.$this->class_prefix.'-bigfont" for="'.$field_id_for.'">' . __($fieldtitle,'wp-job-portal');
+            <div class="js-col-md-12 js-form-title '.$this->class_prefix.'-bigfont" for="'.$field_id_for.'">' . wpjobportal::wpjobportal_getVariableValue($fieldtitle);
                 if ($required == 1) {
                     $html .= '<span class="'.$this->class_prefix.'-error-msg">*</span>';
                 }
@@ -442,7 +441,7 @@ class WPJOBPORTALResumeFormlayout {
                 <div class="wjportal-form-row">
                     <div class="wjportal-form-title">
                         <label for="' . $field_id_for . '">';
-                            $data .= __($fieldtitle,'wp-job-portal');
+                            $data .= wpjobportal::wpjobportal_getVariableValue($fieldtitle);
                             if ($required == 1) {
                                         $data .= '<span class="error-msg">*</span>';
                             }
@@ -491,7 +490,7 @@ class WPJOBPORTALResumeFormlayout {
                 <div class="wjportal-form-row">
                     <div class="wjportal-form-title">
                         <label for="' . $field_id_for . '">';
-                            $data .= __($fieldtitle,'wp-job-portal');
+                            $data .= wpjobportal::wpjobportal_getVariableValue($fieldtitle);
                             if ($required == 1) {
                                         $data .= '<span class="error-msg">*</span>';
                             }
@@ -547,13 +546,13 @@ class WPJOBPORTALResumeFormlayout {
             $dash = "-";
         }
         $dateformat = $config_date;
-        $firstdash = strpos($dateformat, $dash, 0);
-        $firstvalue = substr($dateformat, 0, $firstdash);
+        $firstdash = wpjobportalphplib::wpJP_strpos($dateformat, $dash, 0);
+        $firstvalue = wpjobportalphplib::wpJP_substr($dateformat, 0, $firstdash);
         $firstdash = $firstdash + 1;
-        $seconddash = strpos($dateformat, $dash, $firstdash);
-        $secondvalue = substr($dateformat, $firstdash, $seconddash - $firstdash);
+        $seconddash = wpjobportalphplib::wpJP_strpos($dateformat, $dash, $firstdash);
+        $secondvalue = wpjobportalphplib::wpJP_substr($dateformat, $firstdash, $seconddash - $firstdash);
         $seconddash = $seconddash + 1;
-        $thirdvalue = substr($dateformat, $seconddash, strlen($dateformat) - $seconddash);
+        $thirdvalue = wpjobportalphplib::wpJP_substr($dateformat, $seconddash, wpjobportalphplib::wpJP_strlen($dateformat) - $seconddash);
         //$js_dateformat = '%' . $firstvalue . $dash . '%' . $secondvalue . $dash . '%' . $thirdvalue;
         $js_dateformat =  $firstvalue . $dash . $secondvalue . $dash . $thirdvalue;
 
@@ -607,7 +606,7 @@ class WPJOBPORTALResumeFormlayout {
         $html .= '
             <div class="wjportal-form-row">
                 <div class="wjportal-form-title">
-                    <label id="'.$cityfor.'_citymsg" for="'.$cityfor.'_city_'.$sectionid.'">' . __($field->fieldtitle,'wp-job-portal');
+                    <label id="'.$cityfor.'_citymsg" for="'.$cityfor.'_city_'.$sectionid.'">' . wpjobportal::wpjobportal_getVariableValue($field->fieldtitle);
                         if ($field->required == 1) {
                             $html .= '<span class="error-msg">*</span>';
                         }
@@ -654,7 +653,7 @@ class WPJOBPORTALResumeFormlayout {
                     }
                     $html .= '
                         <div class="wpjp-form-wrapper js-col-md-12 js-form-wrapper">
-                            <label id="" class="wpjp-form-title " for="resumeeditor">' . __($field->fieldtitle,'wp-job-portal');
+                            <label id="" class="wpjp-form-title " for="resumeeditor">' . wpjobportal::wpjobportal_getVariableValue($field->fieldtitle);
                                 if ($field->required == 1) {
                                     $html .= '<span class="error-msg">*</span>';
                                 }
@@ -683,9 +682,9 @@ class WPJOBPORTALResumeFormlayout {
             </div></div>';
         if(empty($resume->resume)){
             if(null !=$themecall){
-                $html .= '<div class="wpjp-add-new-section-link wjportal-resume-add-new-section-btn" onclick="showResumeSection( this, \'resume\');"><i class="fa fa-plus"></i>'.__('Add Resume','wp-job-portal').'</div>';
+                $html .= '<div class="wpjp-add-new-section-link wjportal-resume-add-new-section-btn" onclick="showResumeSection( this, \'resume\');"><i class="fa fa-plus"></i>'.esc_html(__('Add Resume','wp-job-portal')).'</div>';
             }else{
-                $html .= '<div class="wpjp-add-new-section-link wjportal-resume-add-new-section-btn" onclick="showResumeSection( this, \'resume\');"><i class="fa fa-plus"></i>'.__('Add Resume','wp-job-portal').'</div>';
+                $html .= '<div class="wpjp-add-new-section-link wjportal-resume-add-new-section-btn" onclick="showResumeSection( this, \'resume\');"><i class="fa fa-plus"></i>'.esc_html(__('Add Resume','wp-job-portal')).'</div>';
 
             }
         }
@@ -725,7 +724,7 @@ class WPJOBPORTALResumeFormlayout {
             $jssection_hide = isset($address->id) ? '' : 'jssection_hide';
             //$jssection_hide = isset($address->id) ? '' : '';
             $html .= '<div class="section_wrapper form wjportal-resume-section '.$jssection_hide.' jssection_address_'.$sectionid.'">
-                        <div class="wjportal-resume-section-head">'.__('Address'). ' ' .$sectionhead++.'</div>
+                        <div class="wjportal-resume-section-head">'.esc_html(__('Address','wp-job-portal')). ' ' .$sectionhead++.'</div>
                         <div class="jsundo wjportal-resume-section-undo"><img class="jsundoimage wjportal-resume-section-undo-image" onclick="undoThisSection(this);" src="'.WPJOBPORTAL_PLUGIN_URL.'includes/images/resume/undo-icon.png" /></div>
                         <img class="jsdeleteimage wjportal-resume-section-delete" onclick="deleteThisSection(this);" src="'.WPJOBPORTAL_PLUGIN_URL.'includes/images/resume/delete-icon.png" />';
             foreach (wpjobportal::$_data[2][2] as $field) {
@@ -771,10 +770,10 @@ class WPJOBPORTALResumeFormlayout {
         if($j > 0){
             if(null !=$themecall){
                 $html .= '<div class="wpjp-add-new-section-link  '.$this->class_prefix.'-resume-addnewbutton" onclick="showResumeSection( this ,\'address\');">
-                <span class="'.$this->class_prefix.'-addresume-addfield-btn-txt"><i class="fa fa-plus-square-o" aria-hidden="true"></i>'.__('Add New','wp-job-portal').' '. __('Address','wp-job-portal').'
+                <span class="'.$this->class_prefix.'-addresume-addfield-btn-txt"><i class="fa fa-plus-square-o" aria-hidden="true"></i>'.esc_html(__('Add New','wp-job-portal')).' '. esc_html(__('Address','wp-job-portal')).'
                 </span></div>';
             }else{
-                $html .= '<div class="wpjp-add-new-section-link wjportal-resume-add-new-section-btn" onclick="showResumeSection( this ,\'address\');"><i class="fa fa-plus"></i>'.__('Add New','wp-job-portal').' '. __('Address','wp-job-portal').'</div>';
+                $html .= '<div class="wpjp-add-new-section-link wjportal-resume-add-new-section-btn" onclick="showResumeSection( this ,\'address\');"><i class="fa fa-plus"></i>'.esc_html(__('Add New','wp-job-portal')).' '. esc_html(__('Address','wp-job-portal')).'</div>';
             }
         }
         return $html;
@@ -810,7 +809,7 @@ class WPJOBPORTALResumeFormlayout {
         foreach ($employers as $employer) {
             $jssection_hide = isset($employer->id) ? '' : 'jssection_hide';
             $html .= '<div class="section_wrapper form wjportal-resume-section jssection_wrapper '.$jssection_hide.' jssection_employer_'.$sectionid.'">
-                        <div class="wjportal-resume-section-head">'.__('Employer').' '.$sectionhead++.'</div>
+                        <div class="wjportal-resume-section-head">'.esc_html(__('Employer','wp-job-portal')).' '.$sectionhead++.'</div>
                         <div class="jsundo wjportal-resume-section-undo"><img class="jsundoimage wjportal-resume-section-undo-image" onclick="undoThisSection(this);" src="'.WPJOBPORTAL_PLUGIN_URL.'includes/images/resume/undo-icon.png" /></div>
                         <img class="jsdeleteimage wjportal-resume-section-delete" onclick="deleteThisSection(this);" src="'.WPJOBPORTAL_PLUGIN_URL.'includes/images/resume/delete-icon.png" />';
             $counter = 0;
@@ -836,7 +835,7 @@ class WPJOBPORTALResumeFormlayout {
                                             $html .= '
                                                 <div id="fromdate'.$sectionid.'" class="wjportal-form-row">
                                                     <div class="wjportal-form-title">
-                                                        <label for="employer_from_date4'.$sectionid.'">' . __($field_obj->fieldtitle,'wp-job-portal');
+                                                        <label for="employer_from_date4'.$sectionid.'">' . wpjobportal::wpjobportal_getVariableValue($field_obj->fieldtitle);
                                                             if ($field_obj->required == 1) {
                                                                 $html .= '<span class="'.$this->class_prefix.'-error-msg error-msg">*</span>';
                                                             }
@@ -860,7 +859,7 @@ class WPJOBPORTALResumeFormlayout {
                                             $html .= '
                                                 <div class="wjportal-form-row" id="resto_date'.$sectionid.'" style="display:'.$display.'" >
                                                     <div class="wjportal-form-title">
-                                                        <label class="wpjp-form-title " for="employer_to_date4'.$sectionid.'">' . __($field_obj->fieldtitle,'wp-job-portal');
+                                                        <label class="wpjp-form-title " for="employer_to_date4'.$sectionid.'">' . wpjobportal::wpjobportal_getVariableValue($field_obj->fieldtitle);
                                                             if ($field_obj->required == 1) {
                                                                 $html .= '<span class="'.$this->class_prefix.'-error-msg error-msg">*</span>';
                                                             }
@@ -876,7 +875,7 @@ class WPJOBPORTALResumeFormlayout {
                                             $html .= '<div class="wjportal-form-row">
                                                         <div class="wjportal-form-title">
                                                             <label class="wpjp-form-title " for="' . $field->id . '">';
-                                            $html .=            __($field_obj->fieldtitle,'wp-job-portal');
+                                            $html .=            wpjobportal::wpjobportal_getVariableValue($field_obj->fieldtitle);
                                             $html .='       </label>
                                                         </div>
                                                         <div class="wjportal-form-value">';
@@ -932,10 +931,10 @@ class WPJOBPORTALResumeFormlayout {
         if($j > 0){
             if(null !=$themecall){
                 $html .= '<div class="wpjp-add-new-section-link  '.$this->class_prefix.'-resume-addnewbutton" onclick="showResumeSection( this ,\'employer\');">
-                <span class="'.$this->class_prefix.'-addresume-addfield-btn-txt"><i class="fa fa-plus-square-o" aria-hidden="true"></i>'.__('Add New','wp-job-portal').' '. __('Employer','wp-job-portal').'
+                <span class="'.$this->class_prefix.'-addresume-addfield-btn-txt"><i class="fa fa-plus-square-o" aria-hidden="true"></i>'.esc_html(__('Add New','wp-job-portal')).' '. esc_html(__('Employer','wp-job-portal')).'
                 </span></div>';
             }else{
-                $html .= '<div class="wpjp-add-new-section-link wjportal-resume-add-new-section-btn " onclick="showResumeSection( this ,\'employer\');"><i class="fa fa-plus"></i>'.__('Add New','wp-job-portal').' '. __('Employer').'</div>';
+                $html .= '<div class="wpjp-add-new-section-link wjportal-resume-add-new-section-btn " onclick="showResumeSection( this ,\'employer\');"><i class="fa fa-plus"></i>'.esc_html(__('Add New','wp-job-portal')).' '. esc_html(__('Employer').'</div>';
             }
         }
         return $html;
@@ -1016,11 +1015,11 @@ class WPJOBPORTALResumeFormlayout {
                     case "gender":
                             $value=isset($resume->gender)?$resume->gender:"";
                             $req = ($field->required ? 'required' : '');
-                            $fieldValue = WPJOBPORTALformfield::resumeSelect('gender', wpjobportal::$_common->getGender(), $value,'sec_1', __('Select','wp-job-portal') .' '. __('Gender', 'wp-job-portal'), array('class' => 'inputbox form-control wjportal-form-select-field '.$this->class_prefix.'-select-field', 'data-validation' => $req));
+                            $fieldValue = WPJOBPORTALformfield::resumeSelect('gender', wpjobportal::$_common->getGender(), $value,'sec_1', esc_html(__('Select','wp-job-portal')) .' '. esc_html(__('Gender', 'wp-job-portal')), array('class' => 'inputbox form-control wjportal-form-select-field '.$this->class_prefix.'-select-field', 'data-validation' => $req));
                             $data .= $this->getResumeSelectField($field, $fieldValue,'',$themecall);
                         break;
                     case "photo":
-                        $text = __($field->fieldtitle, 'wp-job-portal');
+                        $text = wpjobportal::wpjobportal_getVariableValue($field->fieldtitle);
 
                         $photo_required = ($field->required ? 'required' : '');
                         $imgpath = '';
@@ -1041,25 +1040,25 @@ class WPJOBPORTALResumeFormlayout {
                                     <span class="wjportal-form-upload-btn-wrp-txt">'.$resumephoto.'
                                     </span>
                                     <span class="wjportal-form-upload-btn">
-                                        '.__("Upload Image","wp-job-portal").'
+                                        '.esc_html(__("Upload Image","wp-job-portal")).'
                                         <input type="file" name="photo" class="photo" id="photo" />
                                     </span>
                                 </div>
                                 <div class="wjportal-form-image-wrp" style="display:'.$class.'">
-                                    <img class="rs_photo wjportal-form-image" id="rs_photo" src="' . $img . '" alt="'.__('Resume image','wp-job-portal').'"/>
+                                    <img class="rs_photo wjportal-form-image" id="rs_photo" src="' . $img . '" alt="'.esc_html(__('Resume image','wp-job-portal')).'"/>
                                     <img id="wjportal-form-delete-image" alt="cross" src="'.WPJOBPORTAL_PLUGIN_URL.'includes/images/no.png" />
                                 </div>';
                                 $logoformat = wpjobportal::$_config->getConfigurationByConfigName('image_file_type');
                                 $maxsize = wpjobportal::$_config->getConfigurationByConfigName('resume_photofilesize');
                                 $p_detail = '<div class="wjportal-form-help-txt"> ('.$logoformat.')</div>';
-                                $p_detail .= '<div class="wjportal-form-help-txt"> ('.__("Max logo size allowed","wp-job-portal").' '.$maxsize.' Kb)</div>';
+                                $p_detail .= '<div class="wjportal-form-help-txt"> ('.esc_html(__("Max logo size allowed","wp-job-portal")).' '.$maxsize.' Kb)</div>';
                             $fieldvalue .= $p_detail;
                         $fieldvalue .= '</div>';
                         $data .= $this->getRowForForm($text, $fieldvalue,$themecall);
                         break;
                     case "resumefiles":
 
-                        $text = __($field->fieldtitle, 'wp-job-portal');
+                        $text = wpjobportal::wpjobportal_getVariableValue($field->fieldtitle);
                         $req = ''; // for checking field is required or not
                         if ($field->required == 1) {
                             $text .= '<span style="color:red;">*</span>';
@@ -1075,12 +1074,12 @@ class WPJOBPORTALResumeFormlayout {
                                         </a>';
                             }
                         }
-                        $fieldvalue .= '</span><span class="clickablefiles wjportal-form-upload-btn">'.__('Select Multiple Files','wp-job-portal').'</span>';
+                        $fieldvalue .= '</span><span class="clickablefiles wjportal-form-upload-btn">'.esc_html(__('Select Multiple Files','wp-job-portal')).'</span>';
                         $fieldvalue .= '</div>';
                         $logoformat = wpjobportal::$_config->getConfigurationByConfigName('document_file_type');
                                 $maxsize = wpjobportal::$_config->getConfigurationByConfigName('document_file_size');
                                 $p_detail = '<div class="wjportal-form-help-txt"> ('.$logoformat.')</div>';
-                                $p_detail .= '<div class="wjportal-form-help-txt"> ('.__("Max logo size allowed","wp-job-portal").' '.$maxsize.' Kb)</div>';
+                                $p_detail .= '<div class="wjportal-form-help-txt"> ('.esc_html(__("Max logo size allowed","wp-job-portal")).' '.$maxsize.' Kb)</div>';
                             $fieldvalue .= $p_detail;
                         $fieldvalue .= '</div>';
                         $data .= $this->getRowForForm($text, $fieldvalue,$themecall);
@@ -1088,19 +1087,19 @@ class WPJOBPORTALResumeFormlayout {
                     case "job_category":
                             $value=isset($resume->job_category)?$resume->job_category:WPJOBPORTALincluder::getJSModel('category')->getDefaultCategoryId();
                             $req = ($field->required ? 'required' : '');
-                            $fieldValue = WPJOBPORTALformfield::resumeSelect('job_category', WPJOBPORTALincluder::getJSModel('category')->getCategoryForCombobox(''),$value,'sec_1', __('Select','wp-job-portal') , array('class' => 'inputbox wjportal-form-select-field  form-control '.$this->class_prefix.'-select-field', 'data-validation' => $req));
+                            $fieldValue = WPJOBPORTALformfield::resumeSelect('job_category', WPJOBPORTALincluder::getJSModel('category')->getCategoryForCombobox(''),$value,'sec_1', esc_html(__('Select','wp-job-portal')) , array('class' => 'inputbox wjportal-form-select-field  form-control '.$this->class_prefix.'-select-field', 'data-validation' => $req));
                             $data .= $this->getResumeSelectField($field, $fieldValue,'',$themecall);
                         break;
                     case "jobtype":
                             $value = isset($resume->jobtype) ? $resume->jobtype : WPJOBPORTALincluder::getJSModel('jobtype')->getDefaultJobTypeId();
                             $req = ($field->required ? 'required' : '');
-                            $fieldValue = WPJOBPORTALformfield::resumeSelect('jobtype', WPJOBPORTALincluder::getJSModel('jobtype')->getJobTypeForCombo(), $value,'sec_1', __('Select','wp-job-portal') , array('class' => 'inputbox one wjportal-form-select-field form-control '.$this->class_prefix.'-select-field', 'data-validation' => $req));
+                            $fieldValue = WPJOBPORTALformfield::resumeSelect('jobtype', WPJOBPORTALincluder::getJSModel('jobtype')->getJobTypeForCombo(), $value,'sec_1', esc_html(__('Select','wp-job-portal')) , array('class' => 'inputbox one wjportal-form-select-field form-control '.$this->class_prefix.'-select-field', 'data-validation' => $req));
                             $data .= $this->getResumeSelectField($field, $fieldValue,'',$themecall);
                         break;
                     case "nationality":
                             $value = isset($resume->nationalityid) ? $resume->nationalityid : "";
                             $req = ($field->required ? 'required' : '');
-                            $fieldValue = WPJOBPORTALformfield::resumeSelect('nationality', WPJOBPORTALincluder::getJSModel('country')->getCountriesForCombo(), $value,'sec_1', __('Select','wp-job-portal') .' '. __('Nationality', 'wp-job-portal'), array('class' => 'inputbox  form-control wjportal-form-select-field '.$this->class_prefix.'-select-field', 'data-validation' => $req));;
+                            $fieldValue = WPJOBPORTALformfield::resumeSelect('nationality', WPJOBPORTALincluder::getJSModel('country')->getCountriesForCombo(), $value,'sec_1', esc_html(__('Select','wp-job-portal')) .' '. esc_html(__('Nationality', 'wp-job-portal')), array('class' => 'inputbox  form-control wjportal-form-select-field '.$this->class_prefix.'-select-field', 'data-validation' => $req));;
                             $data .= $this->getResumeSelectField($field, $fieldValue,'',$themecall);
                         break;
                     case 'salaryfixed':
@@ -1112,11 +1111,13 @@ class WPJOBPORTALResumeFormlayout {
                         if(in_array('tag', wpjobportal::$_active_addons)){
                             $value = isset($resume->resumetags) ? $resume->resumetags : '';
                             $data .= $this->getFieldForPersonalSection($field,$value,'','',$themecall);
-                            $data .= '  <script >
+                            wp_register_script( 'wpjobportal-inline-handle', '' );
+                            wp_enqueue_script( 'wpjobportal-inline-handle' );
+                            $inline_js_script = '
                                             jQuery(document).ready(function(){
                                                 getTokenInputTags(' . $value . ');
-                                            });
-                                        </script>';
+                                            });';
+                            wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
                         }
                     break;
                     case "searchable":
@@ -1172,7 +1173,7 @@ class WPJOBPORTALResumeFormlayout {
         }
         $check = apply_filters('wpjobportal_addons_multiresume_add',false,$form_class);
         if($check == false){
-            $html .= '<form class="'.$form_class.'" id="resumeform" method="post" enctype="multipart/form-data" action="'.wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'task'=>'saveresume')).'" >';
+            $html .= '<form class="'.$form_class.'" id="resumeform" method="post" enctype="multipart/form-data" action="'.wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'task'=>'saveresume')).'" >';
 
         }else{
             $html .= $check;
@@ -1206,14 +1207,18 @@ class WPJOBPORTALResumeFormlayout {
                         $html .= apply_filters('wpjobportal_addons_selection_fields',false,'makeEmployerSectionFields',$themecall);
                         break;
                     case 'section_skills':
-                        $title = 'Skills';
-                        $html .= $this->getSectionTitle('skills', $title, 5,$themecall);
-                        $html .= apply_filters('wpjobportal_addons_selection_fields',false,'makeSkillsSectionFields',$themecall);
+                        if(in_array('advanceresumebuilder', wpjobportal::$_active_addons)){
+                            $title = 'Skills';
+                            $html .= $this->getSectionTitle('skills', $title, 5,$themecall);
+                            $html .= apply_filters('wpjobportal_addons_selection_fields',false,'makeSkillsSectionFields',$themecall);
+                        }
                         break;
                     case 'section_language';
-                        $title = 'Language';
-                        $html .= $this->getSectionTitle('language', $title, 8,$themecall);
-                        $html .=apply_filters('wpjobportal_addons_selection_fields',false,'makeLanguageSectionFields',$themecall);
+                        if(in_array('advanceresumebuilder', wpjobportal::$_active_addons)){
+                            $title = 'Language';
+                            $html .= $this->getSectionTitle('language', $title, 8,$themecall);
+                            $html .=apply_filters('wpjobportal_addons_selection_fields',false,'makeLanguageSectionFields',$themecall);
+                        }
                     break;
                 }
             }
@@ -1240,22 +1245,22 @@ class WPJOBPORTALResumeFormlayout {
             $html .= '
                 <div class="wjportal-form-row">
                     <div class="wjportal-form-title">
-                        <label id="total_experiencemsg" class="row-title" for="status">'.__('Status','wp-job-portal').'</label>
+                        <label id="total_experiencemsg" class="row-title" for="status">'.esc_html(__('Status','wp-job-portal')).'</label>
                     </div>
                     <div class="wjportal-form-value">
                     <select id="status" name="sec_1[status]" class="wjportal-form-select-field">
                         <option ';
                         $selected = ($status == 1) ? 'selected="selected"' : '';
-            $html .=    $selected.' value="1" '.$one.'>'.__('Approved','wp-job-portal').'</option>
+            $html .=    $selected.' value="1" '.$one.'>'.esc_html(__('Approved','wp-job-portal')).'</option>
                         <option ';
                         $selected = ($status == 0) ? 'selected="selected"' : '';
-            $html .=    $selected.' value="0" '.$two.'>'.__('Pending','wp-job-portal').'</option>
+            $html .=    $selected.' value="0" '.$two.'>'.esc_html(__('Pending','wp-job-portal')).'</option>
                         <option ';
                         $selected = ($status == -1) ? 'selected="selected"' : '';
-            $html .=    $selected.' value="-1" '.$three.'>'.__('Reject','wp-job-portal').'</option>
+            $html .=    $selected.' value="-1" '.$three.'>'.esc_html(__('Reject','wp-job-portal')).'</option>
                         <option ';
                         $selected = ($status == 3) ? 'selected="selected"' : '';
-            $html .=    $selected.' value="3" '.$four.'>'.__('Pending Payment','wp-job-portal').'</option>
+            $html .=    $selected.' value="3" '.$four.'>'.esc_html(__('Pending Payment','wp-job-portal')).'</option>
                     </select></div>
                 </div>
                 ';
@@ -1280,11 +1285,11 @@ class WPJOBPORTALResumeFormlayout {
         if($this->show_terms_and_conditions == 1){
             $termsandconditions_link = get_the_permalink(wpjobportal::$_configuration['terms_and_conditions_page_resume']);
             $html .='
-                <div class="js-col-md-12 js-form-wrapper wpjobportal-terms-and-conditions-wrap" data-wpjobportal-terms-and-conditions="1" >
+                <div class="js-col-md-12 js-form-wrapper wjportal-terms-and-conditions-wrap wpjobportal-terms-and-conditions-wrap" data-wpjobportal-terms-and-conditions="1" >
                     <div class="js-col-md-12 js-form-value">
-                        '.WPJOBPORTALformfield::checkbox('termsconditions', array('1' => __($this->terms_and_conditions_title, 'wp-job-portal')), 0, array('class' => 'checkbox')).'
-                        <a title="'. __('Terms and Conditions','wp-job-portal').'" href="'. $termsandconditions_link.'" target="_blank" >
-                        <img alt="'. __('Terms and Conditions','wp-job-portal').'" title="'. __('Terms and Conditions','wp-job-portal').'" src="'. WPJOBPORTAL_PLUGIN_URL.'includes/images/widget-link.png" /></a>
+                        '.WPJOBPORTALformfield::checkbox('termsconditions', array('1' => wpjobportal::wpjobportal_getVariableValue($this->terms_and_conditions_title)), 0, array('class' => 'checkbox')).'
+                        <a title="'. esc_html(__('Terms and Conditions','wp-job-portal')).'" href="'. $termsandconditions_link.'" target="_blank" >
+                        <img alt="'. esc_html(__('Terms and Conditions','wp-job-portal')).'" title="'. esc_html(__('Terms and Conditions','wp-job-portal')).'" src="'. WPJOBPORTAL_PLUGIN_URL.'includes/images/widget-link.png" /></a>
                     </div>
                 </div>
 
@@ -1316,9 +1321,9 @@ class WPJOBPORTALResumeFormlayout {
             }
             if(!wpjobportal::$_common->wpjp_isadmin()){ // site
                 if(in_array('multiresume', wpjobportal::$_active_addons)){
-                    $cancel_link=wpjobportal::makeUrl(array('wpjobportalme'=>'multiresume', 'wpjobportallt'=>'myresumes'));
+                    $cancel_link=wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multiresume', 'wpjobportallt'=>'myresumes'));
                 }else{
-                    $cancel_link=wpjobportal::makeUrl(array('wpjobportalme'=>'jobseeker'));
+                    $cancel_link=wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'jobseeker'));
                 }
             }elseif(wpjobportal::$_common->wpjp_isadmin()){
                 $cancel_link = admin_url("admin.php?page=wpjobportal_resume");
@@ -1332,14 +1337,14 @@ class WPJOBPORTALResumeFormlayout {
             }
 
             if ($isvisitor &&  !wpjobportal::$_common->wpjp_isadmin()) {
-                $html .= '<input class="'.$this->class_prefix.'-btn-primary wjportal-form-btn wjportal-form-save-btn" type="button" onclick="submitresume();" value="' . __('Apply Now', 'wp-job-portal') . '"/>';
+                $html .= '<input class="'.$this->class_prefix.'-btn-primary wjportal-form-btn wjportal-form-save-btn" type="button" onclick="submitresume();" value="' . esc_html(__('Apply Now', 'wp-job-portal')) . '"/>';
             } else {
-                $html .= '<input class="'.$this->class_prefix.'-btn-primary wjportal-form-btn wjportal-form-save-btn" type="button" onclick="submitresume();" value="' . __('Save Resume', 'wp-job-portal') . '"/>';
+                $html .= '<input class="'.$this->class_prefix.'-btn-primary wjportal-form-btn wjportal-form-save-btn" type="button" onclick="submitresume();" value="' . esc_html(__("Save Resume", "wp-job-portal")) . '"/>';
             }
             if($btn_cancel==true)  $html .= '</div>';
             if(!$isvisitor && is_user_logged_in() ){
                 if($btn_cancel==true)  $html .= '<div class="wjportal-form-2-btn">';
-                    $html .= '<a class="resume_submits cancel '.$this->class_prefix.' wjportal-form-btn wjportal-form-cancel-btn" href="'.$cancel_link.'">' . __('Cancel Resume', 'wp-job-portal') . '</a>';
+                    $html .= '<a class="resume_submits cancel '.$this->class_prefix.' wjportal-form-btn wjportal-form-cancel-btn" href="'.$cancel_link.'">' . esc_html(__('Cancel Resume', 'wp-job-portal')) . '</a>';
                 if($btn_cancel==true)  {
                         $html .= '</div>';
                 }
@@ -1365,7 +1370,7 @@ class WPJOBPORTALResumeFormlayout {
         }
         $html .= '<div class="resume-row-wrapper">
                     <div class="wpjp-form-title">' . $text . ':</div>
-                    <div class="wpjp-form-value">' . __($value,'wp-job-portal') . '</div>
+                    <div class="wpjp-form-value">' . wpjobportal::wpjobportal_getVariableValue($value) . '</div>
                 </div>';
         $i++;
         if ($i % 2 == 0) {

@@ -24,19 +24,21 @@ class WPJOBPORTALResumeController {
                 case 'myresumes':
                     if (WPJOBPORTALincluder::getObjectClass('user')->isjobseeker()) {
                         WPJOBPORTALincluder::getJSModel('resume')->getMyResumes($uid);
+                        // to handle jobseeker left menu data
+                        WPJOBPORTALincluder::getJSModel('jobseeker')->getResumeInfoForJobSeekerLeftMenu($uid);
                     } else {
                         if (WPJOBPORTALincluder::getObjectClass('user')->isemployer()) {
                             wpjobportal::$_error_flag_message = WPJOBPORTALLayout::setMessageFor(3,null,null,1);
                             wpjobportal::$_error_flag_message_for=3;
                         } elseif (WPJOBPORTALincluder::getObjectClass('user')->isguest()) {
                             $link = wpjobportal::$_common->jsMakeRedirectURL('resume', $layout, 1);
-                            $linktext = __('Login','wp-job-portal');
+                            $linktext = esc_html(__('Login','wp-job-portal'));
                             wpjobportal::$_error_flag_message = WPJOBPORTALLayout::setMessageFor(1 , $link , $linktext,1);
                             wpjobportal::$_error_flag_message_for=1;
                             wpjobportal::$_error_flag_message_register_for=1; // register as jobseeker
                         } elseif (!WPJOBPORTALincluder::getObjectClass('user')->isWPJOBPortalUser()) {
-                            $link = wpjobportal::makeUrl(array('wpjobportalme'=>'common', 'wpjobportallt'=>'newinwpjobportal', 'wpjobportalpageid'=>wpjobportal::getPageid()));
-                            $linktext = __('Select role','wp-job-portal');
+                            $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'common', 'wpjobportallt'=>'newinwpjobportal', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
+                            $linktext = esc_html(__('Select role','wp-job-portal'));
                             wpjobportal::$_error_flag_message = WPJOBPORTALLayout::setMessageFor(9 , $link , $linktext,1);
                             wpjobportal::$_error_flag_message_for=9;
                         }
@@ -50,7 +52,7 @@ class WPJOBPORTALResumeController {
                  case 'resumes':
                     $vars = array();
                     $resume_view_type = WPJOBPORTALrequest::getVar('viewtype',null,1); // 1 for list view 2 for grid view
-                    $resume_view_type=str_replace("vt-","",$resume_view_type);
+                    $resume_view_type=wpjobportalphplib::wpJP_str_replace("vt-","",$resume_view_type);
                     wpjobportal::$_data['viewtype'] = $resume_view_type;
                     if($resume_view_type==2){ // switch list to grid show save serch
                         //wpjobportal::$_data['issearchform'] = 1; casuing issues.
@@ -58,7 +60,7 @@ class WPJOBPORTALResumeController {
                     }
                     $id = WPJOBPORTALrequest::getVar('wpjobportalid');
                     if ($id) {
-                        $array = explode('_', $id);
+                        $array = wpjobportalphplib::wpJP_explode('_', $id);
                         if ($array[0] == 'tags') {
                             unset($array[0]);
                             $array = implode(' ', $array);
@@ -70,11 +72,11 @@ class WPJOBPORTALResumeController {
                                 $clue = $id[0] . $id[1];
                                 switch ($clue) {
                                     case '10': //Category
-                                        $vars['category'] = substr($id, 2);
+                                        $vars['category'] = wpjobportalphplib::wpJP_substr($id, 2);
                                         wpjobportal::$_data['categoryid'] = $array[0] . '-' . $vars['category'];
                                         break;
                                     case '13': //Search
-                                        $id = substr($id, 2);
+                                        $id = wpjobportalphplib::wpJP_substr($id, 2);
                                         wpjobportal::$_data['searchid'] = $array[0] . '-' . $id;
                                         $vars['searchid'] = $id;
                                         break;
@@ -88,7 +90,7 @@ class WPJOBPORTALResumeController {
                                 }
                             }
                             // had to do this to handle a sorting in sef case
-                            if(strstr($id, 'asc') || strstr($id, 'desc')){
+                            if(wpjobportalphplib::wpJP_strstr($id, 'asc') || wpjobportalphplib::wpJP_strstr($id, 'desc')){
                                 wpjobportal::$_data['sanitized_args']['sortby'] = $id;
                             }
                         }
@@ -96,14 +98,14 @@ class WPJOBPORTALResumeController {
                         $searchtext = WPJOBPORTALrequest::getVar('search');
                         if ($searchtext) {
                             //parse id what is the meaning of it
-                            $array = explode('-', $searchtext);
+                            $array = wpjobportalphplib::wpJP_explode('-', $searchtext);
                             $vars['searchid'] = $array[count($array) - 1];
                         } else {
                             $vars['searchid'] = '';
                         }
                         $id = WPJOBPORTALrequest::getVar('category', 'get');
                         if ($id) {
-                            $array = explode('-', $id);
+                            $array = wpjobportalphplib::wpJP_explode('-', $id);
                             $id = $array[count($array) - 1];
                             $vars['category'] = (int) $id;
                         }
@@ -125,13 +127,13 @@ class WPJOBPORTALResumeController {
                             $socialid = WPJOBPORTALrequest::getVar('jsscid');
                             //check for the social id
                             if ((!is_numeric($resumeid) && $resumeid[0] . $resumeid[1] . $resumeid[2] == 'sc-') || $socialid != null) { // social
-                                $idarray = explode('-', $resumeid);
+                                $idarray = wpjobportalphplib::wpJP_explode('-', $resumeid);
                                 $profileid = $idarray[1];
                                 wpjobportal::$_data['socialprofileid'] = $profileid;
                                 wpjobportal::$_data['socialprofile'] = true;
                             } else {
                                 $resumeowner = true;
-                                $idarray = explode('-', $resumeid);
+                                $idarray = wpjobportalphplib::wpJP_explode('-', $resumeid);
                                 $resumeid = $idarray[count($idarray) - 1];
                                 $expiryflag = WPJOBPORTALincluder::getJSModel('resume')->getResumeExpiryStatus($resumeid);
                                 if(wpjobportal::$_common->wpjp_isadmin()){
@@ -153,19 +155,20 @@ class WPJOBPORTALResumeController {
                                     wpjobportal::$_error_flag = true;
                                 } else {
                                     WPJOBPORTALincluder::getJSModel('resume')->getResumeById($resumeid);
+                                    $empflag = 1;
                                     wpjobportal::$_data['socialprofile'] = false;
                                 }
                             }
                         } else {
                             if (WPJOBPORTALincluder::getObjectClass('user')->isguest()) {
                                 $link = wpjobportal::$_common->jsMakeRedirectURL('resume', $layout, 1);
-                                $linktext = __('Login','wp-job-portal');
+                                $linktext = esc_html(__('Login','wp-job-portal'));
                                 wpjobportal::$_error_flag_message_for=1;
                                 wpjobportal::$_error_flag_message_register_for=2; // register as employer
                                 throw new Exception(WPJOBPORTALLayout::setMessageFor(1 , $link , $linktext,1));
                             } elseif (!WPJOBPORTALincluder::getObjectClass('user')->isWPJOBPortalUser()) {
-                                $link = wpjobportal::makeUrl(array('wpjobportalme'=>'common', 'wpjobportallt'=>'newinwpjobportal', 'wpjobportalpageid'=>wpjobportal::getPageid()));
-                                $linktext = __('Select role','wp-job-portal');
+                                $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'common', 'wpjobportallt'=>'newinwpjobportal', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
+                                $linktext = esc_html(__('Select role','wp-job-portal'));
                                 wpjobportal::$_error_flag_message_for=9;
                                 throw new Exception(WPJOBPORTALLayout::setMessageFor(9 , $link , $linktext,1));
                             }
@@ -174,9 +177,10 @@ class WPJOBPORTALResumeController {
                                 wpjobportal::$_error_flag_message_for_link_text = $linktext;
                             }
                         }
-                        $jobid = WPJOBPORTALrequest::getVar('jobid');
-                        $idarray = explode('-', $jobid);
-                        $jobid = $idarray[count($idarray) - 1];
+                        // was showing error in log code seems redundant
+                        // $jobid = WPJOBPORTALrequest::getVar('jobid');
+                        // $idarray = wpjobportalphplib::wpJP_explode('-', $jobid);
+                        // $jobid = $idarray[count($idarray) - 1];
                     } catch (Exception $ex) {
                         wpjobportal::$_error_flag = true;
                         wpjobportal::$_error_flag_message=$ex->getMessage();
@@ -194,14 +198,14 @@ class WPJOBPORTALResumeController {
 
                             } elseif (WPJOBPORTALincluder::getObjectClass('user')->isguest()) {
                                 $link = wpjobportal::$_common->jsMakeRedirectURL('resume', $layout, 1);
-                                $linktext = __('Login','wp-job-portal');
+                                $linktext = esc_html(__('Login','wp-job-portal'));
                                 wpjobportal::$_error_flag_message_for=1;
                                 wpjobportal::$_error_flag_message_register_for=2; // register as employer
                                 throw new Exception(WPJOBPORTALLayout::setMessageFor(1 , $link , $linktext,1));
 
                             } elseif (!WPJOBPORTALincluder::getObjectClass('user')->isWPJOBPortalUser()) {
-                                $link = wpjobportal::makeUrl(array('wpjobportalme'=>'common', 'wpjobportallt'=>'newinwpjobportal', 'wpjobportalpageid'=>wpjobportal::getPageid()));
-                                $linktext = __('Select role','wp-job-portal');
+                                $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'common', 'wpjobportallt'=>'newinwpjobportal', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
+                                $linktext = esc_html(__('Select role','wp-job-portal'));
                                 wpjobportal::$_error_flag_message_for=9;
                                 throw new Exception(WPJOBPORTALLayout::setMessageFor(9 , $link , $linktext,1));
 
@@ -262,14 +266,14 @@ class WPJOBPORTALResumeController {
 
                                 } elseif (WPJOBPORTALincluder::getObjectClass('user')->isguest()) {
                                     $link = wpjobportal::$_common->jsMakeRedirectURL('resume', $layout, 1);
-                                    $linktext = __('Login','wp-job-portal');
+                                    $linktext = esc_html(__('Login','wp-job-portal'));
                                     wpjobportal::$_error_flag_message_for=1;
                                     wpjobportal::$_error_flag_message_register_for=1; // register as jobseeker
                                     throw new Exception(WPJOBPORTALLayout::setMessageFor(1 , $link , $linktext,1));
 
                                 } elseif (!WPJOBPORTALincluder::getObjectClass('user')->isWPJOBPortalUser()) {
-                                    $link = wpjobportal::makeUrl(array('wpjobportalme'=>'common', 'wpjobportallt'=>'newinwpjobportal', 'wpjobportalpageid'=>wpjobportal::getPageid()));
-                                    $linktext = __('Select role','wp-job-portal');
+                                    $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'common', 'wpjobportallt'=>'newinwpjobportal', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
+                                    $linktext = esc_html(__('Select role','wp-job-portal'));
                                     wpjobportal::$_error_flag_message_for=9;
                                     throw new Exception(WPJOBPORTALLayout::setMessageFor(9 , $link , $linktext,1));
 
@@ -305,7 +309,7 @@ class WPJOBPORTALResumeController {
                         $visitorcanapply = wpjobportal::$_config->getConfigurationByConfigName('visitor_can_apply_to_job');
                         if($guest && in_array('credits', wpjobportal::$_active_addons) && $visitorcanapply != 1){
                             $link = WPJOBPORTALincluder::getJSModel('common')->jsMakeRedirectURL('resume', $layout, 1);
-                            $linktext = __('Login','wp-job-portal');
+                            $linktext = esc_html(__('Login','wp-job-portal'));
                             wpjobportal::$_error_flag_message_for=1;
                             throw new Exception(WPJOBPORTALLayout::setMessageFor(1 , $link , $linktext,1));
                         }
@@ -332,8 +336,8 @@ class WPJOBPORTALResumeController {
                                                 $module = 'package';
                                             }
                                        }else{
-                                            $link = wpjobportal::makeUrl(array('wpjobportalme'=>'package', 'wpjobportallt'=>'packages'));
-                                            $linktext = __('Buy Package', 'wp-job-portal');
+                                            $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'package', 'wpjobportallt'=>'packages'));
+                                            $linktext = esc_html(__('Buy Package', 'wp-job-portal'));
                                             wpjobportal::$_error_flag = true;
                                             wpjobportal::$_error_flag_message_for=15;
                                             throw new Exception(WPJOBPORTALLayout::setMessageFor(15,$link,$linktext,1));
@@ -357,6 +361,7 @@ class WPJOBPORTALResumeController {
                                     }
                                 }
                                 WPJOBPORTALincluder::getJSModel('resume')->getResumeById(wpjobportal::$_data['resumeid']);
+                                $empflag = 1;
                             }elseif(is_numeric(wpjobportal::$_data['resumeid'])){
                                 wpjobportal::$_error_flag_message = WPJOBPORTALLayout::setMessageFor(10,null,null,1);
                                 wpjobportal::$_error_flag_message_for = 2;
@@ -364,7 +369,29 @@ class WPJOBPORTALResumeController {
                                 break;
                             }
                         } else {
-                            wpjobportal::$_common->validateEmployerArea();
+                            // wpjobportal::$_common->validateEmployerArea();
+                            // if(isset($link) && isset($linktext)){
+                            //     wpjobportal::$_error_flag_message_for_link = $link;
+                            //     wpjobportal::$_error_flag_message_for_link_text = $linktext;
+                            // }
+                            if (WPJOBPORTALincluder::getObjectClass('user')->isemployer()) {
+                                wpjobportal::$_error_flag_message_for=3;
+                                throw new Exception(WPJOBPORTALLayout::setMessageFor(3,null,null,1));
+
+                            } elseif (WPJOBPORTALincluder::getObjectClass('user')->isguest()) {
+                                $link = WPJOBPORTALincluder::getJSModel('common')->jsMakeRedirectURL('resume', $layout, 1);
+                                $linktext = esc_html(__('Login','wp-job-portal'));
+                                wpjobportal::$_error_flag_message_for=1;
+                                wpjobportal::$_error_flag_message_register_for=1; // register as jobseeker
+                                throw new Exception(WPJOBPORTALLayout::setMessageFor(1 , $link , $linktext,1));
+
+                            } elseif (!WPJOBPORTALincluder::getObjectClass('user')->isWPJOBPortalUser()) {
+                                $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'common', 'wpjobportallt'=>'newinwpjobportal', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
+                                $linktext = esc_html(__('Select role','wp-job-portal'));
+                                wpjobportal::$_error_flag_message_for=9;
+                                throw new Exception(WPJOBPORTALLayout::setMessageFor(9 , $link , $linktext,1));
+
+                            }
                             if(isset($link) && isset($linktext)){
                                 wpjobportal::$_error_flag_message_for_link = $link;
                                 wpjobportal::$_error_flag_message_for_link_text = $linktext;
@@ -405,7 +432,11 @@ class WPJOBPORTALResumeController {
             }
             $module = (wpjobportal::$_common->wpjp_isadmin()) ? 'page' : 'wpjobportalme';
             $module = WPJOBPORTALrequest::getVar($module, null, 'resume');
-            $module = str_replace('wpjobportal_', '', $module);
+            $module = wpjobportalphplib::wpJP_str_replace('wpjobportal_', '', $module);
+            if(is_numeric($module)){
+                $module = WPJOBPORTALrequest::getVar('wpjobportalme', null, 'resume');
+            }
+
             WPJOBPORTALincluder::include_file($layout, $module);
         }
     }
@@ -523,7 +554,7 @@ class WPJOBPORTALResumeController {
     }
 
     function saveresume() {
-       try{
+        try{
             //requesting parameters
             $mresume = WPJOBPORTALincluder::getJSModel('resume');
             $data = WPJOBPORTALrequest::get('post');
@@ -546,12 +577,22 @@ class WPJOBPORTALResumeController {
 
             $msg = WPJOBPORTALMessages::getMessage(WPJOBPORTAL_SAVED, WPJOBPORTAL_RESUME);
             WPJOBPORTALMessages::setLayoutMessage($msg['message'], $msg['status'],$this->_msgkey);
-            $redirecturl = wpjobportal::redirectUrl('resume.success',isset(wpjobportal::$_data['id']) ? wpjobportal::$_data['id'] : '');
+            $redirecturl = wpjobportal::wpjobportal_redirectUrl('resume.success',isset(wpjobportal::$_data['id']) ? wpjobportal::$_data['id'] : '');
+
+            // visitor add resume redirect configuration not implimented
+            if(WPJOBPORTALincluder::getObjectClass('user')->isguest()){
+                $pageid = WPJOBPORTALincluder::getJSModel('configuration')->getConfigurationByConfigName('visitor_add_resume_redirect_page');
+                if(isset($pageid) && $pageid > 0){ // to hanle redict in case of not set up in configuration
+                    $redirecturl = get_the_permalink($pageid);
+                }else{
+                    $redirecturl = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'jobseeker', 'wpjobportallt'=>'controlpanel',"wpjobportalpageid"=>wpjobportal::wpjobportal_getPageid()));
+                }
+            }
 
         }catch(Exception $ex){
             $msg = WPJOBPORTALMessages::getMessage($ex->getMessage(), $ex->getCode());
             WPJOBPORTALMessages::setLayoutMessage($msg['message'], $msg['status'],$this->_msgkey);
-            $redirecturl = wpjobportal::redirectUrl('resume.fail');
+            $redirecturl = wpjobportal::wpjobportal_redirectUrl('resume.fail');
         }
         wp_redirect($redirecturl);
         die();
@@ -577,10 +618,10 @@ class WPJOBPORTALResumeController {
                 $url = admin_url("admin.php?page=wpjobportal_resume&wpjobportallt=resumequeue");
             }
         } else {
-            if (wpjobportal::$theme_chk == 1) {
-                $url = wpjobportal::makeUrl(array('wpjobportalme'=>'multiresume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::getPageid()));
+            if (in_array('multiresume',wpjobportal::$_active_addons)) {
+                $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multiresume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
             } else {
-                $url = wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
             }
         }
         wp_redirect($url);
@@ -605,7 +646,7 @@ class WPJOBPORTALResumeController {
         $pageid = WPJOBPORTALrequest::getVar('wpjobportal_pageid');
         $uid = WPJOBPORTALincluder::getObjectClass('user')->uid();
         WPJOBPORTALincluder::getJSModel('resume')->addViewContactDetail($id, $uid);
-        $url = wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume','wpjobportalid'=>$id, 'wpjobportalpageid'=>$pageid));
+        $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume','wpjobportalid'=>$id, 'wpjobportalpageid'=>$pageid));
         wp_redirect($url);
         die();
     }

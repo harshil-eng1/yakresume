@@ -29,6 +29,8 @@ div.wpjobportal-cp-resume-wrp div.wpjobportal-resume-list-wrp {min-height: 250px
 /* dashboard / add ons list */
 div.wpjobportal-cp-addon-wrp {width: 100%;margin-left: 0;}
 div.wpjobportal-cp-addon-list {min-height: 214px;height: auto;}
+div.wpjobportal-update-alert-wrp div.wpjobportal-update-alert-cnt {width: calc(100% - 60px);padding-top: 0;min-height: 50px;}
+div.wpjobportal-update-alert-wrp a.wpjobportal-update-alert-btn {float: left;margin-left: 60px;margin-top: 5px;}
 
 /* tables */
 table.wpjobportal-table thead {display: none;}
@@ -101,3 +103,11 @@ div#wpjobportal-admin-wrapper .wpjobportal-help-btm .wpjobportal-help-btm-wrp .w
 div#wpjobportal-admin-wrapper .wpjobportal-help-btm .wpjobportal-help-btm-wrp .wpjobportal-help-btm-cnt a .wpjobportal-help-btm-cnt-img img {}
 div#wpjobportal-admin-wrapper .wpjobportal-help-btm .wpjobportal-help-btm-wrp .wpjobportal-help-btm-cnt a .wpjobportal-help-btm-cnt-title {text-align: left;padding-left: 10px !important;}
 div#wpjobportal-admin-wrapper .wpjobportal-help-btm .wpjobportal-help-btm-wrp .wpjobportal-help-btm-cnt a .wpjobportal-help-btm-cnt-title span {font-size: 18px !important;}
+
+/* admin-addons-status */
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status{display: block;float: left;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-addon-status-image-wrp{width:12%;float: left;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-title-wrp{width:calc(88% - 20px);float:left;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-addonstatus-wrp{width:calc(88% - 10px);float: right;line-height: 40px;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-addonsversion-wrp{width: calc(88% - 10px);float: right;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-addonstatusbtn-wrp{width: 89%;float: right;text-align: left;margin-top: 10px;}

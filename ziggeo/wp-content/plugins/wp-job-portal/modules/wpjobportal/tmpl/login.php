@@ -20,17 +20,17 @@ if (wpjobportal::$_error_flag == null) {
         </div>
         <div class="wjportal-form-wrp wjportal-login-form">
             <div class="wjportal-form-sec-heading">
-                <?php echo __('Login into your account', 'wp-job-portal'); ?>
+                <?php echo esc_html(__('Login into your account', 'wp-job-portal')); ?>
             </div>
             <?php
                 if (!is_user_logged_in()) { // Display WordPress login form:
                     $args = array(
                         'redirect' => wpjobportal::$_data[0]['redirect_url'],
                         'form_id' => 'loginform-custom',
-                        'label_username' => __('Username', 'wp-job-portal'),
-                        'label_password' => __('Password', 'wp-job-portal'),
-                        'label_remember' => __('keep me login', 'wp-job-portal'),
-                        'label_log_in' => __('Login', 'wp-job-portal'),
+                        'label_username' => esc_html(__('Username', 'wp-job-portal')),
+                        'label_password' => esc_html(__('Password', 'wp-job-portal')),
+                        'label_remember' => esc_html(__('keep me login', 'wp-job-portal')),
+                        'label_log_in' => esc_html(__('Login', 'wp-job-portal')),
                         'remember' => true
                     );
                     wp_login_form($args);
@@ -41,11 +41,11 @@ if (wpjobportal::$_error_flag == null) {
                   } */
                     if(class_exists('wpjobportal')){ ?>
                         <?php
-                            $defaultUrl = wpjobportal::makeUrl(array('wpjobportalpageid'=>wpjobportal::getPageid(), 'wpjobportalme'=>'user', 'wpjobportallt'=>'userregister'));
+                            $defaultUrl = wpjobportal::wpjobportal_makeUrl(array('wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid(), 'wpjobportalme'=>'user', 'wpjobportallt'=>'userregister'));
                             $lrlink = WPJOBPORTALincluder::getJSModel('configuration')->getLoginRegisterRedirectLink($defaultUrl,'register');
                         ?>
-                            <a class="wjportal-form-reg-btn" title="<?php echo esc_attr(__('register','wp-job-portal')); ?>" href="<?php echo esc_url($lrlink); ?>" href="<?php echo esc_html__('register an account', 'wp-job-portal'); ?>">
-                                <?php echo esc_html__('Register an account', 'wp-job-portal'); ?>
+                            <a class="wjportal-form-reg-btn" title="<?php echo esc_attr(esc_html(__('register','wp-job-portal'))); ?>" href="<?php echo esc_url($lrlink); ?>" href="<?php echo esc_html(__('register an account', 'wp-job-portal')); ?>">
+                                <?php echo esc_html(__('Register an account', 'wp-job-portal')); ?>
                             </a>
                         <?php 
                         }       

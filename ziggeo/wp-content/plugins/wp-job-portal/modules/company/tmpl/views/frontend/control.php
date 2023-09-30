@@ -1,4 +1,6 @@
 <?php
+if (!defined('ABSPATH'))
+    die('Restricted Access');
 /**
  * @param job      job object - optional
  * HOOK TO BE USED FOR FEATURE
@@ -21,7 +23,7 @@ switch ($layout) {
         	$compalias = wpjobportal::$_data[0]->alias.'-'.wpjobportal::$_data[0]->id;
 			?>
            <div class="wjportal-company-btn-wrp">
-            	<a href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs', 'company'=>$compalias))); ?>" class="wjportal-company-act-btn" title="<?php echo __('View all jobs', 'wp-job-portal'); ?>"><?php echo __('View All Jobs', 'wp-job-portal'); ?></a>
+            	<a href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs', 'company'=>$compalias))); ?>" class="wjportal-company-act-btn" title="<?php echo esc_html(__('View all jobs', 'wp-job-portal')); ?>"><?php echo esc_html(__('View All Jobs', 'wp-job-portal')); ?></a>
            </div>
            <?php
             }
@@ -39,46 +41,46 @@ switch ($layout) {
                         $layout_mod = "company";
                     }
                 ?>
-                <a class="wjportal-company-act-btn" href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=> $layout_mod, 'wpjobportallt'=>'addcompany', 'wpjobportalid'=>$company->id))); ?>" title="<?php echo __('Edit company','wp-job-portal'); ?>">
-                    <?php echo __('Edit Company','wp-job-portal'); ?>
+                <a class="wjportal-company-act-btn" href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=> $layout_mod, 'wpjobportallt'=>'addcompany', 'wpjobportalid'=>$company->id))); ?>" title="<?php echo esc_html(__('Edit company','wp-job-portal')); ?>">
+                    <?php echo esc_html(__('Edit Company','wp-job-portal')); ?>
                 </a>
                 <!-- //Specification Addon -->
                 <?php do_action('wp_jobportal_credit_for_featurecompany_ajaxpopup',wpjobportal::$_data['config'],$company,$featuredexpiry);  ?>                
-                <a class="wjportal-company-act-btn" href="<?php echo esc_url(wp_nonce_url(wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'task'=>'remove', 'wpjobportal-cb[]'=>$company->id, 'action'=>'wpjobportaltask','wpjobportalpageid'=>wpjobportal::getPageid())),'delete-company')); ?>" onclick='return confirmdelete("<?php echo __('Are you sure to delete','wp-job-portal').' ?'; ?>");' title="<?php echo __('Delete company','wp-job-portal'); ?>
+                <a class="wjportal-company-act-btn" href="<?php echo esc_url(wp_nonce_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'task'=>'remove', 'wpjobportal-cb[]'=>$company->id, 'action'=>'wpjobportaltask','wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())),'delete-company')); ?>" onclick='return confirmdelete("<?php echo esc_html(__('Are you sure to delete','wp-job-portal')).' ?'; ?>");' title="<?php echo esc_html(__('Delete company','wp-job-portal')); ?>
 ">
-                    <?php echo __('Delete Company','wp-job-portal'); ?>
+                    <?php echo esc_html(__('Delete Company','wp-job-portal')); ?>
                 </a>
                <?php
                 } elseif ($company->status == 0) {
     	           ?>
                     
                         <span class="wjportal-item-act-status wjportal-waiting">
-                            <?php echo __('Waiting For Approval', 'wp-job-portal'); ?>
+                            <?php echo esc_html(__('Waiting For Approval', 'wp-job-portal')); ?>
                         </span>
                     
     	           <?php
                 } elseif ($company->status == -1) {
 	            ?>
                     <span class="wjportal-item-act-status wjportal-rejected">
-                        <?php echo __('Rejected', 'wp-job-portal'); ?>
+                        <?php echo esc_html(__('Rejected', 'wp-job-portal')); ?>
                     </span>
     	           <?php
                 } elseif ($company->status == 3 && in_array('credits',wpjobportal::$_active_addons) && $check) {
                     #Member Lisitng Make Payment
                     ?>
-                    <a class="wjportal-company-act-btn" href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'multicompany', 'wpjobportallt'=>'addcompany', 'wpjobportalid'=>$company->id))); ?>" title="<?php echo __('Edit company','wp-job-portal'); ?>">
-                            <?php echo __('Edit Company','wp-job-portal'); ?>
+                    <a class="wjportal-company-act-btn" href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multicompany', 'wpjobportallt'=>'addcompany', 'wpjobportalid'=>$company->id))); ?>" title="<?php echo esc_html(__('Edit company','wp-job-portal')); ?>">
+                            <?php echo esc_html(__('Edit Company','wp-job-portal')); ?>
                         </a>
                         <?php
                     do_action('wpjobportal_addons_makePayment_for_department',$company,'paycompany');
                     ?>
-                    <a class="wjportal-company-act-btn" href="<?php echo esc_url(wp_nonce_url(wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'task'=>'remove', 'wpjobportal-cb[]'=>$company->id, 'action'=>'wpjobportaltask','wpjobportalpageid'=>wpjobportal::getPageid())),'delete-company')); ?>" onclick='return confirmdelete("<?php echo __('Are you sure to delete','wp-job-portal').' ?'; ?>");' title="<?php echo __('Delete company','wp-job-portal'); ?>
+                    <a class="wjportal-company-act-btn" href="<?php echo esc_url(wp_nonce_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'task'=>'remove', 'wpjobportal-cb[]'=>$company->id, 'action'=>'wpjobportaltask','wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())),'delete-company')); ?>" onclick='return confirmdelete("<?php echo esc_html(__('Are you sure to delete','wp-job-portal')).' ?'; ?>");' title="<?php echo esc_html(__('Delete company','wp-job-portal')); ?>
 ">
-                            <?php echo __('Delete Company','wp-job-portal'); ?>
+                            <?php echo esc_html(__('Delete Company','wp-job-portal')); ?>
                         </a>
                     <?php
                 } elseif ($company->status == 3 && in_array('credits',wpjobportal::$_active_addons) && !$check) { ?>
-                    <a class="wjportal-company-act-btn" href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'multicompany', 'wpjobportallt'=>'mycompanies', 'wpjobportalid'=>$company->id))); ?>"><?php echo __('Cancel Payment', 'wp-job-portal'); ?> </a>
+                    <a class="wjportal-company-act-btn" href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multicompany', 'wpjobportallt'=>'mycompanies', 'wpjobportalid'=>$company->id))); ?>"><?php echo esc_html(__('Cancel Payment', 'wp-job-portal')); ?> </a>
                     <button type="button" class="wjportal-company-act-btn" id="proceedPaymentBtn">
                         <?php echo esc_html(__('Proceed To Payment','wp-job-portal')); ?>
                     </button>

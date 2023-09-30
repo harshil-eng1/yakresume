@@ -155,7 +155,7 @@ class WP_Job_Manager_Ajax {
 			'orderby'           => $orderby,
 			'order'             => $order,
 			'offset'            => ( $page - 1 ) * $per_page,
-			'posts_per_page'    => max( 1, $per_page ),
+			'posts_per_page'    => max( 1, $per_page ), // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- Known slow query.
 		];
 
 		if ( 'true' === $filled || 'false' === $filled ) {
@@ -186,7 +186,7 @@ class WP_Job_Manager_Ajax {
 			'max_num_pages' => $jobs->max_num_pages,
 		];
 
-		if ( $jobs->post_count && ( $search_location || $search_keywords || $search_categories || $job_types_filtered ) ) {
+		if ( ( $search_location || $search_keywords || $search_categories || $job_types_filtered ) ) {
 			// translators: Placeholder %d is the number of found search results.
 			$message               = sprintf( _n( 'Search completed. Found %d matching record.', 'Search completed. Found %d matching records.', $jobs->found_posts, 'wp-job-manager' ), $jobs->found_posts );
 			$result['showing_all'] = true;

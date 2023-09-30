@@ -1,0 +1,15 @@
+*** WordPress Job Manager Applications changelog ***
+
+2023-05-02 - version 3.0.0
+* Enhancement: Add support for multiple application forms
+* Fix: Handle listing applications with empty full name
+* Fix: Template security improvements
+* Dev - Move application forms to a custom post type. Update related hooks with new form ID parameter.
+
+2022-01-05 - version 2.5.4
+Enhancement: Adds new hooks for extending application actions and adding new sections
+ * job_application_content_start
+ * job_application_content_end
+ * job_application_actions_start
+ * job_application_actions_end
+

@@ -1,4 +1,6 @@
 <?php
+if (!defined('ABSPATH'))
+    die('Restricted Access');
 if(!empty($this->addon_installed_array)){
 	$new_transient_flag = 0;
 	//delete_transient('wpjobportal_addon_update_flag');
@@ -13,7 +15,8 @@ if(!empty($this->addon_installed_array)){
 			if(!isset($response[$addon])){
 				continue;
 			}
-			$plugin_file_path = ABSPATH.'wp-content/plugins/'.$addon.'/'.$addon.'.php';
+			$plugin_file_path = WP_PLUGIN_DIR."/".$addon.'/'.$addon.'.php';
+
 			// $plugin_file_path = plugins_url($addon . '/' . $addon . '.php');
 			// $plugin_file_path = content_url().'/plugins/'.$addon.'/'.$addon.'.php';
 

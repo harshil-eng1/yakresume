@@ -300,6 +300,12 @@ div#wpjobportal-admin-wrapper .wpjobportal-help-btm .wpjobportal-help-btm-wrp .w
 div#wpjobportal-admin-wrapper .wpjobportal-help-btm .wpjobportal-help-btm-wrp .wpjobportal-help-btm-cnt a .wpjobportal-help-btm-cnt-title span {padding: 25px 5px 0 0;}
 div.wpjobportal-help-btn {margin-left: unset;margin-right: 5px;}
 
+/* Update Available Alert */
+div.wpjobportal-update-alert-wrp {float: right;border: 2px solid #cac23d;border-right: 5px solid #cac23d;}
+div.wpjobportal-update-alert-wrp div.wpjobportal-update-alert-image {float: right;}
+div.wpjobportal-update-alert-wrp div.wpjobportal-update-alert-cnt {float: right;padding: 13px 10px 0 0px;}
+div.wpjobportal-update-alert-wrp a.wpjobportal-update-alert-btn {float: left;}
+
 /* responsive */
 @media (max-width: 782px) {
 	
@@ -327,6 +333,13 @@ div.wpjobportal-help-btn {margin-left: unset;margin-right: 5px;}
     div#wpjobportal-admin-wrapper .wpjobportal-help-btm .wpjobportal-help-btm-wrp .wpjobportal-help-btm-cnt {margin: 0 0 10px 10px !important; }
     div#wpjobportal-admin-wrapper .wpjobportal-help-btm .wpjobportal-help-btm-wrp .wpjobportal-help-btm-cnt a img {margin-left: unset !important;}
     div#wpjobportal-admin-wrapper .wpjobportal-help-btm .wpjobportal-help-btm-wrp .wpjobportal-help-btm-cnt a .wpjobportal-help-btm-cnt-title {text-align: right;padding-left: unset !important;padding-right: 10px;}
+
+    /* admin-addons-status */
+	div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-addon-status-image-wrp{float: right;}
+	div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-addonstatus-wrp{float: left;}
+	div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-addonsversion-wrp{float: left;}
+	div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-addonstatusbtn-wrp{float: left;text-align: right;}
+	div.wpjobportal-update-alert-wrp a.wpjobportal-update-alert-btn {float: right;margin-right: 60px;margin-left: auto;}
 
 }
 

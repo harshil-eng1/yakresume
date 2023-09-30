@@ -8,15 +8,15 @@
  * @author      Automattic
  * @package     wp-job-manager-resumes
  * @category    Template
- * @version     1.13.0
+ * @version     1.18.4
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
+global $post;
 $category = get_the_resume_category(); ?>
-<li <?php resume_class(); ?>>
+<li <?php resume_class(); ?> data-longitude="<?php echo esc_attr( $post->geolocation_long ); ?>" data-latitude="<?php echo esc_attr( $post->geolocation_lat ); ?>">
 	<a href="<?php the_resume_permalink(); ?>">
 		<?php the_candidate_photo(); ?>
 		<div class="candidate-column">
@@ -28,7 +28,7 @@ $category = get_the_resume_category(); ?>
 		<div class="candidate-location-column">
 			<?php the_candidate_location( false ); ?>
 		</div>
-		<div class="resume-posted-column 
+		<div class="resume-posted-column
 		<?php
 		if ( $category ) :
 			?>

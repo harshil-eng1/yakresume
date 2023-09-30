@@ -26,7 +26,7 @@ class WPJOBPORTALwpjobportalController {
                     if(WPJOBPORTALincluder::getObjectClass('user')->isguest()){
                         $url = WPJOBPORTALrequest::getVar('wpjobportalredirecturl');
                         if(isset($url)){
-                            wpjobportal::$_data[0]['redirect_url'] = base64_decode($url);
+                            wpjobportal::$_data[0]['redirect_url'] = wpjobportalphplib::wpJP_safe_decoding($url);
                         }else{
                             wpjobportal::$_data[0]['redirect_url'] = home_url();
                         }
@@ -45,7 +45,7 @@ class WPJOBPORTALwpjobportalController {
             }
             $module = (wpjobportal::$_common->wpjp_isadmin()) ? 'page' : 'wpjobportalme';
             $module = WPJOBPORTALrequest::getVar($module, null, 'wpjobportal');
-            $module = str_replace('wpjobportal_', '', $module);
+            $module = wpjobportalphplib::wpJP_str_replace('wpjobportal_', '', $module);
             if($layout=="thankyou"){
                 if($module=="" || $module!="wpjobportal") $module="wpjobportal";
             }

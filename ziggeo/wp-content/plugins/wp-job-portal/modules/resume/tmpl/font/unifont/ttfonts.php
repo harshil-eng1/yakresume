@@ -131,12 +131,12 @@ class TTFontFile {
     }
 
     function calcChecksum($data) {
-        if (strlen($data) % 4) {
-            $data .= str_repeat("\0", (4 - (strlen($data) % 4)));
+        if (wpjobportalphplib::wpJP_strlen($data) % 4) {
+            $data .= wpjobportalphplib::wpJP_str_repeat("\0", (4 - (wpjobportalphplib::wpJP_strlen($data) % 4)));
         }
         $hi = 0x0000;
         $lo = 0x0000;
-        for ($i = 0; $i < strlen($data); $i+=4) {
+        for ($i = 0; $i < wpjobportalphplib::wpJP_strlen($data); $i+=4) {
             $hi += (ord($data[$i]) << 8) + ord($data[$i + 1]);
             $lo += (ord($data[$i + 2]) << 8) + ord($data[$i + 3]);
             $hi += $lo >> 16;
@@ -228,7 +228,7 @@ class TTFontFile {
     }
 
     function splice($stream, $offset, $value) {
-        return substr($stream, 0, $offset) . $value . substr($stream, $offset + strlen($value));
+        return wpjobportalphplib::wpJP_substr($stream, 0, $offset) . $value . wpjobportalphplib::wpJP_substr($stream, $offset + wpjobportalphplib::wpJP_strlen($value));
     }
 
     function _set_ushort($stream, $offset, $value) {
@@ -330,9 +330,9 @@ class TTFontFile {
         if ($names[6])
             $psName = $names[6];
         else if ($names[4])
-            $psName = preg_replace('/ /', '-', $names[4]);
+            $psName = wpjobportalphplib::wpJP_preg_replace('/ /', '-', $names[4]);
         else if ($names[1])
-            $psName = preg_replace('/ /', '-', $names[1]);
+            $psName = wpjobportalphplib::wpJP_preg_replace('/ /', '-', $names[1]);
         else
             $psName = '';
         if (!$psName)
@@ -649,7 +649,7 @@ class TTFontFile {
 
         // post - PostScript
         $opost = $this->get_table('post');
-        $post = "\x00\x03\x00\x00" . substr($opost, 4, 12) . "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00";
+        $post = "\x00\x03\x00\x00" . wpjobportalphplib::wpJP_substr($opost, 4, 12) . "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00";
         $this->add('post', $post);
 
         // Sort CID2GID map into segments of contiguous codes
@@ -767,7 +767,7 @@ class TTFontFile {
             $glyphPos = $this->glyphPos[$originalGlyphIdx];
             $glyphLen = $this->glyphPos[$originalGlyphIdx + 1] - $glyphPos;
             if ($glyfLength < $this->maxStrLenRead) {
-                $data = substr($glyphData, $glyphPos, $glyphLen);
+                $data = wpjobportalphplib::wpJP_substr($glyphData, $glyphPos, $glyphLen);
             } else {
                 if ($glyphLen > 0)
                     $data = $this->get_chunk($glyfOffset + $glyphPos, $glyphLen);
@@ -776,7 +776,7 @@ class TTFontFile {
             }
 
             if ($glyphLen > 0) {
-                $up = unpack("n", substr($data, 0, 2));
+                $up = unpack("n", wpjobportalphplib::wpJP_substr($data, 0, 2));
             }
 
             if ($glyphLen > 2 && ($up[1] & (1 << 15))) { // If number of contours <= -1 i.e. composiste glyph
@@ -785,9 +785,9 @@ class TTFontFile {
                 $nComponentElements = 0;
                 while ($flags & GF_MORE) {
                     $nComponentElements += 1; // number of glyphs referenced at top level
-                    $up = unpack("n", substr($data, $pos_in_glyph, 2));
+                    $up = unpack("n", wpjobportalphplib::wpJP_substr($data, $pos_in_glyph, 2));
                     $flags = $up[1];
-                    $up = unpack("n", substr($data, $pos_in_glyph + 2, 2));
+                    $up = unpack("n", wpjobportalphplib::wpJP_substr($data, $pos_in_glyph + 2, 2));
                     $glyphIdx = $up[1];
                     $this->glyphdata[$originalGlyphIdx]['compGlyphs'][] = $glyphIdx;
                     $data = $this->_set_ushort($data, $pos_in_glyph + 2, $glyphSet[$glyphIdx]);
@@ -812,7 +812,7 @@ class TTFontFile {
             $pos += $glyphLen;
             if ($pos % 4 != 0) {
                 $padding = 4 - ($pos % 4);
-                $glyf .= str_repeat("\0", $padding);
+                $glyf .= wpjobportalphplib::wpJP_str_repeat("\0", $padding);
                 $pos += $padding;
             }
         }
@@ -1112,15 +1112,15 @@ class TTFontFile {
             $stm .= $tag;
             $checksum = $this->calcChecksum($data);
             $stm .= pack("nn", $checksum[0], $checksum[1]);
-            $stm .= pack("NN", $offset, strlen($data));
-            $paddedLength = (strlen($data) + 3) & ~3;
+            $stm .= pack("NN", $offset, wpjobportalphplib::wpJP_strlen($data));
+            $paddedLength = (wpjobportalphplib::wpJP_strlen($data) + 3) & ~3;
             $offset = $offset + $paddedLength;
         }
 
         // Table data
         foreach ($tables AS $tag => $data) {
             $data .= "\0\0\0";
-            $stm .= substr($data, 0, (strlen($data) & ~3));
+            $stm .= wpjobportalphplib::wpJP_substr($data, 0, (wpjobportalphplib::wpJP_strlen($data) & ~3));
         }
 
         $checksum = $this->calcChecksum($stm);

@@ -35,7 +35,7 @@ class WPJOBPORTALPopup {
         $uid = WPJOBPORTALRequest::getVar('userid');
         $module = WPJOBPORTALRequest::getVar('module');
         if($wpjobportal_pageid == null){
-            $wpjobportal_pageid = wpjobportal::getPageid();
+            $wpjobportal_pageid = wpjobportal::wpjobportal_getPageid();
         }
         $result = $this->getActionDetailForpopup($actionname,$wpjobportal_pageid);
 
@@ -51,12 +51,12 @@ class WPJOBPORTALPopup {
                 $wpjobportalPopupResumeFormProceeds = 'wpjobportalPopupResumeFormProceedsAdmin';
                 $wpjobportalPopupFormProceeds = 'wpjobportalPopupFormProceedsAdmin';
                 $wpjobportalPopupProceeds = 'wpjobportalPopupProceedsAdmin';
-                $proceedlang = __('Proceed Without Paying','wp-job-portal');
+                $proceedlang = esc_html(__('Proceed Without Paying','wp-job-portal'));
             }else{
                 $wpjobportalPopupResumeFormProceeds = 'wpjobportalPopupResumeFormProceeds';
                 $wpjobportalPopupFormProceeds = 'wpjobportalPopupFormProceeds';
                 $wpjobportalPopupProceeds = 'wpjobportalPopupProceeds';
-                $proceedlang = __('Proceed','wp-job-portal');
+                $proceedlang = esc_html(__('Proceed','wp-job-portal'));
             }
             if($autosubmit == true){
                 $objectid = WPJOBPORTALRequest::getVar('id');
@@ -65,39 +65,62 @@ class WPJOBPORTALPopup {
                 $formid = WPJOBPORTALRequest::getVar('formid');
                 $action = 0;
                 if(wpjobportal::$_common->wpjp_isadmin()){
-                    foreach($result['value'] AS $value){
-                        $action = $value->id;
+                    if(is_array($result['value'])){
+                        foreach($result['value'] AS $value){
+                            $action = $value->id;
+                        }
+                    }elseif(is_numeric($result['value'])){
+                        $action = $result['value'];
                     }
+
                 }
                 $action = '';
                 if ($formid) { // popup in case of form is opened
                     if ($formid == 'resumeform') {
-                        $html .= '<script >
+                        wp_register_script( 'wpjobportal-inline-handle', '' );
+                        wp_enqueue_script( 'wpjobportal-inline-handle' );
+                        $inline_js_script = '
                                     '.$wpjobportalPopupResumeFormProceeds.'(\'' . $action . '\');
-                                </script>';
+                                ';
+                                wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
                     } else {
-                        $html .= '<script >
+                        wp_register_script( 'wpjobportal-inline-handle', '' );
+                        wp_enqueue_script( 'wpjobportal-inline-handle' );
+                        $inline_js_script = '
                                     '.$wpjobportalPopupFormProceeds.'(\'' . $formid . '\',\'' . $action . '\');
-                                </script>';
+                                ';
+                                wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
                     }
                 } elseif ($srcid && $anchorid) { // popup in case of add to gold and feature
-                    $html .= '<script >
+                    wp_register_script( 'wpjobportal-inline-handle', '' );
+                        wp_enqueue_script( 'wpjobportal-inline-handle' );
+                        $inline_js_script = '
                                 '.$wpjobportalPopupProceeds.'(\'' . $actionname . '\',' . $objectid . ',\'' . $srcid . '\',\'' . $anchorid . '\',\'' . $action . '\',\'' . $themecall . '\');
-                            </script>';
+                            ';
+                            wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
                 } elseif($actionname == 'job_apply') { // popup in case of view company, resume, job contact detail
                     if($themecall != null){
-                        $html .= '<script >
+                        wp_register_script( 'wpjobportal-inline-handle', '' );
+                        wp_enqueue_script( 'wpjobportal-inline-handle' );
+                        $inline_js_script = '
                                 getApplyNowByJobid('. $objectid . ',' . $wpjobportal_pageid .',1);
-                            </script>';
+                            ';
+                            wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
                     }else{
-                        $html .= '<script >
+                        wp_register_script( 'wpjobportal-inline-handle', '' );
+                        wp_enqueue_script( 'wpjobportal-inline-handle' );
+                        $inline_js_script = '
                                 getApplyNowByJobid('. $objectid . ',' . $wpjobportal_pageid .');
-                            </script>';
+                            ';
+                            wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
                     }
                 }else { // popup in case of view company, resume, job contact detail
-                    $html .= '<script >
+                    wp_register_script( 'wpjobportal-inline-handle', '' );
+                        wp_enqueue_script( 'wpjobportal-inline-handle' );
+                        $inline_js_script = '
                                 location.href= "' . $result['link'] . '";
-                            </script>';
+                            ';
+                            wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
                 }
             }elseif($themecall!=null){
                 $credit_small_flag=0;
@@ -127,7 +150,7 @@ class WPJOBPORTALPopup {
                             </div>
                             <div class="col-md-12 '.$this->class_prefix.'-modal-credit-row-wrp">
                                 <div class="'.$this->class_prefix.'-modal-credit-row color">
-                                    <span class="tit">'. __("Total Credits", "wp-job-portal") .'</span>
+                                    <span class="tit">'. esc_html(__("Total Credits", "wp-job-portal")) .'</span>
                                     <span class="val">'.$result['totalcredits'] .'</span>
                                 </div>';
                 $totalcredituse = 0;
@@ -141,12 +164,12 @@ class WPJOBPORTALPopup {
                     } else {
                         $action = $value->id;
                     }
-                    $html .= __('Credit for action', 'wp-job-portal');
+                    $html .= esc_html(__('Credit for action', 'wp-job-portal'));
                     $expirydatearray = array('featured_job','gold_job','add_job','featured_company','gold_company','featured_resume','gold_resume','job_alert_time');
                     if(in_array($value->creditaction, $expirydatearray)){
-                        $html .= '<span class="expiry"> (' . __('Expire in', 'wp-job-portal') . ' ' . $value->expiry . ' ' . __('Days', 'wp-job-portal') . ')</span>';
+                        $html .= '<span class="expiry"> (' . esc_html(__('Expire in', 'wp-job-portal')) . ' ' . $value->expiry . ' ' . esc_html(__('Days', 'wp-job-portal')) . ')</span>';
                     }elseif($value->creditaction == 'job_alert_lifetime'){
-                        $html .= '<span class="expiry"> ('.__('Life time alerts','wp-job-portal').') </span>';
+                        $html .= '<span class="expiry"> ('.esc_html(__('Life time alerts','wp-job-portal')).') </span>';
                     }
                     $html .= '</span>';
                     $html .= '<span class="val">' . $value->credits . '</span>';
@@ -155,14 +178,14 @@ class WPJOBPORTALPopup {
                 }
 
                 $html .='<div class="'.$this->class_prefix.'-modal-credit-row color">';
-                    $html .='<span class="tit" >'. __('Credits remaining after proceed', 'wp-job-portal') .'</span>';
+                    $html .='<span class="tit" >'. esc_html(__('Credits remaining after proceed', 'wp-job-portal')) .'</span>';
                     $html .='<span class="val" id="remaing-credits">'. ($result['totalcredits'] - $totalcredituse) .'</span>';
                 $html .='</div>';
                 $html .='</div>';
 
                 if($actionname == 'job_apply') {
                     $html .= '<div class="wpjobportal-job-apply-meesage">';
-                    $html .= __('Credits will only be deducted if you select a resume and click Apply Now on next popup.', 'wp-job-portal');
+                    $html .= esc_html(__('Credits will only be deducted if you select a resume and click Apply Now on next popup.', 'wp-job-portal'));
                     $html .= '</div>';
                 }
 
@@ -170,7 +193,7 @@ class WPJOBPORTALPopup {
                         <div class="modal-body '.$this->class_prefix.'-modal-body">
                               <div class="'.$this->class_prefix.'-modal-credit-action-btn-wrp">
                                   <a title="cancel" href="#" class="'.$this->class_prefix.'-modal-credit-action-btn" onclick="wpjobportalClosePopup(\''.$themecall.'\');">
-                                      ' . __('Cancel', 'wp-job-portal') . '
+                                      ' . esc_html(__('Cancel', 'wp-job-portal')) . '
                                   </a>';
                 $objectid = WPJOBPORTALRequest::getVar('id');
                 $srcid = WPJOBPORTALRequest::getVar('srcid');
@@ -187,7 +210,7 @@ class WPJOBPORTALPopup {
                 } elseif($actionname == 'job_apply') {
                         $html .= '<a href="#" class="'.$this->class_prefix.'-modal-credit-action-btn color" onclick="getApplyNowByJobid('. $objectid . ',' . $wpjobportal_pageid .',1);">' . $proceedlang . '</a>';
                 }else { // popup in case of view company, resume, job contact detail
-                    $html .= '<a href="' . $result['link'] .'" class="'.$this->class_prefix.'-modal-credit-action-btn color" onclick="return validateRemaingCredits();" >' . __('Proceed', 'wp-job-portal') . '</a>';
+                    $html .= '<a href="' . $result['link'] .'" class="'.$this->class_prefix.'-modal-credit-action-btn color" onclick="return validateRemaingCredits();" >' . esc_html(__('Proceed', 'wp-job-portal')) . '</a>';
                 }
                 $html .='</div>
                         </div>
@@ -199,6 +222,9 @@ class WPJOBPORTALPopup {
                 $srcid = WPJOBPORTALRequest::getVar('srcid');
                 $anchorid = WPJOBPORTALRequest::getVar('anchorid');
                 $formid = WPJOBPORTALRequest::getVar('formid');
+                if(!isset($action)){
+                    $action = 0;
+                }
                 $html .= apply_filters('wpjobportal_addons_popup_admin_credits',false,$module,$uid,$formid,$action,$srcid,$anchorid,$actionname,$objectid,$proceedlang);
             }
         } else {
@@ -210,7 +236,7 @@ class WPJOBPORTALPopup {
     function getPopupFor($actionname,$themecall=null,$wpjobportal_pageid=null) {
 
         if($wpjobportal_pageid == null){
-            $wpjobportal_pageid = wpjobportal::getPageid();
+            $wpjobportal_pageid = wpjobportal::wpjobportal_getPageid();
         }
 
         $result = true/*$this->getActionDetailForpopup($actionname,$wpjobportal_pageid)*/;
@@ -222,12 +248,12 @@ class WPJOBPORTALPopup {
                 $wpjobportalPopupResumeFormProceeds = 'wpjobportalPopupResumeFormProceedsAdmin';
                 $wpjobportalPopupFormProceeds = 'wpjobportalPopupFormProceedsAdmin';
                 $wpjobportalPopupProceeds = 'wpjobportalPopupProceedsAdmin';
-                $proceedlang = __('Proceed Without Paying','wp-job-portal');
+                $proceedlang = esc_html(__('Proceed Without Paying','wp-job-portal'));
             }else{
                 $wpjobportalPopupResumeFormProceeds = 'wpjobportalPopupResumeFormProceeds';
                 $wpjobportalPopupFormProceeds = 'wpjobportalPopupFormProceeds';
                 $wpjobportalPopupProceeds = 'wpjobportalPopupProceeds';
-                $proceedlang = __('Proceed','wp-job-portal');
+                $proceedlang = esc_html(__('Proceed','wp-job-portal'));
             }
             if($autosubmit == true){
                 $objectid = WPJOBPORTALRequest::getVar('id');
@@ -243,32 +269,50 @@ class WPJOBPORTALPopup {
                 }
                 if ($formid) { // popup in case of form is opened
                     if ($formid == 'resumeform') {
-                        $html .= '<script >
+                        wp_register_script( 'wpjobportal-inline-handle', '' );
+                        wp_enqueue_script( 'wpjobportal-inline-handle' );
+                        $inline_js_script = '
                                     '.$wpjobportalPopupResumeFormProceeds.'(\'' . $action . '\');
-                                </script>';
+                                ';
+                                wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
                     } else {
-                        $html .= '<script >
+                        wp_register_script( 'wpjobportal-inline-handle', '' );
+                        wp_enqueue_script( 'wpjobportal-inline-handle' );
+                        $inline_js_script = '
                                     '.$wpjobportalPopupFormProceeds.'(\'' . $formid . '\',\'' . $action . '\');
-                                </script>';
+                                ';
+                                wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
                     }
                 } elseif ($srcid && $anchorid) { // popup in case of add to gold and feature
-                    $html .= '<script >
+                    wp_register_script( 'wpjobportal-inline-handle', '' );
+                        wp_enqueue_script( 'wpjobportal-inline-handle' );
+                        $inline_js_script = '
                                 '.$wpjobportalPopupProceeds.'(\'' . $actionname . '\',' . $objectid . ',\'' . $srcid . '\',\'' . $anchorid . '\',\'' . $action . '\',\'' . $themecall . '\');
-                            </script>';
+                            ';
+                            wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
                 } elseif($actionname == 'job_apply') { // popup in case of view company, resume, job contact detail
                     if($themecall != null){
-                        $html .= '<script >
+                        wp_register_script( 'wpjobportal-inline-handle', '' );
+                        wp_enqueue_script( 'wpjobportal-inline-handle' );
+                        $inline_js_script = '
                                 getApplyNowByJobid('. $objectid . ',' . $wpjobportal_pageid .',1);
-                            </script>';
+                            ';
+                            wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
                     }else{
-                        $html .= '<script >
+                        wp_register_script( 'wpjobportal-inline-handle', '' );
+                        wp_enqueue_script( 'wpjobportal-inline-handle' );
+                        $inline_js_script = '
                                 getApplyNowByJobid('. $objectid . ',' . $wpjobportal_pageid .');
-                            </script>';
+                            ';
+                            wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
                     }
                 }else { // popup in case of view company, resume, job contact detail
-                    $html .= '<script >
+                    wp_register_script( 'wpjobportal-inline-handle', '' );
+                        wp_enqueue_script( 'wpjobportal-inline-handle' );
+                        $inline_js_script = '
                                 location.href= "' . $result['link'] . '";
-                            </script>';
+                            ';
+                            wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
                 }
             }elseif($themecall!=null){
                 $credit_small_flag=0;
@@ -298,7 +342,7 @@ class WPJOBPORTALPopup {
                             </div>
                             <div class="col-md-12 '.$this->class_prefix.'-modal-credit-row-wrp">
                                 <div class="'.$this->class_prefix.'-modal-credit-row color">
-                                    <span class="tit">'. __("Total Credits", "wp-job-portal") .'</span>
+                                    <span class="tit">'. esc_html(__("Total Credits", "wp-job-portal")) .'</span>
                                     <span class="val">'.$result['totalcredits'] .'</span>
                                 </div>';
                 $totalcredituse = 0;
@@ -312,12 +356,12 @@ class WPJOBPORTALPopup {
                     } else {
                         $action = $value->id;
                     }
-                    $html .= __('Credit for action', 'wp-job-portal');
+                    $html .= esc_html(__('Credit for action', 'wp-job-portal'));
                     $expirydatearray = array('featured_job','gold_job','add_job','featured_company','gold_company','featured_resume','gold_resume','job_alert_time');
                     if(in_array($value->creditaction, $expirydatearray)){
-                        $html .= '<span class="expiry"> (' . __('Expire in', 'wp-job-portal') . ' ' . $value->expiry . ' ' . __('Days', 'wp-job-portal') . ')</span>';
+                        $html .= '<span class="expiry"> (' . esc_html(__('Expire in', 'wp-job-portal')) . ' ' . $value->expiry . ' ' . esc_html(__('Days', 'wp-job-portal')) . ')</span>';
                     }elseif($value->creditaction == 'job_alert_lifetime'){
-                        $html .= '<span class="expiry"> ('.__('Life time alerts','wp-job-portal').') </span>';
+                        $html .= '<span class="expiry"> ('.esc_html(__('Life time alerts','wp-job-portal')).') </span>';
                     }
                     $html .= '</span>';
                     $html .= '<span class="val">' . $value->credits . '</span>';
@@ -326,14 +370,14 @@ class WPJOBPORTALPopup {
                 }
 
                 $html .='<div class="'.$this->class_prefix.'-modal-credit-row color">';
-                    $html .='<span class="tit" >'. __('Credits remaining after proceed', 'wp-job-portal') .'</span>';
+                    $html .='<span class="tit" >'. esc_html(__('Credits remaining after proceed', 'wp-job-portal')) .'</span>';
                     $html .='<span class="val" id="remaing-credits">'. ($result['totalcredits'] - $totalcredituse) .'</span>';
                 $html .='</div>';
                 $html .='</div>';
 
                 if($actionname == 'job_apply') {
                     $html .= '<div class="wpjobportal-job-apply-meesage">';
-                    $html .= __('Credits will only be deducted if you select a resume and click Apply Now on next popup.', 'wp-job-portal');
+                    $html .= esc_html(__('Credits will only be deducted if you select a resume and click Apply Now on next popup.', 'wp-job-portal'));
                     $html .= '</div>';
                 }
 
@@ -341,7 +385,7 @@ class WPJOBPORTALPopup {
                         <div class="modal-body '.$this->class_prefix.'-modal-body">
                               <div class="'.$this->class_prefix.'-modal-credit-action-btn-wrp">
                                   <a title="cancel" href="#" class="'.$this->class_prefix.'-modal-credit-action-btn" onclick="wpjobportalClosePopup(\''.$themecall.'\');">
-                                      ' . __('Cancel', 'wp-job-portal') . '
+                                      ' . esc_html(__('Cancel', 'wp-job-portal')) . '
                                   </a>';
                 $objectid = WPJOBPORTALRequest::getVar('id');
                 $srcid = WPJOBPORTALRequest::getVar('srcid');
@@ -358,7 +402,7 @@ class WPJOBPORTALPopup {
                 } elseif($actionname == 'job_apply') {
                         $html .= '<a href="#" class="'.$this->class_prefix.'-modal-credit-action-btn color" onclick="getApplyNowByJobid('. $objectid . ',' . $wpjobportal_pageid .',1);">' . $proceedlang . '</a>';
                 }else { // popup in case of view company, resume, job contact detail
-                    $html .= '<a href="' . $result['link'] .'" class="'.$this->class_prefix.'-modal-credit-action-btn color" onclick="return validateRemaingCredits();" >' . __('Proceed', 'wp-job-portal') . '</a>';
+                    $html .= '<a href="' . $result['link'] .'" class="'.$this->class_prefix.'-modal-credit-action-btn color" onclick="return validateRemaingCredits();" >' . esc_html(__('Proceed', 'wp-job-portal')) . '</a>';
                 }
                 $html .='</div>
                         </div>
@@ -372,7 +416,7 @@ class WPJOBPORTALPopup {
                 $html .= '<span class="popup-title">' . $result['popuptitle'] . '<img id="popup_cross" alt="popup cross"  src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/popup-close.png"></span>';
                 $html .= '<div class="popup-row name">';
                 $html .= '<span class="title">' . $result['title-text'] . ' </span><span class="value">' . $result['title'] . '</span></div>';
-                $html .= '<div class="popup-row name"><span class="title">' . __('Total Credits', 'wp-job-portal') . '</span>';
+                $html .= '<div class="popup-row name"><span class="title">' . esc_html(__('Total Credits', 'wp-job-portal')) . '</span>';
                 $html .= '<span class="value">' . $result['totalcredits'] . '</span>';
                 $html .= '</div>';
                 $totalcredituse = 0;
@@ -386,12 +430,12 @@ class WPJOBPORTALPopup {
                     } else {
                         $action = $value->id;
                     }
-                    $html .= __('Credit for action', 'wp-job-portal');
+                    $html .= esc_html(__('Credit for action', 'wp-job-portal'));
                     $expirydatearray = array('featured_job','gold_job','add_job','featured_company','gold_company','featured_resume','gold_resume','job_alert_time');
                     if(in_array($value->creditaction, $expirydatearray)){
-                        $html .= '<span class="expiry"> (' . __('Expire in', 'wp-job-portal') . ' ' . $value->expiry . ' ' . __('Days', 'wp-job-portal') . ')</span>';
+                        $html .= '<span class="expiry"> (' . esc_html(__('Expire in', 'wp-job-portal')) . ' ' . $value->expiry . ' ' . esc_html(__('Days', 'wp-job-portal')) . ')</span>';
                     }elseif($value->creditaction == 'job_alert_lifetime'){
-                        $html .= '<span class="expiry"> ('.__('Life time alerts','wp-job-portal').') </span>';
+                        $html .= '<span class="expiry"> ('.esc_html(__('Life time alerts','wp-job-portal')).') </span>';
                     }
                     $html .= '</span>';
                     $html .= '<span class="value">' . $value->credits . '</span>';
@@ -399,17 +443,17 @@ class WPJOBPORTALPopup {
                     $totalcredituse = $value->credits;
                 }
                 $html .= '<div class="popup-row name">';
-                $html .= '<span class="title">' . __('Credits remaining after proceed', 'wp-job-portal') . '</span>';
+                $html .= '<span class="title">' . esc_html(__('Credits remaining after proceed', 'wp-job-portal')) . '</span>';
                 $html .= '<span class="value" id="remaing-credits">' . ($result['totalcredits'] - $totalcredituse) . '</span>';
                 $html .= '</div>';
                 if($actionname == 'job_apply') {
                     $html .= '<div class="wpjobportal-job-apply-meesage">';
-                    $html .= __('Credits will only be deducted if you select a resume and click Apply Now on next popup.', 'wp-job-portal');
+                    $html .= esc_html(__('Credits will only be deducted if you select a resume and click Apply Now on next popup.', 'wp-job-portal'));
                     $html .= '</div>';
                 }
 
                 $html .= '<div class="popup-row button">';
-                $html .= '<a href="#" class="wpjobportal-popup cancel" onclick="wpjobportalClosePopup();">' . __('Cancel', 'wp-job-portal') . '</a>';
+                $html .= '<a href="#" class="wpjobportal-popup cancel" onclick="wpjobportalClosePopup();">' . esc_html(__('Cancel', 'wp-job-portal')) . '</a>';
                 $objectid = WPJOBPORTALRequest::getVar('id');
                 $srcid = WPJOBPORTALRequest::getVar('srcid');
                 $anchorid = WPJOBPORTALRequest::getVar('anchorid');
@@ -418,22 +462,22 @@ class WPJOBPORTALPopup {
                     if ($formid == 'resumeform') {
                         $html .= '<a href="#" class="wpjobportal-popup proceed" onclick="'.$wpjobportalPopupResumeFormProceeds.'(\'' . $action . '\');">' . $proceedlang . '</a>';
                         if($isadmin){
-                            $html .= '<a href="#" class="wpjobportal-popup proceed" onclick="'.$wpjobportalPopupResumeFormProceeds.'(\'' . $action . '\',1);">' . __('Proceed With Paying', 'wp-job-portal') . '</a>';
+                            $html .= '<a href="#" class="wpjobportal-popup proceed" onclick="'.$wpjobportalPopupResumeFormProceeds.'(\'' . $action . '\',1);">' . esc_html(__('Proceed With Paying', 'wp-job-portal')) . '</a>';
                         }
                     } else {
                         $html .= '<a href="#" class="wpjobportal-popup proceed" onclick="'.$wpjobportalPopupFormProceeds.'(\'' . $formid . '\',\'' . $action . '\');">' . $proceedlang . '</a>';
                         if($isadmin){
-                            $html .= '<a href="#" class="wpjobportal-popup proceed" onclick="'.$wpjobportalPopupFormProceeds.'(\'' . $formid . '\',\'' . $action . '\',1);">' . __('Proceed With Paying', 'wp-job-portal') . '</a>';
+                            $html .= '<a href="#" class="wpjobportal-popup proceed" onclick="'.$wpjobportalPopupFormProceeds.'(\'' . $formid . '\',\'' . $action . '\',1);">' . esc_html(__('Proceed With Paying', 'wp-job-portal')) . '</a>';
                         }
                     }
                      $html .= '<a href="#" class="wpjobportal-popup proceed" onclick="'.$wpjobportalPopupProceeds.'(\'' . $actionname . '\',' . $objectid . ',\'' . $srcid . '\',\'' . $anchorid . '\',\'' . $action . '\');">' . $proceedlang . '</a>';
                     if($isadmin){
-                        $html .= '<a href="#" class="wpjobportal-popup proceed" onclick="'.$wpjobportalPopupProceeds.'(\'' . $actionname . '\',' . $objectid . ',\'' . $srcid . '\',\'' . $anchorid . '\',\'' . $action . '\',1);">' . __('Proceed With Paying', 'wp-job-portal') . '</a>';
+                        $html .= '<a href="#" class="wpjobportal-popup proceed" onclick="'.$wpjobportalPopupProceeds.'(\'' . $actionname . '\',' . $objectid . ',\'' . $srcid . '\',\'' . $anchorid . '\',\'' . $action . '\',1);">' . esc_html(__('Proceed With Paying', 'wp-job-portal')) . '</a>';
                     }
                 } elseif($actionname == 'job_apply') {
                         $html .= '<a href="#" class="wpjobportal-popup proceed" onclick="getApplyNowByJobid('. $objectid . ',' . $wpjobportal_pageid .');">' . $proceedlang . '</a>';
                 } else { // popup in case of view company, resume, job contact detail
-                    $html .= '<a href="' . $result['link'] . '" class="proceed" onclick="return validateRemaingCredits();" >' . __('Proceed', 'wp-job-portal') . '</a>';
+                    $html .= '<a href="' . $result['link'] . '" class="proceed" onclick="return validateRemaingCredits();" >' . esc_html(__('Proceed', 'wp-job-portal')) . '</a>';
                 }
                 $html .= '</div>';
                 $html .= '</div>';
@@ -450,22 +494,22 @@ class WPJOBPORTALPopup {
             if($wpjobportal_pageid != null){
                 $pageid = $wpjobportal_pageid;
             }else{
-                $pageid = wpjobportal::getpageId();
+                $pageid = wpjobportal::wpjobportal_getPageid();
             }
             $html = '<div id="wpjobportal-popup-background"></div>';
             $html .= '<div id="wpjobportal-popup">';
             if($result == false){
-                $html .= '<span class="popup-title">' . __('Insufficient Credits', 'wp-job-portal') . '</span>';
+                $html .= '<span class="popup-title">' . esc_html(__('Insufficient Credits', 'wp-job-portal')) . '</span>';
                 $actionfor = WPJOBPORTALincluder::getJSModel('credits')->getCreditsForByAction($actionname);
                 if ($actionfor == 2) {
-                    $link = wpjobportal::makeUrl(array('wpjobportalme'=>'credits', 'wpjobportallt'=>'jobseekercredits', 'wpjobportalpageid'=>$pageid));
+                    $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'credits', 'wpjobportallt'=>'jobseekercredits', 'wpjobportalpageid'=>$pageid));
                 } else {
-                    $link = wpjobportal::makeUrl(array('wpjobportalme'=>'credits', 'wpjobportallt'=>'employercredits', 'wpjobportalpageid'=>$pageid));
+                    $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'credits', 'wpjobportallt'=>'employercredits', 'wpjobportalpageid'=>$pageid));
                 }
-                $linktext = __('Buy credits', 'wp-job-portal');
+                $linktext = esc_html(__('Buy credits', 'wp-job-portal'));
                 $html .= WPJOBPORTALLayout::setMessageFor(4, $link, $linktext, 1);
             }else{
-                $html .= '<span class="popup-title">' . __('Can Not Proceed', 'wp-job-portal') . '</span>';
+                $html .= '<span class="popup-title">' . esc_html(__('Can Not Proceed', 'wp-job-portal')) . '</span>';
 
                 $html .= WPJOBPORTALLayout::setMessageFor(11,'','',1);
             }
@@ -488,94 +532,94 @@ class WPJOBPORTALPopup {
 
         switch ($actionname) {
             case 'featured_company':
-                $return['popuptitle'] = __('Add to','wp-job-portal') .' '. __('featured','wp-job-portal') .' '. __('company', 'wp-job-portal');
+                $return['popuptitle'] = esc_html(__('Add to','wp-job-portal')) .' '. esc_html(__('featured','wp-job-portal')) .' '. esc_html(__('company', 'wp-job-portal'));
                 $id = WPJOBPORTALRequest::getVar('id');
                 $companyname = WPJOBPORTALincluder::getJSModel('company')->getCompanynameById($id);
-                $return['title-text'] = __('Company name', 'wp-job-portal');
+                $return['title-text'] = esc_html(__('Company name', 'wp-job-portal'));
                 $return['title'] = $companyname;
                 $return['value'] = $creditsrequired;
                 break;
             case 'featured_job':
-                $return['popuptitle'] = __('Add to','wp-job-portal') .' '. __('featured','wp-job-portal') .' '. __('job', 'wp-job-portal');
+                $return['popuptitle'] = esc_html(__('Add to','wp-job-portal')) .' '. esc_html(__('featured','wp-job-portal')) .' '. esc_html(__('job', 'wp-job-portal'));
                 $id = WPJOBPORTALRequest::getVar('id');
                 $jobtile = WPJOBPORTALincluder::getJSModel('job')->getJobTitleById($id);
-                $return['title-text'] = __('Job title', 'wp-job-portal');
+                $return['title-text'] = esc_html(__('Job title', 'wp-job-portal'));
                 $return['title'] = $jobtile;
                 $return['value'] = $creditsrequired;
                 break;
             case 'featured_resume':
-                $return['popuptitle'] = __('Add to','wp-job-portal') .' '. __('featured','wp-job-portal') .' '. __('resume', 'wp-job-portal');
+                $return['popuptitle'] = esc_html(__('Add to','wp-job-portal')) .' '. esc_html(__('featured','wp-job-portal')) .' '. esc_html(__('resume', 'wp-job-portal'));
                 $id = WPJOBPORTALRequest::getVar('id');
                 $resumetile = WPJOBPORTALincluder::getJSModel('resume')->getResumeTitleById($id);
-                $return['title-text'] = __('Resume title', 'wp-job-portal');
+                $return['title-text'] = esc_html(__('Resume title', 'wp-job-portal'));
                 $return['title'] = $resumetile;
                 $return['value'] = $creditsrequired;
                 break;
             case 'add_department':
-                $return['popuptitle'] = __('Add','wp-job-portal') .' '. __('Department', 'wp-job-portal');
-                $return['title-text'] = __('Add','wp-job-portal') .' '. __('Department', 'wp-job-portal');
+                $return['popuptitle'] = esc_html(__('Add','wp-job-portal')) .' '. esc_html(__('Department', 'wp-job-portal'));
+                $return['title-text'] = esc_html(__('Add','wp-job-portal')) .' '. esc_html(__('Department', 'wp-job-portal'));
                 $return['title'] = ' ';
                 $return['value'] = $creditsrequired;
                 break;
             case 'add_job':
-                $return['popuptitle'] = __('Add','wp-job-portal') .' '. __('Job', 'wp-job-portal');
-                $return['title-text'] = __('Add','wp-job-portal') .' '. __('job', 'wp-job-portal');
+                $return['popuptitle'] = esc_html(__('Add','wp-job-portal')) .' '. esc_html(__('Job', 'wp-job-portal'));
+                $return['title-text'] = esc_html(__('Add','wp-job-portal')) .' '. esc_html(__('job', 'wp-job-portal'));
                 $return['title'] = ' ';
                 $return['value'] = $creditsrequired;
                 break;
             case 'copy_job':
-                $return['popuptitle'] = __('Copy','wp-job-portal') .' '. __('Job', 'wp-job-portal');
-                $return['title-text'] = __('Copy','wp-job-portal') .' '. __('Job', 'wp-job-portal');
+                $return['popuptitle'] = esc_html(__('Copy','wp-job-portal')) .' '. esc_html(__('Job', 'wp-job-portal'));
+                $return['title-text'] = esc_html(__('Copy','wp-job-portal')) .' '. esc_html(__('Job', 'wp-job-portal'));
                 $return['title'] = ' ';
                 $return['value'] = $creditsrequired;
                 break;
             case 'add_company':
-                $return['popuptitle'] = __('Add','wp-job-portal') .' '. __('Company', 'wp-job-portal');
-                $return['title-text'] = __('Add','wp-job-portal') .' '. __('Company', 'wp-job-portal');
+                $return['popuptitle'] = esc_html(__('Add','wp-job-portal')) .' '. esc_html(__('Company', 'wp-job-portal'));
+                $return['title-text'] = esc_html(__('Add','wp-job-portal')) .' '. esc_html(__('Company', 'wp-job-portal'));
                 $return['title'] = ' ';
                 $return['value'] = $creditsrequired;
                 break;
             case 'add_resume':
-                $return['popuptitle'] = __('Add','wp-job-portal') .' '. __('Resume', 'wp-job-portal');
-                $return['title-text'] = __('Add','wp-job-portal') .' '. __('Resume', 'wp-job-portal');
+                $return['popuptitle'] = esc_html(__('Add','wp-job-portal')) .' '. esc_html(__('Resume', 'wp-job-portal'));
+                $return['title-text'] = esc_html(__('Add','wp-job-portal')) .' '. esc_html(__('Resume', 'wp-job-portal'));
                 $return['title'] = ' ';
                 $return['value'] = $creditsrequired;
                 break;
             case 'add_job_alert':
-                $return['popuptitle'] = __('Add','wp-job-portal') .' '. __('Alert', 'wp-job-portal');
-                $return['title-text'] = __('Add','wp-job-portal') .' '. __('Alert', 'wp-job-portal');
+                $return['popuptitle'] = esc_html(__('Add','wp-job-portal')) .' '. esc_html(__('Alert', 'wp-job-portal'));
+                $return['title-text'] = esc_html(__('Add','wp-job-portal')) .' '. esc_html(__('Alert', 'wp-job-portal'));
                 $return['title'] = ' ';
                 $return['value'] = $creditsrequired;
                 break;
             case 'view_company_contact_detail':
-                $return['popuptitle'] = __('View company contact detail', 'wp-job-portal');
+                $return['popuptitle'] = esc_html(__('View company contact detail', 'wp-job-portal'));
                 $id = WPJOBPORTALRequest::getVar('id');
                 $companyname = WPJOBPORTALincluder::getJSModel('company')->getCompanynameById($id);
-                $return['title-text'] = __('View company contact detail', 'wp-job-portal');
+                $return['title-text'] = esc_html(__('View company contact detail', 'wp-job-portal'));
                 $return['title'] = $companyname;
                 $return['value'] = $creditsrequired;
-                $return['link'] = wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'action'=>'wpjobportaltask', 'task'=>'addviewcontactdetail', 'companyid'=>$id, 'wpjobportalpageid'=>$wpjobportal_pageid));
+                $return['link'] = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'action'=>'wpjobportaltask', 'task'=>'addviewcontactdetail', 'companyid'=>$id, 'wpjobportalpageid'=>$wpjobportal_pageid));
                 break;
             case 'view_resume_contact_detail':
-                $return['popuptitle'] = __('View resume contact detail', 'wp-job-portal');
+                $return['popuptitle'] = esc_html(__('View resume contact detail', 'wp-job-portal'));
                 $id = WPJOBPORTALRequest::getVar('id');
                 $resumename = WPJOBPORTALincluder::getJSModel('resume')->getResumenameById($id);
-                $return['title-text'] = __('View resume contact detail', 'wp-job-portal');
+                $return['title-text'] = esc_html(__('View resume contact detail', 'wp-job-portal'));
                 $return['title'] = $resumename;
                 $return['value'] = $creditsrequired;
-                $return['link'] = wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'action'=>'wpjobportaltask', 'task'=>'addviewresumedetail', 'resumeid'=>$id, 'wpjobportalpageid'=>$wpjobportal_pageid));
+                $return['link'] = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'action'=>'wpjobportaltask', 'task'=>'addviewresumedetail', 'resumeid'=>$id, 'wpjobportalpageid'=>$wpjobportal_pageid));
                 break;
             case 'resume_save_search':
-                $return['popuptitle'] = __('Save','wp-job-portal') .' '. __('search', 'wp-job-portal');
-                $return['title-text'] = __('Save','wp-job-portal') .' '. __('search', 'wp-job-portal');
+                $return['popuptitle'] = esc_html(__('Save','wp-job-portal')) .' '. esc_html(__('search', 'wp-job-portal'));
+                $return['title-text'] = esc_html(__('Save','wp-job-portal')) .' '. esc_html(__('search', 'wp-job-portal'));
                 $return['title'] = ' ';
                 $return['value'] = $creditsrequired;
                 break;
             case 'job_apply':
-                $return['popuptitle'] = __('Apply On Job');
+                $return['popuptitle'] = esc_html(__('Apply On Job', 'wp-job-portal'));
                 $id = WPJOBPORTALRequest::getVar('id');
                 $jobtile = WPJOBPORTALincluder::getJSModel('job')->getJobTitleById($id);
-                $return['title-text'] = __('Job title', 'wp-job-portal');
+                $return['title-text'] = esc_html(__('Job title', 'wp-job-portal'));
                 $return['title'] = $jobtile;
                 $return['value'] = $creditsrequired;
                 break;

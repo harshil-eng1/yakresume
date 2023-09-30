@@ -355,6 +355,16 @@ class WPForms_Form_Handler {
 			]
 		);
 
+		/**
+		 * Allow developers to execute some code after changing form status.
+		 *
+		 * @since 1.8.1
+		 *
+		 * @param string $form_id Form ID.
+		 * @param string $status  New form status, `publish` or `trash`.
+		 */
+		do_action( 'wpforms_form_handler_update_status', $form_id, $status );
+
 		return $result !== 0;
 	}
 
@@ -522,8 +532,10 @@ class WPForms_Form_Handler {
 			$form_data['settings']['notifications']          = [
 				'1' => [
 					'email'          => '{admin_email}',
-					/* translators: %s - Form Title. */
-					'subject'        => sprintf( esc_html__( 'New Entry: %s', 'wpforms-lite' ), esc_html( $title ) ),
+					'subject'        => sprintf( /* translators: %s - form name. */
+						esc_html__( 'New Entry: %s', 'wpforms-lite' ),
+						esc_html( $title )
+					),
 					'sender_name'    => get_bloginfo( 'name' ),
 					'sender_address' => '{admin_email}',
 					'replyto'        => '{field_id="1"}',
@@ -773,6 +785,17 @@ class WPForms_Form_Handler {
 					self::TAGS_TAXONOMY
 				);
 			}
+
+			/**
+			 * Fires after the form was duplicated.
+			 *
+			 * @since 1.8.2.2
+			 *
+			 * @param int   $id            Original form ID.
+			 * @param int   $new_form_id   New form ID.
+			 * @param array $new_form_data New form data.
+			 */
+			do_action( 'wpforms_form_handler_duplicate_form', $id, $new_form_id, $new_form_data );
 		}
 
 		return true;

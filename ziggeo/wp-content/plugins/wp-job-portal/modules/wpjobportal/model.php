@@ -18,10 +18,10 @@ class WPJOBPORTALwpjobportalModel {
         //AND date(created) = '".$curdate."'
         $query = "SELECT jobtype.title,(SELECT COUNT(id) FROM `" . wpjobportal::$_db->prefix . "wj_portal_jobs` WHERE jobtype = jobtype.id ) AS totaljob FROM  `" . wpjobportal::$_db->prefix . "wj_portal_jobtypes` AS jobtype ORDER BY jobtype.id";
         $priorities = wpjobportal::$_db->get_results($query);
-        wpjobportal::$_data['today_ticket_chart']['title'] = "['".__('Today Jobs','wp-job-portal')."',";
+        wpjobportal::$_data['today_ticket_chart']['title'] = "['".esc_html(__('Today Jobs','wp-job-portal'))."',";
         wpjobportal::$_data['today_ticket_chart']['data'] = "['',";
         foreach($priorities AS $pr){
-            wpjobportal::$_data['today_ticket_chart']['title'] .= "'".__($pr->title,'wp-job-portal')."',";
+            wpjobportal::$_data['today_ticket_chart']['title'] .= "'".wpjobportal::wpjobportal_getVariableValue($pr->title)."',";
             wpjobportal::$_data['today_ticket_chart']['data'] .= $pr->totaljob.",";
         }
         wpjobportal::$_data['today_ticket_chart']['title'] .= "]";
@@ -104,7 +104,7 @@ class WPJOBPORTALwpjobportalModel {
             $date = date('Y-m-d', strtotime($ajob->created));
             $activejobs[$date] = isset($activejobs[$date]) ? ($activejobs[$date] + 1) : 1;
         }
-        wpjobportal::$_data['stack_chart_horizontal']['title'] = "['" . __('Dates', 'wp-job-portal') . "','" . __('Jobs', 'wp-job-portal') . "','" . __('Companies', 'wp-job-portal') . "','" . __('Resume', 'wp-job-portal') . "','" . __('Active Jobs', 'wp-job-portal') . "']";
+        wpjobportal::$_data['stack_chart_horizontal']['title'] = "['" . esc_html(__('Dates', 'wp-job-portal')) . "','" . esc_html(__('Jobs', 'wp-job-portal')) . "','" . esc_html(__('Companies', 'wp-job-portal')) . "','" . esc_html(__('Resume', 'wp-job-portal')) . "','" . esc_html(__('Active Jobs', 'wp-job-portal')) . "']";
         wpjobportal::$_data['stack_chart_horizontal']['data'] = '';
         for ($i = 29; $i >= 0; $i--) {
             $checkdate = date('Y-m-d', strtotime($curdate . " -$i days"));
@@ -119,7 +119,83 @@ class WPJOBPORTALwpjobportalModel {
             wpjobportal::$_data['stack_chart_horizontal']['data'] .= "$job,$company,$resume,$ajob]";
 
         }
+        // update available alert
+        wpjobportal::$_data['update_avaliable_for_addons'] = $this->showUpdateAvaliableAlert();
         return;
+    }
+
+    function showUpdateAvaliableAlert(){
+        require_once WPJOBPORTAL_PLUGIN_PATH.'includes/addon-updater/wpjobportalupdater.php';
+        $WP_JOBPORTALUpdater    = new WP_JOBPORTALUpdater();
+        $cdnversiondata = $WP_JOBPORTALUpdater->getPluginVersionDataFromCDN();
+        $not_installed = array();
+
+        $wpjobportal_addons = $this->getWPJPAddonsArray();
+        $installed_plugins = get_plugins();
+        $count = 0;
+        foreach ($wpjobportal_addons as $key1 => $value1) {
+                $matched = 0;
+                $version = "";
+                foreach ($installed_plugins as $name => $value) {
+                        $install_plugin_name = str_replace(".php","",basename($name));
+                        if($key1 == $install_plugin_name){
+                                $matched = 1;
+                                $version = $value["Version"];
+                                $install_plugin_matched_name = $install_plugin_name;
+                        }
+                }
+                if($matched == 1){ //installed
+                        $name = $key1;
+                        $title = $value1['title'];
+                        $img = str_replace("wp-job-portal-", "", $key1).'.png';
+                        $cdnavailableversion = "";
+                        foreach ($cdnversiondata as $cdnname => $cdnversion) {
+                                $install_plugin_name_simple = str_replace("-", "", $install_plugin_matched_name);
+                                if($cdnname == str_replace("-", "", $install_plugin_matched_name)){
+                                        if($cdnversion > $version){ // new version available
+                                                $count++;
+                                        }
+                                }
+                        }
+                }
+        }
+        return $count;
+    }
+
+
+
+    function getWPJPAddonsArray(){
+        return  array(
+            'wp-job-portal-addressdata' => array('title' => esc_html(__('Address Data','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-sociallogin' => array('title' => esc_html(__('Social Login','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-visitorapplyjob' => array('title' => esc_html(__('visitor apply job','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-multicompany' => array('title' => esc_html(__('Multi Company','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-featuredcompany' => array('title' => esc_html(__('featured company','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-copyjob' => array('title' => esc_html(__('copy job','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-credits' => array('title' => esc_html(__('Credits','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-departments' => array('title' => esc_html(__('Department','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-export' => array('title' => esc_html(__('Export','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-featureresume' => array('title' => esc_html(__('Feature Resume','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-featuredjob' => array('title' => esc_html(__('Featured Job','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-rssfeedback' => array('title' => esc_html(__('Rss Feed','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-folder' => array('title' => esc_html(__('Folder','wp-job-portal')), 'price' => 0, 'status' => 1),   
+            'wp-job-portal-jobalert' => array('title' => esc_html(__('Job Alert','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-message' => array('title' => esc_html(__('Message System','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-pdf' => array('title' => esc_html(__('PDF','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-print' => array('title' => esc_html(__('Print','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-reports'=> array('title' => esc_html(__('Report\'s','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-resumeaction' => array('title' => esc_html(__('Resume Action','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-multiresume' => array('title' => esc_html(__('Multi Resume','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-resumesearch' => array('title' => esc_html(__('Resume Search','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-shortlist' => array('title' => esc_html(__('Shortlist','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-socialshare' => array('title' => esc_html(__('Social Share','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-tag' => array('title' => esc_html(__('Tags','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-tellfriend' => array('title' => esc_html(__('Tell Friend','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-advanceresumebuilder' => array('title' => esc_html(__('Advance Resume Builder','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-visitorcanaddjob' => array('title' => esc_html(__('Visitor Add Job','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-cronjob' => array('title' => esc_html(__('Cron Job','wp-job-portal')), 'price' => 0, 'status' => 1),
+            'wp-job-portal-widgets' => array('title' => esc_html(__('Front-End Widgets','wp-job-portal')), 'price' => 0, 'status' => 1)
+        );
     }
 
 
@@ -145,6 +221,10 @@ class WPJOBPORTALwpjobportalModel {
             case 'job_department_price_perlisting':
                 # Department Configuration + subAddon(Purchase History)
                 WPJOBPORTALincluder::getJSModel('purchasehistory')->storeDepartmentPayment($data);
+                break;
+            case 'job_coverletter_price_perlisting':
+                # Department Configuration + subAddon(Purchase History)
+                WPJOBPORTALincluder::getJSModel('purchasehistory')->storeCoverLetterPayment($data);
                 break;
             case 'company_price_perlisting':
                 WPJOBPORTALincluder::getJSModel('purchasehistory')->storeCompanyPayment($data);
@@ -269,7 +349,7 @@ class WPJOBPORTALwpjobportalModel {
         if (!is_numeric($id))
             return false;
 
-        $query = "select mcity.id AS id,country.name AS countryName,city.cityName AS cityName,state.name AS stateName";
+        $query = "select mcity.id AS id,country.name AS countryName,city.cityName AS cityName,state.name AS stateName, city.id AS cityid";
         switch ($for) {
             case 1:
                 $query.=" FROM `" . wpjobportal::$_db->prefix . "wj_portal_jobcities` AS mcity";
@@ -297,33 +377,42 @@ class WPJOBPORTALwpjobportalModel {
         $mloc = array();
         $mcountry = array();
         $finalloc = "";
+        $cityids = '';
         foreach ($cities AS $city) {
-            if ($city->countryName != null)
-                $mcountry[] = $city->countryName;
-        }
-        if (!empty($mcountry)) {
-            $country_total = array_count_values($mcountry);
-        } else {
-            $country_total = array();
-        }
-        $i = 0;
-        foreach ($country_total AS $key => $val) {
-            foreach ($cities AS $city) {
-                if ($key == $city->countryName) {
-                    $i++;
-                    if ($val == 1) {
-                        $finalloc.="[" . $city->cityName . ", " . $key . " ] ";
-                        $i = 0;
-                    } elseif ($i == $val) {
-                        $finalloc.=$city->cityName . ", " . $key . " ] ";
-                        $i = 0;
-                    } elseif ($i == 1)
-                        $finalloc.= "[" . $city->cityName . ", ";
-                    else
-                        $finalloc.=$city->cityName . ", ";
-                }
+            if($cityids != ''){
+                $cityids .= ',';
             }
+            $cityids .= $city->cityid;
+            // if ($city->countryName != null)
+            //     $mcountry[] = $city->countryName;
         }
+        if($cityids != ''){
+            $finalloc = WPJOBPORTALincluder::getJSModel('city')->getLocationDataForView($cityids);
+        }
+        // if (!empty($mcountry)) {
+        //     $country_total = array_count_values($mcountry);
+        // } else {
+        //     $country_total = array();
+        // }
+        // $i = 0;
+        // foreach ($country_total AS $key => $val) {
+        //     foreach ($cities AS $city) {
+                
+        //         if ($key == $city->countryName) {
+        //             $i++;
+        //             if ($val == 1) {
+        //                 $finalloc.="[" . $city->cityName . ", " . $key . " ] ";
+        //                 $i = 0;
+        //             } elseif ($i == $val) {
+        //                 $finalloc.=$city->cityName . ", " . $key . " ] ";
+        //                 $i = 0;
+        //             } elseif ($i == 1)
+        //                 $finalloc.= "[" . $city->cityName . ", ";
+        //             else
+        //                 $finalloc.=$city->cityName . ", ";
+        //         }
+        //     }
+        // }
         return $finalloc;
     }
 
@@ -502,13 +591,13 @@ class WPJOBPORTALwpjobportalModel {
 //function to denerate popup from new jobs companies and resume
     function generatePopup($results, $dataid) {
         if ($dataid == 1) {
-            $title = __('Newest Jobs', 'wp-job-portal');
+            $title = esc_html(__('Newest Jobs', 'wp-job-portal'));
         } elseif ($dataid == 2) {
-            $title = __('Newest Companies', 'wp-job-portal');
+            $title = esc_html(__('Newest Companies', 'wp-job-portal'));
         } elseif ($dataid == 3) {
-            $title = __('Newest Resumes', 'wp-job-portal');
+            $title = esc_html(__('Newest Resumes', 'wp-job-portal'));
         } elseif ($dataid == 4) {
-            $title = __('Newest Applied Jobs', 'wp-job-portal');
+            $title = esc_html(__('Newest Applied Jobs', 'wp-job-portal'));
         }
         $html = '';
         $html = '<span class="popup-top">
@@ -523,7 +612,7 @@ class WPJOBPORTALwpjobportalModel {
                 <div class="js_job_error_messages_wrapper">
                     <div class="message1">
                         <span>
-                            ' . __("Oops...", "wp-job-portal") . '
+                            ' . esc_html(__("Oops...", 'wp-job-portal')) . '
                         </span>
                     </div>
                     <div class="message2">
@@ -531,11 +620,11 @@ class WPJOBPORTALwpjobportalModel {
                         <img class="js_job_messages_image" src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/norecordfound.png"/>
                          </span>
                          <span class="message-text">
-                            ' . __('Record Not Found', 'wp-job-portal') . '
+                            ' . esc_html(__('Record Not Found', 'wp-job-portal')) . '
                          </span>
                     </div>
                     <div class="footer">
-                        <a href ="' . 'admin.php?page=wpjobportal' . '">' . __('Back to control panel', 'wp-job-portal') . '</a>
+                        <a href ="' . 'admin.php?page=wpjobportal' . '">' . esc_html(__('Back to control panel', 'wp-job-portal')) . '</a>
                     </div>
                 </div>
         ';
@@ -589,15 +678,15 @@ class WPJOBPORTALwpjobportalModel {
                 //flags expressing status
                 if ($data->status == 0) {
                     $flaghtml = '<div class="pending-badge badges">
-                                        <span class="flag pending"><span></span>' . __('Pending', 'wp-job-portal') . '</span>
+                                        <span class="flag pending"><span></span>' . esc_html(__('Pending', 'wp-job-portal')) . '</span>
                                         </div>';
                 } elseif ($data->status == 1) {
                     $flaghtml = '<div class="approved-badge badges">
-                                        <span class="flag approved"><span></span>' . __('Approved', 'wp-job-portal') . '</span>
+                                        <span class="flag approved"><span></span>' . esc_html(__('Approved', 'wp-job-portal')) . '</span>
                                         </div>';
                 } else {
                     $flaghtml = '<div class="rejected-badge badges">
-                                        <span class="flag rejected"><span></span>' . __('Rejected', 'wp-job-portal') . '</span>
+                                        <span class="flag rejected"><span></span>' . esc_html(__('Rejected', 'wp-job-portal')) . '</span>
                                         </div>';
                 }
 
@@ -610,13 +699,13 @@ class WPJOBPORTALwpjobportalModel {
                                         <div class="data-title">
                                         ' . $data->title;
                 if ($data->isfeatured == 1) {
-                    $html .= '<span id="badge_featured" class="feature badge featured">' . __('Featured', 'wp-job-portal') . '</span>';
+                    $html .= '<span id="badge_featured" class="feature badge featured">' . esc_html(__('Featured', 'wp-job-portal')) . '</span>';
                 }
 
                 $html .= '</div>
                                         <div class="data-data">
                                             <span class="heading">
-                                            ' . __('Category', 'wp-job-portal') . ' :
+                                            ' . esc_html(__('Category', 'wp-job-portal')) . ' :
                                             </span>
                                             <span class="text">
                                             ' . $data->cat_title . '
@@ -625,7 +714,7 @@ class WPJOBPORTALwpjobportalModel {
                 if ($dataid != 3) {
                     $html .= '<div class="data-data">
                                                     <span class="heading">
-                                                ' . __('Location', 'wp-job-portal') . ' :
+                                                ' . esc_html(__('Location', 'wp-job-portal')) . ' :
                                                 </span>
                                                 <span class="text">
                                                 ' . $data->city . '
@@ -633,7 +722,7 @@ class WPJOBPORTALwpjobportalModel {
                 } else {
                     $html .= '<div class="data-data">
                                                     <span class="heading">
-                                                ' . __('Highest Education', 'wp-job-portal') . ' :
+                                                ' . esc_html(__('Highest Education', 'wp-job-portal')) . ' :
                                                 </span>
                                                 <span class="text">
                                                 ' . $data->education . '
@@ -649,7 +738,7 @@ class WPJOBPORTALwpjobportalModel {
             $html .= $this->getAppliedJobPopup($results);
             return $html;
         }
-        $html .= '<a href = "' . $link . '" class="popup-bottom-button">' . __('Show More', 'wp-job-portal') . '</a></div>';
+        $html .= '<a href = "' . $link . '" class="popup-bottom-button">' . esc_html(__('Show More', 'wp-job-portal')) . '</a></div>';
         return $html;
     }
 
@@ -671,19 +760,19 @@ class WPJOBPORTALwpjobportalModel {
             $flaghtml = '';
             if ($data->status == 2) {
                 $flaghtml = '<div class="spam-badge badges">
-                                        <span class="flag spam"><span></span>' . __('Spam', 'wp-job-portal') . '</span>
+                                        <span class="flag spam"><span></span>' . esc_html(__('Spam', 'wp-job-portal')) . '</span>
                                         </div>';
             } elseif ($data->status == 3) {
                 $flaghtml = '<div class="hired-badge badges">
-                                        <span class="flag hired"><span></span>' . __('Hired', 'wp-job-portal') . '</span>
+                                        <span class="flag hired"><span></span>' . esc_html(__('Hired', 'wp-job-portal')) . '</span>
                                         </div>';
             } elseif ($data->status == 4) {
                 $flaghtml = '<div class="reject-badge badges">
-                                        <span class="flag reject"><span></span>' . __('Rejected', 'wp-job-portal') . '</span>
+                                        <span class="flag reject"><span></span>' . esc_html(__('Rejected', 'wp-job-portal')) . '</span>
                                         </div>';
             } elseif ($data->status == 5) {
                 $flaghtml = '<div class="shortlisted-badge badges">
-                                        <span class="flag shortlisted"><span></span>' . __('Short listed', 'wp-job-portal') . '</span>
+                                        <span class="flag shortlisted"><span></span>' . esc_html(__('Short listed', 'wp-job-portal')) . '</span>
                                         </div>';
             }
 
@@ -696,13 +785,13 @@ class WPJOBPORTALwpjobportalModel {
                                         <div class="data-title">
                                         ' . $data->title;
             if ($data->isfeatured == 1) {
-                $html .= '<span id="badge_featured" class="feature badge featured">' . __('Featured', 'wp-job-portal') . '</span>';
+                $html .= '<span id="badge_featured" class="feature badge featured">' . esc_html(__('Featured', 'wp-job-portal')) . '</span>';
             }
 
             $html .= '</div>
                                         <div class="data-data">
                                             <span class="heading">
-                                            ' . __('Applicant', 'wp-job-portal') . ' :
+                                            ' . esc_html(__('Applicant', 'wp-job-portal')) . ' :
                                             </span>
                                             <span class="text">
                                             ' . $data->name . '
@@ -710,7 +799,7 @@ class WPJOBPORTALwpjobportalModel {
                                         </div>';
             $html .= '<div class="data-data">
                                                     <span class="heading">
-                                                ' . __('Applied Date', 'wp-job-portal') . ' :
+                                                ' . esc_html(__('Applied Date', 'wp-job-portal')) . ' :
                                                 </span>
                                                 <span class="text">
                                                 ' . $data->apply_date . '
@@ -841,13 +930,18 @@ class WPJOBPORTALwpjobportalModel {
 
     function getListTranslations() {
 
+        $nonce = WPJOBPORTALrequest::getVar('_wpnonce');
+        if (! wp_verify_nonce( $nonce, 'get-list-translations') ) {
+            die( 'Security check Failed' );
+        }
+
         $result = array();
         $result['error'] = false;
 
         $path = WPJOBPORTAL_PLUGIN_PATH.'languages';
 
         if( ! is_writeable($path)){
-            $result['error'] = __('Dir is not writable','wp-job-portal').' '.$path;
+            $result['error'] = esc_html(__('Dir is not writable','wp-job-portal')).' '.$path;
 
         }else{
 
@@ -882,7 +976,7 @@ class WPJOBPORTALwpjobportalModel {
                     $result['error'] = $error;
                 }
             }else{
-                $result['error'] = __('Unable to connect to server','wp-job-portal');
+                $result['error'] = esc_html(__('Unable to connect to server','wp-job-portal'));
             }
         }
 
@@ -907,7 +1001,7 @@ class WPJOBPORTALwpjobportalModel {
             }
 
             if($m_lang != ''){
-                $m_lang = substr($m_lang, 0,strlen($m_lang) - 2);
+                $m_lang = wpjobportalphplib::wpJP_substr($m_lang, 0,wpjobportalphplib::wpJP_strlen($m_lang) - 2);
                 $lang_name = $m_lang;
                 $match = 2;
             }else{
@@ -920,6 +1014,11 @@ class WPJOBPORTALwpjobportalModel {
     }
 
     function validateAndShowDownloadFileName( ){
+
+        $nonce = WPJOBPORTALrequest::getVar('_wpnonce');
+        if (! wp_verify_nonce( $nonce, 'validate-and-show-download-filename') ) {
+            die( 'Security check Failed' );
+        }
         $lang_name = WPJOBPORTALrequest::getVar('langname');
         if($lang_name == '') return '';
         $result = array();
@@ -927,24 +1026,29 @@ class WPJOBPORTALwpjobportalModel {
         $path = WPJOBPORTAL_PLUGIN_PATH.'languages';
         $result['error'] = false;
         if($f_result['match'] === false){
-            $result['error'] = $lang_name. ' ' . __('Language is not installed','wp-job-portal');
+            $result['error'] = $lang_name. ' ' . esc_html(__('Language is not installed','wp-job-portal'));
         }elseif( ! is_writeable($path)){
-            $result['error'] = $lang_name. ' ' . __('Language directory is not writeable','wp-job-portal').': '.$path;
+            $result['error'] = $lang_name. ' ' . esc_html(__('Language directory is not writeable','wp-job-portal')).': '.$path;
         }else{
             $result['input'] = '<input id="languagecode" class="text_area" type="text" value="'.$lang_name.'" name="languagecode">';
             if($f_result['match'] === 2){
                 $result['input'] .= '<div id="js-emessage-wrapper" style="display:block;margin:20px 0px 20px;">';
-                $result['input'] .= __('Required language is not installed but similar language[s] like').': "<b>'.$f_result['lang_name'].'</b>" '.__('is found in your system','wp-job-portal');
+                $result['input'] .= esc_html(__('Required language is not installed but similar language[s] like','wp-job-portal')).': "<b>'.$f_result['lang_name'].'</b>" '.esc_html(__('is found in your system','wp-job-portal'));
                 $result['input'] .= '</div>';
 
             }
-            $result['path'] = __('Language code','wp-job-portal');
+            $result['path'] = esc_html(__('Language code','wp-job-portal'));
         }
         $result = json_encode($result);
         return $result;
     }
 
     function getLanguageTranslation(){
+
+        $nonce = WPJOBPORTALrequest::getVar('_wpnonce');
+        if (! wp_verify_nonce( $nonce, 'get-language-translation') ) {
+            die( 'Security check Failed' );
+        }
 
         $lang_name = WPJOBPORTALrequest::getVar('langname');
         $language_code = WPJOBPORTALrequest::getVar('filename');
@@ -954,7 +1058,7 @@ class WPJOBPORTALwpjobportalModel {
         $path = WPJOBPORTAL_PLUGIN_PATH.'languages';
 
         if($lang_name == '' || $language_code == ''){
-            $result['error'] = __('Empty values','wp-job-portal');
+            $result['error'] = esc_html(__('Empty values','wp-job-portal'));
             return json_encode($result);
         }
 
@@ -965,10 +1069,10 @@ class WPJOBPORTALwpjobportalModel {
         $langarray = $langarray['default'];
 
         if(!array_key_exists($language_code, $langarray)){
-            $result['error'] = $lang_name. ' ' . __('Language is not installed','wp-job-portal');
+            $result['error'] = $lang_name. ' ' . esc_html(__('Language is not installed','wp-job-portal'));
             return json_encode($result);
         }elseif( ! is_writeable($path)){
-            $result['error'] = $lang_name. ' ' . __('Language directory is not writable','wp-job-portal').': '.$path;
+            $result['error'] = $lang_name. ' ' . esc_html(__('Language directory is not writable','wp-job-portal')).': '.$path;
             return json_encode($result);
         }
 
@@ -977,7 +1081,7 @@ class WPJOBPORTALwpjobportalModel {
         }
 
         if( ! is_writeable($final_path)){
-            $result['error'] = __('File is not writable','wp-job-portal').': '.$final_path;
+            $result['error'] = esc_html(__('File is not writable','wp-job-portal')).': '.$final_path;
         }else{
 
             if($this->isConnected()){
@@ -1011,12 +1115,12 @@ class WPJOBPORTALwpjobportalModel {
                         $curl_response = wp_remote_post($url,array('body'=>$post_data));
                         $response = $curl_response['body'];
                     }
-                    $result['data'] = __('File Downloaded Successfully','wp-job-portal');
+                    $result['data'] = esc_html(__('File Downloaded Successfully','wp-job-portal'));
                 }else{
                     $result['error'] = $curl_response->get_error_message();
                 }
             }else{
-                $result['error'] = __('Unable to connect to server','wp-job-portal');
+                $result['error'] = esc_html(__('Unable to connect to server','wp-job-portal'));
             }
         }
 
@@ -1027,7 +1131,8 @@ class WPJOBPORTALwpjobportalModel {
     }
 
     function writeLanguageFile( $path , $url ){
-		include(ABSPATH . "wp-admin/includes/admin.php");
+		do_action('wpjobportal_load_wp_admin_file');
+
 		$tmpfile = download_url( $url);
 		copy( $tmpfile, $path );
 		@unlink( $tmpfile ); // must unlink afterwards
@@ -1051,7 +1156,7 @@ class WPJOBPORTALwpjobportalModel {
 
     function phpmo_convert($input, $output = false) {
         if ( !$output )
-            $output = str_replace( '.po', '.mo', $input );
+            $output = wpjobportalphplib::wpJP_str_replace( '.po', '.mo', $input );
         $hash = $this->phpmo_parse_po_file( $input );
         if ( $hash === false ) {
             return false;
@@ -1068,9 +1173,9 @@ class WPJOBPORTALwpjobportalModel {
             }
         } else {
             if ($x[0] == '"')
-                $x = substr($x, 1, -1);
-            $x = str_replace("\"\n\"", '', $x);
-            $x = str_replace('$', '\\$', $x);
+                $x = wpjobportalphplib::wpJP_substr($x, 1, -1);
+            $x = wpjobportalphplib::wpJP_str_replace("\"\n\"", '', $x);
+            $x = wpjobportalphplib::wpJP_str_replace('$', '\\$', $x);
         }
         return $x;
     }
@@ -1083,13 +1188,13 @@ class WPJOBPORTALwpjobportalModel {
     $language = array();
     $lines = file($in);
     foreach ($lines as $line_num => $line) {
-        if (strstr($line, 'msgid')){
+        if (wpjobportalphplib::wpJP_strstr($line, 'msgid')){
             $endpos = strrchr($line, '"');
-            $id = substr($line, 7, $endpos-2);
+            $id = wpjobportalphplib::wpJP_substr($line, 7, $endpos-2);
             $ids[] = $id;
-        }elseif(strstr($line, 'msgstr')){
+        }elseif(wpjobportalphplib::wpJP_strstr($line, 'msgstr')){
             $endpos = strrchr($line, '"');
-            $string = substr($line, 8, $endpos-2);
+            $string = wpjobportalphplib::wpJP_substr($line, 8, $endpos-2);
             $strings[] = array($string);
         }else{}
     }
@@ -1120,7 +1225,7 @@ class WPJOBPORTALwpjobportalModel {
             $str = implode("\x00", $entry['msgstr']);
             // keep track of offsets
             $offsets[] = array (
-                            strlen($ids), strlen($id), strlen($strings), strlen($str)
+                            wpjobportalphplib::wpJP_strlen($ids), wpjobportalphplib::wpJP_strlen($id), wpjobportalphplib::wpJP_strlen($strings), wpjobportalphplib::wpJP_strlen($str)
                             );
             // plural msgids are not stored (?)
             $ids .= $id . "\x00";
@@ -1129,7 +1234,7 @@ class WPJOBPORTALwpjobportalModel {
         // keys start after the header (7 words) + index tables ($#hash * 4 words)
         $key_start = 7 * 4 + sizeof($hash) * 4 * 4;
         // values start right after the keys
-        $value_start = $key_start +strlen($ids);
+        $value_start = $key_start +wpjobportalphplib::wpJP_strlen($ids);
         // first all key offsets, then all value offsets
         $key_offsets = array ();
         $value_offsets = array ();
@@ -1174,7 +1279,7 @@ class WPJOBPORTALwpjobportalModel {
             return false;
         }
         $sorted_array = array();
-        parse_str($data['fields_ordering_new'],$sorted_array);
+        wpjobportalphplib::wpJP_parse_str($data['fields_ordering_new'],$sorted_array);
         $sorted_array = reset($sorted_array);
         if(!empty($sorted_array)){
             if($data['ordering_for'] == 'fieldordering'){
@@ -1190,11 +1295,221 @@ class WPJOBPORTALwpjobportalModel {
                 $row->update(array('id' => $sorted_array[$i], $ordering_coloumn => $page_multiplier + $i));
             }
         }
-        WPJOBPORTALMessages::setLayoutMessage(__('Ordering updated', 'wp-job-portal'), 'updated', $msgkey);
+        WPJOBPORTALMessages::setLayoutMessage(esc_html(__('Ordering updated', 'wp-job-portal')), 'updated', $msgkey);
         return ;
     }
 
+    function checkWPJPAddoneInfo($name){
+        $slug = $name.'/'.$name.'.php';
+        if(file_exists(WP_PLUGIN_DIR . '/'.$slug) && is_plugin_active($slug)){
+            $status = __("Activated","wp-job-portal");
+            $action = __("Deactivate","wp-job-portal");
+            $actionClass = 'wpjp-admin-adons-status-Deactive';
+            $url = "plugins.php?s=".$name."&plugin_status=active";
+            $disabled = "disabled";
+            $class = "js-btn-activated";
+            $availability = "-1";
+            $version = "";
+        }else if(file_exists(WP_PLUGIN_DIR . '/'.$slug) && !is_plugin_active($slug)){
+            $status = __("Deactivated","wp-job-portal");
+            $action = __("Activate","wp-job-portal");
+            $actionClass = 'wpjp-admin-adons-status-Active';
+            $url = "plugins.php?s=".$name."&plugin_status=inactive";
+            $disabled = "";
+            $class = "js-btn-green js-btn-active-now";
+            $availability = "1";
+            $version = "";
+        }else if(!file_exists(WP_PLUGIN_DIR . '/'.$slug)){
+            $status = __("Not Installed","wp-job-portal");
+            $action = __("Install Now","wp-job-portal");
+            $actionClass = 'wpjp-admin-adons-status-Install';
+            $url = admin_url("admin.php?page=wpjobportal_premiumplugin&wpjobportallt=step1");
+            $disabled = "";
+            $class = "js-btn-install-now";
+            $availability = "0";
+            $version = "---";
+        }
+        return array("status" => $status, "action" => $action, "url" => $url, "disabled" => $disabled, "class" => $class, "availability" => $availability, "actionClass" => $actionClass, "version" => $version);
+    }
 
+    function downloadandinstalladdonfromAjax(){
+        $nonce = WPJOBPORTALrequest::getVar('_wpnonce');
+        if (! wp_verify_nonce( $nonce, 'download-and-install-addon') ) {
+            die( 'Security check Failed' );
+        }
+
+        $key = WPJOBPORTALrequest::getVar('dataFor');
+        $installedversion = WPJOBPORTALrequest::getVar('currentVersion');
+        $newversion = WPJOBPORTALrequest::getVar('cdnVersion');
+        $addon_json_array = array();
+
+        if($key != ''){
+            $addon_json_array[] = str_replace('wp-job-portal-', '', $key);
+            $plugin_slug = str_replace('wp-job-portal-', '', $key);
+        }
+        $token = get_option('transaction_key_for_'.$key);
+        $result = array();
+        $result['error'] = false;
+        if($token == ''){
+            $result['error'] = esc_html(__('Addon Installation Failed','wp-job-portal'));
+            $result = json_encode($result);
+            return $result;
+        }
+        $site_url = site_url();
+        if($site_url != ''){
+            $site_url = str_replace("https://","",$site_url);
+            $site_url = str_replace("http://","",$site_url);
+        }
+        $url = 'https://wpjobportal.com/setup/index.php?token='.$token.'&productcode='. json_encode($addon_json_array).'&domain='.$site_url;
+        // verify token
+        $verifytransactionkey = $this->verifytransactionkey($token, $url);
+        if($verifytransactionkey['status'] == 0){
+            $result['error'] = $verifytransactionkey['message'];
+            $result = json_encode($result);
+            return $result;
+        }
+        $install_count = 0;
+
+        $installed = $this->install_plugin($url);
+        if ( !is_wp_error( $installed ) && $installed ) {
+            // had to run two seprate loops to save token for all the addons even if some error is triggered by activation.
+            if(strstr($key, 'wp-job-portal-')){
+                update_option('transaction_key_for_'.$key,$token);
+            }
+
+            if(strstr($key, 'wp-job-portal-')){
+                $activate = activate_plugin( $key.'/'.$key.'.php' );
+                $install_count++;
+            }
+
+            // run update sql
+            if ($installedversion != $newversion) {
+                $optionname = 'wpjobportal-addon-'. $plugin_slug .'s-version';
+                update_option($optionname, $newversion);
+                $plugin_path = WP_CONTENT_DIR;
+                $plugin_path = $plugin_path.'/plugins/'.$key.'/includes';
+                if(is_dir($plugin_path . '/sql/') && is_readable($plugin_path . '/sql/')){
+                    if($installedversion != ''){
+                        $installedversion = str_replace('.','', $installedversion);
+                    }
+                    if($newversion != ''){
+                        $newversion = str_replace('.','', $newversion);
+                    }
+                    WPJOBPORTALincluder::getJSModel('premiumplugin')->getAddonUpdateSqlFromUpdateDir($installedversion,$newversion,$plugin_path . '/sql/');
+                    $updatesdir = $plugin_path.'/sql/';
+                    if(preg_match('/wp-job-portal-[a-zA-Z]+/', $updatesdir)){
+                        wpjpRemoveAddonUpdatesFolder($updatesdir);
+                    }
+                }else{
+                    WPJOBPORTALincluder::getJSModel('premiumplugin')->getAddonUpdateSqlFromLive($installedversion,$newversion,$plugin_slug);
+                }
+            }
+
+        }else{
+            $result['error'] = esc_html(__('Addon Installation Failed','wp-job-portal'));
+            $result = json_encode($result);
+            return $result;
+        }
+
+        $result['success'] = esc_html(__('Addon Installed Successfully','wp-job-portal'));
+        $result = json_encode($result);
+        return $result;
+    }
+
+    function verifytransactionkey($transactionkey, $url){
+        $message = 1;
+        if($transactionkey != ''){
+            $response = wp_remote_post( $url );
+            if( !is_wp_error($response) && $response['response']['code'] == 200 && isset($response['body']) ){
+                $result = $response['body'];
+                $result = json_decode($result,true);
+                if(is_array($result) && isset($result[0]) && $result[0] == 0){
+                    $result['status'] = 0;
+                } else{
+                    $result['status'] = 1;
+                }
+            }else{
+                $result = false;
+                if(!is_wp_error($response)){
+                   $error = $response['response']['message'];
+                }else{
+                    $error = $response->get_error_message();
+                }
+            }
+            if(is_array($result) && isset($result['status']) && $result['status'] == 1 ){ // means everthing ok
+                $message = 1;
+            }else{
+                if(isset($result[0]) && $result[0] == 0){
+                    $error = $result[1];
+                }elseif(isset($result['error']) && $result['error'] != ''){
+                    $error = $result['error'];
+                }
+                $message = 0;
+            }
+        }else{
+            $message = 0;
+            $error = esc_html(__('Please insert activation key to proceed','wp-job-portal')).'!';
+        }
+        $array['data'] = array();
+        if ($message == 0) {
+            $array['status'] = 0;
+            $array['message'] = $error;
+        } else {
+            $array['status'] = 1;
+            $array['message'] = 'success';
+        }
+        return $array;
+    }
+
+    function install_plugin( $plugin_zip ) {
+
+        do_action('wpjobportal_load_wp_admin_file');
+        WP_Filesystem();
+
+        $tmpfile = download_url( $plugin_zip);
+
+        if ( !is_wp_error( $tmpfile ) && $tmpfile ) {
+            $plugin_path = WP_CONTENT_DIR;
+            $plugin_path = $plugin_path.'/plugins/';
+            $path = WPJOBPORTAL_PLUGIN_PATH.'addon.zip';
+
+            copy( $tmpfile, $path );
+
+            $unzipfile = unzip_file( $path, $plugin_path);
+
+            @unlink( $path ); // must unlink afterwards
+            @unlink( $tmpfile ); // must unlink afterwards
+
+            if ( is_wp_error( $unzipfile ) ) {
+                $result['error'] = esc_html(__('Addon installation failed','wp-job-portal')).'.';
+                $result['error'] .= " ".esc_html(__($unzipfile->get_error_message(),'wp-job-portal'));
+                $result = json_encode($result);
+                return $result;
+            } else {
+                return true;
+            }
+        }else{
+            $error_string = $tmpfile->get_error_message();
+            $result['error'] = esc_html(__('Addon Installation Failed, File download error','wp-job-portal')).'!'.$error_string;
+            $result = json_encode($result);
+            return $result;
+        }
+    }
+
+    function wpjpRemoveAddonUpdatesFolder($dir)
+    {
+        $structure = glob(rtrim($dir, "/") . '/*');
+        if (is_array($structure)) {
+            foreach ($structure as $file) {
+                if (is_dir($file)) {
+                    wpjpRemoveAddonUpdatesFolder($file);
+                } elseif (is_file($file)) {
+                    @unlink($file);
+                }
+            }
+        }
+        @rmdir($dir);
+    }
 
     function getMessagekey(){
         $key = 'wpjobportal';if(wpjobportal::$_common->wpjp_isadmin()){$key = 'admin_'.$key;}return $key;

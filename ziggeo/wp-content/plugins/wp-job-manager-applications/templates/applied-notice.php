@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager-applications
  * @category    Template
- * @version     1.0.0
+ * @version     3.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,5 +16,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <div class="job-manager-applications-applied-notice">
-	<?php _e( 'You have already applied for this job.', 'wp-job-manager-applications' ); ?>
+	<?php esc_html_e( 'You have already applied for this job.', 'wp-job-manager-applications' ); ?>
 </div>

@@ -143,6 +143,11 @@ class WPJOBPORTALactivation {
                 `params` longtext,
                 `serverstatus` varchar(255) DEFAULT NULL,
                 `serverid` int(11) DEFAULT '0',
+                `facebook_link` varchar(255) DEFAULT NULL,
+                `twiter_link` varchar(255) DEFAULT NULL,
+                `linkedin_link` varchar(255) DEFAULT NULL,
+                `youtube_link` varchar(255) DEFAULT NULL,
+
                 PRIMARY KEY (`id`),
                 KEY `companies_uid` (`uid`)
               ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;";
@@ -403,7 +408,7 @@ class WPJOBPORTALactivation {
               ('searchjobtag', '4', 'job', 'tag'),
               ('categories_colsperrow', '3', 'category', NULL),
               ('productcode', 'wpjobportal', 'default', NULL),
-              ('versioncode', '1.1.9', 'default', NULL),
+              ('versioncode', '2.0.4', 'default', NULL),
               ('producttype', 'free', 'default', NULL),
               ('vis_jscredits', '0', 'jscontrolpanel', 'credits'),
               ('vis_emcredits', '1', 'emcontrolpanel', NULL),
@@ -563,8 +568,8 @@ class WPJOBPORTALactivation {
               ('feature_company_price_listing', '', 'paidsubmission', NULL),
               ('featuredcompany_days_perlisting', '34400', 'paidsubmission', NULL),
               ('featuredjobexpiry_days_perlisting', '30', 'paidsubmission', NULL),
-              ('featuredjobexpiry_days_free', '', 'paidsubmission', NULL),
-              ('job_resume_days_free', '', 'paidsubmission', NULL),
+              ('featuredjobexpiry_days_free', '30', 'paidsubmission', NULL),
+              ('job_resume_days_free', '30', 'paidsubmission', NULL),
               ('job_resume_days_perlisting', '15', 'paidsubmission', NULL),
               ('job_jobalert_price_perlisting', '', 'paidsubmission', NULL),
               ('job_currency_jobalert_perlisting', '45', 'paidsubmission', NULL),
@@ -590,8 +595,13 @@ class WPJOBPORTALactivation {
               ('set_register_redirect_link', '1', 'default', 'null'),
               ('register_redirect_link', '', 'default', 'null'),
               ('set_login_redirect_link', '1', 'default', 'null'),
-              ('login_redirect_link', '', 'default', 'null')
-			  ;
+              ('login_redirect_link', '', 'default', 'null'),
+              ('coverletter_auto_approve', '1', 'coverletter', 'coverletter'),
+              ('formcoverletter', '1', 'jscontrolpanel', 'coverletter'),
+              ('mycoverletter', '1', 'jscontrolpanel', 'coverletter'),
+              ('vis_jsformcoverletter', '1', 'jscontrolpanel', 'coverletter'),
+              ('vis_jsmycoverletter', '1', 'jscontrolpanel', 'coverletter'),
+              ('jobcity_per_row', '2', 'default', NULL);
                 ";
             wpjobportal::$_db->query($query);
 
@@ -899,7 +909,11 @@ class WPJOBPORTALactivation {
           (89, 'wpjobportal_user_first', 'First Name', 1, '', NULL, NULL, 4, 1, 1, 0, 1, 1, 0, '', '', 0, 0, NULL, 1, 0, 1, '', 0, 0, 0, 0, 0, ''),
           (90, 'wpjobportal_user_last', 'Last Name', 2, '', NULL, NULL, 4, 1, 1, 0, 1, 1, 0, '', '', 0, 0, NULL, 1, 0, 1, '', 0, 0, 0, 0, 0, ''),
           (91, 'wpjobportal_user_login', 'User Name', 3, '', NULL, NULL, 4, 1, 1, 0, 1, 1, 0, '', '', 0, 0, NULL, 1, 0, 1, '', 0, 0, 0, 0, 0, ''),
-          (92, 'searchable', 'searchable', 25, '1', NULL, NULL, 3, 1, 1, 0, 0, 0, 0, '', '', 1, 1, NULL, 0, 0, 1, '', 0, 0, 0, 0, 0, ''); ";
+          (92, 'searchable', 'searchable', 25, '1', NULL, NULL, 3, 1, 1, 0, 0, 0, 0, '', '', 1, 1, NULL, 0, 0, 1, '', 0, 0, 0, 0, 0, ''),
+          (93, 'facebook_link', 'Facebook Link', 26, '', NULL, NULL, 1, 0, 0, 0, 0, 0, 0, '', '', 0, 0, NULL, 1, 0, 1, '', 0, 0, 0, 0, 0, ''),
+          (94, 'youtube_link', 'Youtube Link', 27, '', NULL, NULL, 1, 0, 0, 0, 0, 0, 0, '', '', 0, 0, NULL, 1, 0, 1, '', 0, 0, 0, 0, 0, ''),
+          (95, 'twiter_link', 'Twitter Link', 28, '', NULL, NULL, 1, 0, 0, 0, 0, 0, 0, '', '', 0, 0, NULL, 1, 0, 1, '', 0, 0, 0, 0, 0, ''),
+          (96, 'linkedin_link', 'Linkedin Link', 29, '', NULL, NULL, 1, 0, 0, 0, 0, 0, 0, '', '', 0, 0, NULL, 1, 0, 1, '', 0, 0, 0, 0, 0, ''); ";
         wpjobportal::$_db->query($query);
 
             $query = "CREATE TABLE IF NOT EXISTS `" . wpjobportal::$_db->prefix . "wj_portal_heighesteducation` (
@@ -1353,7 +1367,16 @@ class WPJOBPORTALactivation {
           (85, '".$slugprefix."jobapply-payment', 'jobapply-payment', 'payjobapply', '', NULL),
           (86, '".$slugprefix."resume-payment', 'resume-payment', 'payresume', '', NULL),
           (87, '".$slugprefix."newest-jobs', 'newest-jobs', 'newestjobs', '1', NULL),
-          (88, '".$slugprefix."resumesavesearch-payment', 'resumesavesearch-payment', 'payresumesearch', '', NULL);";
+          (88, '".$slugprefix."resumesavesearch-payment', 'resumesavesearch-payment', 'payresumesearch', '', NULL),
+          (89, '".$slugprefix."my-coverletters', 'my-coverletters', 'mycoverletters', 'slug for my coverletters page', 1),
+          (90, '".$slugprefix."add-coverletter', 'add-coverletter', 'addcoverletter', 'slug for add coverletter page', 1),
+          (91, '".$slugprefix."coverletter', 'coverletter', 'viewcoverletter', 'slug for view coverletter page', 1),
+          (92, '".$slugprefix."coverletter-payment', 'coverletter-payment', 'paycoverletter', '', 1),
+          (93, '".$slugprefix."jobs-by-cities', 'jobs-by-cities', 'jobsbycitites', 'slug for my jobs by cities page', 1),
+          (94, '".$slugprefix."companies', 'companies', 'companies', 'slug for companies listing page', 1);
+
+
+          ";
           wpjobportal::$_db->query($query);
           $query = "CREATE TABLE IF NOT EXISTS `" . wpjobportal::$_db->prefix . "wj_portal_jswjsessiondata` (
                       `id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,

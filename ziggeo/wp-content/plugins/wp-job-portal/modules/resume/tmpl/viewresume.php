@@ -56,7 +56,7 @@ if (wpjobportal::$_error_flag == null) {
                     $price = wpjobportal::$_config->getConfigValue('job_viewresumecontact_price_perlisting');
                     $currencyid = wpjobportal::$_config->getConfigValue('job_currency_viewresumecontact_perlisting');
                     $decimals = WPJOBPORTALincluder::getJSModel('currency')->getDecimalPlaces($currencyid);
-                    $formattedPrice = number_format($price,$decimals);
+                    $formattedPrice = wpjobportalphplib::wpJP_number_format($price,$decimals);
                     // Fantacy price To calculate overplaces Amount's
                     $priceCompanytlist =wpjobportal::$_common->getFancyPrice($price,$currencyid,array('decimal_places'=>$decimals));
                     /**

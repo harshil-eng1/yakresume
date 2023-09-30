@@ -23,7 +23,7 @@ if ($labelinlisting != 1)
     </div>
     <div class="wjportal-newest-jobs">
         <div class="wjportal-filter-search-main-wrp">
-            <form class="wjportal-form-wrp" id="job_form" method="post" action="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs'))); ?>">
+            <form class="wjportal-form-wrp" id="job_form" method="post" action="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs'))); ?>">
                 <?php
                     WPJOBPORTALincluder::getTemplate('job/views/frontend/filter',array('layout' => 'newestjobsfilter'));
                 ?>
@@ -46,7 +46,7 @@ if ($labelinlisting != 1)
                         ));
                     }
                 } else {
-                    $msg = __('No record found','wp-job-portal');
+                    $msg = esc_html(__('No record found','wp-job-portal'));
                     WPJOBPORTALlayout::getNoRecordFound($msg);
                 }
             ?>

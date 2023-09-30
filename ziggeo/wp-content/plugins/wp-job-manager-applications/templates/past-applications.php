@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager-applications
  * @category    Template
- * @version     2.1.4
+ * @version     3.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -17,10 +17,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 ?>
 <table class="job-manager-past-applications">
 	<tr>
-		<th><?php _e( 'Job', 'wp-job-manager-applications' ); ?></th>
-		<th><?php _e( 'Date Applied', 'wp-job-manager-applications' ); ?></th>
-		<th><?php _e( 'Status', 'wp-job-manager-applications' ); ?></th>
-		<th><?php _e( 'Application Message', 'wp-job-manager-applications' ); ?></th>
+		<th><?php esc_html_e( 'Job', 'wp-job-manager-applications' ); ?></th>
+		<th><?php esc_html_e( 'Date Applied', 'wp-job-manager-applications' ); ?></th>
+		<th><?php esc_html_e( 'Status', 'wp-job-manager-applications' ); ?></th>
+		<th><?php esc_html_e( 'Application Message', 'wp-job-manager-applications' ); ?></th>
 	</tr>
 	<?php
 	foreach ( $applications as $application ) {
@@ -34,7 +34,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 		<tr>
 			 <td>
-				<?php if ( $job && $job->post_status == 'publish' ) { ?>
+				<?php if ( 'publish' === $job && $job->post_status ) { ?>
 					 <a href="<?php echo esc_url( get_permalink( $job_id ) ); ?>"><?php echo esc_html( $job_title ); ?></a>
 					<?php
 				} else {

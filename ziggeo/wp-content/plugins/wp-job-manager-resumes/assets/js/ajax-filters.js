@@ -1,37 +1,47 @@
+/* global resume_manager_ajax_filters */
 jQuery( document ).ready( function ( $ ) {
+	const xhr = [];
 
-	var xhr = [];
+	$( '.resumes' ).on( 'update_results', function ( event, page, append ) {
+		let data = '';
+		const target = $( this );
+		const form = target.find( '.resume_filters' );
+		const showing = target.find( '.showing_resumes' );
+		const results = target.find( '.resumes' );
+		const per_page = target.data( 'per_page' );
+		const orderby = target.data( 'orderby' );
+		const order = target.data( 'order' );
+		const featured = target.data( 'featured' );
+		const index = $( 'div.resumes' ).index( this );
+		const is_rand = [ 'rand', 'rand_featured' ].includes( orderby );
 
-	$( '.resumes' ).on( 'update_results', function( event, page, append ) {
-		var data     = '';
-		var target   = $(this);
-		var form     = target.find( '.resume_filters' );
-		var showing  = target.find( '.showing_resumes' );
-		var results  = target.find( '.resumes' );
-		var per_page = target.data( 'per_page' );
-		var orderby  = target.data( 'orderby' );
-		var order    = target.data( 'order' );
-		var featured = target.data( 'featured' );
-		var index    = $( 'div.resumes' ).index(this);
-
-		if ( xhr[index] ) {
-			xhr[index].abort();
+		if ( xhr[ index ] ) {
+			xhr[ index ].abort();
 		}
 
 		if ( append ) {
 			$( '.load_more_resumes', target ).addClass( 'loading' );
 		} else {
-			$( results).addClass( 'loading' );
-			$( 'li.resume, li.no_resumes_found', results ).css( 'visibility', 'hidden' );
+			$( results ).addClass( 'loading' );
+			$( 'li.resume, li.no_resumes_found', results ).css(
+				'visibility',
+				'hidden'
+			);
 		}
 
 		if ( true == target.data( 'show_filters' ) ) {
-
-			var categories = form.find(':input[name^="search_categories"]').map(function () { return $(this).val(); }).get();
-			var keywords  = '';
-			var location  = '';
-			var $keywords = form.find(':input[name="search_keywords"]');
-			var $location = form.find(':input[name="search_location"]');
+			const categories = form
+				.find( ':input[name^="search_categories"]' )
+				.map( function () {
+					return $( this ).val();
+				} )
+				.get();
+			let keywords = '';
+			let location = '';
+			let skills = '';
+			const $keywords = form.find( ':input[name="search_keywords"]' );
+			const $location = form.find( ':input[name="search_location"]' );
+			const $skills = form.find( ':input[name="search_skills"]' );
 
 			// Workaround placeholder scripts
 			if ( $keywords.val() != $keywords.attr( 'placeholder' ) )
@@ -40,100 +50,155 @@ jQuery( document ).ready( function ( $ ) {
 			if ( $location.val() != $location.attr( 'placeholder' ) )
 				location = $location.val();
 
-			var data = {
-				action: 			'resume_manager_get_resumes',
-				search_keywords: 	keywords,
-				search_location: 	location,
-				search_categories:  categories,
-				per_page: 			per_page,
-				orderby: 			orderby,
-				order: 			    order,
-				page:               page,
-				featured:           featured,
-				show_pagination:    target.data( 'show_pagination' ),
-				form_data:          form.serialize()
-			};
+			if ( $skills.val() != $skills.attr( 'placeholder' ) )
+				skills = $skills.val();
 
+			data = {
+				action: 'resume_manager_get_resumes',
+				search_keywords: keywords,
+				search_location: location,
+				search_categories: categories,
+				search_skills: skills,
+				per_page,
+				orderby,
+				order,
+				page,
+				featured,
+				show_pagination: target.data( 'show_pagination' ),
+				form_data: form.serialize(),
+			};
 		} else {
-
-			var data = {
-				action: 			'resume_manager_get_resumes',
-				search_categories:  target.data('categories').split(','),
-                		search_keywords: target.data('keywords'),
-		                search_location: target.data('location'),
-				per_page: 			per_page,
-				orderby: 			orderby,
-				order: 			    order,
-				featured:           featured,
-				page:               page,
-				show_pagination:    target.data( 'show_pagination' ),
+			data = {
+				action: 'resume_manager_get_resumes',
+				search_categories: target.data( 'categories' ).split( ',' ),
+				search_keywords: target.data( 'keywords' ),
+				search_location: target.data( 'location' ),
+				search_skills: target.data( 'skills' ),
+				per_page,
+				orderby,
+				order,
+				featured,
+				page,
+				show_pagination: target.data( 'show_pagination' ),
 			};
-
 		}
 
-		xhr[index] = $.ajax( {
-			type: 		'POST',
-			url: 		resume_manager_ajax_filters.ajax_url,
-			data: 		data,
-			success: 	function( result ) {
+		// Reset loaded_ids for a new filter.
+		if ( 1 === page ) {
+			target.removeData( 'loaded_ids' );
+		}
+
+		if ( is_rand ) {
+			data.exclude_ids = target.data( 'loaded_ids' );
+		}
+
+		xhr[ index ] = $.ajax( {
+			type: 'POST',
+			url: resume_manager_ajax_filters.ajax_url,
+			data,
+			success( result ) {
 				if ( result ) {
 					try {
+						// Set loaded IDs.
+						const loadedIds = target.data( 'loaded_ids' ) || [];
+						target.data( 'loaded_ids', [
+							...loadedIds,
+							...result.post_ids,
+						] );
 
 						if ( result.showing ) {
-							$(showing).show().html('').append( '<span>' + result.showing + '</span>' + result.showing_links );
+							$( showing )
+								.show()
+								.html( '' )
+								.append(
+									'<span>' +
+										result.showing +
+										'</span>' +
+										result.showing_links
+								);
 						} else {
-							$(showing).hide();
+							$( showing ).hide();
 						}
 
 						if ( result.html ) {
 							if ( append ) {
-								$(results).append( result.html );
+								$( results ).append( result.html );
 							} else {
-								$(results).html( result.html );
+								$( results ).html( result.html );
 							}
 						}
 
 						if ( true == target.data( 'show_pagination' ) ) {
-							target.find('.job-manager-pagination').remove();
+							target.find( '.job-manager-pagination' ).remove();
 
 							if ( result.pagination ) {
 								target.append( result.pagination );
 							}
 						} else {
-							if ( ! result.found_resumes || result.max_num_pages === page ) {
+							if (
+								// Check pagination without random order.
+								( ! is_rand &&
+									( ! result.found_resumes ||
+										result.max_num_pages === page ) ) ||
+								// Check pagination with random order.
+								( is_rand &&
+									( ! result.found_resumes ||
+										1 === result.max_num_pages ) )
+							) {
 								$( '.load_more_resumes', target ).hide();
 							} else {
-								$( '.load_more_resumes', target ).show().data( 'page', page );
+								$( '.load_more_resumes', target )
+									.show()
+									.data( 'page', page );
 							}
-							$( '.load_more_resumes', target ).removeClass( 'loading' );
-							$( 'li.resume', results ).css( 'visibility', 'visible' );
+							$( '.load_more_resumes', target ).removeClass(
+								'loading'
+							);
+							$( 'li.resume', results ).css(
+								'visibility',
+								'visible'
+							);
 						}
 
 						$( results ).removeClass( 'loading' );
 
 						target.triggerHandler( 'updated_results', result );
-
-					} catch(err) {
+					} catch ( err ) {
 						//console.log(err);
 					}
 				}
-			}
+			},
 		} );
 	} );
 
-	$( '#search_keywords, #search_location, #search_categories' ).change( function() {
-		var target = $(this).closest( 'div.resumes' );
+	$(
+		'#search_keywords, #search_location, #search_categories, #search_skills'
+	)
+		.change( function () {
+			const target = $( this ).closest( 'div.resumes' );
 
-		target.triggerHandler( 'update_results', [ 1, false ] );
-	} ).change();
+			target.triggerHandler( 'update_results', [ 1, false ] );
+		} )
+		.change();
 
-	$( '.resume_filters' ).on( 'click', '.reset', function() {
-		var target  = $(this).closest( 'div.resumes' );
-		var form    = $(this).closest( 'form' );
+	$( '.resume_filters' ).on( 'click', '.reset', function () {
+		const target = $( this ).closest( 'div.resumes' );
+		const form = $( this ).closest( 'form' );
 
-		form.find(':input[name="search_keywords"]').not(':input[type="hidden"]').val('');
-		form.find(':input[name="search_location"]').not(':input[type="hidden"]').val('');
-		form.find(':input[name^="search_categories"]').not(':input[type="hidden"]').val( 0 ).trigger( 'chosen:updated' ).trigger( 'change.select2' );
+		form.find( ':input[name="search_keywords"]' )
+			.not( ':input[type="hidden"]' )
+			.val( '' );
+		form.find( ':input[name="search_location"]' )
+			.not( ':input[type="hidden"]' )
+			.val( '' );
+		form.find( ':input[name^="search_categories"]' )
+			.not( ':input[type="hidden"]' )
+			.val( 0 )
+			.trigger( 'chosen:updated' )
+			.trigger( 'change.select2' );
+		form.find( ':input[name="search_skills"]' )
+			.not( ':input[type="hidden"]' )
+			.val( '' );
 
 		target.triggerHandler( 'reset' );
 		target.triggerHandler( 'update_results', [ 1, false ] );
@@ -142,8 +207,8 @@ jQuery( document ).ready( function ( $ ) {
 	} );
 
 	$( '.load_more_resumes' ).click( function () {
-		var target = $( this ).closest( 'div.resumes' );
-		var page = $( this ).data( 'page' );
+		const target = $( this ).closest( 'div.resumes' );
+		let page = $( this ).data( 'page' );
 
 		if ( ! page ) {
 			page = 1;
@@ -151,16 +216,16 @@ jQuery( document ).ready( function ( $ ) {
 			page = parseInt( page );
 		}
 
-		$( this ).data( 'page', ( page + 1 ) );
+		$( this ).data( 'page', page + 1 );
 
 		target.triggerHandler( 'update_results', [ page + 1, true ] );
 
 		return false;
 	} );
 
-	$( 'div.resumes' ).on( 'click', '.job-manager-pagination a', function() {
-		var target = $( this ).closest( 'div.resumes' );
-		var page   = $( this ).data( 'page' );
+	$( 'div.resumes' ).on( 'click', '.job-manager-pagination a', function () {
+		const target = $( this ).closest( 'div.resumes' );
+		const page = $( this ).data( 'page' );
 
 		target.triggerHandler( 'update_results', [ page, false ] );
 
@@ -168,15 +233,17 @@ jQuery( document ).ready( function ( $ ) {
 	} );
 
 	if ( $.isFunction( $.fn.select2 ) ) {
-		var select2_args = {
+		const select2_args = {
 			allowClear: true,
-			minimumResultsForSearch: 10
+			minimumResultsForSearch: 10,
 		};
 		if ( 1 === parseInt( resume_manager_ajax_filters.is_rtl, 10 ) ) {
 			select2_args.dir = 'rtl';
 		}
-		$( 'select[name^="search_categories"]:visible' ).select2( select2_args );
+		$( 'select[name^="search_categories"]:visible' ).select2(
+			select2_args
+		);
 	} else if ( $.isFunction( $.fn.chosen ) ) {
 		$( 'select[name^="search_categories"]:visible' ).chosen();
 	}
-});
+} );

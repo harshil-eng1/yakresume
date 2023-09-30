@@ -40,12 +40,12 @@ if (wpjobportal::$_error_flag == null) {
         echo wp_kses(WPJOBPORTALformfield::hidden('sorton', wpjobportal::$_data['sorton']),WPJOBPORTAL_ALLOWED_TAGS);
 
     } else {
-        $msg = __('No record found','wp-job-portal');
+        $msg = esc_html(__('No record found','wp-job-portal'));
         $links[] = array(
-                    'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'addresume', 'wpjobportalpageid'=>wpjobportal::getPageid())),
-                    'text' => __('Add New','wp-job-portal') .' '. __('Resume', 'wp-job-portal')
+                    'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'addresume', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())),
+                    'text' => esc_html(__('Add New','wp-job-portal')) .' '. esc_html(__('Resume', 'wp-job-portal'))
                 );
-        echo wp_kses(WPJOBPORTALlayout::getNoRecordFound($msg,$links), WPJOBPORTAL_ALLOWED_TAGS);
+        WPJOBPORTALlayout::getNoRecordFound($msg,$links);
     }
 ?>
     </div>

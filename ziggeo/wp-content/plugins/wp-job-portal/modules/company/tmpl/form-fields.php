@@ -1,4 +1,6 @@
 <?php
+if (!defined('ABSPATH'))
+    die('Restricted Access');
 /**
  * @param company      company details - optional
  * @param inputprefix  prefix to concat with input name and id - optional
@@ -32,31 +34,31 @@ foreach($fields AS $field){
 	$content = '';
     switch ($field->field){
         case 'name':
-            $content = WPJOBPORTALformfield::text($inputprefix.$startNod.'name'.$endnote, isset($company->name) ? $company->name : null, array('data-validation' => $field->validation,'placeholder' => __($field->placeholder,'wp-job-portal'),'class' => 'inputbox wjportal-form-input-field'));
+            $content = WPJOBPORTALformfield::text($inputprefix.$startNod.'name'.$endnote, isset($company->name) ? $company->name : null, array('data-validation' => $field->validation,'placeholder' => wpjobportal::wpjobportal_getVariableValue($field->placeholder),'class' => 'inputbox wjportal-form-input-field'));
         break;
         case 'tagline':
             //if(in_array('tag', wpjobportal::$_active_addons)){
-                $content = WPJOBPORTALformfield::text($inputprefix.$startNod.'tagline'.$endnote, isset($company->tagline) ? $company->tagline : '',array('data-validation' => $field->validation,'placeholder' => __($field->placeholder,'wp-job-portal'),'class' => 'inputbox wjportal-form-input-field'));;
+                $content = WPJOBPORTALformfield::text($inputprefix.$startNod.'tagline'.$endnote, isset($company->tagline) ? $company->tagline : '',array('data-validation' => $field->validation,'placeholder' => wpjobportal::wpjobportal_getVariableValue($field->placeholder),'class' => 'inputbox wjportal-form-input-field'));;
             ///}
         break;
         case 'contactemail':
-            $content = WPJOBPORTALformfield::email($inputprefix.$startNod.'contactemail'.$endnote,isset($company->contactemail) ? $company->contactemail : $email,array('data-validation' => 'email'.'  '.$field->validation,'placeholder' => __($field->placeholder,'wp-job-portal'),'class' => 'inputbox wjportal-form-input-field'));
+            $content = WPJOBPORTALformfield::email($inputprefix.$startNod.'contactemail'.$endnote,isset($company->contactemail) ? $company->contactemail : $email,array('data-validation' => 'email'.'  '.$field->validation,'placeholder' => wpjobportal::wpjobportal_getVariableValue($field->placeholder),'class' => 'inputbox wjportal-form-input-field'));
         break;
         case 'url':
-            $content = WPJOBPORTALformfield::text($inputprefix.$startNod.'url'.$endnote, isset($company->url) ? $company->url : '',array('data-validation' => $field->validation,'placeholder' => __($field->placeholder,'wp-job-portal'),'class' => 'inputbox wjportal-form-input-field'));
+            $content = WPJOBPORTALformfield::text($inputprefix.$startNod.'url'.$endnote, isset($company->url) ? $company->url : '',array('data-validation' => $field->validation,'placeholder' => wpjobportal::wpjobportal_getVariableValue($field->placeholder),'class' => 'inputbox wjportal-form-input-field'));
         break;
         case 'description':
         	$content = WPJOBPORTALformfield::editor($inputprefix.$sys.'description', isset($company->description) ? $company->description : '',array('class' => 'wjportal-form-textarea-field'));
         break;
         case 'city':
-            $content = WPJOBPORTALformfield::text($inputprefix.$sys.'city', '',array('data-validation' => $field->validation,'placeholder' => __($field->placeholder,'wp-job-portal')));
+            $content = WPJOBPORTALformfield::text($inputprefix.$sys.'city', '',array('data-validation' => $field->validation,'placeholder' => wpjobportal::wpjobportal_getVariableValue($field->placeholder),'class'=>'wpjobportal-company-form-city-field'));
             $content .= WPJOBPORTALformfield::hidden('cityforedit', isset($company->multicity) ? $company->multicity : '');
         break;
         case 'address1':
-            $content = WPJOBPORTALformfield::text($inputprefix.$startNod.'address1'.$endnote, isset($company->address1) ? $company->address1 : '',array('data-validation' => $field->validation,'placeholder' => __($field->placeholder,'wp-job-portal'),'class' => 'inputbox wjportal-form-input-field'));
+            $content = WPJOBPORTALformfield::text($inputprefix.$startNod.'address1'.$endnote, isset($company->address1) ? $company->address1 : '',array('data-validation' => $field->validation,'placeholder' => wpjobportal::wpjobportal_getVariableValue($field->placeholder),'class' => 'inputbox wjportal-form-input-field'));
         break;
         case 'address2':
-            $content = WPJOBPORTALformfield::text($inputprefix.$startNod.'address2'.$endnote, $company ? $company->address2 : '',array('data-validation' => $field->validation,'placeholder' => __($field->placeholder,'wp-job-portal'),'class' => 'inputbox wjportal-form-input-field'));
+            $content = WPJOBPORTALformfield::text($inputprefix.$startNod.'address2'.$endnote, $company ? $company->address2 : '',array('data-validation' => $field->validation,'placeholder' => wpjobportal::wpjobportal_getVariableValue($field->placeholder),'class' => 'inputbox wjportal-form-input-field'));
             break;
         case 'logo':
         	ob_start();
@@ -65,7 +67,7 @@ foreach($fields AS $field){
                 <div class="wjportal-form-upload-btn-wrp">
                     <span class="wjportal-form-upload-btn-wrp-txt"><?php echo isset($company->logofilename) ? $company->logofilename : '' ;?> </span>
                     <span class="wjportal-form-upload-btn">
-                        <?php echo __('Upload Image','wp-job-portal'); ?>
+                        <?php echo esc_html(__('Upload Image','wp-job-portal')); ?>
                         <input id="logo" name="logo" type="file">
                     </span>
                 </div>
@@ -81,19 +83,31 @@ foreach($fields AS $field){
                 }?>
                 <div class="wjportal-form-image-wrp" style="display:<?php echo esc_attr($class); ?> ;">
                     <img class="rs_photo wjportal-form-image" src="<?php echo esc_url($path); ?>" id="rs_photo" />
-                    <img id="wjportal-form-delete-image" src="<?php echo WPJOBPORTAL_PLUGIN_URL;?>includes/images/no.png" alt="<?php echo __('cross','wp-job-portal'); ?>">
+                    <img id="wjportal-form-delete-image" src="<?php echo WPJOBPORTAL_PLUGIN_URL;?>includes/images/no.png" alt="<?php echo esc_html(__('cross','wp-job-portal')); ?>">
                 </div>
                 <?php
                 $logoformat = wpjobportal::$_config->getConfigValue('image_file_type');
                 $maxsize = wpjobportal::$_config->getConfigValue('company_logofilezize');
                 echo '<div class="wjportal-form-help-txt">'.esc_html($logoformat).'</div>';
-                echo '<div class="wjportal-form-help-txt">'.__("Maximum","wp-job-portal").' '.esc_html($maxsize).' Kb'.'</div>';
+                echo '<div class="wjportal-form-help-txt">'.esc_html(__("Maximum","wp-job-portal")).' '.esc_html($maxsize).' Kb'.'</div>';
                 ?>
 
             </div>
                 <?php
                 $content = ob_get_clean();
         break;
+        case 'facebook_link':
+            $content = WPJOBPORTALformfield::text($inputprefix.$startNod.'facebook_link'.$endnote, $company ? $company->facebook_link : '',array('data-validation' => $field->validation,'placeholder' => wpjobportal::wpjobportal_getVariableValue($field->placeholder),'class' => 'inputbox wjportal-form-input-field'));
+            break;
+        case 'youtube_link':
+            $content = WPJOBPORTALformfield::text($inputprefix.$startNod.'youtube_link'.$endnote, $company ? $company->youtube_link : '',array('data-validation' => $field->validation,'placeholder' => wpjobportal::wpjobportal_getVariableValue($field->placeholder),'class' => 'inputbox wjportal-form-input-field'));
+            break;
+        case 'twiter_link':
+            $content = WPJOBPORTALformfield::text($inputprefix.$startNod.'twiter_link'.$endnote, $company ? $company->twiter_link : '',array('data-validation' => $field->validation,'placeholder' => wpjobportal::wpjobportal_getVariableValue($field->placeholder),'class' => 'inputbox wjportal-form-input-field'));
+            break;
+        case 'linkedin_link':
+            $content = WPJOBPORTALformfield::text($inputprefix.$startNod.'linkedin_link'.$endnote, $company ? $company->linkedin_link : '',array('data-validation' => $field->validation,'placeholder' => wpjobportal::wpjobportal_getVariableValue($field->placeholder),'class' => 'inputbox wjportal-form-input-field'));
+            break;
         case 'termsandconditions':
             if(!isset($company)){
                 $termsandconditions_flag = 1;

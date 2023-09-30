@@ -60,6 +60,11 @@ class WP_Resume_Manager_Form_Submit_Resume extends WP_Job_Manager_Form {
 		add_action( 'submit_resume_form_start', [ $this, 'output_submit_form_nonce_field' ] );
 		add_action( 'preview_resume_form_start', [ $this, 'output_preview_form_nonce_field' ] );
 
+		if ( $this->use_agreement_checkbox() ) {
+			add_action( 'submit_resume_form_resume_fields_end', [ $this, 'display_agreement_checkbox_field' ] );
+			add_filter( 'submit_resume_form_validate_fields', [ $this, 'validate_agreement_checkbox' ] );
+		}
+
 		if ( $this->use_recaptcha_field() ) {
 			add_action( 'submit_resume_form_resume_fields_end', [ $this, 'display_recaptcha_field' ] );
 			add_action( 'submit_resume_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
@@ -308,6 +313,7 @@ class WP_Resume_Manager_Form_Submit_Resume extends WP_Job_Manager_Form {
 							'url'  => [
 								'label'       => __( 'URL', 'wp-job-manager-resumes' ),
 								'type'        => 'text',
+								'sanitizer'   => 'esc_url_raw',
 								'required'    => true,
 								'placeholder' => '',
 								'priority'    => 2,
@@ -467,11 +473,17 @@ class WP_Resume_Manager_Form_Submit_Resume extends WP_Job_Manager_Form {
 							$item[ $key ] = $file;
 							break;
 						default:
+							$sanitize_callback = 'sanitize_text_field';
+
+							if ( isset( $field['sanitizer'] ) ) {
+								$sanitize_callback = $field['sanitizer'];
+							}
+
 							// Fetch and sanitize all other input.
 							if ( is_array( $input_field_value ) ) {
-								$item[ $key ] = array_filter( array_map( 'sanitize_text_field', $input_field_value ) );
+								$item[ $key ] = array_filter( array_map( $sanitize_callback, $input_field_value ) );
 							} else {
-								$item[ $key ] = sanitize_text_field( $input_field_value );
+								$item[ $key ] = call_user_func( $sanitize_callback, $input_field_value );
 							}
 							break;
 					}
@@ -495,6 +507,21 @@ class WP_Resume_Manager_Form_Submit_Resume extends WP_Job_Manager_Form {
 			return false;
 		}
 		return 1 === absint( get_option( 'resume_manager_enable_recaptcha_resume_submission' ) );
+	}
+
+	/**
+	 * Use agreement checkbox field on the form?
+	 *
+	 * @since 1.18.5
+	 *
+	 * @return bool
+	 */
+	private function use_agreement_checkbox() {
+		if ( ! method_exists( $this, 'display_agreement_checkbox_field' ) || ! method_exists( $this, 'validate_agreement_checkbox' ) ) {
+			return false;
+		}
+
+		return 1 === absint( get_option( 'resume_manager_show_agreement_resume_submission' ) );
 	}
 
 	/**

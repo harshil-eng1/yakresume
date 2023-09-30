@@ -1,5 +1,116 @@
 == Changelog ==
 
+= 1.8.3.1 =
+- Fixed: There were situations when Stripe Credit Card field wasn't working properly in Elementor.
+
+= 1.8.3 =
+- Added: New `{site_name}` smart tag.
+- Added: Fields in the Form Builder can now be searched by name or related keywords.
+- Changed: Adjusted error message for Stripe subscription payment failure.
+- Changed: Elementor integration updated and improved.
+- Changed: Improved cache busting of entry counts on the Dashboard widget.
+- Changed: Anti-spam processing significantly improved.
+- Changed: Various notifications for users without required permissions have been improved.
+- Changed: Updated DOMPurify library to 3.0.5.
+- Changed: Sidebar in the Form Builder now can be collapsed or expanded with a `Ctrl + T` keyboard shortcut.
+- Changed: Updated Icon Choices Font Awesome library to 6.4.0.
+- Changed: Improved empty states for blocks/widgets on Gutenberg and Elementor editor.
+- Fixed: Submit button font family was not inherited from theme styles.
+- Fixed: No spacing between the field label and the field on Settings pages.
+- Fixed: Handling of string to array conversion type error in rare cases when the option in the database contained malformed value.
+- Fixed: Improved the preview for the Dropdown choices with HTML tags in the Form Builder.
+- Fixed: Stripe Payment fields previously ignoring "Include Form Styling" setting.
+- Fixed: Improved responsive styles for multiple choice controls on the Settings pages.
+- Fixed: Removed redundant space between Stripe credit card sub-fields when sub-labels are hidden.
+- Fixed: Handling console error on post/page edit screen when not connected to Stripe.
+- Fixed: Handling a PHP Notice that was generated when the legacy API is used for Stripe payments.
+- Fixed: Revised link to Comprehensive Guide in the Elementor WPForms widget.
+- Fixed: Akismet anti-spam check could be skipped in certain cases.
+- Fixed: Stripe Payment field displaying a warning sign with an empty error message when card validation failed.
+- Fixed: Hierarchical Dynamic Choices list that resulted in a PHP timeout error when the list was more than 3 levels deep.
+- Fixed: CAPTCHA badge preventing the Divi Visual Builder preview from loading.
+- Fixed: Inconsistent email validation between front-end and server.
+- Fixed: Form Location title or slug occasionally not updating after updating a post.
+- Fixed: Buttons in the confirmation modal that were not aligned correctly if they didn't fit in one line.
+
+= 1.8.2.3 =
+- Changed: Admin notice content and design is improved.
+- Changed: We optimized the Help screen performance within the Form Builder.
+- Fixed: The query string rewrite module from the 7G Firewall plugin was conflicting with the WPForms block in the Block Editor.
+- Fixed: Payment fields were not inheriting a newly updated currency from the WPForms Settings > Payments page.
+- Fixed: When duplicating a field in the Form Builder, the options panel for the newly duplicated field was not consistently active.
+- Fixed: WPForms admin area was using a site language instead of the currently logged-in user language if languages were different.
+- Fixed: When an email field contained long words without spaces, words were not properly wrapped.
+- Fixed: Form settings were not reflecting new template settings when switching those templates.
+- Fixed: WPForms Challenge pointers were overlapping text labels in some languages.
+- Fixed: In some cases, the page with a form on the front end was not scrolled to the error field.
+- Fixed: The Dropdown border width was wrong when the input was smaller than the dropdown.
+- Fixed: It was possible to resize the Paragraph field larger than the containers.
+- Fixed: Empty option was replaced with the default one for a duplicated dropdown.
+- Fixed: There was a fatal error on the Analytics page if the MonsterInsights Lite plugin was active.
+- Fixed: Form Location title and slug were incorrect after updating a post with that form embedded.
+- Fixed: The "From Email" option validation message was invisible when the WP Mail SMTP plugin was active.
+- Fixed: PHP warning 'Illegal string offset' appeared on some sites.
+- Fixed: Placeholder text in the Dynamic choices of the Dropdown field was not displayed when the field was duplicated.
+- Fixed: The "Let's Go!" button inside the Form Embed screen was disabled after the page title change.
+- Fixed: Bulk option labels were not inline in some languages.
+- Fixed: Some field titles were broken in Safari in the Twenty Twenty-One theme.
+
+= 1.8.2.2 =
+- Added: Developers can now use a new hook that is fired when the form is duplicated.
+- Fixed: A PHP deprecation notice was generated when enabling or disabling auto-updates of any plugin.
+- Fixed: Form challenge items were not aligned correctly in various languages.
+- Fixed: Legacy Layout Classes didn't work when using the Modern Form Styles.
+- Fixed: Custom Math Captcha was still large when the Lead Forms addon was disabled.
+- Fixed: Checkboxes and Multiple Choice fields with icons were cut on mobile devices.
+- Fixed: Words in the Form Export dropdown on the Tools > Export admin page were split by letters.
+- Fixed: Links were stripped in choices labels.
+- Fixed: Block Editor kept showing the unsaved changes dialog even though there weren't any changes.
+- Fixed: `wpforms_sanitize_amount()` function did not work properly with exponent numbers.
+- Fixed: Compatibility with the Popup Maker plugin was improved - Stripe Credit Card field didn't load when a payment form was inserted into a popup.
+- Fixed: There was no empty state when no forms created for the WPForms widget in the Elementor screen.
+
+= 1.8.2.1 =
+- Added: Payment fields are now available for everyone.
+- Added: Users can connect their Stripe accounts and receive payments via their payment forms.
+- Added: There are new thumbnails displayed in all places where you see the list of available form templates (Form Builder and Form Templates page).
+- Added: Plugin cache files are handled in a more performant way.
+- Changed: An outdated version of the Moment.js library was removed from the plugin, and we switched to using the one bundled in WordPress.
+- Changed: Preview labels for choices with HTML tags were improved.
+- Fixed: There were situations when the `{user_ip}` smart tag was returning a server IP address instead of the actual user's IP address.
+- Fixed: An unnecessary database query was run on all admin dashboard pages.
+- Fixed: The Modern Multiple Dropdown couldn't be closed by clicking on the arrow.
+- Fixed: The "Save" button wasn't fully clickable on the WPForms > Settings admin page.
+- Fixed: Some UI elements didn't look correctly on the Form Builder page for non-English languages.
+- Fixed: Some fields were non-responsive on mobile when using the Legacy Layout Classes.
+- Fixed: Cron event `wpforms_email_summaries_cron` was not removed upon plugin deactivation.
+- Fixed: It was possible to add disabled fields to the form again in the Form Builder.
+- Fixed: The form was not displayed on the front end when the WPForms block was added to block templates.
+- Fixed: On the Payments page for Stripe payments "N/A" was displayed as a payment title instead of the mapped email.
+- Fixed: There were situations when PHP notices were generated on the Stripe Single Payment page.
+- Fixed: Compatibility with the "AIOSEO - Local Business" plugin was improved.
+
+= 1.8.1.3 =
+- Changed: The Uncanny Automator logo is updated.
+- Fixed: Debug information (controlled by a constant) is now properly escaped before being displayed on a page.
+- Fixed: Turnstile Captcha verification message overlapped the captcha when the captcha type was changed from Invisible to Managed.
+- Fixed: Fatal error with AMP plugin.
+
+= 1.8.1.2 =
+- Fixed: Checkboxes were shifting when the limit choices rule was triggered.
+- Fixed: "Ask for a review" admin notice links improperly opened new tab.
+- Fixed: There was a fatal error when settings were incorrectly reset by a 3rd-party plugin.
+
+= 1.8.1.1 =
+- Added: Modern Form Styles - easily control the appearance of form fields, labels, and buttons without writing code, right inside the Block Editor.
+- Added: The new filter `wpforms_frontend_assets_header_force_load` allows forcing load assets in the header which is useful when the form is in the sidebar widget and similar locations.
+- Changed: Tooltips design is improved.
+- Fixed: The form preview page was incorrectly shown in some themes.
+- Fixed: CF turnstile form ID was translated creating problems with analysis in Cloudflare Dashboard.
+- Fixed: Notifications Settings styles were looking bad on a small screen in the Form Builder.
+- Fixed: An "active column" state was stuck for a duplicated Layout field inside the Form Builder preview panel.
+- Fixed: Limit Length functionality was broken in the Paragraph Text field.
+
 = 1.8.0.2 =
 - Changed: Updated DOMPurify library to 3.0.1.
 - Fixed: An error occurred when the DreamHost Panel Login plugin and WPForms Lite were both active and WPForms Pro was activated.

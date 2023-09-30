@@ -8,11 +8,11 @@
  * @author      Automattic
  * @package     wp-job-manager-applications
  * @category    Template
- * @version     1.6.0
+ * @version     3.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-_e( 'You haven\'t made any applications yet!', 'wp-job-manager-applications' );
+esc_html_e( 'You haven\'t made any applications yet!', 'wp-job-manager-applications' );

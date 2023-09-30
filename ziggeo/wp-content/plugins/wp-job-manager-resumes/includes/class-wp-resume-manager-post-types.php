@@ -19,6 +19,7 @@ class WP_Resume_Manager_Post_Types {
 	 */
 	public function __construct() {
 		add_action( 'init', [ $this, 'register_post_types' ], 0 );
+		add_action( 'init', [ $this, 'register_meta_fields' ] );
 	}
 
 	/**
@@ -26,12 +27,13 @@ class WP_Resume_Manager_Post_Types {
 	 */
 	public function init_post_types() {
 		add_action( 'wp', [ $this, 'download_resume_handler' ] );
+		add_action( 'wp', [ $this, 'maybe_add_yoast_filters' ] );
 		add_filter( 'admin_head', [ $this, 'admin_head' ] );
 		add_filter( 'the_title', [ $this, 'resume_title' ], 10, 2 );
 		add_filter( 'single_post_title', [ $this, 'resume_title' ], 10, 2 );
 		add_filter( 'the_content', [ $this, 'resume_content' ] );
 		if ( resume_manager_discourage_resume_search_indexing() ) {
-			add_filter( 'wp_head', [ $this, 'add_no_robots' ] );
+			add_action( 'wp_head', [ $this, 'add_no_robots' ], 0 );
 		}
 
 		add_filter( 'the_resume_description', 'wptexturize' );
@@ -65,6 +67,8 @@ class WP_Resume_Manager_Post_Types {
 		add_action( 'save_post', [ $this, 'flush_get_resume_listings_cache' ] );
 		add_action( 'delete_post', [ $this, 'flush_get_resume_listings_cache' ] );
 		add_action( 'trash_post', [ $this, 'flush_get_resume_listings_cache' ] );
+
+		add_action( 'save_post_resume', [ $this, 'save_postmeta' ] );
 
 		add_action( 'resume_manager_my_resume_do_action', [ $this, 'resume_manager_my_resume_do_action' ] );
 	}
@@ -144,6 +148,8 @@ class WP_Resume_Manager_Post_Types {
 						'assign_terms' => $admin_capability,
 					],
 					'rewrite'               => $rewrite,
+					'show_in_rest'          => true,
+					'rest_base'             => 'resume-categories',
 				]
 			);
 		}
@@ -190,6 +196,8 @@ class WP_Resume_Manager_Post_Types {
 						'assign_terms' => $admin_capability,
 					],
 					'rewrite'               => $rewrite,
+					'show_in_rest'          => true,
+					'rest_base'             => 'resume-skill',
 				]
 			);
 		}
@@ -218,7 +226,7 @@ class WP_Resume_Manager_Post_Types {
 			apply_filters(
 				'register_post_type_resume',
 				[
-					'labels'              => [
+					'labels'                => [
 						'name'               => $plural,
 						'singular_name'      => $singular,
 						'menu_name'          => $plural,
@@ -235,12 +243,12 @@ class WP_Resume_Manager_Post_Types {
 						'not_found_in_trash' => sprintf( __( 'No %s found in trash', 'wp-job-manager-resumes' ), $plural ),
 						'parent'             => sprintf( __( 'Parent %s', 'wp-job-manager-resumes' ), $singular ),
 					],
-					'description'         => __( 'This is where you can create and manage user resumes.', 'wp-job-manager-resumes' ),
-					'public'              => true,
+					'description'           => __( 'This is where you can create and manage user resumes.', 'wp-job-manager-resumes' ),
+					'public'                => true,
 					// Hide the UI when the plugin is secretly disabled because WPJM core isn't activated.
-					'show_ui'             => class_exists( 'WP_Job_Manager' ),
-					'capability_type'     => 'post',
-					'capabilities'        => [
+					'show_ui'               => class_exists( 'WP_Job_Manager' ),
+					'capability_type'       => 'post',
+					'capabilities'          => [
 						'publish_posts'       => $admin_capability,
 						'edit_posts'          => $admin_capability,
 						'edit_others_posts'   => $admin_capability,
@@ -251,19 +259,24 @@ class WP_Resume_Manager_Post_Types {
 						'delete_post'         => $admin_capability,
 						'read_post'           => $admin_capability,
 					],
-					'publicly_queryable'  => true,
-					'exclude_from_search' => true,
-					'hierarchical'        => false,
-					'rewrite'             => $rewrite,
-					'query_var'           => true,
-					'supports'            => [ 'title', 'editor', 'custom-fields' ],
-					'has_archive'         => $has_archive,
-					'show_in_nav_menus'   => false,
-					'delete_with_user'    => true,
-					'menu_position'       => 32,
+					'publicly_queryable'    => true,
+					'exclude_from_search'   => true,
+					'hierarchical'          => false,
+					'rewrite'               => $rewrite,
+					'query_var'             => true,
+					'supports'              => [ 'title', 'editor', 'custom-fields', 'author' ],
+					'has_archive'           => $has_archive,
+					'show_in_nav_menus'     => false,
+					'delete_with_user'      => true,
+					'menu_position'         => 32,
+					'show_in_rest'          => true,
+					'rest_base'             => 'resumes',
+					'rest_controller_class' => 'WP_REST_Posts_Controller',
 				]
 			)
 		);
+
+		add_filter( 'wp_sitemaps_post_types', [ $this, 'disable_sitemap' ] );
 
 		register_post_status(
 			'hidden',
@@ -276,6 +289,21 @@ class WP_Resume_Manager_Post_Types {
 				'label_count'               => _n_noop( 'Hidden <span class="count">(%s)</span>', 'Hidden <span class="count">(%s)</span>', 'wp-job-manager-resumes' ),
 			]
 		);
+	}
+
+	/**
+	 * Filters the resume post type from sitemap.
+	 *
+	 * @since 1.18.2
+	 * @access private
+	 *
+	 * @param array $post_types  The public post types.
+	 *
+	 * @return array The filtered post types.
+	 */
+	public function disable_sitemap( $post_types ) {
+		unset( $post_types['resume'] );
+		return $post_types;
 	}
 
 	public function download_resume_handler() {
@@ -399,6 +427,21 @@ class WP_Resume_Manager_Post_Types {
 	}
 
 	/**
+	 * Don't include resume name in Yoast page markup if the user isn't able to view the resume.
+	 */
+	public function maybe_add_yoast_filters() {
+		$post = get_post();
+
+		if( ! is_null( $post ) ) {
+			if ( 'resume' === get_post_type( $post->ID ) && ! resume_manager_user_can_view_resume_name( $post->ID ) ) {
+				add_filter( 'wpseo_title', '__return_empty_string' );
+				add_filter( 'wpseo_opengraph_title', '__return_empty_string' );
+				add_filter( 'wpseo_schema_graph_pieces', 'remove_webpage_from_schema', 11, 2 );
+			}
+		}
+	}
+
+	/**
 	 * Change label
 	 */
 	public function admin_head() {
@@ -430,7 +473,11 @@ class WP_Resume_Manager_Post_Types {
 			return;
 		}
 
-		wp_no_robots();
+		if ( function_exists( 'wp_robots_no_robots' ) ) {
+			add_filter( 'wp_robots', 'wp_robots_no_robots' );
+		} else {
+			wp_no_robots();
+		}
 	}
 
 	/**
@@ -667,6 +714,343 @@ class WP_Resume_Manager_Post_Types {
 					wp_trash_post( $resume_id );
 				}
 			}
+		}
+	}
+
+	/**
+	 * Registers resume meta fields.
+	 */
+	public function register_meta_fields() {
+		$fields = self::get_resume_fields();
+
+		foreach ( $fields as $meta_key => $field ) {
+			register_meta(
+				'post',
+				$meta_key,
+				[
+					'type'              => $field['data_type'],
+					'show_in_rest'      => $field['show_in_rest'],
+					'description'       => $field['label'],
+					'sanitize_callback' => $field['sanitize_callback'],
+					'auth_callback'     => $field['auth_edit_callback'],
+					'single'            => true,
+					'object_subtype'    => 'resume',
+				]
+			);
+		}
+	}
+
+	/**
+	 * Returns configuration for custom fields on Resume posts.
+	 *
+	 * @return array See `resume_manager_resume_fields` filter for more documentation.
+	 */
+	public static function get_resume_fields() {
+		$default_field = [
+			'label'              => null,
+			'placeholder'        => null,
+			'description'        => null,
+			'priority'           => 10,
+			'value'              => null,
+			'default'            => null,
+			'classes'            => [],
+			'type'               => 'text',
+			'data_type'          => 'string',
+			'show_in_admin'      => true,
+			'show_in_rest'       => false,
+			'auth_edit_callback' => [ __CLASS__, 'auth_check_can_edit_resumes' ],
+			'auth_view_callback' => null,
+			'sanitize_callback'  => [ __CLASS__, 'sanitize_meta_field_based_on_input_type' ],
+		];
+
+
+		$fields = [
+			'_candidate_title'    => [
+				'label'         => __( 'Professional Title', 'wp-job-manager-resumes' ),
+				'placeholder'   => '',
+				'description'   => '',
+				'priority'      => 1,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => true,
+			],
+			'_candidate_email'    => [
+				'label'         => __( 'Contact Email', 'wp-job-manager-resumes' ),
+				'placeholder'   => __( 'you@yourdomain.com', 'wp-job-manager-resumes' ),
+				'description'   => '',
+				'priority'      => 2,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => true,
+			],
+			'_candidate_location' => [
+				'label'         => __( 'Candidate Location', 'wp-job-manager-resumes' ),
+				'placeholder'   => __( 'e.g. "London, UK", "New York", "Houston, TX"', 'wp-job-manager-resumes' ),
+				'description'   => '',
+				'priority'      => 3,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => true,
+			],
+			'_candidate_photo'    => [
+				'label'         => __( 'Photo', 'wp-job-manager-resumes' ),
+				'placeholder'   => __( 'URL to the candidate photo', 'wp-job-manager-resumes' ),
+				'type'          => 'file',
+				'priority'      => 4,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => true,
+			],
+			'_candidate_video'    => [
+				'label'             => __( 'Video', 'wp-job-manager-resumes' ),
+				'placeholder'       => __( 'URL to the candidate video', 'wp-job-manager-resumes' ),
+				'type'              => 'text',
+				'priority'          => 5,
+				'data_type'         => 'string',
+				'show_in_admin'     => true,
+				'show_in_rest'      => true,
+				'sanitize_callback' => [ 'WP_Job_Manager_Post_Types', 'sanitize_meta_field_url' ],
+			],
+			'_resume_file'        => [
+				'label'         => __( 'Resume File', 'wp-job-manager-resumes' ),
+				'placeholder'   => __( 'URL to the candidate\'s resume file', 'wp-job-manager-resumes' ),
+				'type'          => 'file',
+				'priority'      => 6,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => true,
+			],
+			'_featured'           => [
+				'label'              => __( 'Feature this Resume?', 'wp-job-manager-resumes' ),
+				'type'               => 'checkbox',
+				'description'        => __( 'Featured resumes will be sticky during searches, and can be styled differently.', 'wp-job-manager-resumes' ),
+				'priority'           => 7,
+				'data_type'          => 'integer',
+				'show_in_admin'      => true,
+				'show_in_rest'       => true,
+				'auth_edit_callback' => [ __CLASS__, 'auth_check_can_manage_resumes' ],
+			],
+			'_resume_expires'     => [
+				'label'              => __( 'Expires', 'wp-job-manager-resumes' ),
+				'placeholder'        => __( 'yyyy-mm-dd', 'wp-job-manager-resumes' ),
+				'priority'           => 8,
+				'data_type'          => 'string',
+				'show_in_admin'      => true,
+				'show_in_rest'       => true,
+				'auth_edit_callback' => [ __CLASS__, 'auth_check_can_manage_resumes' ],
+				'auth_view_callback' => [ __CLASS__, 'auth_check_can_edit_resumes' ],
+				'sanitize_callback'  => [ 'WP_Job_Manager_Post_Types', 'sanitize_meta_field_date' ],
+			],
+		];
+
+		if ( ! get_option( 'resume_manager_enable_resume_upload' ) ) {
+			unset( $fields['_resume_file'] );
+		}
+
+		/**
+		 * Filters resume data fields.
+		 *
+		 * For the REST API, do not pass fields you don't want to be visible to the current visitor when `show_in_rest`
+		 * is `true`. To add values and other data when generating the WP admin form, use filter
+		 * `resume_manager_resume_wp_admin_fields` which should have `$post_id` in context.
+		 *
+		 * @since @@version
+		 *
+		 * @param array    $fields  {
+		 *     Resume meta fields for REST API and WP admin. Associative array with meta key as the index.
+		 *     All fields except for `$label` are optional and have working defaults.
+		 *
+		 *     @type array $meta_key {
+		 *         @type string        $label              Label to show for field. Used in: WP Admin; REST API.
+		 *         @type string        $placeholder        Placeholder to show in empty form fields. Used in: WP Admin.
+		 *         @type string        $description        Longer description to shown below form field.
+		 *                                                 Used in: WP Admin.
+		 *         @type array         $classes            Classes to apply to form input field. Used in: WP Admin.
+		 *         @type int           $priority           Field placement priority for WP admin. Lower is first.
+		 *                                                 Used in: WP Admin (Default: 10).
+		 *         @type string        $value              Override standard retrieval of meta value in form field.
+		 *                                                 Used in: WP Admin.
+		 *         @type string        $default            Default value on form field if no other value is set for
+		 *                                                 field. Used in: WP Admin.
+		 *         @type string        $type               Type of form field to render. Used in: WP Admin
+		 *                                                 (Default: 'text').
+		 *         @type string        $data_type          Data type to cast to. Options: 'string', 'boolean',
+		 *                                                 'integer', 'number'.  Used in: REST API. (	 *                                                 Default: 'string').
+		 *         @type bool|callable $show_in_admin      Whether field should be displayed in WP admin. Can be
+		 *                                                 callable that returns boolean. Used in: WP Admin
+		 *                                                 (Default: true).
+		 *         @type bool|array    $show_in_rest       Whether data associated with this meta key can put in REST
+		 *                                                 API response for resumes. Can be used to pass REST API
+		 *                                                 arguments in `show_in_rest` parameter. Used in: REST API
+		 *                                                 (Default: false).
+		 *         @type callable      $auth_edit_callback {
+		 *             Decides if specific user can edit the meta key. Used in: WP Admin; REST API.
+		 *             Defaults to callable that limits to those who can edit specific the resume (also limited
+		 *             by relevant endpoints).
+		 *
+		 *             @see WP core filter `auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}`.
+		 *             @since @@version
+		 *
+		 *             @param bool   $allowed   Whether the user can add the object meta. Default false.
+		 *             @param string $meta_key  The meta key.
+		 *             @param int    $object_id Post ID for Resume.
+		 *             @param int    $user_id   User ID.
+		 *
+		 *             @return bool
+		 *         }
+		 *         @type callable      $auth_view_callback {
+		 *             Decides if specific user can view value of the meta key. Used in: REST API.
+		 *             Defaults to visible to all (if shown in REST API, which by default is false).
+		 *
+		 *             @see WPJM method `WP_Resume_Manager_REST_API::prepare_resume()`.
+		 *             @since @@version
+		 *
+		 *             @param bool   $allowed   Whether the user can add the object meta. Default false.
+		 *             @param string $meta_key  The meta key.
+		 *             @param int    $object_id Post ID for Resume.
+		 *             @param int    $user_id   User ID.
+		 *
+		 *             @return bool
+		 *         }
+		 *         @type callable      $sanitize_callback  {
+		 *             Sanitizes the meta value before saving to database. Used in: WP Admin; REST API; Frontend.
+		 *             Defaults to callable that sanitizes based on the field type.
+		 *
+		 *             @see WP core filter `auth_{$object_type}_meta_{$meta_key}_for_{$object_subtype}`
+		 *             @since @@version
+		 *
+		 *             @param mixed  $meta_value Value of meta field that needs sanitization.
+		 *             @param string $meta_key   Meta key that is being sanitized.
+		 *
+		 *             @return mixed
+		 *         }
+		 *     }
+		 * }
+		 */
+		$fields = apply_filters( 'resume_manager_resume_fields', $fields );
+
+		// Ensure default fields are set.
+		foreach ( $fields as $key => $field ) {
+			$fields[ $key ] = array_merge( $default_field, $field );
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Checks if user can manage resumes.
+	 *
+	 * @param bool   $allowed   Whether the user can edit the resume meta.
+	 * @param string $meta_key  The meta key.
+	 * @param int    $post_id   Resume's post ID.
+	 * @param int    $user_id   User ID.
+	 *
+	 * @return bool Whether the user can edit the resume meta.
+	 */
+	public static function auth_check_can_manage_resumes( $allowed, $meta_key, $post_id, $user_id ) {
+		$user = get_user_by( 'ID', $user_id );
+
+		if ( ! $user ) {
+			return false;
+		}
+
+		return $user->has_cap( 'manage_resumes' );
+	}
+
+	/**
+	 * Checks if user can edit resumes.
+	 *
+	 * @param bool   $allowed   Whether the user can edit the resume meta.
+	 * @param string $meta_key  The meta key.
+	 * @param int    $post_id   Resume's post ID.
+	 * @param int    $user_id   User ID.
+	 *
+	 * @return bool Whether the user can edit the resume meta.
+	 */
+	public static function auth_check_can_edit_resumes( $allowed, $meta_key, $post_id, $user_id ) {
+		$user = get_user_by( 'ID', $user_id );
+
+		if ( ! $user ) {
+			return false;
+		}
+
+		if ( empty( $post_id ) ) {
+			return current_user_can( 'edit_posts' );
+		}
+
+		return resume_manager_user_can_edit_resume( $post_id );
+	}
+
+	/**
+	 * Checks if user can edit other's resumes.
+	 *
+	 * @param bool   $allowed   Whether the user can edit the resume meta.
+	 * @param string $meta_key  The meta key.
+	 * @param int    $post_id   Resume's post ID.
+	 * @param int    $user_id   User ID.
+	 *
+	 * @return bool Whether the user can edit the resume meta.
+	 */
+	public static function auth_check_can_edit_others_resumes( $allowed, $meta_key, $post_id, $user_id ) {
+		$user = get_user_by( 'ID', $user_id );
+
+		if ( ! $user ) {
+			return false;
+		}
+
+		return $user->has_cap( 'edit_others_posts' );
+	}
+
+	/**
+	 * Sanitize meta fields based on input type.
+	 *
+	 * @param mixed  $meta_value Value of meta field that needs sanitization.
+	 * @param string $meta_key   Meta key that is being sanitized.
+	 * @return mixed
+	 */
+	public static function sanitize_meta_field_based_on_input_type( $meta_value, $meta_key ) {
+		$fields = self::get_resume_fields();
+
+		if ( is_string( $meta_value ) ) {
+			$meta_value = trim( $meta_value );
+		}
+
+		$type = 'text';
+		if ( isset( $fields[ $meta_key ] ) ) {
+			$type = $fields[ $meta_key ]['type'];
+		}
+
+		if ( 'textarea' === $type || 'wp_editor' === $type ) {
+			return wp_kses_post( wp_unslash( $meta_value ) );
+		}
+
+		if ( 'checkbox' === $type ) {
+			if ( $meta_value && '0' !== $meta_value ) {
+				return 1;
+			}
+
+			return 0;
+		}
+
+		if ( is_array( $meta_value ) ) {
+			return array_filter( array_map( 'sanitize_text_field', $meta_value ) );
+		}
+
+		return sanitize_text_field( $meta_value );
+	}
+
+	/**
+	 * Save Resume Skills to post meta.
+	 *
+	 * @param int $post_id
+	 * @return void
+	 */
+	public function save_postmeta( $post_id ) {
+		if ( is_admin() ) {
+			$term_list = wp_get_post_terms($post_id, 'resume_skill');
+			$term_names = wp_list_pluck( $term_list, 'name' );
+			$new_terms = implode( ',', $term_names );
+			update_post_meta( $post_id, '_resume_skills', $new_terms );
 		}
 	}
 }

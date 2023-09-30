@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
  * @param WP JOB PORTAL 
@@ -17,13 +18,13 @@ switch ($control) {
             ?>
             <div class="wjportal-resume-list-btm-wrp">
                 <div class="wjportal-resume-action-wrp">
-                    <a class="wjportal-resume-act-btn" href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'addresume', 'wpjobportalid'=>$myresume->id, 'wpjobportalpageid'=>wpjobportal::getPageid()))); ?>">
-                        <?php echo __('Edit Resume', 'wp-job-portal'); ?>
+                    <a class="wjportal-resume-act-btn" href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'addresume', 'wpjobportalid'=>$myresume->id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()))); ?>">
+                        <?php echo esc_html(__('Edit Resume', 'wp-job-portal')); ?>
                     </a>
                     <?php if ($myresume->status != 3){ ?>
                             <?php if(in_array('multiresume', wpjobportal::$_active_addons)){ ?>
-                                <a class="wjportal-resume-act-btn" href="<?php echo esc_url( wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$myresume->id, 'wpjobportalpageid'=>wpjobportal::getPageid()))); ?>">
-                            <?php echo __('View Resume', 'wp-job-portal'); ?>
+                                <a class="wjportal-resume-act-btn" href="<?php echo esc_url( wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$myresume->id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()))); ?>">
+                            <?php echo esc_html(__('View Resume', 'wp-job-portal')); ?>
                         </a>
                         <?php    } 
                     }
@@ -34,21 +35,21 @@ switch ($control) {
                         do_action('wpjobportal_addons_makePayment_for_department',$myresume,"payresume");
                     }
                     ?>  
-                    <a class="wjportal-resume-act-btn" href="<?php echo esc_url(wp_nonce_url(wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'task'=>'removeresume', 'action'=>'wpjobportaltask', 'wpjobportal-cb[]'=>$myresume->id, 'wpjobportalpageid'=>wpjobportal::getPageid())),'delete-resume')); ?>"onclick='return confirmdelete("<?php echo __('Are you sure to delete','wp-job-portal').' ?'; ?>");'>
-                        <?php echo __('Delete Resume', 'wp-job-portal'); ?> 
+                    <a class="wjportal-resume-act-btn" href="<?php echo esc_url(wp_nonce_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'task'=>'removeresume', 'action'=>'wpjobportaltask', 'wpjobportal-cb[]'=>$myresume->id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())),'delete-resume')); ?>"onclick='return confirmdelete("<?php echo esc_html(__('Are you sure to delete','wp-job-portal')).' ?'; ?>");'>
+                        <?php echo esc_html(__('Delete Resume', 'wp-job-portal')); ?> 
                     </a>
                 </div>
             </div>
         <?php } elseif ($myresume->status == 0) { ?>
             <div class="wjportal-resume-list-btm-wrp">
                 <span class="wjportal-item-act-status wjportal-waiting">
-                    <?php echo __('Waiting For Approval', 'wp-job-portal'); ?>
+                    <?php echo esc_html(__('Waiting For Approval', 'wp-job-portal')); ?>
                 </span>
             </div>
         <?php } elseif ($myresume->status == -1){ ?>
             <div class="wjportal-resume-list-btm-wrp">
                 <span class="wjportal-item-act-status wjportal-rejected">
-                    <?php echo __('Rejected', 'wp-job-portal'); ?>
+                    <?php echo esc_html(__('Rejected', 'wp-job-portal')); ?>
                 </span>
             </div>
           <?php
@@ -64,8 +65,8 @@ switch ($control) {
                 $class = 'action-links';
                 do_action('wpjobportal_addons_resume_bottom_action_appliedresume',$myresume,$class);  
                 echo '
-                <a class="wjportal-resume-act-btn" href='. esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'jobid'=>$myresume->id, 'wpjobportalid'=>$myresume->resumealiasid, 'wpjobportalpageid'=>wpjobportal::getPageid()))).' title='. __('view profile', 'wp-job-portal') .'>
-                    '. __('View Profile', 'wp-job-portal') .'
+                <a class="wjportal-resume-act-btn" href='. esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'jobid'=>$myresume->id, 'wpjobportalid'=>$myresume->resumealiasid, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()))).' title='. esc_html(__('view profile', 'wp-job-portal')) .'>
+                    '. esc_html(__('View Profile', 'wp-job-portal')) .'
                 </a>';
             ?>
         </div>

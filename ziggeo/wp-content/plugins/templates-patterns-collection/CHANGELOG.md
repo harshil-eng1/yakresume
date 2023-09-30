@@ -1,3 +1,29 @@
+##### [Version 1.1.39](https://github.com/Codeinwp/templates-patterns-collection/compare/v1.1.38...v1.1.39) (2023-06-19)
+
+- Feat: Allow post types from Pods plugin to be imported
+- Feat: Add support for Neve setting page 
+- Fix: Import preview Elementor.
+- Fix: Improved Elementor styles for light and dark skin.
+- Fix: Error from TPC inside FSE editor.
+- Supporting changes for Neve PRO
+- SDK updated to 3.3.0
+
+##### [Version 1.1.38](https://github.com/Codeinwp/templates-patterns-collection/compare/v1.1.37...v1.1.38) (2023-04-25)
+
+- Fix: Alignment title in Elementor
+- Fix: Tooltip for cleanup on import
+- Fix: Notification dismiss
+
+##### [Version 1.1.37](https://github.com/Codeinwp/templates-patterns-collection/compare/v1.1.36...v1.1.37) (2023-03-31)
+
+- Updated dependencies and docs
+
+##### [Version 1.1.36](https://github.com/Codeinwp/templates-patterns-collection/compare/v1.1.35...v1.1.36) (2023-03-17)
+
+- Fix: Admin paths consistency
+- Fix: Prevent cloned posts to inherit template metadata
+- Fix: Improve compatibility for LifterLMS
+
 ##### [Version 1.1.35](https://github.com/Codeinwp/templates-patterns-collection/compare/v1.1.34...v1.1.35) (2023-02-27)
 
 - Feat: Added feedback survey

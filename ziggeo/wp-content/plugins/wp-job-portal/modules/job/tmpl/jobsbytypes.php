@@ -32,9 +32,9 @@ if(!WPJOBPORTALincluder::getTemplate('templates/header',array('module'=>'job')))
                         }
                         ?>
                         <div class="wjportal-type-wrapper" style="width:<?php echo esc_attr($width); ?>%;">
-                            <a href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs', 'jobtype'=>$jobsBytype->alias))); ?>" title="<?php echo __($jobsBytype->title,'wp-job-portal'); ?>">
+                            <a href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs', 'jobtype'=>$jobsBytype->alias))); ?>" title="<?php echo wpjobportal::wpjobportal_getVariableValue($jobsBytype->title); ?>">
                                 <span class="wjportal-type-title">
-                                    <?php echo esc_html(__($jobsBytype->title,'wp-job-portal')); ?>
+                                    <?php echo esc_html(wpjobportal::wpjobportal_getVariableValue($jobsBytype->title)); ?>
                                 </span>
                                 <?php if(wpjobportal::$_data['config']['jobtype_numberofjobs']){ ?>
                                     <span class="wjportal-type-num">
@@ -49,7 +49,7 @@ if(!WPJOBPORTALincluder::getTemplate('templates/header',array('module'=>'job')))
                 echo '</div>';
                 }
             else {
-                echo wp_kses(WPJOBPORTALlayout::getNoRecordFound(), WPJOBPORTAL_ALLOWED_TAGS);?>
+                WPJOBPORTALlayout::getNoRecordFound();?>
             <?php }
             ?>
         </div>

@@ -38,7 +38,7 @@ class wpjobportaldb {
     }
 
     private function parseQuery($query){
-        $query = str_replace('#__', $this->_db->prefix, $query);
+        $query = wpjobportalphplib::wpJP_str_replace('#__', $this->_db->prefix, $query);
         return $query;
     }
 

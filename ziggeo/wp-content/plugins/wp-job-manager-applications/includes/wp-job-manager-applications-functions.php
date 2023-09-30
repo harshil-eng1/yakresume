@@ -99,7 +99,7 @@ if ( ! function_exists( 'create_job_application' ) ) {
 						]
 					);
 					$subject = do_shortcode( get_job_application_email_subject() );
-					$message = do_shortcode( get_job_application_email_content() );
+					$message = do_shortcode( get_job_application_email_content( $meta['_form_id'] ) );
 					$message = str_replace( "\n\n\n\n", "\n\n", implode( "\n", array_map( 'trim', explode( "\n", $message ) ) ) );
 					$is_html = ( $message != strip_tags( $message ) );
 
@@ -273,11 +273,77 @@ function get_job_application_default_form_fields() {
 /**
  * Get the form fields for the application form
  *
+ * @param bool     $suppress_filters Whether to apply filters to the returned result.
+ * @param int|null $form_id Optional. The form ID.
+ *
  * @return array
  */
-function get_job_application_form_fields( $suppress_filters = false ) {
-	$option = get_option( 'job_application_form_fields', get_job_application_default_form_fields() );
-	return $suppress_filters ? $option : apply_filters( 'job_application_form_fields', $option );
+function get_job_application_form_fields( $suppress_filters = false, $form_id = null ) {
+	if ( $form_id && ! is_null( get_post( $form_id ) ) ) {
+		$form   = new WP_Job_Manager_Applications_Application_Form( $form_id );
+		$fields = $form->get( 'form_fields' );
+	} else {
+		$fields = WP_Job_Manager_Applications_Default_Form::get_default_form()['form_fields'];
+	}
+	return $suppress_filters ? $fields : apply_filters( 'job_application_form_fields', $fields, $form_id );
+}
+
+/**
+ * Get all Application Forms
+ *
+ * @return array|null
+ */
+function get_application_forms() {
+	$posts = new WP_Query(
+		array(
+			'post_type'        => 'job_application_form',
+			'posts_per_page'   => - 1,
+			'suppress_filters' => true,
+			'orderby'          => 'title',
+			'order'            => 'ASC',
+		)
+	);
+
+	$default_form = WP_Job_Manager_Applications_Default_Form::get_default_form();
+
+	if ( $posts->post_count <= 1 ) {
+		return null;
+	}
+	$application_forms = [];
+
+	if ( array_key_exists( 'ID', $default_form ) ) {
+		$application_forms[ $default_form['ID'] ] = $default_form['post_title'];
+	}
+
+	foreach ( $posts->posts as $post ) {
+		$application_forms[ $post->ID ] = $post->post_title;
+	}
+	return apply_filters( 'job_application_forms', $application_forms );
+}
+
+/**
+ * Get Application Form Fields
+ *
+ * @return array|null
+ */
+function get_submit_job_application_form_field() {
+	global $post;
+
+	$application_forms = get_application_forms();
+
+	if ( empty( $application_forms ) ) {
+		return null;
+	}
+
+	$field_array = array(
+		'label'       => __( 'Application Form', 'wp-job-manager-applications' ),
+		'placeholder' => '',
+		'type'        => 'select',
+		'classes'     => array( 'select2' ),
+		'options'     => array_map( 'esc_attr', $application_forms ),
+	);
+
+	return $field_array;
 }
 
 /**
@@ -307,12 +373,21 @@ EOF;
 }
 
 /**
- * Get email content
+ * Get employer email content.
+ *
+ * @param int|null $form_id Optional. The form ID.
  *
  * @return string
  */
-function get_job_application_email_content() {
-	return apply_filters( 'job_application_email_content', get_option( 'job_application_email_content', get_job_application_default_email_content() ) );
+function get_job_application_email_content( $form_id = null ) {
+	if ( $form_id && ! is_null( get_post( $form_id ) ) ) {
+		$form     = new WP_Job_Manager_Applications_Application_Form( $form_id );
+		$template = $form->get( 'employer_email_template' );
+		$content  = $template['content'];
+	} else {
+		$content = WP_Job_Manager_Applications_Default_Form::get_default_form()['employer_email_template']['content'];
+	}
+	return apply_filters( 'job_application_email_content', $content, $form_id );
 }
 
 /**
@@ -325,25 +400,43 @@ function get_job_application_default_email_subject() {
 }
 
 /**
- * Get email content
+ * Get employer email subject
+ *
+ * @param int|null $form_id Optional. The form ID.
  *
  * @return string
  */
-function get_job_application_email_subject() {
-	return apply_filters( 'job_application_email_subject', get_option( 'job_application_email_subject', get_job_application_default_email_subject() ) );
+function get_job_application_email_subject( $form_id = null ) {
+	if ( $form_id && ! is_null( get_post( $form_id ) ) ) {
+		$form     = new WP_Job_Manager_Applications_Application_Form( $form_id );
+		$template = $form->get( 'employer_email_template' );
+		$subject  = $template['subject'];
+	} else {
+		$subject = WP_Job_Manager_Applications_Default_Form::get_default_form()['employer_email_template']['subject'];
+	}
+	return apply_filters( 'job_application_email_subject', $subject, $form_id );
 }
 
 /**
- * Get candidate email content
+ * Get candidate email content.
+ *
+ * @param int|null $form_id Optional. The form ID.
  *
  * @return string
  */
-function get_job_application_candidate_email_content() {
-	return apply_filters( 'job_application_candidate_email_content', get_option( 'job_application_candidate_email_content' ) );
+function get_job_application_candidate_email_content( $form_id = null ) {
+	if ( $form_id && ! is_null( get_post( $form_id ) ) ) {
+		$form     = new WP_Job_Manager_Applications_Application_Form( $form_id );
+		$template = $form->get( 'candidate_email_template' );
+		$content  = $template['content'];
+	} else {
+		$content = WP_Job_Manager_Applications_Default_Form::get_default_form()['candidate_email_template']['content'];
+	}
+	return apply_filters( 'job_application_candidate_email_content', $content, $form_id );
 }
 
 /**
- * Get the default email subject
+ * Get the default email subject.
  *
  * @return string
  */
@@ -352,20 +445,31 @@ function get_job_application_default_candidate_email_subject() {
 }
 
 /**
- * Get email content
+ * Get candidate email subject
+ *
+ * @param int|null $form_id Optional. The form ID.
  *
  * @return string
  */
-function get_job_application_candidate_email_subject() {
-	return apply_filters( 'job_application_candidate_email_subject', get_option( 'job_application_candidate_email_subject', get_job_application_default_candidate_email_subject() ) );
+function get_job_application_candidate_email_subject( $form_id = null ) {
+	if ( $form_id && ! is_null( get_post( $form_id ) ) ) {
+		$form     = new WP_Job_Manager_Applications_Application_Form( $form_id );
+		$template = $form->get( 'candidate_email_template' );
+		$subject  = $template['subject'];
+	} else {
+		$subject = WP_Job_Manager_Applications_Default_Form::get_default_form()['candidate_email_template']['subject'];
+	}
+	return apply_filters( 'job_application_candidate_email_subject', $subject, $form_id );
 }
 
 /**
  * Get tags to dynamically replace in the notification email
  *
+ * @param int|null $form_id Optional. The form ID.
+ *
  * @return array
  */
-function get_job_application_email_tags() {
+function get_job_application_email_tags( $form_id = null ) {
 	$tags = [
 		'from_name'         => __( 'Candidate Name', 'wp-job-manager-applications' ),
 		'from_email'        => __( 'Candidate Email', 'wp-job-manager-applications' ),
@@ -381,7 +485,8 @@ function get_job_application_email_tags() {
 		'job_post_meta'     => __( 'Some meta data from the job. e.g. <code>[job_post_meta key="_job_location"]</code>', 'wp-job-manager-applications' ),
 	];
 
-	foreach ( get_job_application_form_fields() as $key => $field ) {
+	foreach ( get_job_application_form_fields( false, $form_id ) as $key => $field ) {
+
 		if ( isset( $tags[ $key ] ) ) {
 			continue;
 		}
@@ -392,6 +497,15 @@ function get_job_application_email_tags() {
 	}
 
 	return $tags;
+}
+
+/**
+ * Get the default form data for the application form.
+ *
+ * @return array
+ */
+function get_default_job_application_form_data() {
+	return WP_Job_Manager_Applications_Default_Form::get_default_form();
 }
 
 /**
@@ -506,18 +620,33 @@ function job_application_email_add_shortcodes( $data ) {
 			return job_application_email_shortcode_handler( $atts, $content, $value );
 		}
 	);
+	$form_id = get_post_meta( get_the_ID(), WP_Job_Manager_Applications_Application_Form::FORM_POST_META_KEY, true );
 
-	foreach ( get_job_application_form_fields() as $key => $field ) {
+	foreach ( get_job_application_form_fields( false, $form_id ) as $key => $field ) {
 		if ( in_array( 'message', $field['rules'] ) || in_array( 'from_name', $field['rules'] ) || in_array( 'from_email', $field['rules'] ) || in_array( 'attachment', $field['rules'] ) ) {
 			continue;
 		}
-		$value = isset( $meta[ $field['label'] ] ) ? $meta[ $field['label'] ] : '';
+
+		$multiple_files = '';
+		if ( 'file' === $field['type'] && true == $field['multiple'] ) {
+			foreach ( $meta as $index => $filename ) {
+				if ( false !== strpos( $index, $field['label'] ) ) {
+					$multiple_files .= $meta[ $index ] . ' ';
+				}
+			}
+			$value = $multiple_files;
+		} else {
+			$value = isset( $meta[ $field['label'] ] ) ? $meta[ $field['label'] ] : '';
+		}
 
 		if ( $field['type'] === 'resumes' && function_exists( 'get_resume_share_link' ) && isset( $meta['_resume_id'] ) ) {
 			$value = get_resume_share_link( $meta['_resume_id'] );
 		}
 
-		$meta_data[ $field['label'] ] = $value;
+		$meta_data[] = [
+			'label'   => $field['label'],
+			'value'   => $value,
+		];
 
 		add_shortcode(
 			$key,
@@ -529,8 +658,9 @@ function job_application_email_add_shortcodes( $data ) {
 
 	$meta_data         = array_filter( $meta_data );
 	$meta_data_strings = [];
-	foreach ( $meta_data as $label => $value ) {
-		$meta_data_strings[] = $label . ': ' . $value;
+
+	foreach ( $meta_data as $data ) {
+		$meta_data_strings[] = $data['label'] . ': ' . $data['value'];
 	}
 	$meta_data_strings = implode( "\n", $meta_data_strings );
 

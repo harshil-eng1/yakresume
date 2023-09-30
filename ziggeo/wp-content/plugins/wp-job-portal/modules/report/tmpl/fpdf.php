@@ -106,11 +106,11 @@ class FPDF {
         // Font path
         if (defined('FPDF_FONTPATH')) {
             $this->fontpath = FPDF_FONTPATH;
-            if (substr($this->fontpath, -1) != '/' && substr($this->fontpath, -1) != '\\')
+            if (wpjobportalphplib::wpJP_substr($this->fontpath, -1) != '/' && wpjobportalphplib::wpJP_substr($this->fontpath, -1) != '\\')
                 $this->fontpath .= '/';
         }
-        elseif (is_dir(dirname(__FILE__) . '/font'))
-            $this->fontpath = dirname(__FILE__) . '/font/';
+        elseif (is_dir(wpjobportalphplib::wpJP_dirname(__FILE__) . '/font'))
+            $this->fontpath = wpjobportalphplib::wpJP_dirname(__FILE__) . '/font/';
         else
             $this->fontpath = '';
         // Core fonts
@@ -133,7 +133,7 @@ class FPDF {
         $this->DefPageSize = $size;
         $this->CurPageSize = $size;
         // Page orientation
-        $orientation = strtolower($orientation);
+        $orientation = wpjobportalphplib::wpJP_strtolower($orientation);
         if ($orientation == 'p' || $orientation == 'portrait') {
             $this->DefOrientation = 'P';
             $this->w = $size[0];
@@ -395,7 +395,7 @@ class FPDF {
         $s = (string) $s;
         $cw = &$this->CurrentFont['cw'];
         $w = 0;
-        $l = strlen($s);
+        $l = wpjobportalphplib::wpJP_strlen($s);
         for ($i = 0; $i < $l; $i++)
             $w += $cw[$s[$i]];
         return $w * $this->FontSize / 1000;
@@ -426,10 +426,10 @@ class FPDF {
 
     function AddFont($family, $style = '', $file = '') {
         // Add a TrueType, OpenType or Type1 font
-        $family = strtolower($family);
+        $family = wpjobportalphplib::wpJP_strtolower($family);
         if ($file == '')
-            $file = str_replace(' ', '', $family) . strtolower($style) . '.php';
-        $style = strtoupper($style);
+            $file = wpjobportalphplib::wpJP_str_replace(' ', '', $family) . wpjobportalphplib::wpJP_strtolower($style) . '.php';
+        $style = wpjobportalphplib::wpJP_strtoupper($style);
         if ($style == 'IB')
             $style = 'BI';
         $fontkey = $family . $style;
@@ -461,11 +461,11 @@ class FPDF {
         if ($family == '')
             $family = $this->FontFamily;
         else
-            $family = strtolower($family);
-        $style = strtoupper($style);
-        if (strpos($style, 'U') !== false) {
+            $family = wpjobportalphplib::wpJP_strtolower($family);
+        $style = wpjobportalphplib::wpJP_strtoupper($style);
+        if (wpjobportalphplib::wpJP_strpos($style, 'U') !== false) {
             $this->underline = true;
-            $style = str_replace('U', '', $style);
+            $style = wpjobportalphplib::wpJP_str_replace('U', '', $style);
         } else
             $this->underline = false;
         if ($style == 'IB')
@@ -577,13 +577,13 @@ class FPDF {
         if (is_string($border)) {
             $x = $this->x;
             $y = $this->y;
-            if (strpos($border, 'L') !== false)
+            if (wpjobportalphplib::wpJP_strpos($border, 'L') !== false)
                 $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->h - $y) * $k, $x * $k, ($this->h - ($y + $h)) * $k);
-            if (strpos($border, 'T') !== false)
+            if (wpjobportalphplib::wpJP_strpos($border, 'T') !== false)
                 $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->h - $y) * $k, ($x + $w) * $k, ($this->h - $y) * $k);
-            if (strpos($border, 'R') !== false)
+            if (wpjobportalphplib::wpJP_strpos($border, 'R') !== false)
                 $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', ($x + $w) * $k, ($this->h - $y) * $k, ($x + $w) * $k, ($this->h - ($y + $h)) * $k);
-            if (strpos($border, 'B') !== false)
+            if (wpjobportalphplib::wpJP_strpos($border, 'B') !== false)
                 $s .= sprintf('%.2F %.2F m %.2F %.2F l S ', $x * $k, ($this->h - ($y + $h)) * $k, ($x + $w) * $k, ($this->h - ($y + $h)) * $k);
         }
         if ($txt !== '') {
@@ -595,7 +595,7 @@ class FPDF {
                 $dx = $this->cMargin;
             if ($this->ColorFlag)
                 $s .= 'q ' . $this->TextColor . ' ';
-            $txt2 = str_replace(')', '\\)', str_replace('(', '\\(', str_replace('\\', '\\\\', $txt)));
+            $txt2 = wpjobportalphplib::wpJP_str_replace(')', '\\)', wpjobportalphplib::wpJP_str_replace('(', '\\(', wpjobportalphplib::wpJP_str_replace('\\', '\\\\', $txt)));
             $s .= sprintf('BT %.2F %.2F Td (%s) Tj ET', ($this->x + $dx) * $k, ($this->h - ($this->y + .5 * $h + .3 * $this->FontSize)) * $k, $txt2);
             if ($this->underline)
                 $s .= ' ' . $this->_dounderline($this->x + $dx, $this->y + .5 * $h + .3 * $this->FontSize, $txt);
@@ -622,8 +622,8 @@ class FPDF {
         if ($w == 0)
             $w = $this->w - $this->rMargin - $this->x;
         $wmax = ($w - 2 * $this->cMargin) * 1000 / $this->FontSize;
-        $s = str_replace("\r", '', $txt);
-        $nb = strlen($s);
+        $s = wpjobportalphplib::wpJP_str_replace("\r", '', $txt);
+        $nb = wpjobportalphplib::wpJP_strlen($s);
         if ($nb > 0 && $s[$nb - 1] == "\n")
             $nb--;
         $b = 0;
@@ -634,11 +634,11 @@ class FPDF {
                 $b2 = 'LR';
             } else {
                 $b2 = '';
-                if (strpos($border, 'L') !== false)
+                if (wpjobportalphplib::wpJP_strpos($border, 'L') !== false)
                     $b2 .= 'L';
-                if (strpos($border, 'R') !== false)
+                if (wpjobportalphplib::wpJP_strpos($border, 'R') !== false)
                     $b2 .= 'R';
-                $b = (strpos($border, 'T') !== false) ? $b2 . 'T' : $b2;
+                $b = (wpjobportalphplib::wpJP_strpos($border, 'T') !== false) ? $b2 . 'T' : $b2;
             }
         }
         $sep = -1;
@@ -656,7 +656,7 @@ class FPDF {
                     $this->ws = 0;
                     $this->_out('0 Tw');
                 }
-                $this->Cell($w, $h, substr($s, $j, $i - $j), $b, 2, $align, $fill);
+                $this->Cell($w, $h, wpjobportalphplib::wpJP_substr($s, $j, $i - $j), $b, 2, $align, $fill);
                 $i++;
                 $sep = -1;
                 $j = $i;
@@ -682,13 +682,13 @@ class FPDF {
                         $this->ws = 0;
                         $this->_out('0 Tw');
                     }
-                    $this->Cell($w, $h, substr($s, $j, $i - $j), $b, 2, $align, $fill);
+                    $this->Cell($w, $h, wpjobportalphplib::wpJP_substr($s, $j, $i - $j), $b, 2, $align, $fill);
                 } else {
                     if ($align == 'J') {
                         $this->ws = ($ns > 1) ? ($wmax - $ls) / 1000 * $this->FontSize / ($ns - 1) : 0;
                         $this->_out(sprintf('%.3F Tw', $this->ws * $this->k));
                     }
-                    $this->Cell($w, $h, substr($s, $j, $sep - $j), $b, 2, $align, $fill);
+                    $this->Cell($w, $h, wpjobportalphplib::wpJP_substr($s, $j, $sep - $j), $b, 2, $align, $fill);
                     $i = $sep + 1;
                 }
                 $sep = -1;
@@ -706,9 +706,9 @@ class FPDF {
             $this->ws = 0;
             $this->_out('0 Tw');
         }
-        if ($border && strpos($border, 'B') !== false)
+        if ($border && wpjobportalphplib::wpJP_strpos($border, 'B') !== false)
             $b .= 'B';
-        $this->Cell($w, $h, substr($s, $j, $i - $j), $b, 2, $align, $fill);
+        $this->Cell($w, $h, wpjobportalphplib::wpJP_substr($s, $j, $i - $j), $b, 2, $align, $fill);
         $this->x = $this->lMargin;
     }
 
@@ -717,8 +717,8 @@ class FPDF {
         $cw = &$this->CurrentFont['cw'];
         $w = $this->w - $this->rMargin - $this->x;
         $wmax = ($w - 2 * $this->cMargin) * 1000 / $this->FontSize;
-        $s = str_replace("\r", '', $txt);
-        $nb = strlen($s);
+        $s = wpjobportalphplib::wpJP_str_replace("\r", '', $txt);
+        $nb = wpjobportalphplib::wpJP_strlen($s);
         $sep = -1;
         $i = 0;
         $j = 0;
@@ -729,7 +729,7 @@ class FPDF {
             $c = $s[$i];
             if ($c == "\n") {
                 // Explicit line break
-                $this->Cell($w, $h, substr($s, $j, $i - $j), 0, 2, '', 0, $link);
+                $this->Cell($w, $h, wpjobportalphplib::wpJP_substr($s, $j, $i - $j), 0, 2, '', 0, $link);
                 $i++;
                 $sep = -1;
                 $j = $i;
@@ -760,10 +760,10 @@ class FPDF {
                     }
                     if ($i == $j)
                         $i++;
-                    $this->Cell($w, $h, substr($s, $j, $i - $j), 0, 2, '', 0, $link);
+                    $this->Cell($w, $h, wpjobportalphplib::wpJP_substr($s, $j, $i - $j), 0, 2, '', 0, $link);
                 }
                 else {
-                    $this->Cell($w, $h, substr($s, $j, $sep - $j), 0, 2, '', 0, $link);
+                    $this->Cell($w, $h, wpjobportalphplib::wpJP_substr($s, $j, $sep - $j), 0, 2, '', 0, $link);
                     $i = $sep + 1;
                 }
                 $sep = -1;
@@ -780,7 +780,7 @@ class FPDF {
         }
         // Last chunk
         if ($i != $j)
-            $this->Cell($l / 1000 * $this->FontSize, $h, substr($s, $j), 0, 0, '', 0, $link);
+            $this->Cell($l / 1000 * $this->FontSize, $h, wpjobportalphplib::wpJP_substr($s, $j), 0, 0, '', 0, $link);
     }
 
     function Ln($h = null) {
@@ -800,9 +800,9 @@ class FPDF {
                 $pos = strrpos($file, '.');
                 if (!$pos)
                     $this->Error('Image file has no extension and no type was specified: ' . $file);
-                $type = substr($file, $pos + 1);
+                $type = wpjobportalphplib::wpJP_substr($file, $pos + 1);
             }
-            $type = strtolower($type);
+            $type = wpjobportalphplib::wpJP_strtolower($type);
             if ($type == 'jpeg')
                 $type = 'jpg';
             $mtd = '_parse' . $type;
@@ -885,7 +885,7 @@ class FPDF {
         // Output PDF to some destination
         if ($this->state < 3)
             $this->Close();
-        $dest = strtoupper($dest);
+        $dest = wpjobportalphplib::wpJP_strtoupper($dest);
         if ($dest == '') {
             if ($name == '') {
                 $name = 'doc.pdf';
@@ -920,7 +920,7 @@ class FPDF {
                 $f = fopen($name, 'wb');
                 if (!$f)
                     $this->Error('Unable to create output file: ' . $name);
-                fwrite($f, $this->buffer, strlen($this->buffer));
+                fwrite($f, $this->buffer, wpjobportalphplib::wpJP_strlen($this->buffer));
                 fclose($f);
                 break;
             case 'S':
@@ -957,7 +957,7 @@ class FPDF {
         }
         if (ob_get_length()) {
             // The output buffer is not empty
-            if (preg_match('/^(\xEF\xBB\xBF)?\s*$/', ob_get_contents())) {
+            if (wpjobportalphplib::wpJP_preg_match('/^(\xEF\xBB\xBF)?\s*$/', ob_get_contents())) {
                 // It contains only a UTF-8 BOM and/or whitespace, let's clean it
                 ob_clean();
             } else
@@ -967,7 +967,7 @@ class FPDF {
 
     function _getpagesize($size) {
         if (is_string($size)) {
-            $size = strtolower($size);
+            $size = wpjobportalphplib::wpJP_strtolower($size);
             if (!isset($this->StdPageSizes[$size]))
                 $this->Error('Unknown page size: ' . $size);
             $a = $this->StdPageSizes[$size];
@@ -992,7 +992,7 @@ class FPDF {
         if ($orientation == '')
             $orientation = $this->DefOrientation;
         else
-            $orientation = strtoupper($orientation[0]);
+            $orientation = wpjobportalphplib::wpJP_strtoupper($orientation[0]);
         if ($size == '')
             $size = $this->DefPageSize;
         else
@@ -1031,10 +1031,10 @@ class FPDF {
 
     function _escape($s) {
         // Escape special characters in strings
-        $s = str_replace('\\', '\\\\', $s);
-        $s = str_replace('(', '\\(', $s);
-        $s = str_replace(')', '\\)', $s);
-        $s = str_replace("\r", '\\r', $s);
+        $s = wpjobportalphplib::wpJP_str_replace('\\', '\\\\', $s);
+        $s = wpjobportalphplib::wpJP_str_replace('(', '\\(', $s);
+        $s = wpjobportalphplib::wpJP_str_replace(')', '\\)', $s);
+        $s = wpjobportalphplib::wpJP_str_replace("\r", '\\r', $s);
         return $s;
     }
 
@@ -1046,7 +1046,7 @@ class FPDF {
     function _UTF8toUTF16($s) {
         // Convert UTF-8 to UTF-16BE with BOM
         $res = "\xFE\xFF";
-        $nb = strlen($s);
+        $nb = wpjobportalphplib::wpJP_strlen($s);
         $i = 0;
         while ($i < $nb) {
             $c1 = ord($s[$i++]);
@@ -1152,11 +1152,11 @@ class FPDF {
                 // Read transparency info
                 $t = $this->_readstream($f, $n);
                 if ($ct == 0)
-                    $trns = array(ord(substr($t, 1, 1)));
+                    $trns = array(ord(wpjobportalphplib::wpJP_substr($t, 1, 1)));
                 elseif ($ct == 2)
-                    $trns = array(ord(substr($t, 1, 1)), ord(substr($t, 3, 1)), ord(substr($t, 5, 1)));
+                    $trns = array(ord(wpjobportalphplib::wpJP_substr($t, 1, 1)), ord(wpjobportalphplib::wpJP_substr($t, 3, 1)), ord(wpjobportalphplib::wpJP_substr($t, 5, 1)));
                 else {
-                    $pos = strpos($t, chr(0));
+                    $pos = wpjobportalphplib::wpJP_strpos($t, chr(0));
                     if ($pos !== false)
                         $trns = array($pos);
                 }
@@ -1190,9 +1190,9 @@ class FPDF {
                     $pos = (1 + $len) * $i;
                     $color .= $data[$pos];
                     $alpha .= $data[$pos];
-                    $line = substr($data, $pos + 1, $len);
-                    $color .= preg_replace('/(.)./s', '$1', $line);
-                    $alpha .= preg_replace('/.(.)/s', '$1', $line);
+                    $line = wpjobportalphplib::wpJP_substr($data, $pos + 1, $len);
+                    $color .= wpjobportalphplib::wpJP_preg_replace('/(.)./s', '$1', $line);
+                    $alpha .= wpjobportalphplib::wpJP_preg_replace('/.(.)/s', '$1', $line);
                 }
             } else {
                 // RGB image
@@ -1201,9 +1201,9 @@ class FPDF {
                     $pos = (1 + $len) * $i;
                     $color .= $data[$pos];
                     $alpha .= $data[$pos];
-                    $line = substr($data, $pos + 1, $len);
-                    $color .= preg_replace('/(.{3})./s', '$1', $line);
-                    $alpha .= preg_replace('/.{3}(.)/s', '$1', $line);
+                    $line = wpjobportalphplib::wpJP_substr($data, $pos + 1, $len);
+                    $color .= wpjobportalphplib::wpJP_preg_replace('/(.{3})./s', '$1', $line);
+                    $alpha .= wpjobportalphplib::wpJP_preg_replace('/.{3}(.)/s', '$1', $line);
                 }
             }
             unset($data);
@@ -1223,7 +1223,7 @@ class FPDF {
             $s = fread($f, $n);
             if ($s === false)
                 $this->Error('Error while reading stream');
-            $n -= strlen($s);
+            $n -= wpjobportalphplib::wpJP_strlen($s);
             $res .= $s;
         }
         if ($n > 0)
@@ -1275,7 +1275,7 @@ class FPDF {
     function _newobj() {
         // Begin a new object
         $this->n++;
-        $this->offsets[$this->n] = strlen($this->buffer);
+        $this->offsets[$this->n] = wpjobportalphplib::wpJP_strlen($this->buffer);
         $this->_out($this->n . ' 0 obj');
     }
 
@@ -1298,7 +1298,7 @@ class FPDF {
         if (!empty($this->AliasNbPages)) {
             // Replace number of pages
             for ($n = 1; $n <= $nb; $n++)
-                $this->pages[$n] = str_replace($this->AliasNbPages, $nb, $this->pages[$n]);
+                $this->pages[$n] = wpjobportalphplib::wpJP_str_replace($this->AliasNbPages, $nb, $this->pages[$n]);
         }
         if ($this->DefOrientation == 'P') {
             $wPt = $this->DefPageSize[0] * $this->k;
@@ -1339,12 +1339,12 @@ class FPDF {
             // Page content
             $p = ($this->compress) ? gzcompress($this->pages[$n]) : $this->pages[$n];
             $this->_newobj();
-            $this->_out('<<' . $filter . '/Length ' . strlen($p) . '>>');
+            $this->_out('<<' . $filter . '/Length ' . wpjobportalphplib::wpJP_strlen($p) . '>>');
             $this->_putstream($p);
             $this->_out('endobj');
         }
         // Pages root
-        $this->offsets[1] = strlen($this->buffer);
+        $this->offsets[1] = wpjobportalphplib::wpJP_strlen($this->buffer);
         $this->_out('1 0 obj');
         $this->_out('<</Type /Pages');
         $kids = '/Kids [';
@@ -1372,10 +1372,10 @@ class FPDF {
             $font = file_get_contents($this->fontpath . $file, true);
             if (!$font)
                 $this->Error('Font file not found: ' . $file);
-            $compressed = (substr($file, -2) == '.z');
+            $compressed = (wpjobportalphplib::wpJP_substr($file, -2) == '.z');
             if (!$compressed && isset($info['length2']))
-                $font = substr($font, 6, $info['length1']) . substr($font, 6 + $info['length1'] + 6, $info['length2']);
-            $this->_out('<</Length ' . strlen($font));
+                $font = wpjobportalphplib::wpJP_substr($font, 6, $info['length1']) . wpjobportalphplib::wpJP_substr($font, 6 + $info['length1'] + 6, $info['length2']);
+            $this->_out('<</Length ' . wpjobportalphplib::wpJP_strlen($font));
             if ($compressed)
                 $this->_out('/Filter /FlateDecode');
             $this->_out('/Length1 ' . $info['length1']);
@@ -1436,7 +1436,7 @@ class FPDF {
             }
             else {
                 // Allow for additional types
-                $mtd = '_put' . strtolower($type);
+                $mtd = '_put' . wpjobportalphplib::wpJP_strtolower($type);
                 if (!method_exists($this, $mtd))
                     $this->Error('Unsupported font type: ' . $type);
                 $this->$mtd($font);
@@ -1460,7 +1460,7 @@ class FPDF {
         $this->_out('/Width ' . $info['w']);
         $this->_out('/Height ' . $info['h']);
         if ($info['cs'] == 'Indexed')
-            $this->_out('/ColorSpace [/Indexed /DeviceRGB ' . (strlen($info['pal']) / 3 - 1) . ' ' . ($this->n + 1) . ' 0 R]');
+            $this->_out('/ColorSpace [/Indexed /DeviceRGB ' . (wpjobportalphplib::wpJP_strlen($info['pal']) / 3 - 1) . ' ' . ($this->n + 1) . ' 0 R]');
         else {
             $this->_out('/ColorSpace /' . $info['cs']);
             if ($info['cs'] == 'DeviceCMYK')
@@ -1479,7 +1479,7 @@ class FPDF {
         }
         if (isset($info['smask']))
             $this->_out('/SMask ' . ($this->n + 1) . ' 0 R');
-        $this->_out('/Length ' . strlen($info['data']) . '>>');
+        $this->_out('/Length ' . wpjobportalphplib::wpJP_strlen($info['data']) . '>>');
         $this->_putstream($info['data']);
         $this->_out('endobj');
         // Soft mask
@@ -1493,7 +1493,7 @@ class FPDF {
             $filter = ($this->compress) ? '/Filter /FlateDecode ' : '';
             $pal = ($this->compress) ? gzcompress($info['pal']) : $info['pal'];
             $this->_newobj();
-            $this->_out('<<' . $filter . '/Length ' . strlen($pal) . '>>');
+            $this->_out('<<' . $filter . '/Length ' . wpjobportalphplib::wpJP_strlen($pal) . '>>');
             $this->_putstream($pal);
             $this->_out('endobj');
         }
@@ -1519,7 +1519,7 @@ class FPDF {
         $this->_putfonts();
         $this->_putimages();
         // Resource dictionary
-        $this->offsets[2] = strlen($this->buffer);
+        $this->offsets[2] = wpjobportalphplib::wpJP_strlen($this->buffer);
         $this->_out('2 0 obj');
         $this->_out('<<');
         $this->_putresourcedict();
@@ -1588,7 +1588,7 @@ class FPDF {
         $this->_out('>>');
         $this->_out('endobj');
         // Cross-ref
-        $o = strlen($this->buffer);
+        $o = wpjobportalphplib::wpJP_strlen($this->buffer);
         $this->_out('xref');
         $this->_out('0 ' . ($this->n + 1));
         $this->_out('0000000000 65535 f ');

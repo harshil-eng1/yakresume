@@ -3,7 +3,7 @@
 if (!defined('ABSPATH'))
     die('Restricted Access');
 
-include_once( ABSPATH . 'wp-admin/includes/plugin.php' );
+do_action('wpjobportal_load_wp_plugin_file');
 // check for plugin using plugin name
 if (is_plugin_active('wp-job-portal/wp-job-portal.php')) {
 	$query = "SELECT * FROM `".wpjobportal::$_db->prefix."wj_portal_config` WHERE configname = 'versioncode' OR configname = 'last_version' OR configname = 'last_step_updater'";
@@ -12,7 +12,7 @@ if (is_plugin_active('wp-job-portal/wp-job-portal.php')) {
 	foreach($result AS $rs){
 		$config[$rs->configname] = $rs->configvalue;
 	}
-	$config['versioncode'] = str_replace('.', '', $config['versioncode']);	
+	$config['versioncode'] = wpjobportalphplib::wpJP_str_replace('.', '', $config['versioncode']);
 	if(!empty($config['last_version']) && $config['last_version'] != '' && $config['last_version'] < $config['versioncode']){
 		$last_version = $config['last_version'] + 1; // files execute from the next version
 		$currentversion = $config['versioncode'];
@@ -25,7 +25,7 @@ if (is_plugin_active('wp-job-portal/wp-job-portal.php')) {
 	}
 	$mainfile = WPJOBPORTAL_PLUGIN_PATH.'wp-job-portal.php';
 	$contents = file_get_contents($mainfile);
-	$contents = str_replace("include_once 'includes/updater/updater.php';", '', $contents);
+	$contents = wpjobportalphplib::wpJP_str_replace("include_once 'includes/updater/updater.php';", '', $contents);
 	file_put_contents($mainfile, $contents);
 
 	function recursiveremove($dir) {

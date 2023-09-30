@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 
 class WPJOBPORTALpremiumpluginController {
@@ -74,7 +75,7 @@ class WPJOBPORTALpremiumpluginController {
                 }
             }
         }else{
-            $error = __('Please insert activation key to proceed','wp-job-portal').'!';
+            $error = esc_html(__('Please insert activation key to proceed','wp-job-portal')).'!';
         }
         $wpjobportal_addon_return_data = array();
         $wpjobportal_addon_return_data['status'] = 0;
@@ -96,14 +97,14 @@ class WPJOBPORTALpremiumpluginController {
         $addon_json_array = array();
 
         foreach ($addons_array as $key => $value) {
-            $addon_json_array[] = str_replace('wp-job-portal-', '', $key);
+            $addon_json_array[] = wpjobportalphplib::wpJP_str_replace('wp-job-portal-', '', $key);
         }
 
         $token = $post_data['token'];
         if($token == ''){
             $wpjobportal_addon_return_data = array();
             $wpjobportal_addon_return_data['status'] = 0;
-            $wpjobportal_addon_return_data['message'] = __('Addon Installation Failed','wp-job-portal').'!';
+            $wpjobportal_addon_return_data['message'] = esc_html(__('Addon Installation Failed','wp-job-portal')).'!';
             $wpjobportal_addon_return_data['transactionkey'] = '';
             update_option( 'wpjobportal_addon_return_data', json_encode($wpjobportal_addon_return_data) );
             $url = admin_url("admin.php?page=wpjobportal_premiumplugin&wpjobportallt=step1");
@@ -111,8 +112,8 @@ class WPJOBPORTALpremiumpluginController {
             exit;
         }
         $site_url = site_url();
-        $site_url = str_replace("https://","",$site_url);
-        $site_url = str_replace("http://","",$site_url);
+        $site_url = wpjobportalphplib::wpJP_str_replace("https://","",$site_url);
+        $site_url = wpjobportalphplib::wpJP_str_replace("http://","",$site_url);
         $url = 'https://wpjobportal.com/setup/index.php?token='.$token.'&productcode='. json_encode($addon_json_array).'&domain='. $site_url;
 
         $install_count = 0;
@@ -121,13 +122,13 @@ class WPJOBPORTALpremiumpluginController {
         if ( !is_wp_error( $installed ) && $installed ) {
             // had to run two seprate loops to save token for all the addons even if some error is triggered by activation.
             foreach ($post_data as $key => $value) {
-                if(strstr($key, 'wp-job-portal-')){
+                if(wpjobportalphplib::wpJP_strstr($key, 'wp-job-portal-')){
                     update_option('transaction_key_for_'.$key,$token);
                 }
             }
 
             foreach ($post_data as $key => $value) {
-                if(strstr($key, 'wp-job-portal-')){
+                if(wpjobportalphplib::wpJP_strstr($key, 'wp-job-portal-')){
                     $activate = activate_plugin( $key.'/'.$key.'.php' );
                     $install_count++;
                 }
@@ -136,7 +137,7 @@ class WPJOBPORTALpremiumpluginController {
         }else{
             $wpjobportal_addon_return_data = array();
             $wpjobportal_addon_return_data['status'] = 0;
-            $wpjobportal_addon_return_data['message'] = __('Addon Installation Failed','wp-job-portal').'!';
+            $wpjobportal_addon_return_data['message'] = esc_html(__('Addon Installation Failed','wp-job-portal')).'!';
             $wpjobportal_addon_return_data['transactionkey'] = '';
             update_option( 'wpjobportal_addon_return_data', json_encode($wpjobportal_addon_return_data) );
             $url = admin_url("admin.php?page=wpjobportal_premiumplugin&wpjobportallt=step1");
@@ -148,8 +149,7 @@ class WPJOBPORTALpremiumpluginController {
     }
 
     function install_plugin( $plugin_zip ) {
-
-        include(ABSPATH . "wp-admin/includes/admin.php");
+        do_action('wpjobportal_load_wp_admin_file');
         WP_Filesystem();
         $tmpfile = download_url( $plugin_zip);
 
@@ -168,7 +168,7 @@ class WPJOBPORTALpremiumpluginController {
             if ( is_wp_error( $unzipfile ) ) {
                 $wpjobportal_addon_return_data = array();
                 $wpjobportal_addon_return_data['status'] = 0;
-                $wpjobportal_addon_return_data['message'] = __('Addon installation failed, Directory permission error','wp-job-portal').'!';
+                $wpjobportal_addon_return_data['message'] = esc_html(__('Addon installation failed, Directory permission error','wp-job-portal')).'!';
                 $wpjobportal_addon_return_data['transactionkey'] = '';
                 update_option( 'wpjobportal_addon_return_data', json_encode($wpjobportal_addon_return_data) );
                 $url = admin_url("admin.php?page=wpjobportal_premiumplugin&wpjobportallt=step1");
@@ -180,7 +180,7 @@ class WPJOBPORTALpremiumpluginController {
         }else{
             $wpjobportal_addon_return_data = array();
             $wpjobportal_addon_return_data['status'] = 0;
-            $wpjobportal_addon_return_data['message'] = __('Addon Installation Failed, File download error','wp-job-portal').'!';
+            $wpjobportal_addon_return_data['message'] = esc_html(__('Addon Installation Failed, File download error','wp-job-portal')).'!';
             $wpjobportal_addon_return_data['transactionkey'] = '';
             update_option( 'wpjobportal_addon_return_data', json_encode($wpjobportal_addon_return_data) );
             $url = admin_url("admin.php?page=wpjobportal_premiumplugin&wpjobportallt=step1");

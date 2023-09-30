@@ -1,4 +1,6 @@
 <?php
+if (!defined('ABSPATH'))
+    die('Restricted Access');
 /**
 * @param WP JOB PORTAL
 */
@@ -14,8 +16,8 @@ switch ($layout) {
 		    $path = WPJOBPORTAL_PLUGIN_URL . '/includes/images/default_logo.png';
 		}
 		echo '<div class="wpjobportal-company-logo">';
-		echo '	<a href='.admin_url('admin.php?page=wpjobportal_company&wpjobportallt=formcompany&wpjobportalid='.$company->id).'&isqueue=1 title='.__("logo","wp-job-portal").'>
-					<img src='. esc_url($path).' alt='.__("logo","wp-job-portal").'>
+		echo '	<a href='.admin_url('admin.php?page=wpjobportal_company&wpjobportallt=formcompany&wpjobportalid='.$company->id).'&isqueue=1 title='.esc_html(__("logo","wp-job-portal")).'>
+					<img src='. esc_url($path).' alt='.esc_html(__("logo","wp-job-portal")).'>
 				</a>
 				<div class="wpjobportal-company-crt-date">
 					'.esc_html(date_i18n(wpjobportal::$_configuration['date_format'], strtotime($company->created))).'
@@ -32,8 +34,8 @@ switch ($layout) {
             $path = WPJOBPORTAL_PLUGIN_URL . '/includes/images/default_logo.png';
         }
         echo '<div class="wpjobportal-company-logo">
-                	<a href='.admin_url('admin.php?page=wpjobportal_company&wpjobportallt=formcompany&wpjobportalid='.$company->id).' title='.__("logo","wp-job-portal").'>
-                		<img src='.esc_url($path).' alt='.__("logo","wp-job-portal").'>
+                	<a href='.admin_url('admin.php?page=wpjobportal_company&wpjobportallt=formcompany&wpjobportalid='.$company->id).' title='.esc_html(__("logo","wp-job-portal")).'>
+                		<img src='.esc_url($path).' alt='.esc_html(__("logo","wp-job-portal")).'>
                 	</a>
                 	<div class="wpjobportal-company-crt-date">
                 		'.esc_html(date_i18n(wpjobportal::$_configuration['date_format'], strtotime($company->created))).'

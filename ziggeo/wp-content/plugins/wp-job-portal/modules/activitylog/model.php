@@ -213,7 +213,7 @@ class WPJOBPORTALactivitylogModel {
             $string = $activity_log_filter;
             $inquery = "WHERE act.referencefor IN ($string) ";
             //showing check boxes checked
-            $array = explode(',', $string);
+            $array = wpjobportalphplib::wpJP_explode(',', $string);
             foreach ($array as $var) {
                 switch ($var) {
                     case '"ages"':
@@ -377,7 +377,7 @@ class WPJOBPORTALactivitylogModel {
     }
 
     function getActivityDescription($flag, $tablename, $uid, $columns, $id) {
-        $array = explode('_', $tablename);
+        $array = wpjobportalphplib::wpJP_explode('_', $tablename);
         if (!is_numeric($uid))
             return false;
 
@@ -386,159 +386,159 @@ class WPJOBPORTALactivitylogModel {
         switch ($name) {
             //all the tables which have title as column
             case 'ages':
-                $entityname = __('Age', 'wp-job-portal');
+                $entityname = esc_html(__('Age', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['title'] : $this->getEntityNameOrTitle($id, 'title', $tablename);
                 $path = "?page=wpjobportal_age&wpjobportallt=formages&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'careerlevels':
-                $entityname = __('Career Level', 'wp-job-portal');
+                $entityname = esc_html(__('Career Level', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['title'] : $this->getEntityNameOrTitle($id, 'title', $tablename);
                 $path = "?page=wpjobportal_careerlevel&wpjobportallt=formcareerlevels&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'coverletters':
-                $entityname = __('Cover Letter', 'wp-job-portal');
+                $entityname = esc_html(__('Cover Letter', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['title'] : $this->getEntityNameOrTitle($id, 'title', $tablename);
                 $path = "?page=wpjobportal_coverletter&wpjobportallt=formcoverletter&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'currencies':
-                $entityname = __('Currency', 'wp-job-portal');
+                $entityname = esc_html(__('Currency', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['title'] : $this->getEntityNameOrTitle($id, 'title', $tablename);
                 $path = "?page=wpjobportal_currency&wpjobportallt=formcurrency&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'experiences':
-                $entityname = __('Experience', 'wp-job-portal');
+                $entityname = esc_html(__('Experience', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['title'] : $this->getEntityNameOrTitle($id, 'title', $tablename);
                 $path = "?page=wpjobportal_experience&wpjobportallt=formexperience&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'heighesteducation':
-                $entityname = __('Education', 'wp-job-portal');
+                $entityname = esc_html(__('Education', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['title'] : $this->getEntityNameOrTitle($id, 'title', $tablename);
                 $path = "?page=wpjobportal_highesteducation&wpjobportallt=formhighesteducation&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'jobs':
-                $entityname = __('Job', 'wp-job-portal');
+                $entityname = esc_html(__('Job', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['title'] : $this->getEntityNameOrTitle($id, 'title', $tablename);
                 $path = "?page=wpjobportal_job&wpjobportallt=formjob&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'jobstatus':
-                $entityname = __('Job Status', 'wp-job-portal');
+                $entityname = esc_html(__('Job Status', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['title'] : $this->getEntityNameOrTitle($id, 'title', $tablename);
                 $path = "?page=wpjobportal_jobstatus&wpjobportallt=formjobstatus&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'jobtypes':
-                $entityname = __('Job Type', 'wp-job-portal');
+                $entityname = esc_html(__('Job Type', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['title'] : $this->getEntityNameOrTitle($id, 'title', $tablename);
                 $path = "?page=wpjobportal_jobtype&wpjobportallt=formjobtype&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'salaryrangetypes':
-                $entityname = __('Salary Range Type', 'wp-job-portal');
+                $entityname = esc_html(__('Salary Range Type', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['title'] : $this->getEntityNameOrTitle($id, 'title', $tablename);
                 $path = "?page=wpjobportal_salaryrangetype&wpjobportallt=formsalaryrangetype&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'userfields':
-                $entityname = __('Salary Range Type', 'wp-job-portal');
+                $entityname = esc_html(__('Salary Range Type', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['title'] : $this->getEntityNameOrTitle($id, 'title', $tablename);
                 $path = "?page=wpjobportal_customfield&wpjobportallt=formcustomfield&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'shifts':
-                $entityname = __('Shift', 'wp-job-portal');
+                $entityname = esc_html(__('Shift', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['title'] : $this->getEntityNameOrTitle($id, 'title', $tablename);
                 $path = "?page=wpjobportal_shift&wpjobportallt=formshift&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'emailtemplates':
-                $entityname = __('Email Template', 'wp-job-portal');
+                $entityname = esc_html(__('Email Template', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['templatefor'] : $this->getEntityNameOrTitle($id, 'templatefor', $tablename);
                 $path = "?page=wpjobportal_emailtemplate&wpjobportallt=formemailtemplte&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             //tables that have name as column
             case 'companies':
-                $entityname = __('Company', 'wp-job-portal');
+                $entityname = esc_html(__('Company', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['name'] : $this->getEntityNameOrTitle($id, 'name', $tablename);
                 $path = "?page=wpjobportal_company&wpjobportallt=formcompany&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'countries':
-                $entityname = __('Country', 'wp-job-portal');
+                $entityname = esc_html(__('Country', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['name'] : $this->getEntityNameOrTitle($id, 'name', $tablename);
                 $path = "?page=wpjobportal_country&wpjobportallt=formcountry&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'folders':
-                $entityname = __('Folder', 'wp-job-portal');
+                $entityname = esc_html(__('Folder', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['name'] : $this->getEntityNameOrTitle($id, 'name', $tablename);
                 $path = "?page=wpjobportal_folder&wpjobportallt=formfolder&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'states':
-                $entityname = __('Department', 'wp-job-portal');
+                $entityname = esc_html(__('Department', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['name'] : $this->getEntityNameOrTitle($id, 'name', $tablename);
                 $path = "?page=wpjobportal_state&wpjobportallt=formstate&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'departments':
-                $entityname = __('Department', 'wp-job-portal');
+                $entityname = esc_html(__('Department', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['name'] : $this->getEntityNameOrTitle($id, 'name', $tablename);
                 $path = "?page=wpjobportal_departments&wpjobportallt=formdepartment&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'cities':
-                $entityname = __('City', 'wp-job-portal');
+                $entityname = esc_html(__('City', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['name'] : $this->getEntityNameOrTitle($id, 'name', $tablename);
                 $path = "?page=wpjobportal_city&wpjobportallt=formcity&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             //speceial case
             case 'resume':
-                $entityname = __('Resume', 'wp-job-portal');
+                $entityname = esc_html(__('Resume', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, "CONCAT(first_name, ' ', last_name) AS Name", wpjobportal::$_db->prefix.'wj_portal_resume');
                 $path = "?page=wpjobportal_resume&wpjobportallt=formresume&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'jobsearches':
-                $entityname = __('Job Search', 'wp-job-portal');
+                $entityname = esc_html(__('Job Search', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['searchname'] : $this->getEntityNameOrTitle($id, 'searchname', $tablename);
                 $path = "?page=wpjobportal_jobsearch";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'resumesearches':
-                $entityname = __('Resume Search', 'wp-job-portal');
+                $entityname = esc_html(__('Resume Search', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['searchname'] : $this->getEntityNameOrTitle($id, 'searchname', $tablename);
                 $path = "?page=wpjobportal_resumesearch";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'categories':
-                $entityname = __('Category', 'wp-job-portal');
+                $entityname = esc_html(__('Category', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['cat_title'] : $this->getEntityNameOrTitle($id, 'cat_title', $tablename);
                 $path = "?page=wpjobportal_category&wpjobportallt=formcategory&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'salaryrange':
-                $entityname = __('Salary Range', 'wp-job-portal');
+                $entityname = esc_html(__('Salary Range', 'wp-job-portal'));
                 $linktext = $flag == 1 ? $columns['rangestart'] : $this->getEntityNameOrTitle($id, 'rangestart', $tablename);
                 $path = "?page=wpjobportal_salaryrange&wpjobportallt=formsalaryrange&wpjobportalid=$id";
                 $html = "<a href=" . $path . " target=$target><strong>" . $linktext . "</strong></a>";
                 break;
             case 'jobapply':
-                $entityname = __('Applied for job', 'wp-job-portal');
+                $entityname = esc_html(__('Applied for job', 'wp-job-portal'));
                 $data = $this->getEntityNameOrTitleForJobApply($id, $tablename);
 
                 $path1 = "?page=wpjobportal_job&wpjobportallt=formjob&wpjobportalid=$data[0]";
                 $path2 = "?page=wpjobportal_resume&wpjobportallt=formresume&wpjobportalid=$data[2]";
                 $html = " ( <a href=" . $path1 . " target=$target><strong>" . $data[1] . "</strong></a> ) ";
-                $html .= __('With Resume', 'wp-job-portal');
+                $html .= esc_html(__('With Resume', 'wp-job-portal'));
                 $html .= " ( <a href=" . $path2 . " target=$target><strong>" . $data[3] . "</strong></a> ) ";
                 break;
             default:
@@ -548,11 +548,11 @@ class WPJOBPORTALactivitylogModel {
         $username = $this->getNameFromUid($uid);
         $path2 = admin_url('admin.php?page=wpjobportal_user&wpjobportallt=userdetail&id='.$uid);
         if(current_user_can('manage_options')){
-            $html2 = __('Administrator','wp-job-portal');
+            $html2 = esc_html(__('Administrator','wp-job-portal'));
         }else{
             $html2 = "<a href=" . $path2 . " target=$target><strong>" . $username . "</strong></a>";
         }
-        $entityaction = $flag == 1 ? __("added a new", "wp-job-portal") : __("Edited a existing", "wp-job-portal");
+        $entityaction = $flag == 1 ? esc_html(__("added a new", "wp-job-portal")) : esc_html(__("Edited a existing", "wp-job-portal"));
         $result = array();
         $result[0] = $name;
         if ($name == 'jobapply') {
@@ -578,106 +578,106 @@ class WPJOBPORTALactivitylogModel {
     }
 
     function getDeleteActionDataToStore($tablename, $id) {
-        $array = explode('_', $tablename);
+        $array = wpjobportalphplib::wpJP_explode('_', $tablename);
         $name = $array[count($array) - 1];
         switch ($name) {
             //all the tables which have title as column
             case 'ages':
-                $entityname = __('Age', 'wp-job-portal');
+                $entityname = esc_html(__('Age', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'title', $tablename);
                 break;
             case 'careerlevels':
-                $entityname = __('Career Level', 'wp-job-portal');
+                $entityname = esc_html(__('Career Level', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'title', $tablename);
                 break;
             case 'coverletters':
-                $entityname = __('Cover Letter', 'wp-job-portal');
+                $entityname = esc_html(__('Cover Letter', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'title', $tablename);
                 break;
             case 'currencies':
-                $entityname = __('Currency', 'wp-job-portal');
+                $entityname = esc_html(__('Currency', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'title', $tablename);
                 break;
             case 'experiences':
-                $entityname = __('Experience', 'wp-job-portal');
+                $entityname = esc_html(__('Experience', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'title', $tablename);
                 break;
             case 'heighesteducation':
-                $entityname = __('Education', 'wp-job-portal');
+                $entityname = esc_html(__('Education', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'title', $tablename);
                 break;
             case 'jobs':
-                $entityname = __('Job', 'wp-job-portal');
+                $entityname = esc_html(__('Job', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'title', $tablename);
                 break;
             case 'jobstatus':
-                $entityname = __('Job Status', 'wp-job-portal');
+                $entityname = esc_html(__('Job Status', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'title', $tablename);
                 break;
             case 'jobtypes':
-                $entityname = __('Job Type', 'wp-job-portal');
+                $entityname = esc_html(__('Job Type', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'title', $tablename);
                 break;
             case 'salaryrangetypes':
-                $entityname = __('Salary Range Type', 'wp-job-portal');
+                $entityname = esc_html(__('Salary Range Type', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'title', $tablename);
                 break;
             case 'userfields':
-                $entityname = __('Salary Range Type', 'wp-job-portal');
+                $entityname = esc_html(__('Salary Range Type', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'title', $tablename);
                 break;
             case 'shifts':
-                $entityname = __('Shift', 'wp-job-portal');
+                $entityname = esc_html(__('Shift', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'title', $tablename);
                 break;
             case 'emailtemplates':
-                $entityname = __('Email Template', 'wp-job-portal');
+                $entityname = esc_html(__('Email Template', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'templatefor', $tablename);
                 break;
             //tables that have name as column
             case 'companies':
-                $entityname = __('Company', 'wp-job-portal');
+                $entityname = esc_html(__('Company', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'name', $tablename);
                 break;
             case 'countries':
-                $entityname = __('Country', 'wp-job-portal');
+                $entityname = esc_html(__('Country', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'name', $tablename);
                 break;
             case 'states':
-                $entityname = __('State', 'wp-job-portal');
+                $entityname = esc_html(__('State', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'name', $tablename);
                 break;
             case 'departments':
-                $entityname = __('Department', 'wp-job-portal');
+                $entityname = esc_html(__('Department', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'name', $tablename);
                 break;
             case 'cities':
-                $entityname = __('City', 'wp-job-portal');
+                $entityname = esc_html(__('City', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'name', $tablename);
                 break;
             //speceial case
             case 'resume':
-                $entityname = __('Resume', 'wp-job-portal');
+                $entityname = esc_html(__('Resume', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, "CONCAT(first_name, ' ', last_name) AS Name", $tablename);
                 break;
             case 'jobsearches':
-                $entityname = __('Job Search', 'wp-job-portal');
+                $entityname = esc_html(__('Job Search', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'searchname', $tablename);
                 break;
             case 'resumesearches':
-                $entityname = __('Resume Search', 'wp-job-portal');
+                $entityname = esc_html(__('Resume Search', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'searchname', $tablename);
                 break;
             case 'categories':
-                $entityname = __('Category', 'wp-job-portal');
+                $entityname = esc_html(__('Category', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'cat_title', $tablename);
                 break;
             case 'salaryrange':
-                $entityname = __('Salary Range', 'wp-job-portal');
+                $entityname = esc_html(__('Salary Range', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitle($id, 'rangestart', $tablename);
                 break;
             case 'jobapply':
-                $entityname = __('Applied for job', 'wp-job-portal');
+                $entityname = esc_html(__('Applied for job', 'wp-job-portal'));
                 $linktext = $this->getEntityNameOrTitleForJobApply($id, $tablename);
                 break;
             default:
@@ -689,7 +689,7 @@ class WPJOBPORTALactivitylogModel {
         $username = $this->getNameFromUid($uid);
         $path2 = admin_url('admin.php?page=wpjobportal_user&wpjobportallt=userdetail&id='.$uid);
         $html2 = "<a href=" . $path2 . " target=$target><strong>" . $username . "</strong></a>";
-        $entityaction = __("Deleted a", "wp-job-portal");
+        $entityaction = esc_html(__("Deleted a", "wp-job-portal"));
         $result = array();
         $result[0] = $name;
         $result[1] = "$html2" . " " . $entityaction . " " . $entityname . " ( " . $linktext . " )";

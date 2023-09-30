@@ -58,11 +58,10 @@ class WP_Resume_Manager_Admin {
 		global $wp_scripts;
 
 		$jquery_version = isset( $wp_scripts->registered['jquery-ui-core']->ver ) ? $wp_scripts->registered['jquery-ui-core']->ver : '1.9.2';
-
+		$jquery_version = preg_replace( '/-wp/', '', $jquery_version );
 		wp_enqueue_style( 'jquery-ui-style', '//ajax.googleapis.com/ajax/libs/jqueryui/' . $jquery_version . '/themes/smoothness/jquery-ui.css' );
-		wp_enqueue_style( 'resume_manager_admin_css', RESUME_MANAGER_PLUGIN_URL . '/assets/css/admin.css' );
-		wp_register_script( 'jquery-tiptip', JOB_MANAGER_PLUGIN_URL . '/assets/js/jquery-tiptip/jquery.tipTip.min.js', [ 'jquery' ], JOB_MANAGER_VERSION, true );
-		wp_enqueue_script( 'resume_manager_admin_js', RESUME_MANAGER_PLUGIN_URL . '/assets/js/admin.min.js', [ 'jquery', 'jquery-tiptip', 'jquery-ui-datepicker', 'jquery-ui-sortable' ], RESUME_MANAGER_VERSION, true );
+		wp_enqueue_style( 'resume_manager_admin_css', RESUME_MANAGER_PLUGIN_URL . '/assets/dist/css/admin.css', [ 'dashicons' ], RESUME_MANAGER_VERSION );
+		wp_enqueue_script( 'resume_manager_admin_js', RESUME_MANAGER_PLUGIN_URL . '/assets/dist/js/admin.js', [ 'jquery', 'jquery-ui-datepicker', 'jquery-ui-sortable' ], RESUME_MANAGER_VERSION, true );
 	}
 
 	/**

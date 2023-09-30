@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
 * @param logo wp-job-portal
@@ -16,7 +17,7 @@ switch ($layout) {
 	    }
 		$html.= '<div class="wpjobportal-jobs-logo">
 					<a href='. admin_url('admin.php?page=wpjobportal_job&wpjobportallt=formjob&wpjobportalid='.$job->id).'>
-						<img src='.$logo.' alt='.__("logo","wp-job-portal").'>
+						<img src='.$logo.' alt='.esc_html(__("logo",'wp-job-portal')).'>
 					</a>
 				</div>';
 		break;
@@ -30,7 +31,7 @@ switch ($layout) {
                 }
 		$html.='<div class="wpjobportal-jobs-logo">
                     <a href='. admin_url('admin.php?page=wpjobportal_job&wpjobportallt=formjob&wpjobportalid='.$job->id.'&isqueue=1').'>
-                    	<img src='.$path.' alt='.__("logo","wp-job-portal").'>
+                    	<img src='.$path.' alt='.esc_html(__("logo",'wp-job-portal')).'>
                     </a>
                 </div>';
 		break;

@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
 * @param wp job portal 
@@ -9,7 +10,7 @@ if(isset($user)){
 }
 function printFormField($title, $field, $description) {
     $html = '<div class="wjportal-form-row">
-    <div class="wjportal-form-title">' . __($title,'wp-job-portal') . '</div>
+    <div class="wjportal-form-title">' . wpjobportal::wpjobportal_getVariableValue($title) . '</div>
     <div class="wjportal-form-value">' . $field;
     if (!empty($description)) {
         $html .= '<div class="wjportal-form-help-txt">'.$description.'</div>';
@@ -19,7 +20,7 @@ function printFormField($title, $field, $description) {
 }
 function getRowForForm($text, $value,$themecall=null) {
     $html = '<div class="wjportal-form-row">
-    <div class="wjportal-form-title">' . $text . ':</div>
+    <div class="wjportal-form-title">' . wpjobportal::wpjobportal_getVariableValue($text) . ':</div>
     <div class="wjportal-form-value">' . $value . '</div>
     </div>';
     return $html;
@@ -34,7 +35,7 @@ foreach ($fieldslist AS $field) {
         if($field->published == 1) {
             $req = '';
             $optional = 'true';
-            $title = __($field->fieldtitle,'wp-job-portal');
+            $title = wpjobportal::wpjobportal_getVariableValue($field->fieldtitle);
             $description = '';
             if($field->required == 1) {
                 $req = 'required';
@@ -49,7 +50,7 @@ foreach ($fieldslist AS $field) {
         if(!isset(wpjobportal::$_data[0])){
             if($field->published == 1) {
                 $req = '';
-				$title = __($field->fieldtitle,'wp-job-portal');
+				$title = wpjobportal::wpjobportal_getVariableValue($field->fieldtitle);
                 $description = $field->description;
                 if($field->required == 1) {
                     $req = 'email';
@@ -63,7 +64,7 @@ foreach ($fieldslist AS $field) {
         case 'wpjobportal_user_first':
         if($field->published == 1) {
             $req = '';
-            $title = __($field->fieldtitle,'wp-job-portal');
+            $title = wpjobportal::wpjobportal_getVariableValue($field->fieldtitle);
             $description = $field->description;
             if($field->required == 1) {
                 $req = 'required email';
@@ -76,7 +77,7 @@ foreach ($fieldslist AS $field) {
         case 'wpjobportal_user_last':
         if($field->published == 1) {
             $req = '';
-            $title = __($field->fieldtitle,'wp-job-portal');
+            $title = wpjobportal::wpjobportal_getVariableValue($field->fieldtitle);
             $description = $field->description;
             if($field->required == 1) {
                 $req = 'required email';
@@ -90,7 +91,7 @@ foreach ($fieldslist AS $field) {
         if(!isset(wpjobportal::$_data[0])){
             if($field->published == 1) {
                 $req = '';
-		$title = __($field->fieldtitle,'wp-job-portal');
+		$title = wpjobportal::wpjobportal_getVariableValue($field->fieldtitle);
                 $description = $field->description;
                 if($field->required == 1) {
                     $req = 'required email';
@@ -104,7 +105,7 @@ foreach ($fieldslist AS $field) {
         case 'photo':   
         if($field->published == 1) {
             $req = '';
-            $title = __($field->fieldtitle,'wp-job-portal');
+            $title = wpjobportal::wpjobportal_getVariableValue($field->fieldtitle);
             $description = $field->description;
             if($field->required == 1) {
                 $req = 'required';
@@ -112,7 +113,7 @@ foreach ($fieldslist AS $field) {
             } ?>
             <div class="wjportal-form-row">
                 <div class="wjportal-form-title" for="wjportal_user_profile">
-                    <?php echo $title; ?>
+                    <?php echo $title;// already escaped ?>
                 </div>
                 <div class="wjportal-form-value">
                     <?php
@@ -138,12 +139,12 @@ foreach ($fieldslist AS $field) {
                     <span class="wjportal-form-upload-btn-wrp-txt">'.$photoname.'
                     </span>
                     <span class="wjportal-form-upload-btn">
-                    '.__("Upload Image","wp-job-portal").'
+                    '.esc_html(__("Upload Image","wp-job-portal")).'
                     <input type="file" name="photo" class="photo wjportal-form-upload-field" id="photo" value='.$photoname.' />
                     </span>
                     </div>
                     <div class="wjportal-form-image-wrp" style="display:'.$display.';">
-                    <img class="rs_photo wjportal-form-image" id="rs_photo" src="' . $img . '" alt="'.__('Profile image','wp-job-portal').'"/>';
+                    <img class="rs_photo wjportal-form-image" id="rs_photo" src="' . $img . '" alt="'.esc_html(__('Profile image','wp-job-portal')).'"/>';
                     if(isset(wpjobportal::$_data[0]) && !empty(wpjobportal::$_data[0]->id)){
                         $fieldvalue .= '<img id="wjportal-form-delete-image" onClick="return removeLogo('.wpjobportal::$_data[0]->uid.')" alt="cross" src="'.WPJOBPORTAL_PLUGIN_URL.'includes/images/no.png" />';
                     }else{
@@ -153,7 +154,7 @@ foreach ($fieldslist AS $field) {
                     $logoformat = wpjobportal::$_config->getConfigurationByConfigName('image_file_type');
                     $maxsize = wpjobportal::$_config->getConfigurationByConfigName('image_file_size');
                     $p_detail = '<div class="wjportal-form-help-txt"> ('.$logoformat.') </div>';
-                    $p_detail .= '<div class="wjportal-form-help-txt">  ('.__("Max logo size allowed","wp-job-portal").' '.$maxsize.' Kb) </div>';
+                    $p_detail .= '<div class="wjportal-form-help-txt">  ('.esc_html(__("Max logo size allowed","wp-job-portal")).' '.$maxsize.' Kb) </div>';
                     if (!empty($description)) {
                         $p_detail .= '<div class="wjportal-form-help-txt">'.$description.'</div>';
                     }
@@ -170,7 +171,7 @@ foreach ($fieldslist AS $field) {
         default:
         if($field->isuserfield == 1) {
             $req = '';
-            $title = __($field->fieldtitle,'wp-job-portal');
+            $title = wpjobportal::wpjobportal_getVariableValue($field->fieldtitle);
             $description = $field->description;
             if($field->required == 1) {
                 $req = 'required';
@@ -187,18 +188,18 @@ foreach ($fieldslist AS $field) {
 <?php  if(!isset(wpjobportal::$_data[0])){  ?>
     <div class="wjportal-form-row">
         <div class="wjportal-form-title" for="password">
-            <?php _e('Password'); ?> <font>*</font>
+            <?php echo  esc_html(__("Password","wp-job-portal")); ?> <font>*</font>
         </div>
         <div class="wjportal-form-value">
-            <input name="wpjobportal_user_pass" id="password" class="required wjportal-form-input-field" type="password" placeholder="<?php echo __('Password','wp-job-portal'); ?>"/>
+            <input name="wpjobportal_user_pass" id="password" class="required wjportal-form-input-field" type="password" placeholder="<?php echo esc_html(__("Password",'wp-job-portal')); ?>"/>
         </div>
     </div>
     <div class="wjportal-form-row">
         <div class="wjportal-form-title" for="password_again">
-            <?php _e('Password Again'); ?> <font>*</font>
+            <?php echo esc_html(__('Password Again','wp-job-portal')); ?> <font>*</font>
         </div>
         <div class="wjportal-form-value">
-            <input name="wpjobportal_user_pass_confirm" id="password_again" class="required wjportal-form-input-field" type="password" placeholder="<?php echo __('Password again','wp-job-portal'); ?>"/>
+            <input name="wpjobportal_user_pass_confirm" id="password_again" class="required wjportal-form-input-field" type="password" placeholder="<?php echo esc_html(__('Password again','wp-job-portal')); ?>"/>
         </div>
     </div>
     <div class="wjportal-form-row wjportal-form-roles">
@@ -221,7 +222,7 @@ foreach ($fieldslist AS $field) {
         }
     } ?>
     <div class="wjportal-form-btn-wrp">
-        <input type="submit" id="save" class="button wjportal-form-btn wjportal-save-btn" value="<?php _e('Register New Account','wp-job-portal'); ?>"/>
+        <input type="submit" id="save" class="button wjportal-form-btn wjportal-save-btn" value="<?php echo esc_html(__('Register New Account','wp-job-portal')); ?>"/>
     </div>
     <input type="hidden" name="wpjobportal_jobs_register_nonce" value="<?php echo wp_create_nonce('wpjobportal-jobs-register-nonce'); ?>"/>
     <?php } ?>

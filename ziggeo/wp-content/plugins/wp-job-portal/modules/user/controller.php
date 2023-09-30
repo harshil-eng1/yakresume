@@ -35,7 +35,11 @@ class WPJOBPORTALUserController {
                     break;
                 case 'formprofile':
                     if( WPJOBPORTALincluder::getObjectClass('user')->isguest() ){
-                        wpjobportal::$_error_flag_message = WPJOBPORTAL_GUEST;
+                        $link = WPJOBPORTALincluder::getJSModel('common')->jsMakeRedirectURL('employer', $layout, 1);
+                        $linktext = esc_html(__('Login','wp-job-portal'));
+                        wpjobportal::$_error_flag_message_for = 1;
+                        wpjobportal::$_error_flag_message = WPJOBPORTALLayout::setMessageFor(1 , $link , $linktext,1);
+                        // wpjobportal::$_error_flag_message = WPJOBPORTAL_GUEST;
                     }else{
                         $id = WPJOBPORTALincluder::getObjectClass('user')->uid();
                         WPJOBPORTALincluder::getJSModel('user')->getUserForForm($id);
@@ -69,7 +73,7 @@ class WPJOBPORTALUserController {
             }
             $module = (wpjobportal::$_common->wpjp_isadmin()) ? 'page' : 'wpjobportalme';
             $module = WPJOBPORTALrequest::getVar($module, null, 'user');
-            $module = str_replace('wpjobportal_', '', $module);
+            $module = wpjobportalphplib::wpJP_str_replace('wpjobportal_', '', $module);
             WPJOBPORTALincluder::include_file($layout, $module);
         }
     }
@@ -110,11 +114,11 @@ class WPJOBPORTALUserController {
         }else{
             if (WPJOBPORTALincluder::getObjectClass('user')->isemployer()) {
                 $userrole = 1;
-                $url = wpjobportal::makeUrl(array('wpjobportalme'=>'employer', 'wpjobportallt'=>'controlpanel',"wpjobportalpageid"=>wpjobportal::getPageid()));
+                $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'employer', 'wpjobportallt'=>'controlpanel',"wpjobportalpageid"=>wpjobportal::wpjobportal_getPageid()));
                 $usermsgrole = "employer";
             } elseif (WPJOBPORTALincluder::getObjectClass('user')->isjobseeker()) {
                 $userrole = 2;
-                $url = wpjobportal::makeUrl(array('wpjobportalme'=>'jobseeker', 'wpjobportallt'=>'controlpanel',"wpjobportalpageid"=>wpjobportal::getPageid()));
+                $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'jobseeker', 'wpjobportallt'=>'controlpanel',"wpjobportalpageid"=>wpjobportal::wpjobportal_getPageid()));
                 $usermsgrole = "jobseeker";
             }
             $msg = WPJOBPORTALmessages::getMessage($result, $usermsgrole);

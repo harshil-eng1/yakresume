@@ -80,7 +80,7 @@ class WP_Resume_Manager_Setup {
 	 * Enqueue scripts for setup page
 	 */
 	public function admin_enqueue_scripts() {
-		wp_enqueue_style( 'resume_manager_setup_css', RESUME_MANAGER_PLUGIN_URL . '/assets/css/setup.css', [ 'dashicons' ] );
+		wp_enqueue_style( 'resume_manager_setup_css', RESUME_MANAGER_PLUGIN_URL . '/assets/dist/css/setup.css', [ 'dashicons' ], RESUME_MANAGER_VERSION );
 	}
 
 	/**
@@ -161,7 +161,7 @@ class WP_Resume_Manager_Setup {
 
 				<p><?php _e( 'Thanks for installing <em>Resume Manager</em>!', 'wp-job-manager-resumes' ); ?></p>
 				<p><?php _e( 'This setup wizard will help you get started by creating the pages for resume submission, resume management, and resume listing.', 'wp-job-manager-resumes' ); ?></p>
-				<p><?php printf( __( 'If you want to skip the wizard and setup the pages and shortcodes yourself manually, the process is still reletively simple. Refer to the %1$sdocumentation%2$s for help.', 'wp-job-manager-resumes' ), '<a href=https://wpjobmanager.com/documentation/add-ons/resume-manager/">', '</a>' ); ?></p>
+				<p><?php printf( __( 'If you want to skip the wizard and setup the pages and shortcodes yourself manually, the process is still relatively simple. Refer to the %1$sdocumentation%2$s for help.', 'wp-job-manager-resumes' ), '<a href=https://wpjobmanager.com/documentation/add-ons/resume-manager/">', '</a>' ); ?></p>
 
 				<p class="submit">
 					<a href="<?php echo esc_url( add_query_arg( 'step', 2 ) ); ?>" class="button button-primary"><?php _e( 'Continue to page setup', 'wp-job-manager-resumes' ); ?></a>

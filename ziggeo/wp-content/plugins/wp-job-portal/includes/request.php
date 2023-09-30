@@ -15,13 +15,13 @@ class WPJOBPORTALrequest {
                 if(is_array($_GET[$variable_name])){
                     $value = filter_var_array($_GET[$variable_name]);
                 }else{
-                    $value = filter_var($_GET[$variable_name],FILTER_SANITIZE_STRING);
+                    $value = wpjobportal::wpjobportal_sanitizeData($_GET[$variable_name]);
                 }
             } elseif (isset($_POST[$variable_name])) {
                 if(is_array($_POST[$variable_name])){
                     $value = filter_var_array($_POST[$variable_name]);
                 }else{
-                    $value = filter_var($_POST[$variable_name],FILTER_SANITIZE_STRING);
+                    $value = wpjobportal::wpjobportal_sanitizeData($_POST[$variable_name]);
                 }
             } elseif (get_query_var($variable_name)) {
                 $value = get_query_var($variable_name);
@@ -29,14 +29,14 @@ class WPJOBPORTALrequest {
                 $value = wpjobportal::$_data['sanitized_args'][$variable_name];
             }
         } else {
-            $method = strtolower($method);
+            $method = wpjobportalphplib::wpJP_strtolower($method);
             switch ($method) {
                 case 'post':
                     if (isset($_POST[$variable_name]))
                         if (is_array($_POST[$variable_name])) {
                             $value = filter_var_array($_POST[$variable_name]);
                         }else{
-                            $value = filter_var($_POST[$variable_name],FILTER_SANITIZE_STRING);
+                            $value = wpjobportal::wpjobportal_sanitizeData($_POST[$variable_name]);
                         }
                     break;
                 case 'get':
@@ -44,13 +44,13 @@ class WPJOBPORTALrequest {
                         if (is_array($_GET[$variable_name])) {
                             $value = filter_var_array($_GET[$variable_name]);
                         }else{
-                            $value = filter_var($_GET[$variable_name],FILTER_SANITIZE_STRING);
+                            $value = wpjobportal::wpjobportal_sanitizeData($_GET[$variable_name]);
                         }
                     break;
             }
         }
         if ($typecast != null) {
-            $typecast = strtolower($typecast);
+            $typecast = wpjobportalphplib::wpJP_strtolower($typecast);
             switch ($typecast) {
                 case "int":
                     $value = (int) $value;
@@ -73,7 +73,7 @@ class WPJOBPORTALrequest {
     static function get($method = null) {
         $array = null;
         if ($method != null) {
-            $method = strtolower($method);
+            $method = wpjobportalphplib::wpJP_strtolower($method);
             switch ($method) {
                 case 'post':
                     $array = filter_var_array($_POST);
@@ -93,20 +93,20 @@ class WPJOBPORTALrequest {
     static function getLayout($layout, $method, $defaultvalue) {
         $layoutname = null;
         if ($method != null) {
-            $method = strtolower($method);
+            $method = wpjobportalphplib::wpJP_strtolower($method);
             switch ($method) {
                 case 'post':
-                    $layoutname = filter_var($_POST[$layout],FILTER_SANITIZE_STRING);
+                    $layoutname = wpjobportal::wpjobportal_sanitizeData($_POST[$layout]);
                     break;
                 case 'get':
-                    $layoutname = filter_var($_GET[$layout],FILTER_SANITIZE_STRING);
+                    $layoutname = wpjobportal::wpjobportal_sanitizeData($_GET[$layout]);
                     break;
             }
         } else {
             if (isset($_POST[$layout]))
-                $layoutname = filter_var($_POST[$layout],FILTER_SANITIZE_STRING);
+                $layoutname = wpjobportal::wpjobportal_sanitizeData($_POST[$layout]);
             elseif (isset($_GET[$layout]))
-                $layoutname = filter_var($_GET[$layout],FILTER_SANITIZE_STRING);
+                $layoutname = wpjobportal::wpjobportal_sanitizeData($_GET[$layout]);
             elseif (get_query_var($layout))
                 $layoutname = get_query_var($layout);
             elseif (isset(wpjobportal::$_data['sanitized_args'][$layout]) && wpjobportal::$_data['sanitized_args'][$layout] != '')

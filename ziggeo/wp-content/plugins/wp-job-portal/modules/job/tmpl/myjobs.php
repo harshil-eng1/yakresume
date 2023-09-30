@@ -18,14 +18,14 @@ if (!defined('ABSPATH')) die('Restricted Access');
                     <?php
                     #Search List
                         $categoryarray = array(
-                            (object) array('id' => 1, 'text' => __('Job Title', 'wp-job-portal')),
-                            (object) array('id' => 2, 'text' => __('Company Name', 'wp-job-portal')),
-                            (object) array('id' => 3, 'text' => __('Category', 'wp-job-portal')),
-                            (object) array('id' => 5, 'text' => __('Location', 'wp-job-portal')),
-                            (object) array('id' => 7, 'text' => __('Status', 'wp-job-portal')),
-                            (object) array('id' => 4, 'text' => __('Job Type', 'wp-job-portal')),
-                            (object) array('id' => 6, 'text' => __('Created', 'wp-job-portal')),
-                            (object) array('id' => 8, 'text' => __('Salary', 'wp-job-portal'))
+                            (object) array('id' => 1, 'text' => esc_html(__('Job Title', 'wp-job-portal'))),
+                            (object) array('id' => 2, 'text' => esc_html(__('Company Name', 'wp-job-portal'))),
+                            (object) array('id' => 3, 'text' => esc_html(__('Category', 'wp-job-portal'))),
+                            (object) array('id' => 5, 'text' => esc_html(__('Location', 'wp-job-portal'))),
+                            (object) array('id' => 7, 'text' => esc_html(__('Status', 'wp-job-portal'))),
+                            (object) array('id' => 4, 'text' => esc_html(__('Job Type', 'wp-job-portal'))),
+                            (object) array('id' => 6, 'text' => esc_html(__('Created', 'wp-job-portal'))),
+                            (object) array('id' => 8, 'text' => esc_html(__('Salary', 'wp-job-portal')))
                         );
                     //Filter js-job
                         $image1 = WPJOBPORTAL_PLUGIN_URL . "includes/images/sort-up.png";
@@ -53,7 +53,7 @@ if (!defined('ABSPATH')) die('Restricted Access');
         </div>
         <?php if (wpjobportal::$_error_flag == null) { ?>
                 <div class="wjportal-jobs-list-wrapper wjportal-my-jobs-wrp">
-                    <form id="job_form" method="post" action="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'job','wpjobportallt'=>'myjobs'))); ?>">
+                    <form id="job_form" method="post" action="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job','wpjobportallt'=>'myjobs'))); ?>">
                         <?php
                             if (!empty(wpjobportal::$_data[0])) {
                                 foreach (wpjobportal::$_data[0] AS $job) {
@@ -77,12 +77,12 @@ if (!defined('ABSPATH')) die('Restricted Access');
                 </div>
         <?php
             } else {
-                $msg = __('No record found','wp-job-portal');
+                $msg = esc_html(__('No record found','wp-job-portal'));
                 $linkmyjobs[] = array(
-                    'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'addjob')),
-                    'text' => __('Add New','wp-job-portal') .' '. __('Job', 'wp-job-portal')
+                    'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'addjob')),
+                    'text' => esc_html(__('Add New','wp-job-portal')) .' '. esc_html(__('Job', 'wp-job-portal'))
                 );
-                echo wp_kses(WPJOBPORTALLayout::getNoRecordFound($msg,$linkmyjobs), WPJOBPORTAL_ALLOWED_TAGS);
+                WPJOBPORTALLayout::getNoRecordFound($msg,$linkmyjobs);
             }
         ?>
     </div>

@@ -83,6 +83,33 @@ div#js_ajax_pleasewait img {position: fixed;left: 48%;top: 48%; z-index: 9993;}
 /*jobs listing */
 p#js_jobcopid {position: fixed;z-index: 9991;background: rgba(0,0,0,0.5);left: 42%; top: 30%; padding: 15px; color: #FFF; font-size: 26px;border-radius: 8px; border: 1px solid #FFF;}
 
+/* admin-addons-status */
+div.wpjpadmin-addons-list-data{font-size:16px;color: #4b4b4d;}
+div#msadmin-data-wrp div.wpjpadmin-addons-list-wrp{float: left;width: 100%;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status{float: left;width: 100%;padding:20px 10px;border: 1px solid #e0e1e0;display: flex; align-items: center;margin-bottom: 20px;background: #f0f0f1;flex-wrap: wrap}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status.wpjp-admin-addons-status-update-wrp{background-color:#d6ece2;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status.wpjp-admin-addons-status-expired-wrp{background-color:#ffe3e3;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-addon-status-image-wrp{float: left;width: 5%;text-align: center;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-addon-status-image-wrp img{width: 90%;margin: auto;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-title-wrp{float: left;width:calc(45% - 20px);margin:0 10px 0 10px;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-title-wrp h2{float: left;margin: 5px 0 16px 0;width: 100%;color: #4b4b4d;font-size: 18px;white-space: nowrap;overflow: hidden;text-overflow: ellipsis;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-title-wrp .wpjp-admin-adons-status-Deactive{ font-weight: bold;color: #8c0202;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-addonstatus-wrp .wpjp-admin-adons-status-Deactive{ font-weight: bold;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-title-wrp .wpjp-admin-adons-status-Active{color:#235700;font-weight: bold;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-title-wrp .wpjp-admin-adons-status-Install{color:#2a1abf;font-weight: bold;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-title-wrp span#wpjp-admin-addon-status-cdnversion{font-size:13px;color:#357e61;border: 1px solid #138b5b;padding:4px 8px;border-radius:5px;margin-left: 10px;background: #ffff;font-weight: bold;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-addonstatus-wrp{float: left;width:20%;font-weight: bold;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-addonsversion-wrp{float: left;width:15%;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-addonstatusbtn-wrp{float:left;width:15%;text-align:right;padding: 10px;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-addonstatusbtn-wrp a{padding: 10px 20px;border-radius: 30px;border: 1px solid #e0e1e0;background-color: white;color: #4b4b4d;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-addonstatusbtn-wrp .wpjp-admin-addons-update-btn{padding: 13px 20px;border-radius:10px;border: 2px solid #e0e1e0;background-color:#0f7d4b;color: white;font-weight: bold;display: inline-block;cursor: pointer;text-decoration: unset;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-addonstatusbtn-wrp .wpjp-admin-addons-buy-btn{padding: 13px 20px;border-radius:10px;border: 2px solid #2a1abf;background-color:#2a1abf;color: white;font-weight: bold;display: inline-block;text-decoration: unset;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-addonstatusbtn-wrp .wpjp-admin-addons-expired-btn{color:#c03437;border-color: #c03437;font-weight: bold;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-msg{font-size: 14px;padding: 10px 12px;background: #ffff;font-weight: 500;float: left;width: 99%;margin-top: 15px;margin-left: 0.5%;display: none;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-msg.wpjp_admin_success{color: #0C6E45;border: 1px solid #0C6E45;background-color: #d6ece2;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-msg.wpjp_admin_error{color: #FF4F4E;border: 1px solid #FF4F4E;background-color: #fae1e1;}
+div.wpjpadmin-addons-list-wrp div.wpjp-admin-addon-status div.wpjp-admin-addon-status-msg .wpjp-admin-addon-status-msg-txt{margin: 2px 5px 0;}
+
 /* left menu */
 div#wpjobportaladmin-leftmenu {width: 60px;display: inline-block; background: #fff;position: absolute;left: 0;top: 0;z-index: 2;box-shadow: 4px 4px 4px 0 rgba(0,0,0,0.2);transition: all 500ms;}
 div#wpjobportaladmin-data {width:100%;float:left;position: relative;padding-left: 70px;transition: all 500ms;}
@@ -139,6 +166,11 @@ div.menu-collasped-active div#wpjobportaladmin-leftmenu ul.wpjobportaladmin-side
 
 /* dashboard */
 div.wpjobportal-admin-cp-wrapper {float: left;width: 100%;}
+div.wpjobportal-update-alert-wrp {float: left;width: 100%;padding: 12px 10px;border: 2px solid #cac23d;border-left: 5px solid #cac23d;background-color: #f9f186;margin-bottom: 20px;}
+div.wpjobportal-update-alert-wrp div.wpjobportal-update-alert-image {float: left;width: 50px;text-align: center;}
+div.wpjobportal-update-alert-wrp div.wpjobportal-update-alert-cnt {float: left;width: calc(100% - 250px);padding: 13px 0 0 10px;font-size: 17px;line-height: initial;color: #23282d;font-weight: 600;}
+div.wpjobportal-update-alert-wrp a.wpjobportal-update-alert-btn {float: right;text-decoration: none;color: #fff;background: #373435;padding: 10px 25px;text-align: center;margin-top: 6px;border-radius: 4px;font-weight: 600;}
+div.wpjobportal-update-alert-wrp a.wpjobportal-update-alert-btn:hover {color: #f9f186;}
 
 /* dashboard / page top */
 div#wpjobportal-wrapper-top {float: left;width: 100%;padding: 10px;position: relative;background: #1578e8;box-shadow: 0 1px 5px 0px rgba(0,0,0,0.6);}
@@ -517,6 +549,15 @@ span#wpjobportal_installer_waiting_span {width:100%;height:50%;position:fixed;z-
 
 /* pro installation*/
 /* sample data importer new style*/
+div#wpjobportaladmin-wrapper div.wpjobportal-temp-sample-data-wrapper{display: inline-block;
+    text-align: center;
+    background: #fafafa;
+    width: 100%;
+    padding: 25px;
+    margin: 10px;
+    margin-left:-70px;
+
+}
 div#wpjobportaladmin-wrapper div.wpjobportal-temp-sample-data-wrapper div.wpjobportal-temp-sample-data-content {display: inline-block;width: 100%;background: linear-gradient(0deg,rgba(0,0,0,0.4),rgba(0,0,0,0.4)), url(../images/postinstallation/sample-data-bg.jpg);background-size:100% 100% ;max-height: 550px;}
 div#wpjobportaladmin-wrapper div.wpjobportal-temp-sample-data-wrapper div.wpjobportal-temp-sample-data-content div.wpjobportal-temp-sample-data-content-left {display: inline-block;width: 45%;float: left;padding:8% 35px;text-align: left;}
 div#wpjobportaladmin-wrapper div.wpjobportal-temp-sample-data-wrapper div.wpjobportal-temp-sample-data-content div.wpjobportal-temp-sample-data-content-left div.wpjobportal-temp-sample-data-content-demo-title {display: inline-block;width: 100%;font-size: 30px;color:#fff;padding:7px 0px;line-height: 40px;}
@@ -1268,3 +1309,5 @@ div#wpjobportal-admin-wrapper .wpjobportal-help-btm .wpjobportal-help-btm-wrp .w
 div#wpjobportal-admin-wrapper .wpjobportal-help-btm .wpjobportal-help-btm-wrp .wpjobportal-help-btm-cnt a .wpjobportal-help-btm-cnt-img {float: left;width: 150px}
 div#wpjobportal-admin-wrapper .wpjobportal-help-btm .wpjobportal-help-btm-wrp .wpjobportal-help-btm-cnt a .wpjobportal-help-btm-cnt-title {float: left;width: calc(100% - 150px);}
 div#wpjobportal-admin-wrapper .wpjobportal-help-btm .wpjobportal-help-btm-wrp .wpjobportal-help-btm-cnt a .wpjobportal-help-btm-cnt-title span {display: inline-block;font-size: 22px;font-weight: 500;padding: 25px 0 0 5px;line-height: 1.2;}
+div.wpjobportal-resume-list .wpjobportal-viewcover-act-btn {float: right;margin: 3px;padding: 9px 18px;text-decoration: underline;height: auto;line-height: unset;border-radius: 0;border: 1px solid #d1d3d3;background: #fff;color: #1572e8;margin-top: 15px;}
+div.wpjobportal-resume-list .wpjobportal-viewcover-act-btn:hover {color: #fff;background: #1572e8;}

@@ -267,7 +267,7 @@ class WP_Resume_Manager_CPT {
 			$columns = [];
 		}
 
-		unset( $columns['title'], $columns['date'] );
+		unset( $columns['title'], $columns['date'], $columns['author'] );
 
 		$columns['candidate']          = __( 'Candidate', 'wp-job-manager-resumes' );
 		$columns['candidate_location'] = __( 'Location', 'wp-job-manager-resumes' );
@@ -301,6 +301,8 @@ class WP_Resume_Manager_CPT {
 			'candidate'          => 'title',
 			'candidate_location' => 'candidate_location',
 			'resume_expires'     => 'resume_expires',
+			'featured_resume'    => 'featured_resume',
+			'resume_skills'      => 'resume_skills',
 		];
 		return wp_parse_args( $custom, $columns );
 	}
@@ -382,6 +384,22 @@ class WP_Resume_Manager_CPT {
 					$vars,
 					[
 						'meta_key' => '_candidate_location',
+						'orderby'  => 'meta_value',
+					]
+				);
+			} elseif ( 'featured_resume' === $vars['orderby'] ) {
+				$vars = array_merge(
+					$vars,
+					[
+						'meta_key' => '_featured',
+						'orderby'  => 'meta_value_num',
+					]
+				);
+			} elseif ( 'resume_skills' === $vars['orderby'] ) {
+				$vars = array_merge(
+					$vars,
+					[
+						'meta_key' => '_resume_skills',
 						'orderby'  => 'meta_value',
 					]
 				);

@@ -10,178 +10,184 @@
     } else {
         $dash = '-';
     }
-    $firstdash = strpos($dateformat, $dash, 0);
-    $firstvalue = substr($dateformat, 0, $firstdash);
+    $firstdash = wpjobportalphplib::wpJP_strpos($dateformat, $dash, 0);
+    $firstvalue = wpjobportalphplib::wpJP_substr($dateformat, 0, $firstdash);
     $firstdash = $firstdash + 1;
-    $seconddash = strpos($dateformat, $dash, $firstdash);
-    $secondvalue = substr($dateformat, $firstdash, $seconddash - $firstdash);
+    $seconddash = wpjobportalphplib::wpJP_strpos($dateformat, $dash, $firstdash);
+    $secondvalue = wpjobportalphplib::wpJP_substr($dateformat, $firstdash, $seconddash - $firstdash);
     $seconddash = $seconddash + 1;
-    $thirdvalue = substr($dateformat, $seconddash, strlen($dateformat) - $seconddash);
+    $thirdvalue = wpjobportalphplib::wpJP_substr($dateformat, $seconddash, wpjobportalphplib::wpJP_strlen($dateformat) - $seconddash);
     $js_dateformat = '%' . $firstvalue . $dash . '%' . $secondvalue . $dash . '%' . $thirdvalue;
     $js_scriptdateformat = $firstvalue . $dash . $secondvalue . $dash . $thirdvalue;
-    $js_scriptdateformat = str_replace('Y', 'yy', $js_scriptdateformat);
+    $js_scriptdateformat = wpjobportalphplib::wpJP_str_replace('Y', 'yy', $js_scriptdateformat);
     ?>
-<script >
-    function makeExpiry() {
-        //start Approval queue jquery
-        jQuery(".goldnew").hover(function () {
-            jQuery(this).find(".goldnew-onhover").show();
-        }, function () {
-            jQuery(this).find('span.goldnew-onhover').fadeOut("slow");
-        });
-        jQuery(".featurednew").hover(function () {
-            jQuery(this).find("span.featurednew-onhover").show();
-        }, function () {
-            jQuery(this).find('.featurednew-onhover').fadeOut("slow");
-        });
-        //end approval queue jquery
-    }
+<?php
+    wp_register_script( 'wpjobportal-inline-handle', '' );
+    wp_enqueue_script( 'wpjobportal-inline-handle' );
 
-    function selectPackage(packageid){
-        jQuery("#package-div-"+packageid).addClass('pkg-selected');
-        jQuery("#wpjobportal_packageid").val(packageid);
-        jQuery("#upakid").val(packageid);
-        jQuery("#pkg-disabled-btn").removeAttr('disabled');
-        jQuery(".pkg-item").removeClass('pkg-selected');
-        jQuery("#package-div-"+packageid).addClass('pkg-selected');
-        jQuery(".proceed-without-paying").removeClass('disabled-btn');
-        if (jQuery("#package-div-"+packageid).hasClass('pkg-selected')) {
-            jQuery(".proceed-without-paying").addClass('disabled-btn');
-        }
-    }
-
-    jQuery(document).ready(function () {
-        jQuery("div#full_background,img#popup_cross").click(function () {
-            closePopup();
-        });
-        makeExpiry();
-        jQuery('.custom_date').datepicker({dateFormat: '<?php echo esc_js($js_scriptdateformat); ?>'});
-        jQuery("div.wpjobportal-jobs-list").each(function () {
-            jQuery("div#" + this.id).hover(function () {
-                jQuery("div#" + this.id + " div span.selector").show();
+    $inline_js_script = "
+        function makeExpiry() {
+            //start Approval queue jquery
+            jQuery('.goldnew').hover(function () {
+                jQuery(this).find('.goldnew-onhover').show();
             }, function () {
-                if (jQuery("div#" + this.id + " div span.selector input:checked").length > 0) {
-                    jQuery("div#" + this.id + " div span.selector").show();
+                jQuery(this).find('span.goldnew-onhover').fadeOut('slow');
+            });
+            jQuery('.featurednew').hover(function () {
+                jQuery(this).find('span.featurednew-onhover').show();
+            }, function () {
+                jQuery(this).find('.featurednew-onhover').fadeOut('slow');
+            });
+            //end approval queue jquery
+        }
+
+        function selectPackage(packageid){
+            jQuery('#package-div-'+packageid).addClass('pkg-selected');
+            jQuery('#wpjobportal_packageid').val(packageid);
+            jQuery('#upakid').val(packageid);
+            jQuery('#pkg-disabled-btn').removeAttr('disabled');
+            jQuery('.pkg-item').removeClass('pkg-selected');
+            jQuery('#package-div-'+packageid).addClass('pkg-selected');
+            jQuery('.proceed-without-paying').removeClass('disabled-btn');
+            if (jQuery('#package-div-'+packageid).hasClass('pkg-selected')) {
+                jQuery('.proceed-without-paying').addClass('disabled-btn');
+            }
+        }
+
+        jQuery(document).ready(function () {
+            jQuery('div#full_background,img#popup_cross').click(function () {
+                closePopup();
+            });
+            makeExpiry();
+            jQuery('.custom_date').datepicker({dateFormat: '". esc_js($js_scriptdateformat)."'});
+            jQuery('div.wpjobportal-jobs-list').each(function () {
+                jQuery('div#' + this.id).hover(function () {
+                    jQuery('div#' + this.id + ' div span.selector').show();
+                }, function () {
+                    if (jQuery('div#' + this.id + ' div span.selector input:checked').length > 0) {
+                        jQuery('div#' + this.id + ' div span.selector').show();
+                    } else {
+                        jQuery('div#' + this.id + ' div span.selector').hide();
+                    }
+                });
+            });
+            jQuery('span#showhidefilter').click(function (e) {
+                e.preventDefault();
+                var img2 = '". WPJOBPORTAL_PLUGIN_URL . "includes/images/filter-up.png';
+                var img1 = '". WPJOBPORTAL_PLUGIN_URL . "includes/images/filter-down.png';
+                if (jQuery('.default-hidden').is(':visible')) {
+                    jQuery(this).find('img').attr('src', img1);
                 } else {
-                    jQuery("div#" + this.id + " div span.selector").hide();
+                    jQuery(this).find('img').attr('src', img2);
                 }
+                jQuery('.default-hidden').toggle();
+                var height = jQuery(this).height();
+                var imgheight = jQuery(this).find('img').height();
+                var currenttop = (height - imgheight) / 2;
+                jQuery(this).find('img').css('top', currenttop);
             });
         });
-        jQuery("span#showhidefilter").click(function (e) {
-            e.preventDefault();
-            var img2 = "<?php echo WPJOBPORTAL_PLUGIN_URL . "includes/images/filter-up.png"; ?>";
-            var img1 = "<?php echo WPJOBPORTAL_PLUGIN_URL . "includes/images/filter-down.png"; ?>";
-            if (jQuery('.default-hidden').is(':visible')) {
-                jQuery(this).find('img').attr('src', img1);
+
+        function highlight(id) {
+            if (jQuery('div#job_' + id + ' div span input:checked').length > 0) {
+                showBorder(id);
             } else {
-                jQuery(this).find('img').attr('src', img2);
-            }
-            jQuery(".default-hidden").toggle();
-            var height = jQuery(this).height();
-            var imgheight = jQuery(this).find('img').height();
-            var currenttop = (height - imgheight) / 2;
-            jQuery(this).find('img').css('top', currenttop);
-        });
-    });
-
-    function highlight(id) {
-        if (jQuery("div#job_" + id + " div span input:checked").length > 0) {
-            showBorder(id);
-        } else {
-            hideBorder(id);
-        }
-    }
-    function showBorder(id) {
-        jQuery("div#job_" + id).addClass('blue');
-    }
-    function hideBorder(id) {
-        jQuery("div#job_" + id).removeClass('blue');
-    }
-    function highlightAll() {
-        if (jQuery("span.selector input").is(':checked') == false) {
-            jQuery("span.selector").css('display', 'none');
-            jQuery("div.wpjobportal-jobs-list").removeClass('blue');
-        }
-        if (jQuery("span.selector input").is(':checked') == true) {
-            jQuery("span.selector").css('display', 'block');
-            jQuery("div.wpjobportal-jobs-list").addClass('blue');
-        }
-    }
-
-    function addBadgeToObject(cid, specialtype, expiry) {
-        var html = '';
-        html = '<span class="featurednew wpjobportal-featured-tag-icon-wrp" data-id="' + cid + '">';
-        html += '<span id="badge_featured" class="wpjobportal-featured-tag-icon"><?php echo __('Featured', 'wp-job-portal'); ?><i class="fa fa-star"></i></span>';
-        html += '<span class="featurednew-onhover wpjobportal-featured-hover-wrp" id="gold' + cid + '" style="display: none;">';
-        html += "<?php echo __('Expiry Date', 'wp-job-portal'); ?> : " + expiry;
-        html += '</span>';
-        html += '</span>';
-        jQuery('div#job_' + cid).find('div#item-data div.wpjobportal-jobs-list-top-wrp').append(html);
-        changeButton(cid,specialtype);
-    }
-
-    function showHideThings(listid, specialtype, status) {
-        if (specialtype == 'featured') {
-            if (status == 1) {
-                jQuery("div#for_ajax_only_" + listid + " " + "a#js_feature").show();
-                jQuery("div#for_ajax_only_" + listid + " " + "a#js_feature_not").hide();
-                jQuery("#job_" + listid + " " + "#badge_featured").show();
-            } else {
-                jQuery("div#for_ajax_only_" + listid + " " + "a#js_feature").hide();
-                jQuery("div#for_ajax_only_" + listid + " " + "a#js_feature_not").show();
-                jQuery("#job_" + listid + " " + "#badge_featured").hide();
+                hideBorder(id);
             }
         }
-    }
-
-    function copyJob(jobsid) {
-        var ajaxurl = "<?php echo admin_url('admin-ajax.php') ?>";
-        if (jobsid) {
-            jQuery("#js_ajax_pleasewait").show();
+        function showBorder(id) {
+            jQuery('div#job_' + id).addClass('blue');
         }
-        jQuery.post(ajaxurl, {action: 'wpjobportal_ajax', wpjobportalme: 'job', task: 'makeJobCopyAjax', jobid: jobsid}, function (data) {
-            if (data) {
-                jQuery("#js_ajax_pleasewait").hide();
-                if (data == "copied") {
-                    jQuery("p#js_jobcopid").slideDown();
-                    setTimeout(function () {
-                        location.reload();
-                    }, 700);
+        function hideBorder(id) {
+            jQuery('div#job_' + id).removeClass('blue');
+        }
+        function highlightAll() {
+            if (jQuery('span.selector input').is(':checked') == false) {
+                jQuery('span.selector').css('display', 'none');
+                jQuery('div.wpjobportal-jobs-list').removeClass('blue');
+            }
+            if (jQuery('span.selector input').is(':checked') == true) {
+                jQuery('span.selector').css('display', 'block');
+                jQuery('div.wpjobportal-jobs-list').addClass('blue');
+            }
+        }
+
+        function addBadgeToObject(cid, specialtype, expiry) {
+            var html = '';
+            html = '<span class=\"featurednew wpjobportal-featured-tag-icon-wrp\" data-id=\"' + cid + '\">';
+            html += '<span id=\"badge_featured\" class=\"wpjobportal-featured-tag-icon\">". esc_html(__('Featured', 'wp-job-portal'))."<i class=\"fa fa-star\"></i></span>';
+            html += '<span class=\"featurednew-onhover wpjobportal-featured-hover-wrp\" id=\"gold' + cid + '\" style=\"display: none;\">';
+            html += \"". esc_html(__('Expiry Date', 'wp-job-portal'))." : \" + expiry;
+            html += '</span>';
+            html += '</span>';
+            jQuery('div#job_' + cid).find('div#item-data div.wpjobportal-jobs-list-top-wrp').append(html);
+            changeButton(cid,specialtype);
+        }
+
+        function showHideThings(listid, specialtype, status) {
+            if (specialtype == 'featured') {
+                if (status == 1) {
+                    jQuery('div#for_ajax_only_' + listid + ' ' + 'a#js_feature').show();
+                    jQuery('div#for_ajax_only_' + listid + ' ' + 'a#js_feature_not').hide();
+                    jQuery('#job_' + listid + ' ' + '#badge_featured').show();
+                } else {
+                    jQuery('div#for_ajax_only_' + listid + ' ' + 'a#js_feature').hide();
+                    jQuery('div#for_ajax_only_' + listid + ' ' + 'a#js_feature_not').show();
+                    jQuery('#job_' + listid + ' ' + '#badge_featured').hide();
                 }
             }
-        });
-    }
+        }
 
-    function resetFrom() {
-        document.getElementById('location').value = '';
-        document.getElementById('searchtitle').value = '';
-        document.getElementById('searchcompany').value = '';
-        document.getElementById('searchjobcategory').value = '';
-        document.getElementById('searchjobtype').value = '';
-        document.getElementById('status').value = '';
-        document.getElementById('datestart').value = '';
-        document.getElementById('dateend').value = '';
-        //jQuery("#gold1").prop('checked', false);
-        jQuery("#featured1").prop('checked', false);
-        document.getElementById('wpjobportalform').submit();
-    }
+        function copyJob(jobsid) {
+            var ajaxurl = \"". admin_url('admin-ajax.php') ."\";
+            if (jobsid) {
+                jQuery('#js_ajax_pleasewait').show();
+            }
+            jQuery.post(ajaxurl, {action: 'wpjobportal_ajax', wpjobportalme: 'job', task: 'makeJobCopyAjax', jobid: jobsid, '_wpnonce':'". esc_attr(wp_create_nonce("make-job-copy-ajax"))."'}, function (data) {
+                if (data) {
+                    jQuery('#js_ajax_pleasewait').hide();
+                    if (data == 'copied') {
+                        jQuery('p#js_jobcopid').slideDown();
+                        setTimeout(function () {
+                            location.reload();
+                        }, 700);
+                    }
+                }
+            });
+        }
 
-    function changeButton(cid, specialtype) {
-        var non = jQuery('#featuredwpnonce').val();
-        var html = '<a href="admin.php?page=wpjobportal_featuredjob&task=removefeaturedjob&action=wpjobportaltask&wpjobportal-cb[]=' + cid + '&_wpnonce='+non+'" class="wpjobportal-jobs-act-btn" title="<?php echo __('remove featured', 'wp-job-portal'); ?>"><?php echo __('Remove Featured', 'wp-job-portal'); ?></a>';
-        jQuery('a.' + specialtype + '_' + cid).replaceWith(html);
-    }
+        function resetFrom() {
+            document.getElementById('location').value = '';
+            document.getElementById('searchtitle').value = '';
+            document.getElementById('searchcompany').value = '';
+            document.getElementById('searchjobcategory').value = '';
+            document.getElementById('searchjobtype').value = '';
+            document.getElementById('status').value = '';
+            document.getElementById('datestart').value = '';
+            document.getElementById('dateend').value = '';
+            //jQuery('#gold1').prop('checked', false);
+            jQuery('#featured1').prop('checked', false);
+            document.getElementById('wpjobportalform').submit();
+        }
 
-</script>
+        function changeButton(cid, specialtype) {
+            var non = jQuery('#featuredwpnonce').val();
+            var html = '<a href=\"admin.php?page=wpjobportal_featuredjob&task=removefeaturedjob&action=wpjobportaltask&wpjobportal-cb[]=' + cid + '&_wpnonce='+non+'\" class=\"wpjobportal-jobs-act-btn\" title=\"". esc_html(__('remove featured', 'wp-job-portal'))."\">". esc_html(__('Remove Featured', 'wp-job-portal'))."</a>';
+            jQuery('a.' + specialtype + '_' + cid).replaceWith(html);
+        }
+    ";
+    wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
+?>
+
 <?php
     $categoryarray = array(
-        (object) array('id' => 1, 'text' => __('Job Title', 'wp-job-portal')),
-        (object) array('id' => 2, 'text' => __('Company Name', 'wp-job-portal')),
-        (object) array('id' => 3, 'text' => __('Category', 'wp-job-portal')),
-        (object) array('id' => 5, 'text' => __('Location', 'wp-job-portal')),
-        (object) array('id' => 7, 'text' => __('Status', 'wp-job-portal')),
-        (object) array('id' => 4, 'text' => __('Job Type', 'wp-job-portal')),
-        (object) array('id' => 6, 'text' => __('Created', 'wp-job-portal'))
+        (object) array('id' => 1, 'text' => esc_html(__('Job Title', 'wp-job-portal'))),
+        (object) array('id' => 2, 'text' => esc_html(__('Company Name', 'wp-job-portal'))),
+        (object) array('id' => 3, 'text' => esc_html(__('Category', 'wp-job-portal'))),
+        (object) array('id' => 5, 'text' => esc_html(__('Location', 'wp-job-portal'))),
+        (object) array('id' => 7, 'text' => esc_html(__('Status', 'wp-job-portal'))),
+        (object) array('id' => 4, 'text' => esc_html(__('Job Type', 'wp-job-portal'))),
+        (object) array('id' => 6, 'text' => esc_html(__('Created', 'wp-job-portal')))
     );
     WPJOBPORTALincluder::getTemplate('templates/admin/header', array('module' => 'job'));
     $jobs = isset(wpjobportal::$_data[0][0]) ? wpjobportal::$_data[0][0] :'';
@@ -199,27 +205,27 @@
                 <div id="wpjobportal-breadcrumbs">
                     <ul>
                         <li>
-                            <a href="<?php echo admin_url('admin.php?page=wpjobportal'); ?>" title="<?php echo __('dashboard','wp-job-portal'); ?>">
-                                <?php echo __('Dashboard','wp-job-portal'); ?>
+                            <a href="<?php echo admin_url('admin.php?page=wpjobportal'); ?>" title="<?php echo esc_html(__('dashboard','wp-job-portal')); ?>">
+                                <?php echo esc_html(__('Dashboard','wp-job-portal')); ?>
                             </a>
                         </li>
-                        <li><?php echo __('Jobs','wp-job-portal'); ?></li>
+                        <li><?php echo esc_html(__('Jobs','wp-job-portal')); ?></li>
                     </ul>
                 </div>
             </div>
             <div id="wpjobportal-wrapper-top-right">
                 <div id="wpjobportal-config-btn">
-                    <a href="admin.php?page=wpjobportal_configuration" title="<?php echo __('configuration','wp-job-portal'); ?>">
+                    <a href="admin.php?page=wpjobportal_configuration" title="<?php echo esc_html(__('configuration','wp-job-portal')); ?>">
                         <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/dashboard/config.png">
                    </a>
                 </div>
                 <div id="wpjobportal-help-btn" class="wpjobportal-help-btn">
-                    <a href="admin.php?page=wpjobportal&wpjobportallt=help" title="<?php echo __('help','wp-job-portal'); ?>">
+                    <a href="admin.php?page=wpjobportal&wpjobportallt=help" title="<?php echo esc_html(__('help','wp-job-portal')); ?>">
                         <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/dashboard/help.png">
                    </a>
                 </div>
                 <div id="wpjobportal-vers-txt">
-                    <?php echo __('Version','wp-job-portal').': '; ?>
+                    <?php echo esc_html(__('Version','wp-job-portal')).': '; ?>
                     <span class="wpjobportal-ver"><?php echo esc_html(WPJOBPORTALincluder::getJSModel('configuration')->getConfigValue('versioncode')); ?></span>
                 </div>
             </div>
@@ -234,7 +240,7 @@
                 <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/pleasewait.gif"/>
             </div>
             <p id="js_jobcopid" style="display:none;">
-                <?php echo __('Job Copied Successfully', 'wp-job-portal'); ?>
+                <?php echo esc_html(__('Job Copied Successfully', 'wp-job-portal')); ?>
             </p>
             <!-- quick actions -->
             <?php
@@ -278,12 +284,12 @@
                         }
                     }
                 } else {
-                    $msg = __('No record found','wp-job-portal');
+                    $msg = esc_html(__('No record found','wp-job-portal'));
                     $link[] = array(
                                 'link' => 'admin.php?page=wpjobportal_job&wpjobportallt=formjob',
-                                'text' => __('Add New','wp-job-portal') .' '. __('Job','wp-job-portal')
+                                'text' => esc_html(__('Add New','wp-job-portal')) .' '. esc_html(__('Job','wp-job-portal'))
                             );
-                    echo wp_kses(WPJOBPORTALlayout::getNoRecordFound($msg,$link), WPJOBPORTAL_ALLOWED_TAGS);
+                    WPJOBPORTALlayout::getNoRecordFound($msg,$link);
                 }
             ?>
         </div>

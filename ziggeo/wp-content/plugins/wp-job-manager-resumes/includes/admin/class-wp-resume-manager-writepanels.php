@@ -57,60 +57,76 @@ class WP_Resume_Manager_Writepanels extends WP_Job_Manager_Writepanels {
 	 * @return array
 	 */
 	public static function resume_fields() {
-		$fields = apply_filters(
-			'resume_manager_resume_fields',
-			[
-				'_candidate_title'    => [
-					'label'       => __( 'Professional Title', 'wp-job-manager-resumes' ),
-					'placeholder' => '',
-					'description' => '',
-				],
-				'_candidate_email'    => [
-					'label'       => __( 'Contact Email', 'wp-job-manager-resumes' ),
-					'placeholder' => __( 'you@yourdomain.com', 'wp-job-manager-resumes' ),
-					'description' => '',
-				],
-				'_candidate_location' => [
-					'label'       => __( 'Candidate Location', 'wp-job-manager-resumes' ),
-					'placeholder' => __( 'e.g. "London, UK", "New York", "Houston, TX"', 'wp-job-manager-resumes' ),
-					'description' => '',
-				],
-				'_candidate_photo'    => [
-					'label'       => __( 'Photo', 'wp-job-manager-resumes' ),
-					'placeholder' => __( 'URL to the candidate photo', 'wp-job-manager-resumes' ),
-					'type'        => 'file',
-				],
-				'_candidate_video'    => [
-					'label'       => __( 'Video', 'wp-job-manager-resumes' ),
-					'placeholder' => __( 'URL to the candidate video', 'wp-job-manager-resumes' ),
-					'type'        => 'text',
-				],
-				'_resume_file'        => [
-					'label'       => __( 'Resume File', 'wp-job-manager-resumes' ),
-					'placeholder' => __( 'URL to the candidate\'s resume file', 'wp-job-manager-resumes' ),
-					'type'        => 'file',
-				],
-				'_resume_author'      => [
-					'label' => __( 'Posted by', 'wp-job-manager-resumes' ),
-					'type'  => 'author',
-				],
-				'_featured'           => [
-					'label'       => __( 'Feature this Resume?', 'wp-job-manager-resumes' ),
-					'type'        => 'checkbox',
-					'description' => __( 'Featured resumes will be sticky during searches, and can be styled differently.', 'wp-job-manager-resumes' ),
-				],
-				'_resume_expires'     => [
-					'label'       => __( 'Expires', 'wp-job-manager-resumes' ),
-					'placeholder' => __( 'yyyy-mm-dd', 'wp-job-manager-resumes' ),
-				],
-			]
-		);
+		global $post_id;
 
-		if ( ! get_option( 'resume_manager_enable_resume_upload' ) ) {
-			unset( $fields['_resume_file'] );
+		$current_user = wp_get_current_user();
+		$fields_raw   = WP_Resume_Manager_Post_Types::get_resume_fields();
+		$fields       = [];
+
+		if ( $current_user->has_cap( 'edit_others_posts' ) ) {
+			$fields['_resume_author'] = [
+				'label'    => __( 'Posted by', 'wp-job-manager-resumes' ),
+				'type'     => 'author',
+				'priority' => 0,
+			];
 		}
 
+		foreach ( $fields_raw as $meta_key => $field ) {
+			$show_in_admin = $field['show_in_admin'];
+			if ( is_callable( $show_in_admin ) ) {
+				$show_in_admin = (bool) call_user_func( $show_in_admin, true, $meta_key, $post_id, $current_user->ID );
+			}
+
+			if ( ! $show_in_admin ) {
+				continue;
+			}
+
+			/**
+			 * Check auth callback. Mirrors first 4 params of WordPress core's `auth_{$object_type}_meta_{$meta_key}` filter.
+			 *
+			 * @param bool   $allowed   Whether the user can edit the resume meta. Default false.
+			 * @param string $meta_key  The meta key.
+			 * @param int    $object_id Object ID.
+			 * @param int    $user_id   User ID.
+			 */
+			if ( ! call_user_func( $field['auth_edit_callback'], false, $meta_key, $post_id, $current_user->ID ) ) {
+				continue;
+			}
+
+			$fields[ $meta_key ] = $field;
+		}
+
+
+		/**
+		 * Filters resume data fields shown in WP admin.
+		 *
+		 * To add resume data fields, use the `resume_manager_resume_fields` found in `includes/class-wp-resume-manager-post-types.php`.
+		 *
+		 * @since @@version
+		 *
+		 * @param array    $fields  Resume fields for WP admin. See `resume_manager_resume_fields` filter for more information.
+		 * @param int|null $post_id Post ID to get fields for. May be null.
+		 */
+		$fields = apply_filters( 'resume_manager_resume_wp_admin_fields', $fields, $post_id );
+
+		uasort( $fields, [ __CLASS__, 'sort_by_priority' ] );
+
 		return $fields;
+	}
+
+	/**
+	 * Sorts array of custom fields by priority value.
+	 *
+	 * @param array $a
+	 * @param array $b
+	 * @return int
+	 */
+	protected static function sort_by_priority( $a, $b ) {
+		if ( ! isset( $a['priority'] ) || ! isset( $b['priority'] ) || $a['priority'] === $b['priority'] ) {
+			return 0;
+		}
+
+		return ( $a['priority'] < $b['priority'] ) ? -1 : 1;
 	}
 
 	/**
@@ -150,6 +166,20 @@ class WP_Resume_Manager_Writepanels extends WP_Job_Manager_Writepanels {
 				$field['value'] = $field['default'];
 			} elseif ( ! isset( $field['value'] ) ) {
 				$field['value'] = '';
+			}
+
+			if ( '_resume_file' === $key ) {
+				if ( is_array( $field['value'] ) ) {
+					$field['download'] = array_map(
+						function( $value, $key ) use ( $thepostid ) {
+							return get_resume_file_download_url( $thepostid, $key, site_url() );
+						},
+						$field['value'],
+						array_keys( $field['value'] )
+					);
+				} else {
+					$field['download'] = get_resume_file_download_url( $thepostid, 0, site_url() );
+				}
 			}
 
 			if ( has_action( 'resume_manager_input_' . $type ) ) {

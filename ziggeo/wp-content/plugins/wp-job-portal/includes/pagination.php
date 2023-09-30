@@ -21,7 +21,7 @@ class WPJOBPORTALpagination {
 
     static function getPagination($total,$searchlayout = null){
         if(!is_numeric($total)) return false;
-             $pagenum = isset($_GET['pagenum']) ? absint(filter_var($_GET['pagenum'], FILTER_SANITIZE_STRING)) : 1;
+             $pagenum = isset($_GET['pagenum']) ? absint(wpjobportal::wpjobportal_sanitizeData($_GET['pagenum'])) : 1;
         if(!self::getLimit()){
             self::setLimit(wpjobportal::$_configuration['pagination_default_page_size']); // number of rows in page
         }
@@ -34,8 +34,8 @@ class WPJOBPORTALpagination {
                 'base' => add_query_arg('pagenum', '%#%'),
                 'format' => '',
                 'prev_next' => true,
-                'prev_text' => __('Previous', 'wp-job-portal'),
-                'next_text' => __('Next', 'wp-job-portal'),
+                'prev_text' => esc_html(__('Previous', 'wp-job-portal')),
+                'next_text' => esc_html(__('Next', 'wp-job-portal')),
                 'total' => $num_of_pages,
                 'current' => $pagenum,
                 'add_args' => false,
@@ -47,16 +47,16 @@ class WPJOBPORTALpagination {
                     'base' => add_query_arg('pagenum', '%#%'),
                     'format' => '',
                     'prev_next' => true,
-                    'prev_text' => __('Previous', 'job-portal'),
+                    'prev_text' => esc_html(__('Previous', 'wp-job-portal')),
                     'total' => $num_of_pages,
                     'current' => $pagenum,
-                    'next_text' => __('Next', 'job-portal'),
+                    'next_text' => esc_html(__('Next', 'wp-job-portal')),
                     'add_args' => false,
                 ));
                 if(!empty($links) && is_array($links)){
                     $result = '<ul class="pagination pagination-lg">';
                     foreach($links AS $link){
-                        if(strstr($link, 'current')){
+                        if(wpjobportalphplib::wpJP_strstr($link, 'current')){
                             $result .= '<li class="active">'.$link.'</li>';
                         }else{
                             $result .= '<li>'.$link.'</li>';
@@ -74,8 +74,8 @@ class WPJOBPORTALpagination {
                             'base' => $layargs,
                             'format' => '',
                             'prev_next' => true,
-                            'prev_text' => __('Previous', 'wp-job-portal'),
-                            'next_text' => __('Next', 'wp-job-portal'),
+                            'prev_text' => esc_html(__('Previous', 'wp-job-portal')),
+                            'next_text' => esc_html(__('Next', 'wp-job-portal')),
                             'total' => $num_of_pages,
                             'current' => $pagenum,
                             'add_args' => false,

@@ -3,14 +3,14 @@
 /**
  * @package WP JOB PORTAL
  * @author Ahmad Bilal
- * @version 1.1.9
+ * @version 2.0.4
  */
 /*
   * Plugin Name: WP Job Portal
   * Plugin URI: https://wpjobportal.com/
   * Description: WP JOB PORTAL is Word Press best job board plugin. It is easy to use and highly configurable. It fully accommodates job seekers and employers.
   * Author: WP Job Portal
-  * Version: 1.1.9
+  * Version: 2.0.4
   * Text Domain: wp-job-portal
   * Domain Path: /languages
   * Author URI: https://wpjobportal.com/
@@ -42,6 +42,7 @@ class wpjobportal {
     public static $_error_flag_message_for_link_text;
     public static $_error_flag_message_register_for;
     public static $theme_chk;
+    public static $theme_chk_flag;
     public static $_common;
     public static $_config;
     public static $_wpjppurchasehistory;
@@ -57,16 +58,17 @@ class wpjobportal {
     public static $_jsjpsession;
 
     function __construct() {
+        self::wpjobportal_LoadWpCoreFiles();
+        self::wpjobportal_includes();
         $plugin_array = get_option('active_plugins');
         $addon_array = array();
         foreach ($plugin_array as $key => $value) {
             $plugin_name = pathinfo($value, PATHINFO_FILENAME);
-            if(strstr($plugin_name, 'wp-job-portal-')){
-                $addon_array[] = str_replace('wp-job-portal-', '', $plugin_name);
+            if(wpjobportalphplib::wpJP_strstr($plugin_name, 'wp-job-portal-')){
+                $addon_array[] = wpjobportalphplib::wpJP_str_replace('wp-job-portal-', '', $plugin_name);
             }
         }
         self::$_active_addons = $addon_array;
-        self::includes();
         self::$_wpjpcustomfield = WPJOBPORTALincluder::getObjectClass('customfields');
         //  self::registeractions();
         self::$_path = plugin_dir_path(__FILE__);
@@ -74,7 +76,7 @@ class wpjobportal {
         self::$_data = array();
         self::$_error_flag = null;
         self::$_error_flag_message = null;
-        self::$_currentversion = '119';
+        self::$_currentversion = '204';
         self::$_addon_query = array('select'=>'','join'=>'','where'=>'');
         self::$_common = WPJOBPORTALincluder::getJSModel('common');
         self::$_config = WPJOBPORTALincluder::getJSModel('configuration');
@@ -106,19 +108,22 @@ class wpjobportal {
             add_action('wpmu_new_blog', array($this, 'wpjobportal_new_blog'), 10, 6);
         }
         add_filter('wpmu_drop_tables', array($this, 'wpjobportal_delete_site'));
-        add_action('plugins_loaded', array($this, 'load_plugin_textdomain'));
+        add_action('plugins_loaded', array($this, 'wpjobportal_load_plugin_textdomain'));
         //PDF Change
         //add_action('template_redirect', array($this, 'pdf'), 5); // Only for the pdf in wordpress
         add_action('admin_init', array($this, 'wpjobportal_activation_redirect'));//for post installation screens
         add_action('wpjobportal_cronjobs_action', array($this,'wpjobportal_cronjobs'));
         add_action('reset_wpjobportal_aadon_query', array($this,'reset_wpjobportal_aadon_query') );
         $theme_chk = 0;
+        $theme_chk_flag = 0;
         $theme = get_option( 'template' );
-        if($theme == 'job-portal'){
+        if($theme == 'job-portal-theme'){
+            $theme_chk_flag = 1;
             $theme_chk = 1;
         }
         define( 'WPJOBPORTAL_IMAGE', self::$_pluginpath . 'includes/images' );
         self::$theme_chk = $theme_chk;
+        self::$theme_chk_flag = $theme_chk_flag;
 
         add_action('admin_init', array($this,'jsjp_handle_search_form_data'));
         add_action('admin_init', array($this,'jsjp_handle_delete_cookies'));
@@ -150,7 +155,6 @@ class wpjobportal {
         }elseif ($id1 != '' && $id2 != '') {
             return wpjobportal::$_wpjpcustomfield->userFieldsData($id,$id1,$id2);
         }
-
     }
 
     function wpjobportal_addons_paramsfields($default_val,$field,$id,$params){
@@ -180,22 +184,22 @@ class wpjobportal {
 			            file_put_contents($filepath, $filestring);
 						$color = require(WPJOBPORTAL_PLUGIN_PATH . 'includes/css/style_color.php');
 						$file = fopen(WPJOBPORTAL_PLUGIN_PATH . 'includes/css/color.css','w');
-						fwrite($file,$color);  
+						fwrite($file,$color);
 						fclose($file);
 			        }
 			        // restore colors data end
                     update_option('wpjp_currentversion', self::$_currentversion);
                     include_once WPJOBPORTAL_PLUGIN_PATH . 'includes/updates/updates.php';
-                    WPJOBPORTALupdates::checkUpdates('119');
+                    WPJOBPORTALupdates::checkUpdates('204');
                 }
             }
         }
     }
 
     function WPJPreplaceString(&$filestring, $colorNo, $data) {
-        if (strstr($filestring, '$color' . $colorNo)) {
-            $path1 = strpos($filestring, '$color' . $colorNo);
-            $path2 = strpos($filestring, ';', $path1);
+        if (wpjobportalphplib::wpJP_strstr($filestring, '$color' . $colorNo)) {
+            $path1 = wpjobportalphplib::wpJP_strpos($filestring, '$color' . $colorNo);
+            $path2 = wpjobportalphplib::wpJP_strpos($filestring, ';', $path1);
             $filestring = substr_replace($filestring, '$color' . $colorNo . ' = "' . $data['color' . $colorNo] . '";', $path1, $path2 - $path1 + 1);
         }
     }
@@ -208,7 +212,7 @@ class wpjobportal {
             $theme['color1'] = $filestring['color1'];
             $theme['color2'] = $filestring['color2'];
             $theme['color3'] = $filestring['color3'];
-        }                                                    
+        }
         return $theme;
     }
 
@@ -234,7 +238,9 @@ class wpjobportal {
      * Include the required files
      */
 
-    function includes() {
+    function wpjobportal_includes() {
+        // php 8.1 issues
+        require_once 'includes/wpjobportalphplib.php';
         if (is_admin()) {
             include_once 'includes/wpjobportaladmin.php';
         }
@@ -251,7 +257,6 @@ class wpjobportal {
         include_once 'includes/ajax.php';
         require_once 'includes/constants.php';
         require_once 'includes/messages.php';
-        require_once 'includes/classes/class.upload.php';
         require_once 'includes/wpjobportaldb.php';
         include_once 'includes/shortcodes.php';
         include_once 'includes/paramregister.php';
@@ -266,9 +271,9 @@ class wpjobportal {
      * Localization
      */
 
-    public function load_plugin_textdomain() {
+    public function wpjobportal_load_plugin_textdomain() {
         if(!load_plugin_textdomain('wp-job-portal')){
-            load_plugin_textdomain('wp-job-portal', false, dirname(plugin_basename(__FILE__)) . '/languages/');
+            load_plugin_textdomain('wp-job-portal', false, wpjobportalphplib::wpJP_dirname(plugin_basename(__FILE__)) . '/languages/');
         }else{
             load_plugin_textdomain('wp-job-portal');
         }
@@ -278,19 +283,20 @@ class wpjobportal {
      * function for the Style Sheets
      */
 
-    static function addStyleSheets() {
+    static function wpjobportal_addStyleSheets() {
         wp_enqueue_script('jquery');
         wp_enqueue_script('wpjobportal-commonjs', WPJOBPORTAL_PLUGIN_URL . 'includes/js/common.js');
         wp_enqueue_script('wpjobportal-res-tables', WPJOBPORTAL_PLUGIN_URL . 'includes/js/responsivetable.js');
         wp_enqueue_script('jquery-ui-accordion');
          wp_enqueue_style('wpjobportal-tokeninput', WPJOBPORTAL_PLUGIN_URL . 'includes/css/tokeninput.css');
-        wp_enqueue_style('wpjobportal-fontawesome', 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
+        wp_enqueue_style('wpjobportal-fontawesome', WPJOBPORTAL_PLUGIN_URL . 'includes/css/font-awesome.css');
         if(wpjobportal::$theme_chk == 1){
             $class_prefix = 'wpj-jp';
         }else{
             $class_prefix = 'wjportal';
         }
-        wp_localize_script('wpjobportal-commonjs', 'common', array('ajaxurl' => admin_url('admin-ajax.php'),'insufficient_credits' => __('You have insufficient credits, you can not perform this action','wp-job-portal'),'theme_chk_prefix'=> $class_prefix,'theme_chk_number'=>wpjobportal::$theme_chk, 'theme_image' => WPJOBPORTAL_IMAGE,'terms_conditions' => __('Please Accept Terms And Conditions So You Can Proceed','wp-job-portal')));
+        $nonce_value = wp_create_nonce("wp-job-portal-nonce");
+        wp_localize_script('wpjobportal-commonjs', 'common', array('ajaxurl' => admin_url('admin-ajax.php'),'js_nonce'=>$nonce_value,'insufficient_credits' => esc_html(__('You have insufficient credits, you can not perform this action','wp-job-portal')),'theme_chk_prefix'=> $class_prefix,'theme_chk_number'=>wpjobportal::$theme_chk,'theme_chk_flag'=>wpjobportal::$theme_chk_flag, 'theme_image' => WPJOBPORTAL_IMAGE,'terms_conditions' => esc_html(__('Please Accept Terms And Conditions So You Can Proceed','wp-job-portal'))));
 
         wp_enqueue_script('wpjobportal-formvalidator', WPJOBPORTAL_PLUGIN_URL . 'includes/js/jquery.form-validator.js');
         if(wpjobportal::$theme_chk == 0 || wpjobportal::$_common->wpjp_isadmin()){
@@ -307,7 +313,7 @@ class wpjobportal {
      * function to get the pageid from the wpoptions
      */
 
-    public static function getPageid() {
+    public static function wpjobportal_getPageid() {
         if(wpjobportal::$_pageid != ''){
             return wpjobportal::$_pageid;
         }else{
@@ -330,7 +336,7 @@ class wpjobportal {
         }
     }
 
-    public static function setPageID($id) {
+    public static function wpjobportal_setPageID($id) {
         wpjobportal::$_pageid = $id;
     }
 
@@ -344,17 +350,42 @@ class wpjobportal {
      */
 
     public static function parseSpaces($string) {
-        return str_replace('%20', ' ', $string);
+        // php 8 issue for str_replce
+        if($string == ''){
+            return $string;
+        }
+        return wpjobportalphplib::wpJP_str_replace('%20', ' ', $string);
     }
 
     public static function tagfillin($string) {
-        return str_replace(' ', '_', $string);
+        // php 8 issue for str_replce
+        if($string == ''){
+            return $string;
+        }
+
+        return wpjobportalphplib::wpJP_str_replace(' ', '_', $string);
     }
 
     public static function tagfillout($string) {
-        return str_replace('_', ' ', $string);
+        // php 8 issue for str_replce
+        if($string == ''){
+            return $string;
+        }
+        return wpjobportalphplib::wpJP_str_replace('_', ' ', $string);
     }
-    static function makeUrl($args = array()){
+
+    static function wpjobportal_sanitizeData($data){
+        if($data == null){
+            return $data;
+        }
+        if(is_array($data)){
+            return map_deep( $data, 'sanitize_text_field' );
+        }else{
+            return sanitize_text_field( $data );
+        }
+    }
+
+    static function wpjobportal_makeUrl($args = array()){
         global $wp_rewrite;
         $pageid = WPJOBPORTALrequest::getVar('wpjobportalpageid');
 
@@ -368,8 +399,9 @@ class wpjobportal {
             }
         }
         if (!$wp_rewrite->using_permalinks()){
-            if(!strstr($permalink, 'page_id') && !strstr($permalink, '?p=')) {
-                $page['page_id'] = get_option('page_on_front');
+            if(!wpjobportalphplib::wpJP_strstr($permalink, 'page_id') && !wpjobportalphplib::wpJP_strstr($permalink, '?p=')) {
+                //$page['page_id'] = get_option('page_on_front');
+				$page['page_id'] = wpjobportal::$_db->get_var("SELECT configvalue FROM `".wpjobportal::$_db->prefix."wj_portal_config` WHERE configname = 'default_pageid'");
                 $args = $page + $args;
             }
             $redirect_url = add_query_arg($args,$permalink);
@@ -382,15 +414,16 @@ class wpjobportal {
             if (!isset($redirect['query']))
                 $redirect['query'] = '';
 
-            if(strstr($permalink, '?')){ // if variable exist
-                $redirect_array = explode('?', $permalink);
+            if(wpjobportalphplib::wpJP_strstr($permalink, '?')){ // if variable exist
+                $redirect_array = wpjobportalphplib::wpJP_explode('?', $permalink);
                 $_redirect = $redirect_array[0];
             }else{
                 $_redirect = $permalink;
             }
-
-            if($_redirect[strlen($_redirect) - 1] == '/'){
-                $_redirect = substr($_redirect, 0, strlen($_redirect) - 1);
+            if($_redirect != ''){
+                if($_redirect[wpjobportalphplib::wpJP_strlen($_redirect) - 1] == '/'){
+                    $_redirect = wpjobportalphplib::wpJP_substr($_redirect, 0, wpjobportalphplib::wpJP_strlen($_redirect) - 1);
+                }
             }
             // If is layout
             $changename = false;
@@ -428,7 +461,7 @@ class wpjobportal {
             // If is wpjobportal_id
             if (isset($args['wpjobportalid'])) {
                 $wpjobportal_id = $args['wpjobportalid'];
-                //$layout = str_replace('jm-', '', $layout);
+                //$layout = wpjobportalphplib::wpJP_str_replace('jm-', '', $layout);
                 if($args['wpjobportallt'] == 'viewjob'){
                     $job_seo = WPJOBPORTALincluder::getJSModel('configuration')->getConfigValue('job_seo');
                     if(!empty($job_seo)){
@@ -476,7 +509,7 @@ class wpjobportal {
             // If is category
             if (isset($args['category'])) {
                 $category = $args['category'];
-                $array = explode('-', $category);
+                $array = wpjobportalphplib::wpJP_explode('-', $category);
                 $count = count($array);
                 $id = $array[$count - 1];
                 unset($array[$count - 1]);
@@ -493,7 +526,7 @@ class wpjobportal {
             // If is jobtype
             if (isset($args['jobtype'])) {
                 $jobtype = $args['jobtype'];
-                $array = explode('-', $jobtype);
+                $array = wpjobportalphplib::wpJP_explode('-', $jobtype);
                 $count = count($array);
                 $id = $array[$count - 1];
                 unset($array[$count - 1]);
@@ -504,7 +537,7 @@ class wpjobportal {
             // If is company
             if (isset($args['company'])) {
                 $company = $args['company'];
-                $array = explode('-', $company);
+                $array = wpjobportalphplib::wpJP_explode('-', $company);
                 $count = count($array);
                 $id = $array[$count - 1];
                 unset($array[$count - 1]);
@@ -515,7 +548,7 @@ class wpjobportal {
             // If is search
             if (isset($args['search'])) {
                 $search = $args['search'];
-                $array = explode('-', $search);
+                $array = wpjobportalphplib::wpJP_explode('-', $search);
                 $count = count($array);
                 $id = $array[$count - 1];
                 unset($array[$count - 1]);
@@ -597,7 +630,7 @@ class wpjobportal {
         return json_decode(base64_decode($array));
     }
 
-    static function redirectUrl($entityaction,$id=0){
+    static function wpjobportal_redirectUrl($entityaction,$id=0){
         $isadmin = wpjobportal::$_common->wpjp_isadmin();
         if(wpjobportal::$_common->wpjp_isadmin()){
             switch($entityaction){
@@ -630,40 +663,40 @@ class wpjobportal {
                         $pageid = WPJOBPORTALincluder::getJSModel('configuration')->getConfigValue('visitor_add_job_redirect_page');
                         $url = get_the_permalink($pageid);
                     }else{
-                        $url = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs'));
+                        $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs'));
                     }
                 break;
                 case 'job.fail':
-                    $url = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'addjob'));
+                    $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'addjob'));
                 break;
                 case 'company.success':
                     if(in_array('credits', wpjobportal::$_active_addons)){
                         if(wpjobportal::$_config->getConfigValue('submission_type') == 2){
                             $url = apply_filters('wpjobportal_addons_credit_save_perlisting',false,wpjobportal::$_data['id'],'paycompany');
                         }else{
-                            $url = wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies'));
+                            $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies'));
                         }
                     }else{
-                        $url = wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies'));
+                        $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies'));
                     }
                 break;
                 case 'company.fail':
-                    $url = wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies'));
+                    $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies'));
                 break;
                 case 'resume.success':
                     if(in_array('credits', wpjobportal::$_active_addons)){
-                        if($submission_type == 2){
+                        if(wpjobportal::$_config->getConfigValue('submission_type') == 2){
                             # perlisting Type
                             $url = apply_filters('wpjobportal_addons_credit_save_perlisting',false,wpjobportal::$_data['id'],'payresume');
                         }else{
-                            $url = wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes'));
+                            $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes'));
                         }
                     }else{
-                        $url = wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes'));
+                        $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes'));
                     }
                 break;
                 case 'resume.fail':
-                    $url = wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'addresume'));
+                    $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'addresume'));
                 break;
                 default:
                     $url = null;
@@ -671,21 +704,6 @@ class wpjobportal {
             }
         }
         return $url;
-    }
-
-    public static function vueify($data){
-        ?>
-        <script id="wpjobportal-data" type="application/json"><?php echo json_encode(esc_html($data)); ?></script>
-        <script type="text/javascript">
-            var wpjobportaldata = {};
-            try{
-                var jsonString = document.getElementById("wpjobportal-data").innerHTML;
-                wpjobportaldata = JSON.parse(jsonString);
-            }catch(e){
-                wpjobportaldata = {};
-            }
-        </script>
-        <?php
     }
 
     function jsjp_handle_search_form_data(){
@@ -744,34 +762,34 @@ class wpjobportal {
     function jsjp_handle_delete_cookies(){
 
         if(isset($_COOKIE['jsjp_addon_return_data'])){
-            setcookie('jsjp_addon_return_data' , '' , time() - 3600, COOKIEPATH);
+            wpjobportalphplib::wpJP_setcookie('jsjp_addon_return_data' , '' , time() - 3600, COOKIEPATH);
             if ( SITECOOKIEPATH != COOKIEPATH ){
-                setcookie('jsjp_addon_return_data' , '' , time() - 3600, SITECOOKIEPATH);
+                wpjobportalphplib::wpJP_setcookie('jsjp_addon_return_data' , '' , time() - 3600, SITECOOKIEPATH);
             }
         }
 
         if(isset($_COOKIE['jsjp_addon_install_data'])){
-            setcookie('jsjp_addon_install_data' , '' , time() - 3600);
+            wpjobportalphplib::wpJP_setcookie('jsjp_addon_install_data' , '' , time() - 3600);
         }
     }
 
     public static function removeusersearchcookies(){
         if(isset($_COOKIE['jsjp_jobportal_search_data'])){
-            setcookie('jsjp_jobportal_search_data' , '' , time() - 3600 , COOKIEPATH);
+            wpjobportalphplib::wpJP_setcookie('jsjp_jobportal_search_data' , '' , time() - 3600 , COOKIEPATH);
             if ( SITECOOKIEPATH != COOKIEPATH ){
-                setcookie('jsjp_jobportal_search_data' , '' , time() - 3600 , SITECOOKIEPATH);
+                wpjobportalphplib::wpJP_setcookie('jsjp_jobportal_search_data' , '' , time() - 3600 , SITECOOKIEPATH);
             }
         }
     }
 
-    public static function setusersearchcookies($cookiesval , $jsjp_search_array){
+    public static function wpjobportal_setusersearchcookies($cookiesval , $jsjp_search_array){
         if(!$cookiesval)
             return false;
         $data = json_encode( $jsjp_search_array );
-        $data = base64_encode($data);
-        setcookie('jsjp_jobportal_search_data' , $data , 0 , COOKIEPATH);
+        $data = wpjobportalphplib::wpJP_safe_encoding($data);
+        wpjobportalphplib::wpJP_setcookie('jsjp_jobportal_search_data' , $data , 0 , COOKIEPATH);
         if ( SITECOOKIEPATH != COOKIEPATH ){
-            setcookie('jsjp_jobportal_search_data' , $data , 0 , SITECOOKIEPATH);
+            wpjobportalphplib::wpJP_setcookie('jsjp_jobportal_search_data' , $data , 0 , SITECOOKIEPATH);
         }
     }
 
@@ -779,6 +797,125 @@ class wpjobportal {
         global $wpdb;
         $wpdb->query('DELETE  FROM '.$wpdb->prefix.'wj_portal_jswjsessiondata WHERE sessionexpire < "'. time() .'"');
     }
+    static function wpjobportal_getVariableValue($text_string){
+        $translations = get_translations_for_domain( 'wp-job-portal' );
+        $translation = $translations->translate( $text_string );
+        return $translation;
+    }
+
+
+
+    function wpjobportal_LoadWpCoreFiles() {
+        add_action('wpjobportal_load_wp_plugin_file', array($this,'wpjobportal_load_wp_plugin_file') );
+        add_action('wpjobportal_load_wp_admin_file', array($this,'wpjobportal_load_wp_admin_file') );
+        add_action('wpjobportal_load_wp_file', array($this,'wpjobportal_load_wp_file') );
+        add_action('wpjobportal_load_wp_pcl_zip', array($this,'wpjobportal_load_wp_pcl_zip') );
+        add_action('wpjobportal_load_wp_upgrader', array($this,'wpjobportal_load_wp_upgrader') );
+        add_action('wpjobportal_load_wp_ajax_upgrader_skin', array($this,'wpjobportal_load_wp_ajax_upgrader_skin') );
+        add_action('wpjobportal_load_wp_plugin_upgrader', array($this,'wpjobportal_load_wp_plugin_upgrader') );
+        add_action('wpjobportal_load_wp_translation_install', array($this,'wpjobportal_load_wp_translation_install') );
+        add_action('wpjobportal_load_wp_users', array($this,'wpjobportal_load_wp_users') );
+        add_action('wpjobportal_load_wp_image', array($this,'wpjobportal_load_wp_image') );
+        add_action('wpjobportal_load_phpass', array($this,'wpjobportal_load_phpass') );
+        //add_filter('cron_schedules',array($this,'wpjobportal_customschedules'));
+    }
+
+    function wpjobportal_load_wp_plugin_file() {
+        $wp_admin_url = admin_url('includes/plugin.php');
+        $wp_admin_path = str_replace(site_url('/'), ABSPATH, $wp_admin_url);
+        if(strpos($wp_admin_path, "http") !== false) {
+            $wp_admin_path = ABSPATH . 'wp-admin/includes/plugin.php';
+        }
+        require_once($wp_admin_path);
+    }
+
+    function wpjobportal_load_wp_admin_file() {
+        $wp_admin_url = admin_url('includes/admin.php');
+        $wp_admin_path = str_replace(site_url('/'), ABSPATH, $wp_admin_url);
+        if(strpos($wp_admin_path, "http") !== false) {
+            $wp_admin_path = ABSPATH . 'wp-admin/includes/admin.php';
+        }
+        require_once($wp_admin_path);
+    }
+
+    function wpjobportal_load_wp_file() {
+        $wp_admin_url = admin_url('includes/file.php');
+        $wp_admin_path = str_replace(site_url('/'), ABSPATH, $wp_admin_url);
+        if(strpos($wp_admin_path, "http") !== false) {
+            $wp_admin_path = ABSPATH . 'wp-admin/includes/file.php';
+        }
+        require_once($wp_admin_path);
+    }
+
+    function wpjobportal_load_wp_pcl_zip() {
+        $wp_admin_url = admin_url('includes/class-pclzip.php');
+        $wp_admin_path = str_replace(site_url('/'), ABSPATH, $wp_admin_url);
+        if(strpos($wp_admin_path, "http") !== false) {
+            $wp_admin_path = ABSPATH . 'wp-admin/includes/class-pclzip.php';
+        }
+        require_once($wp_admin_path);
+    }
+
+    function wpjobportal_load_wp_ajax_upgrader_skin() {
+        $wp_admin_url = admin_url('includes/class-wp-ajax-upgrader-skin.php');
+        $wp_admin_path = str_replace(site_url('/'), ABSPATH, $wp_admin_url);
+        if(strpos($wp_admin_path, "http") !== false) {
+            $wp_admin_path = ABSPATH . 'wp-admin/includes/class-wp-ajax-upgrader-skin.php';
+        }
+        require_once($wp_admin_path);
+    }
+
+    function wpjobportal_load_wp_upgrader() {
+        $wp_admin_url = admin_url('includes/class-wp-upgrader.php');
+        $wp_admin_path = str_replace(site_url('/'), ABSPATH, $wp_admin_url);
+        if(strpos($wp_admin_path, "http") !== false) {
+            $wp_admin_path = ABSPATH . 'wp-admin/includes/class-wp-upgrader.php';
+        }
+        require_once($wp_admin_path);
+    }
+
+    function wpjobportal_load_wp_plugin_upgrader() {
+        $wp_admin_url = admin_url('includes/class-plugin-upgrader.php');
+        $wp_admin_path = str_replace(site_url('/'), ABSPATH, $wp_admin_url);
+        if(strpos($wp_admin_path, "http") !== false) {
+            $wp_admin_path = ABSPATH . 'wp-admin/includes/class-plugin-upgrader.php';
+        }
+        require_once($wp_admin_path);
+    }
+
+    function wpjobportal_load_wp_translation_install() {
+        $wp_admin_url = admin_url('includes/translation-install.php');
+        $wp_admin_path = str_replace(site_url('/'), ABSPATH, $wp_admin_url);
+        if(strpos($wp_admin_path, "http") !== false) {
+            $wp_admin_path = ABSPATH . 'wp-admin/includes/translation-install.php';
+        }
+        require_once($wp_admin_path);
+    }
+    function wpjobportal_load_wp_users() {
+        $wp_admin_url = admin_url('includes/user.php');
+        $wp_admin_path = str_replace(site_url('/'), ABSPATH, $wp_admin_url);
+        if(strpos($wp_admin_path, "http") !== false) {
+            $wp_admin_path = ABSPATH . 'wp-admin/includes/user.php';
+        }
+        require_once($wp_admin_path);
+    }
+    function wpjobportal_load_wp_image() {
+        $wp_admin_url = admin_url('includes/image.php');
+        $wp_admin_path = str_replace(site_url('/'), ABSPATH, $wp_admin_url);
+        if(strpos($wp_admin_path, "http") !== false) {
+            $wp_admin_path = ABSPATH . 'wp-admin/includes/image.php';
+        }
+        require_once($wp_admin_path);
+    }
+    function wpjobportal_load_phpass() {
+        $wp_site_url = site_url('wp-includes/class-phpass.php');
+        $wp_site_path = str_replace(site_url('/'), ABSPATH, $wp_site_url);
+        if(strpos($wp_site_path, "http") !== false) {
+            $wp_site_path = ABSPATH . 'wp-includes/class-phpass.php';
+        }
+        require_once($wp_site_path);
+    }
+
 
 }
 
@@ -791,7 +928,7 @@ function wpjobportaladdLostPasswordLink() {
     }else{
         $class_prefix = 'wjportal-form';
     }
-   return '<a class="'.$class_prefix.'-lost-password" href="'.site_url().'/wp-login.php?action=lostpassword">'. __('Lost your password','wp-job-portal') .'?</a>';
+   return '<a class="'.$class_prefix.'-lost-password" href="'.site_url().'/wp-login.php?action=lostpassword">'. esc_html(__('Lost your password','wp-job-portal')) .'?</a>';
 }
 
 add_action('init', 'wpjobportal_custom_init_session', 1);
@@ -800,9 +937,9 @@ function wpjobportal_custom_init_session() {
     if(isset($_COOKIE['wpjobportal_apply_visitor'])){
         $layout = WPJOBPORTALrequest::getVar('wpjobportallt');
         if($layout != null && $layout != 'addresume'){ // reset the session id
-            setcookie('wpjobportal_apply_visitor' , '' , time() - 3600 , COOKIEPATH);
+            wpjobportalphplib::wpJP_setcookie('wpjobportal_apply_visitor' , '' , time() - 3600 , COOKIEPATH);
             if ( SITECOOKIEPATH != COOKIEPATH ){
-                setcookie('wpjobportal_apply_visitor' , '' , time() - 3600 , SITECOOKIEPATH);
+                wpjobportalphplib::wpJP_setcookie('wpjobportal_apply_visitor' , '' , time() - 3600 , SITECOOKIEPATH);
             }
         }
     }
@@ -822,7 +959,8 @@ function wpjobportal_register_plugin_styles(){
         $class_prefix = 'wjportal';
     }
     // vars are defined to support job hub and job manager with minimum changes to plugin code.
-    wp_localize_script('wpjobportal-commonjs', 'common', array('ajaxurl' => admin_url('admin-ajax.php'),'insufficient_credits' => __('You have insufficient credits, you can not perform this action','wp-job-portal'),'theme_chk_prefix'=> $class_prefix,'theme_chk_number'=>wpjobportal::$theme_chk,'pluginurl'=>WPJOBPORTAL_PLUGIN_URL,'cityajaxurl' => admin_url("admin.php?page=wpjobportal_city&action=wpjobportaltask&task=getaddressdatabycityname")));
+    $nonce_value = wp_create_nonce("wp-job-portal-nonce");
+    wp_localize_script('wpjobportal-commonjs', 'common', array('ajaxurl' => admin_url('admin-ajax.php'),'js_nonce'=>$nonce_value ,'insufficient_credits' => esc_html(__('You have insufficient credits, you can not perform this action','wp-job-portal')),'theme_chk_prefix'=> $class_prefix,'theme_chk_number'=>wpjobportal::$theme_chk,'pluginurl'=>WPJOBPORTAL_PLUGIN_URL,'cityajaxurl' => admin_url("admin.php?page=wpjobportal_city&action=wpjobportaltask&task=getaddressdatabycityname"),'theme_chk_flag'=>wpjobportal::$theme_chk_flag, 'theme_image' => WPJOBPORTAL_IMAGE,'terms_conditions' => esc_html(__('Please Accept Terms And Conditions So You Can Proceed','wp-job-portal') )));
     //include_once 'includes/css/style_color.php';
     wp_enqueue_style('wpjobportal-jobseeker-style', WPJOBPORTAL_PLUGIN_URL . 'includes/css/jobseekercp.css');
     wp_enqueue_style('wpjobportal-employer-style', WPJOBPORTAL_PLUGIN_URL . 'includes/css/employercp.css');
@@ -912,7 +1050,7 @@ function wpjobportal_socialmedia_metatags(){
             $title = $job->title;
             $description = $job->metadescription;
             if(empty($description)){
-                $description = strip_tags($job->description);
+                $description = wpjobportalphplib::wpJP_strip_tags($job->description);
             }
             echo '<meta name= "twitter:card" content="summary" />'."\n";
             echo '<meta job="og:type" content="place" />'."\n";
@@ -941,8 +1079,8 @@ function wpjobportal_socialmedia_metatags(){
 
 
 
-add_action( 'wp_head', 'job_posting_structured');
-function job_posting_structured(){
+add_action( 'wp_head', 'wpjobportal_job_posting_structured');
+function wpjobportal_job_posting_structured(){
     $layout = WPJOBPORTALrequest::getVar('wpjobportallt');
     if($layout == 'viewjob'){
         $jobid = WPJOBPORTALrequest::getVar('wpjobportalid');
@@ -952,7 +1090,10 @@ function job_posting_structured(){
             $wpdir = wp_upload_dir();
             $data_directory = WPJOBPORTALincluder::getJSModel('configuration')->getConfigurationByConfigName('data_directory');
             $path = $wpdir['baseurl'] . '/' . $data_directory . '/data/employer/comp_' . $job->companyid . '/logo/' . $job->logofilename;
-            echo '<script type="application/ld+json">
+            wp_register_script( 'wpjobportal-inline-handle', '' );
+            wp_enqueue_script( 'wpjobportal-inline-handle' );
+
+            $inline_js_script = '
             {
               "@context" : "https://schema.org/",
               "@type" : "JobPosting",
@@ -992,7 +1133,8 @@ function job_posting_structured(){
                 }
               }
             }
-            </script>';
+            ';
+            wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
         }
     }
 }
@@ -1001,30 +1143,31 @@ add_action( 'admin_enqueue_scripts', 'wpjobportal_admin_register_plugin_styles' 
 add_filter('style_loader_tag', 'wpjobportalW3cValidation', 10, 2);
 add_filter('script_loader_tag', 'wpjobportalW3cValidation', 10, 2);
 function wpjobportalW3cValidation($tag, $handle) {
-    return preg_replace( "/type=['\"]text\/(javascript|css)['\"]/", '', $tag );
+    return wpjobportalphplib::wpJP_preg_replace( "/type=['\"]text\/(javascript|css)['\"]/", '', $tag );
 }
 
 function checkWPJPPluginInfo($slug){
     if(file_exists(WP_PLUGIN_DIR . '/'.$slug) && is_plugin_active($slug)){
-        $text = __("Activated","wp-job-portal");
+        $text = esc_html(__("Activated","wp-job-portal"));
         $disabled = "disabled";
         $class = "js-btn-activated";
         $availability = "-1";
     }else if(file_exists(WP_PLUGIN_DIR . '/'.$slug) && !is_plugin_active($slug)){
-        $text = __("Active Now","wp-job-portal");
+        $text = esc_html(__("Active Now","wp-job-portal"));
         $disabled = "";
         $class = "js-btn-green js-btn-active-now";
         $availability = "1";
     }else if(!file_exists(WP_PLUGIN_DIR . '/'.$slug)){
-        $text = __("Install Now","wp-job-portal");
+        $text = esc_html(__("Install Now","wp-job-portal"));
         $disabled = "";
         $class = "js-btn-install-now";
         $availability = "0";
     }
+
     return array("text" => $text, "disabled" => $disabled, "class" => $class, "availability" => $availability);
 }
 
-function employercheckLinks($name) {
+function wpjobportal_employercheckLinks($name) {
     $print = false;
     switch ($name) {
         case 'formcompany': $visname = 'vis_emformcompany';
@@ -1106,17 +1249,21 @@ function employercheckLinks($name) {
     if($isguest == false && $isouruser == false){
         $guest = true;
     }
-    
+
     $config_array = WPJOBPORTALincluder::getJSModel('configuration')->getConfigByFor('emcontrolpanel');
 
     if ($guest == false) {
         if (WPJOBPORTALincluder::getObjectClass('user')->isemployer()) {
-            if ($config_array[$name] == 1){
-                $print = true;
+            if (isset($config_array[$name]) && $config_array[$name] == 1){
+               $print = true;
             }
         }elseif (WPJOBPORTALincluder::getObjectClass('user')->isjobseeker()) {
-            if ($config_array["$visname"] == 1) {
-                $print = true;
+            if (isset($config_array["$visname"]) && $config_array["$visname"] == 1){
+               $print = true;
+            }
+        }else{
+            if (isset($config_array["$visname"]) && $config_array["$visname"] == 1){
+               $print = true;
             }
         }
     } else {
@@ -1135,7 +1282,7 @@ if(is_file('includes/updater/updater.php')){
     include_once 'includes/updater/updater.php';
 }
 
-function jobseekercheckLinks($name) {
+function wpjobportal_jobseekercheckLinks($name) {
 
     $print = false;
     switch ($name) {
@@ -1203,6 +1350,10 @@ function jobseekercheckLinks($name) {
             break;
         case 'jobsbycities': $visname = 'vis_jobsbycities';
             break;
+        case 'mycoverletter': $visname = 'vis_jsmycoverletter';
+            break;
+        case 'formcoverletter': $visname = 'vis_jsformcoverletter';
+            break;
 
         default:$visname = 'vis_js' . $name;
             break;
@@ -1229,7 +1380,12 @@ function jobseekercheckLinks($name) {
                 if (isset($config_array["$visname"]) && $config_array["$visname"] == 1) {
                     $print = true;
                 }
+        }else{
+            if (isset($config_array["$visname"]) && $config_array["$visname"] == 1) {
+                $print = true;
+            }
         }
+
     } else {
         if (isset($config_array["$visname"]) && $config_array["$visname"] == 1)
             $print = true;
@@ -1250,9 +1406,9 @@ function wpjobportal_login_redirect($redirect_to, $request, $user){
            $roleid = wpjobportaldb::get_var($query);
            $url = '/';
            if($roleid == 2){
-               $url = wpjobportal::makeUrl(array('wpjobportalpageid'=>wpjobportal::getPageid(),'wpjobportalme'=>'jobseeker','wpjobportallt'=>'controlpanel'));
+               $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid(),'wpjobportalme'=>'jobseeker','wpjobportallt'=>'controlpanel'));
            }elseif($roleid == 1){
-               $url = wpjobportal::makeUrl(array('wpjobportalpageid'=>wpjobportal::getPageid(),'wpjobportalme'=>'employer','wpjobportallt'=>'controlpanel'));
+               $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid(),'wpjobportalme'=>'employer','wpjobportallt'=>'controlpanel'));
            }
            return $url;
        }
@@ -1261,5 +1417,6 @@ function wpjobportal_login_redirect($redirect_to, $request, $user){
    }
 
 }
+
 
 ?>

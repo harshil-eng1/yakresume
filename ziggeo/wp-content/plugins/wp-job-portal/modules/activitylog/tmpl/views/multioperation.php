@@ -1,4 +1,6 @@
 <?php
+if (!defined('ABSPATH'))
+    die('Restricted Access');
 /**
 * @param wp-job-portal optional --
 *Filter's & Sortion
@@ -17,11 +19,11 @@
     ?>
     <div Onclick="ShowPopup()" id="filter-activity-log" class="wpjobportal-page-quick-act-btn">
         <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/settings.png">
-        <?php echo __('Settings', 'wp-job-portal'); ?>
+        <?php echo esc_html(__('Settings', 'wp-job-portal')); ?>
     </div>
     <div class="wpjobportal-sorting-wrp">
         <span class="wpjobportal-sort-text">
-            <?php echo __('Sort by', 'wp-job-portal'); ?>:
+            <?php echo esc_html(__('Sort by', 'wp-job-portal')); ?>:
         </span>
         <span class="wpjobportal-sort-field">
             <?php echo wp_kses(WPJOBPORTALformfield::select('sorting', $categoryarray, wpjobportal::$_data['combosort'], '', array('class' => 'inputbox', 'onchange' => 'changeCombo();')),WPJOBPORTAL_ALLOWED_TAGS); ?>

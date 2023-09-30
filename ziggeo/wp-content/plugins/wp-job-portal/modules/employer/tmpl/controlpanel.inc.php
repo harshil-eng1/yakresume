@@ -1,49 +1,52 @@
 <?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
-<script src="https://www.google.com/jsapi?autoload={
-'modules':[{
-'name':'visualization',
-'version':'1',
-'packages':['corechart']
-}]
-}">
-</script>
-<script >
-    jQuery(document).ready(function() {
+<?php
+wp_enqueue_script( 'google-charts', WPJOBPORTAL_PLUGIN_URL.'includes/js/google-charts.js', array(), '', false );
+wp_register_script( 'google-charts-handle', '' );
+wp_enqueue_script( 'google-charts-handle' );
+?>
+<?php
+    wp_register_script( 'wpjobportal-inline-handle', '' );
+    wp_enqueue_script( 'wpjobportal-inline-handle' );
 
-    //for notifications
-    jQuery("div.notifications").hide();
-    jQuery("img.notifications").on("click", function(){
-        jQuery("div.notifications, div.notifications").slideToggle();
-    });
-    jQuery("span.count_notifications").on("click", function(){
-        jQuery("div.notifications, div.notifications").slideToggle();
-    });
-    var counter = jQuery('span.count_notifications').text();
-            //for messages
-            jQuery("div.messages").hide();
-            jQuery("img.messages").on("click", function(){
-                jQuery("div.messages, div.messages").slideToggle();
-            });
-            jQuery("span.count_messages").on("click", function(){
-                jQuery("div.messages, div.messages").slideToggle();
-            });
-            jQuery('div#wpjobportal-popup-background, img#popup_cross').click(function(){
-                jQuery('div#wpjobportal-popup').hide();
-                jQuery('div#wpjobportal-popup-background').hide();
-            });
+    $inline_js_script = "
+        jQuery(document).ready(function() {
+
+        //for notifications
+        jQuery('div.notifications').hide();
+        jQuery('img.notifications').on('click', function(){
+            jQuery('div.notifications, div.notifications').slideToggle();
         });
-    google.load("visualization", "1", {packages:["corechart"]});
+        jQuery('span.count_notifications').on('click', function(){
+            jQuery('div.notifications, div.notifications').slideToggle();
+        });
+        var counter = jQuery('span.count_notifications').text();
+                //for messages
+                jQuery('div.messages').hide();
+                jQuery('img.messages').on('click', function(){
+                    jQuery('div.messages, div.messages').slideToggle();
+                });
+                jQuery('span.count_messages').on('click', function(){
+                    jQuery('div.messages, div.messages').slideToggle();
+                });
+                jQuery('div#wpjobportal-popup-background, img#popup_cross').click(function(){
+                    jQuery('div#wpjobportal-popup').hide();
+                    jQuery('div#wpjobportal-popup-background').hide();
+                });
+            });
+        google.load('visualization', '1', {packages:['corechart']});
 
 
 
-    /*function showLoginPopup(){
-        jQuery('div#wpjobportal-popup-background').show();
-        jQuery('div#wpjobportal-popup').show();
-    }*/
-</script>
+        /*function showLoginPopup(){
+            jQuery('div#wpjobportal-popup-background').show();
+            jQuery('div#wpjobportal-popup').show();
+        }*/
+    ";
+    wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
+?>
 <?php
 
-/*function employercheckLinks($name) {
+/*function wpjobportal_employercheckLinks($name) {
     $print = false;
     switch ($name) {
         case 'formcompany': $visname = 'vis_emformcompany';
@@ -148,23 +151,23 @@
 function jobWrapper($resumeid, $path, $first_name, $middle_name, $last_name, $application_title, $email_address, $Category) {
     $html = '<div class="job-wrapper">
     <div class="img">
-        <a href="' . wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$resumeid)) . '">
+        <a href="' . wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$resumeid)) . '">
             <img src="' . $path . '">
         </a>
     </div>
     <div class="detail">
        <div class="upper">
-          <a href="' . wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$resumeid)) . '">' . $first_name . ' ' . $middle_name . ' ' . $last_name . '</a>
+          <a href="' . wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$resumeid)) . '">' . $first_name . ' ' . $middle_name . ' ' . $last_name . '</a>
       </div>
       <div class="lower">
           <div class="resume_title">(' . $application_title . ')</div>
           <div class="for-rtl">
-             <span class="text">'. __('Email','wp-job-portal') .': </span>
+             <span class="text">'. esc_html(__('Email','wp-job-portal')) .': </span>
              <span class="get-text ">' . $email_address . '</span>
          </div>
          <div class="for-rtl">
-             <span class="text">'. __('Category','wp-job-portal') .': </span>
-             <span class="get-text">' . __($Category,'wp-job-portal') . '</span>
+             <span class="text">'. esc_html(__('Category','wp-job-portal')) .': </span>
+             <span class="get-text">' . wpjobportal::wpjobportal_getVariableValue($Category) . '</span>
          </div>
      </div>
  </div>

@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager-applications
  * @category    Template
- * @version     2.5.0
+ * @version     3.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -30,8 +30,8 @@ global $post;
 					<?php echo wpautop( wp_kses_post( $field['description'] ) ); ?><?php endif; ?>
 			</div>
 		<?php else : ?>
-			<fieldset class="fieldset-<?php esc_attr( $key ); ?>">
-				<label for="<?php esc_attr( $key ); ?>"><?php echo wp_unslash( $field['label'] ) . apply_filters( 'submit_job_form_required_label', $field['required'] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager-applications' ) . '</small>', $field ); ?></label>
+			<fieldset class="fieldset-<?php echo esc_attr( $key ); ?>">
+				<label for="<?php echo esc_attr( $key ); ?>"><?php echo wp_unslash( $field['label'] ) . apply_filters( 'submit_job_form_required_label', $field['required'] ? '' : ' <small>' . __( '(optional)', 'wp-job-manager-applications' ) . '</small>', $field ); ?></label>
 				<div class="field <?php echo $field['required'] ? 'required-field' : ''; ?>">
 					<?php $class->get_field_template( $key, $field ); ?>
 				</div>
@@ -45,5 +45,6 @@ global $post;
 		<input type="submit" class="button wp_job_manager_send_application_button" value="<?php esc_attr_e( 'Send application', 'wp-job-manager-applications' ); ?>" />
 		<input type="hidden" name="wp_job_manager_send_application" value="1" />
 		<input type="hidden" name="job_id" value="<?php echo absint( $post->ID ); ?>" />
+		<input type="hidden" name="form_id" value="<?php echo absint( $form_id ); ?>" />
 	</p>
 </form>

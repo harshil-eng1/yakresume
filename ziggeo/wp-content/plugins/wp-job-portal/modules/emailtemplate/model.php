@@ -14,7 +14,7 @@ class WPJOBPORTALEmailtemplateModel {
             if (!is_numeric($id))
                 return false;
         $config_array = WPJOBPORTALincluder::getJSModel('configuration')->getConfigByFor('email');
-        $pageid = WPJOBPORTAL::getPageid();
+        $pageid = WPJOBPORTAL::wpjobportal_getPageid();
         $siteTitle = wpjobportal::$_config->getConfigValue('title');
         switch ($mailfor) {
             case 1: // Mail For Company
@@ -32,22 +32,22 @@ class WPJOBPORTALEmailtemplateModel {
                         }
                         $status = $record->status;
                         if(in_array('multicompany', wpjobportal::$_active_addons)){
-                            $link = wpjobportal::makeUrl(array('wpjobportalme'=>'multicompany', 'wpjobportallt'=>'mycompanies', 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multicompany', 'wpjobportallt'=>'mycompanies', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }else{
-                            $link = wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies', 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if ($status == 0) {
-                            $checkstatus = __('Pending', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Pending', 'wp-job-portal'));
                         }
                         if ($status == -1) {
-                            $checkstatus = __('Rejected', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Rejected', 'wp-job-portal'));
                         }
                         if ($status == 1) {
-                            $checkstatus = __('Approved', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Approved', 'wp-job-portal'));
                         }
 
                         if ($status == 3) {
-                            $checkstatus = __('Pending Due to Payment', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Pending Due to Payment', 'wp-job-portal'));
                         }
                         $Companyname = $record->companyname;
                         $matcharray = array(
@@ -122,16 +122,16 @@ class WPJOBPORTALEmailtemplateModel {
                         $checkstatus = null;
                         $link = null;
                         if(in_array('multicompany', wpjobportal::$_active_addons)){
-                            $link = wpjobportal::makeUrl(array('wpjobportalme'=>'multicompany', 'wpjobportallt'=>'mycompanies', 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multicompany', 'wpjobportallt'=>'mycompanies', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }else{
-                            $link = wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies', 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if ($status == -1) {
-                            $checkstatus = __('Rejected', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Rejected', 'wp-job-portal'));
                         }
                         if ($status == 1) {
-                            $checkstatus = __('Approved', 'wp-job-portal');
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $checkstatus = esc_html(__('Approved', 'wp-job-portal'));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         $matcharray = array(
                             '{COMPANY_NAME}' => $Companyname,
@@ -139,6 +139,7 @@ class WPJOBPORTALEmailtemplateModel {
                             '{COMPANY_LINK}' => $link,
                             '{COMPANY_STATUS}' => $checkstatus,
                             '{CURRENT_YEAR}' => date('Y'),
+                            '{EMAIL}' => $Email,
                             '{SITETITLE}' => $siteTitle
                         );
                         $template = $this->getTemplateForEmail('company-status');
@@ -172,24 +173,24 @@ class WPJOBPORTALEmailtemplateModel {
                         $link = null;
                         $checkfeaturedcompany = null;
                         if(in_array('multicompany', wpjobportal::$_active_addons)){
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'multicompany', 'wpjobportallt'=>'mycompanies', 'wpjobportalpageid'=>wpjobportal::getPageid())) . ">" . __('Company Detail', 'wp-job-portal') . "</a>";
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multicompany', 'wpjobportallt'=>'mycompanies', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())) . ">" . esc_html(__('Company Detail', 'wp-job-portal')) . "</a>";
                         }else{
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies', 'wpjobportalpageid'=>wpjobportal::getPageid())) . ">" . __('Company Detail', 'wp-job-portal') . "</a>";
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())) . ">" . esc_html(__('Company Detail', 'wp-job-portal')) . "</a>";
                         }
                         if ($featuredcompany == -1) {
-                            $checkfeaturedcompany = __('rejected for featured', 'wp-job-portal');
+                            $checkfeaturedcompany = esc_html(__('rejected for featured', 'wp-job-portal'));
                         }
                         if ($featuredcompany == 1) {
-                            $checkfeaturedcompany = __('approved for featured', 'wp-job-portal');
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $checkfeaturedcompany = esc_html(__('approved for featured', 'wp-job-portal'));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if ($featuredcompany == 2) {
-                            $checkfeaturedcompany = __('removed for featured', 'wp-job-portal');
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $checkfeaturedcompany = esc_html(__('removed for featured', 'wp-job-portal'));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if ($featuredcompany == 0) {
-                            $checkfeaturedcompany = __('pending for featured', 'wp-job-portal');
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid())) ;
+                            $checkfeaturedcompany = esc_html(__('pending for featured', 'wp-job-portal'));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())) ;
                         }
                         $matcharray = array(
                             '{COMPANY_NAME}' => $Companyname,
@@ -197,6 +198,7 @@ class WPJOBPORTALEmailtemplateModel {
                             '{COMPANY_LINK}' => $link,
                             '{COMPANY_STATUS}' => $checkfeaturedcompany,
                             '{CURRENT_YEAR}' => date('Y'),
+                            '{EMAIL}' => $Email,
                             '{SITETITLE}' => $siteTitle
                         );
                         $template = $this->getTemplateForEmail('company-status');
@@ -231,19 +233,19 @@ class WPJOBPORTALEmailtemplateModel {
                         $checkstatus = null;
                         $link = null;
                         if ($status == 1) {
-                            $checkstatus = __('Approved', 'wp-job-portal');
-                            $link = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $checkstatus = esc_html(__('Approved', 'wp-job-portal'));
+                            $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
-                        $link = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs', 'wpjobportalpageid'=>wpjobportal::getPageid())) ;
+                        $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())) ;
                         if ($status == -1) {
-                            $checkstatus = __('Rejected', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Rejected', 'wp-job-portal'));
                         }
                         if ($status == 0) {
-                            $checkstatus = __('Pending', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Pending', 'wp-job-portal'));
                         }
 
                         if ($status == 3) {
-                            $checkstatus = __('Pending Due To Payment', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Pending Due To Payment', 'wp-job-portal'));
                         }
                         $matcharray = array(
                             '{JOB_TITLE}' => $jobname,
@@ -314,15 +316,15 @@ class WPJOBPORTALEmailtemplateModel {
                         $link = null;
                         $checkstatus = null;
                         if ($status == 1) {
-                            $checkstatus = __('Approved', 'wp-job-portal');
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid())) ;
+                            $checkstatus = esc_html(__('Approved', 'wp-job-portal'));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())) ;
                         }
-                        $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs', 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                        $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         if ($status == -1) {
-                            $checkstatus = __('Rejected', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Rejected', 'wp-job-portal'));
                         }
                         if ($status == 2) {
-                            $checkstatus = __('Removed', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Removed', 'wp-job-portal'));
                         }
                         $matcharray = array(
                             '{JOB_TITLE}' => $jobname,
@@ -345,15 +347,15 @@ class WPJOBPORTALEmailtemplateModel {
                             $this->sendEmail($Email, $msgSubject, $msgBody, $senderEmail, $senderName, '', 11); // 11 action for job gold hock
                         }
                         if ($status == 1) {
-                            $checkstatus = __('Approved', 'wp-job-portal');
-                            $link = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $checkstatus = esc_html(__('Approved', 'wp-job-portal'));
+                            $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if ($status == -1) {
-                            $checkstatus = __('Rejected', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Rejected', 'wp-job-portal'));
                             $link = null;
                         }
                         if ($status == 2) {
-                            $checkstatus = __('Removed', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Removed', 'wp-job-portal'));
                             $link = null;
                         }
                         $msgSubject = $template->subject;
@@ -377,19 +379,19 @@ class WPJOBPORTALEmailtemplateModel {
                         $link = null;
                         $checkstatus = null;
                         $checkfeaturedjob = null;
-                        $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs', 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                        $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         if ($featuredjob == -1) {
-                            $checkfeaturedjob = __('rejected for featured', 'wp-job-portal');
+                            $checkfeaturedjob = esc_html(__('rejected for featured', 'wp-job-portal'));
                         }
                         if ($featuredjob == 1) {
-                            $checkfeaturedjob = __('approved for featured', 'wp-job-portal');
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $checkfeaturedjob = esc_html(__('approved for featured', 'wp-job-portal'));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if ($featuredjob == 2) {
-                            $checkfeaturedjob = __('removed for featured', 'wp-job-portal');
+                            $checkfeaturedjob = esc_html(__('removed for featured', 'wp-job-portal'));
                         }
                         if ($featuredjob == 0) {
-                            $checkfeaturedjob = __('pending for featured', 'wp-job-portal');
+                            $checkfeaturedjob = esc_html(__('pending for featured', 'wp-job-portal'));
                         }
                         $matcharray = array(
                             '{JOB_TITLE}' => $jobname,
@@ -434,16 +436,16 @@ class WPJOBPORTALEmailtemplateModel {
                         $checkstatus = null;
                         $link = null;
                         if ($status == 1) {
-                            $checkstatus = __('Approved', 'wp-job-portal');
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $checkstatus = esc_html(__('Approved', 'wp-job-portal'));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if ($status == -1) {
-                            $checkstatus = __('Rejected', 'wp-job-portal');
-                            $link = "<strong>" . __('Due to rejection of job you do not have permission to see job detail', 'wp-job-portal') . "</strong>";
+                            $checkstatus = esc_html(__('Rejected', 'wp-job-portal'));
+                            $link = "<strong>" . esc_html(__('Due to rejection of job you do not have permission to see job detail', 'wp-job-portal')) . "</strong>";
                         }
                         if ($status == 0) {
-                            $checkstatus = __('Pending', 'wp-job-portal');
-                            $link = "<strong>" . __('Due to pending status of job you do not have permission to see job detail', 'wp-job-portal') . "</strong>";
+                            $checkstatus = esc_html(__('Pending', 'wp-job-portal'));
+                            $link = "<strong>" . esc_html(__('Due to pending status of job you do not have permission to see job detail', 'wp-job-portal')) . "</strong>";
                         }
                         $matcharray = array(
                             '{JOB_TITLE}' => $jobname,
@@ -469,16 +471,16 @@ class WPJOBPORTALEmailtemplateModel {
                             $this->sendEmail($adminEmailid, $msgSubject, $msgBody, $senderEmail, $senderName, '', 8); // 8 action for add job hock
                         }
                         if ($status == 1) {
-                            $checkstatus = __('Approved', 'wp-job-portal');
-                            $link = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $checkstatus = esc_html(__('Approved', 'wp-job-portal'));
+                            $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if ($status == -1) {
-                            $checkstatus = __('Rejected', 'wp-job-portal');
-                            $link = "<strong>" . __('Due to rejection of job you do not have permission to see job detail', 'wp-job-portal') . "</strong>";
+                            $checkstatus = esc_html(__('Rejected', 'wp-job-portal'));
+                            $link = "<strong>" . esc_html(__('Due to rejection of job you do not have permission to see job detail', 'wp-job-portal')) . "</strong>";
                         }
                         if ($status == 0) {
-                            $checkstatus = __('Pending', 'wp-job-portal');
-                            $link = "<strong>" . __('Due to pending status of job you do not have permission to see job detail', 'wp-job-portal') . "</strong>";
+                            $checkstatus = esc_html(__('Pending', 'wp-job-portal'));
+                            $link = "<strong>" . esc_html(__('Due to pending status of job you do not have permission to see job detail', 'wp-job-portal')) . "</strong>";
                         }
                         $matcharray['{JOB_LINK}'] = $link;
                         $matcharray['{CURRENT_YEAR}'] = date('Y');
@@ -516,23 +518,23 @@ class WPJOBPORTALEmailtemplateModel {
                         $link = null;
                         $checkstatus = null;
                         if ($status == 1) {
-                            $checkstatus = __('Approved', 'wp-job-portal');
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $checkstatus = esc_html(__('Approved', 'wp-job-portal'));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if(in_array('multiresume', wpjobportal::$_active_addons)){
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'multiresume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multiresume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }else{
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if ($status == -1) {
-                            $checkstatus = __('Rejected', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Rejected', 'wp-job-portal'));
                         }
                         if ($status == 0) {
-                            $checkstatus = __('Pending', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Pending', 'wp-job-portal'));
                         }
 
                         if ($status == 3) {
-                            $checkstatus = __('Pending Due to Payment', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Pending Due to Payment', 'wp-job-portal'));
                        }
                         $matcharray = array(
                             '{RESUME_TITLE}' => $resumename,
@@ -588,15 +590,15 @@ class WPJOBPORTALEmailtemplateModel {
                         $link = null;
                         $checkstatus = null;
                         if(in_array('multiresume', wpjobportal::$_active_addons)){
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'multiresume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multiresume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }else{
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if ($status == 1) {
-                            $checkstatus = __('Approved', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Approved', 'wp-job-portal'));
                         }
                         if ($status == -1) {
-                            $checkstatus = __('Rejected', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Rejected', 'wp-job-portal'));
                         }
                         $matcharray = array(
                             '{RESUME_TITLE}' => $resumename,
@@ -620,19 +622,19 @@ class WPJOBPORTALEmailtemplateModel {
                             $this->sendEmail($Email, $msgSubject, $msgBody, $senderEmail, $senderName, '', $action);
                         }
                         if ($status == 1) {
-                            $checkstatus = __('Approved', 'wp-job-portal');
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $checkstatus = esc_html(__('Approved', 'wp-job-portal'));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if ($status == -1) {
-                            $checkstatus = __('Rejected', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Rejected', 'wp-job-portal'));
                             $link = null;
                         }
                         if ($status == 2) {
-                            $checkstatus = __('Removed', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Removed', 'wp-job-portal'));
                             $link = null;
                         }
                         if ($status == 0) {
-                            $checkstatus = __('Pending', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Pending', 'wp-job-portal'));
                             $link = null;
                         }
                         $matcharray['{RESUME_LINK}'] = $link;
@@ -669,23 +671,23 @@ class WPJOBPORTALEmailtemplateModel {
                         $link = null;
                         $checkfeaturedresume = null;
                         if(in_array('multiresume', wpjobportal::$_active_addons)){
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'multiresume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multiresume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }else{
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::getPageid())) ;
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())) ;
                         }
                         if ($featuredresume == -1) {
-                            $checkfeaturedresume = __('rejected for featured', 'wp-job-portal');
+                            $checkfeaturedresume = esc_html(__('rejected for featured', 'wp-job-portal'));
                         }
                         if ($featuredresume == 1) {
-                            $checkfeaturedresume = __('approved for featured', 'wp-job-portal');
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $checkfeaturedresume = esc_html(__('approved for featured', 'wp-job-portal'));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if ($featuredresume == 0) {
-                            $checkfeaturedresume = __('pending for featured', 'wp-job-portal');
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $checkfeaturedresume = esc_html(__('pending for featured', 'wp-job-portal'));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if ($featuredresume == 2) {
-                            $checkfeaturedresume = __('removed for featured', 'wp-job-portal');
+                            $checkfeaturedresume = esc_html(__('removed for featured', 'wp-job-portal'));
                         }
                         $matcharray = array(
                             '{RESUME_TITLE}' => $resumename,
@@ -708,18 +710,18 @@ class WPJOBPORTALEmailtemplateModel {
                         if ($getEmailStatus->jobseeker == 1) {
                             $this->sendEmail($Email, $msgSubject, $msgBody, $senderEmail, $senderName, '', 4); // 4 action for job gold hock
                         }
-                        $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                        $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         if ($featuredresume == 1) {
-                            $checkfeaturedresume = __('approved for featured', 'wp-job-portal');
+                            $checkfeaturedresume = esc_html(__('approved for featured', 'wp-job-portal'));
                         }
                         if ($featuredresume == -1) {
-                            $checkfeaturedresume = __('rejected for featured', 'wp-job-portal');
+                            $checkfeaturedresume = esc_html(__('rejected for featured', 'wp-job-portal'));
                         }
                         if ($featuredresume == 2) {
-                            $checkfeaturedresume = __('removed for featured', 'wp-job-portal');
+                            $checkfeaturedresume = esc_html(__('removed for featured', 'wp-job-portal'));
                         }
                         if ($featuredresume == 0) {
-                            $checkfeaturedresume = __('pending for featured', 'wp-job-portal');
+                            $checkfeaturedresume = esc_html(__('pending for featured', 'wp-job-portal'));
                             $link = null;
                         }
                         $matcharray['{RESUME_LINK}'] = $link;
@@ -743,16 +745,16 @@ class WPJOBPORTALEmailtemplateModel {
                         $resumename = $record->resumetitle;
                         $status = $record->status;
                         if ($status == 1) {
-                            $checkstatus = __('Approved', 'wp-job-portal');
-                            $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
+                            $checkstatus = esc_html(__('Approved', 'wp-job-portal'));
+                            $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume', 'wpjobportalid'=>$id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         }
                         if ($status == -1) {
-                            $checkstatus = __('Rejected', 'wp-job-portal');
-                            $link = "<strong>" . __('Due to rejection of resume you do not have permission to see resume detail', 'wp-job-portal') . "</strong>";
+                            $checkstatus = esc_html(__('Rejected', 'wp-job-portal'));
+                            $link = "<strong>" . esc_html(__('Due to rejection of resume you do not have permission to see resume detail', 'wp-job-portal')) . "</strong>";
                         }
                         if ($status == 0) {
-                            $checkstatus = __('Pending', 'wp-job-portal');
-                            $link = "<strong>" . __('Due to pending status of resume you do not have permission to see resume detail', 'wp-job-portal') . "</strong>";
+                            $checkstatus = esc_html(__('Pending', 'wp-job-portal'));
+                            $link = "<strong>" . esc_html(__('Due to pending status of resume you do not have permission to see resume detail', 'wp-job-portal')) . "</strong>";
                         }
                         $matcharray = array(
                             '{RESUME_TITLE}' => $resumename,
@@ -826,21 +828,21 @@ class WPJOBPORTALEmailtemplateModel {
                         $username = $record->username;
                         $packagename = $record->packagename;
                         $receiveremail = $record->useremailaddress;
-                        $link =  wpjobportal::makeUrl(array('wpjobportalme'=>'purchasehistory', 'wpjobportallt'=>'purchasehistory')).">".__('Package Detail','wp-job-portal');
+                        $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'purchasehistory', 'wpjobportallt'=>'purchasehistory')).">".esc_html(__('Package Detail','wp-job-portal'));
                         if($record->isfree){
-                            $packageprice = __("Free",'wp-job-portal');
+                            $packageprice = esc_html(__("Free",'wp-job-portal'));
                         }else{
                             $overrideConfig = array('decimal_places'=>'fit_to_currency');
                             $packageprice = wpjobportal::$_common->getFancyPrice($record->price,$record->currencyid,$overrideConfig);
                         }
                         if($record->status==1){
-                            $status =  __("Publish",'wp-job-portal');
+                            $status =  esc_html(__("Publish",'wp-job-portal'));
                         }else if($record->status==0){
-                            $status =  __("Pending",'wp-job-portal');
+                            $status =  esc_html(__("Pending",'wp-job-portal'));
                         }else if($record->status==-1){
-                            $status =  __("Rejected",'wp-job-portal');
+                            $status =  esc_html(__("Rejected",'wp-job-portal'));
                         }else{
-                            $status = __("Unknown",'wp-job-portal');
+                            $status = esc_html(__("Unknown",'wp-job-portal'));
                         }
                         $matcharray = array(
                             '{USER_NAME}' => $username,
@@ -888,17 +890,17 @@ class WPJOBPORTALEmailtemplateModel {
                         $username = $record->username;
                         $packagename = $record->packagename;
                         $receiveremail = $record->useremailaddress;
-                        $link = wpjobportal::makeUrl(array('wpjobportalme'=>'purchasehistory', 'wpjobportallt'=>'purchasehistory')).">".__('Package Detail','wp-job-portal');
+                        $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'purchasehistory', 'wpjobportallt'=>'purchasehistory')).">".esc_html(__('Package Detail','wp-job-portal'));
                         if($record->isfree){
-                            $packageprice = __("Free",'wp-job-portal');
+                            $packageprice = esc_html(__("Free",'wp-job-portal'));
                         }else{
                             $overrideConfig = array('decimal_places'=>'fit_to_currency');
                             $packageprice = WPJOBPORTALincluder::getJSModel('common')->getFancyPrice($record->price,$record->currencyid,$overrideConfig);
                         }
                         if($record->status==1){
-                            $status =  __("Publish",'wp-job-portal');
+                            $status =  esc_html(__("Publish",'wp-job-portal'));
                         }else{
-                            $status =  __("Unpublish",'wp-job-portal');
+                            $status =  esc_html(__("Unpublish",'wp-job-portal'));
                         }
                         $matcharray = array(
                             '{USER_NAME}' => $username,
@@ -948,19 +950,19 @@ class WPJOBPORTALEmailtemplateModel {
                         $resumetitle = $record->resumetitle;
                         $jobseekername = $record->firstname . '' . $record->lastname;
                         if ($resumeappliedstatus == 1) {
-                            $checkstatus = __('Inbox', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Inbox', 'wp-job-portal'));
                         }
                         if ($resumeappliedstatus == 1) {
-                            $checkstatus = __('Spam', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Spam', 'wp-job-portal'));
                         }
                         if ($resumeappliedstatus == 1) {
-                            $checkstatus = __('Hired', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Hired', 'wp-job-portal'));
                         }
                         if ($resumeappliedstatus == 1) {
-                            $checkstatus = __('Rejected', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Rejected', 'wp-job-portal'));
                         }
                         if ($resumeappliedstatus == 1) {
-                            $checkstatus = __('Short listed', 'wp-job-portal');
+                            $checkstatus = esc_html(__('Short listed', 'wp-job-portal'));
                         }
                         $resumedata = null;
                         $matcharray = array(
@@ -1019,15 +1021,16 @@ class WPJOBPORTALEmailtemplateModel {
                         $Username = $record->username;
                         $Email = $record->useremail;
                         $userrole = $record->userrole;
-                        $link =  wpjobportal::makeUrl(array('wpjobportalpageid'=>WPJOBPORTALRequest::getVar('wpjobportalpageid')));
+                        $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalpageid'=>WPJOBPORTALRequest::getVar('wpjobportalpageid')));
                         if ($userrole == 1) {
-                            $checkuserrole = __('Employer', 'wp-job-portal');
+                            $checkuserrole = esc_html(__('Employer', 'wp-job-portal'));
                         }
                         $matcharray = array(
                             '{USER_ROLE}' => $checkuserrole,
                             '{USER_NAME}' => $Username,
                             '{CONTROL_PANEL_LINK}' => $link,
                             '{CURRENT_YEAR}' => date('Y'),
+                            '{EMAIL}' => $Email,
                             '{SITETITLE}' => $siteTitle
                         );
                         $template = $this->getTemplateForEmail('employer-new');
@@ -1063,15 +1066,16 @@ class WPJOBPORTALEmailtemplateModel {
                         $Username = $record->username;
                         $Email = $record->useremail;
                         $userrole = $record->userrole;
-                        $link =  wpjobportal::makeUrl(array('wpjobportalpageid'=>wpjobportal::getPageid()));
+                        $link =  wpjobportal::wpjobportal_makeUrl(array('wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                         if ($userrole == 2) {
-                            $checkuserrole = __('Job seeker', 'wp-job-portal');
+                            $checkuserrole = esc_html(__('Job seeker', 'wp-job-portal'));
                         }
                         $matcharray = array(
                             '{USER_ROLE}' => $checkuserrole,
                             '{USER_NAME}' => $Username,
                             '{CONTROL_PANEL_LINK}' => $link,
                             '{CURRENT_YEAR}' => date('Y'),
+                            '{EMAIL}' => $Email,
                             '{SITETITLE}' => $siteTitle
                         );
                         $template = $this->getTemplateForEmail('jobseeker-new');
@@ -1185,8 +1189,8 @@ class WPJOBPORTALEmailtemplateModel {
     function storeEmailTemplate($data) {
         if (empty($data))
             return false;
-
-        $data['body'] = wpautop(wptexturize(stripslashes($data['body'])));
+        $data = wpjobportal::wpjobportal_sanitizeData($data);
+        $data['body'] = wpautop(wptexturize(wpjobportalphplib::wpJP_stripslashes($data['body'])));
         $row = WPJOBPORTALincluder::getJSTable('emailtemplate');
         if (!$row->bind($data)) {
             return WPJOBPORTAL_SAVE_ERROR;
@@ -1210,9 +1214,10 @@ class WPJOBPORTALEmailtemplateModel {
         $template = wpjobportaldb::get_row($query);
         $msgSubject = $template->subject;
         $msgBody = $template->body;
-        $jobquery = "SELECT job.id AS id,job.title, job.jobstatus,job.jobid AS jobid, company.name AS companyname, cat.cat_title AS cattitle,job.sendemail,company.contactemail
+        $jobquery = "SELECT job.id AS id,job.title, job.jobstatus,job.jobid AS jobid, company.name AS companyname, cat.cat_title AS cattitle,job.sendemail,company.contactemail, CONCAT(user.first_name,' ',user.last_name) AS contactname
                               FROM `" . wpjobportal::$_db->prefix . "wj_portal_jobs` AS job
                               JOIN `" . wpjobportal::$_db->prefix . "wj_portal_companies` AS company ON company.id = job.companyid
+                              LEFT JOIN `" . wpjobportal::$_db->prefix . "wj_portal_users` AS user ON user.id = company.uid
                               JOIN `" . wpjobportal::$_db->prefix . "wj_portal_categories` AS cat ON cat.id = job.jobcategory
                               WHERE job.id = " . $jobid;
         $jobuser = wpjobportaldb::get_row($jobquery);
@@ -1223,32 +1228,32 @@ class WPJOBPORTALEmailtemplateModel {
             $ContactName = $jobuser->contactname;
             $JobTitle = $jobuser->title;
             if ($jobuser->jobstatus == 1)
-                $JobStatus = __('Approved', 'wp-job-portal');
+                $JobStatus = esc_html(__('Approved', 'wp-job-portal'));
             else
-                $JobStatus = __('Waiting for approval', 'wp-job-portal');
+                $JobStatus = esc_html(__('Waiting for approval', 'wp-job-portal'));
             $EmployerEmail = $jobuser->contactemail;
             $ContactName = $jobuser->contactname;
-			$joblink = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$jobid, 'wpjobportalpageid'=>wpjobportal::getPageid()));
-            $msgSubject = str_replace('{COMPANY_NAME}', $CompanyName, $msgSubject);
-            $msgSubject = str_replace('{CONTACT_NAME}', $ContactName, $msgSubject);
-            $msgSubject = str_replace('{JOB_CATEGORY}', $JobCategory, $msgSubject);
-            $msgSubject = str_replace('{JOB_TITLE}', $JobTitle, $msgSubject);
-            $msgSubject = str_replace('{JOB_STATUS}', $JobStatus, $msgSubject);
-            $msgSubject = str_replace('{EMPLOYER_NAME}', $ContactName, $msgSubject);
-            $msgSubject = str_replace('{JOB_LINK}', $joblink, $msgSubject);
-            $msgBody = str_replace('{COMPANY_NAME}', $CompanyName, $msgBody);
-            $msgBody = str_replace('{CONTACT_NAME}', $ContactName, $msgBody);
-            $msgBody = str_replace('{JOB_CATEGORY}', $JobCategory, $msgBody);
-            $msgBody = str_replace('{JOB_TITLE}', $JobTitle, $msgBody);
-            $msgBody = str_replace('{JOB_STATUS}', $JobStatus, $msgBody);
-            $msgBody = str_replace('{EMPLOYER_NAME}', $ContactName, $msgBody);
-            $msgBody = str_replace('{JOB_LINK}', $joblink, $msgBody);
+			$joblink = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$jobid, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
+            $msgSubject = wpjobportalphplib::wpJP_str_replace('{COMPANY_NAME}', $CompanyName, $msgSubject);
+            $msgSubject = wpjobportalphplib::wpJP_str_replace('{CONTACT_NAME}', $ContactName, $msgSubject);
+            $msgSubject = wpjobportalphplib::wpJP_str_replace('{JOB_CATEGORY}', $JobCategory, $msgSubject);
+            $msgSubject = wpjobportalphplib::wpJP_str_replace('{JOB_TITLE}', $JobTitle, $msgSubject);
+            $msgSubject = wpjobportalphplib::wpJP_str_replace('{JOB_STATUS}', $JobStatus, $msgSubject);
+            $msgSubject = wpjobportalphplib::wpJP_str_replace('{EMPLOYER_NAME}', $ContactName, $msgSubject);
+            $msgSubject = wpjobportalphplib::wpJP_str_replace('{JOB_LINK}', $joblink, $msgSubject);
+            $msgBody = wpjobportalphplib::wpJP_str_replace('{COMPANY_NAME}', $CompanyName, $msgBody);
+            $msgBody = wpjobportalphplib::wpJP_str_replace('{CONTACT_NAME}', $ContactName, $msgBody);
+            $msgBody = wpjobportalphplib::wpJP_str_replace('{JOB_CATEGORY}', $JobCategory, $msgBody);
+            $msgBody = wpjobportalphplib::wpJP_str_replace('{JOB_TITLE}', $JobTitle, $msgBody);
+            $msgBody = wpjobportalphplib::wpJP_str_replace('{JOB_STATUS}', $JobStatus, $msgBody);
+            $msgBody = wpjobportalphplib::wpJP_str_replace('{EMPLOYER_NAME}', $ContactName, $msgBody);
+            $msgBody = wpjobportalphplib::wpJP_str_replace('{JOB_LINK}', $joblink, $msgBody);
 
             $config = WPJOBPORTALincluder::getJSModel('configuration')->getConfigByFor('visitor');
             if ($config['visitor_can_edit_job'] == 1) {
-                $path = wpjobportal::makeUrl(array('wpjobportalme'=>'employer', 'wpjobportallt'=>'addjob', 'email'=>$jobuser->contactemail, 'jobid'=>$jobuser->jobid, 'wpjobportalpageid'=>wpjobportal::getPageid()));
-                $path = wpjobportal::makeUrl(array('wpjobportalme'=>'employer', 'wpjobportallt'=>'addjob', 'wpjobportalid'=>$jobuser->id, 'wpjobportalpageid'=>wpjobportal::getPageid()));
-                $text = '<br><a href="' . $path . '" target="_blank" >' . __('click here to edit job', 'wp-job-portal') . '</a>';
+                $path = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'employer', 'wpjobportallt'=>'addjob', 'email'=>$jobuser->contactemail, 'jobid'=>$jobuser->jobid, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
+                $path = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'employer', 'wpjobportallt'=>'addjob', 'wpjobportalid'=>$jobuser->id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
+                $text = '<br><a href="' . $path . '" target="_blank" >' . esc_html(__('click here to edit job', 'wp-job-portal')) . '</a>';
                 $msgBody .= $text;
             }
 
@@ -1273,7 +1278,7 @@ class WPJOBPORTALEmailtemplateModel {
 
     function replaceMatches(&$string, $matcharray) {
         foreach ($matcharray AS $find => $replace) {
-            $string = str_replace($find, $replace, $string);
+            $string = wpjobportalphplib::wpJP_str_replace($find, $replace, $string);
         }
     }
     function wpjobportal_set_html_content_type() {
@@ -1285,8 +1290,8 @@ class WPJOBPORTALEmailtemplateModel {
             $senderName = wpjobportal::$_configuration['title'];
         $headers = 'From: ' . $senderName . ' <' . $senderEmail . '>' . "\r\n";
         add_filter('wp_mail_content_type', array($this,'wpjobportal_set_html_content_type'));
-        $body = preg_replace('/\r?\n|\r/', '<br/>', $body);
-        $body = str_replace(array("\r\n", "\r", "\n"), "<br/>", $body);
+        $body = wpjobportalphplib::wpJP_preg_replace('/\r?\n|\r/', '<br/>', $body);
+        $body = wpjobportalphplib::wpJP_str_replace(array("\r\n", "\r", "\n"), "<br/>", $body);
         $body = nl2br($body);
         wp_mail($recevierEmail, $subject, $body, $headers, $attachments);
     }

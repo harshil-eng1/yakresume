@@ -9,11 +9,11 @@ if ( !WPJOBPORTALincluder::getTemplate('templates/header',array('module' => 'job
 }
 if (wpjobportal::$_error_flag == null) {
     $radiustype = array(
-        (object) array('id' => '0', 'text' => __('Select One', 'wp-job-portal')),
-        (object) array('id' => '1', 'text' => __('Meters', 'wp-job-portal')),
-        (object) array('id' => '2', 'text' => __('Kilometers', 'wp-job-portal')),
-        (object) array('id' => '3', 'text' => __('Miles', 'wp-job-portal')),
-        (object) array('id' => '4', 'text' => __('Nautical Miles', 'wp-job-portal')),
+        (object) array('id' => '0', 'text' => esc_html(__('Select One', 'wp-job-portal'))),
+        (object) array('id' => '1', 'text' => esc_html(__('Meters', 'wp-job-portal'))),
+        (object) array('id' => '2', 'text' => esc_html(__('Kilometers', 'wp-job-portal'))),
+        (object) array('id' => '3', 'text' => esc_html(__('Miles', 'wp-job-portal'))),
+        (object) array('id' => '4', 'text' => esc_html(__('Nautical Miles', 'wp-job-portal'))),
     );
     ?>
 
@@ -22,7 +22,7 @@ if (wpjobportal::$_error_flag == null) {
         <?php WPJOBPORTALincluder::getTemplate('templates/pagetitle',array('module' => 'jobsearch' , 'layout' => 'jobsearch')); ?>
     </div>
     <div class="wjportal-form-wrp wjportal-search-job-form">
-        <form class="wjportal-form" id="job_form" method="post" action="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs', 'wpjobportalpageid'=>wpjobportal::getPageid()))); ?>">
+        <form class="wjportal-form" id="job_form" method="post" action="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()))); ?>">
             <?php
                 $formfields = WPJOBPORTALincluder::getTemplate('jobsearch/form-field',array(
                     'fields' => wpjobportal::$_data[2],
@@ -33,7 +33,7 @@ if (wpjobportal::$_error_flag == null) {
                 }
             ?>
             <div class="wjportal-form-btn-wrp" id="save-button">
-                <?php echo wp_kses(WPJOBPORTALformfield::submitbutton('save', __('Search Job', 'wp-job-portal'), array('class' => 'button wjportal-form-btn wjportal-save-btn')),WPJOBPORTAL_ALLOWED_TAGS); ?>
+                <?php echo wp_kses(WPJOBPORTALformfield::submitbutton('save', esc_html(__('Search Job', 'wp-job-portal')), array('class' => 'button wjportal-form-btn wjportal-save-btn')),WPJOBPORTAL_ALLOWED_TAGS); ?>
             </div>
             <input type="hidden" id="default_longitude" name="default_longitude" value="<?php echo esc_attr(wpjobportal::$_configuration['default_longitude']); ?>"/>
             <input type="hidden" id="default_latitude" name="default_latitude" value="<?php echo esc_attr(wpjobportal::$_configuration['default_latitude']); ?>"/>

@@ -1,4 +1,6 @@
 <?php
+if (!defined('ABSPATH'))
+    die('Restricted Access');
 /**
 * @param WP JOB PORTAL---
 * @param Packages Details For Company
@@ -11,7 +13,7 @@ if(isset($packages)){
         <div class="wpj-jp-pkg-list-top">
             <div class="wpj-jp-pkg-list-title">
                 <h4 class="wpj-jp-pkg-list-title-txt">
-                    <?php echo sprintf(__('%s','job-portal'), $packages->title); ?>
+                    <?php echo wpjobportal::wpjobportal_getVariableValue($packages->title); ?>
                 </h4>
             </div>
         </div>
@@ -19,26 +21,26 @@ if(isset($packages)){
             <?php if(isset($packages)){?>
                 <div class="wpj-jp-pkg-list-data">
                     <span class="wpj-jp-pkg-list-laebl">
-                        <?php echo esc_html__("Total Company","job-portal")." : "; ?>
+                        <?php echo esc_html__("Total Company","wp-job-portal")." : "; ?>
                     </span>
-                    <?php echo $packages->companies==-1 ? esc_html__('Unlimited','job-portal') : sprintf(__('%s','job-portal'), $packages->companies); ?>
+                    <?php echo $packages->companies==-1 ? esc_html__('Unlimited','wp-job-portal') : $packages->companies; ?>
                 </div>
                 <div class="wpj-jp-pkg-list-data">
                     <span class="wpj-jp-pkg-list-laebl">
-                        <?php echo esc_html__("Remaining Company","job-portal")." : "; ?>
+                        <?php echo esc_html__("Remaining Company","wp-job-portal")." : "; ?>
                     </span>
-                    <?php echo $packages->companies==-1 ? esc_html__('Unlimited','job-portal') : sprintf(__('%s','job-portal'), $packages->remcompany); ?>
+                    <?php echo $packages->companies==-1 ? esc_html__('Unlimited','wp-job-portal') : $packages->remcompany; ?>
                 </div>
             <?php } ?>
         </div>
         <div class="wpj-jp-pkg-list-btm">
             <div class="wpj-jp-pkg-list-action-wrp">
-                <a class="wpj-jp-outline-btn" title="<?php echo esc_attr__('change package', "job-portal"); ?>" href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'multicompany','wpjobportallt'=>'addcompany'))); ?>">
-                    <?php echo esc_html__("Change Package", "job-portal") ?>
+                <a class="wpj-jp-outline-btn" title="<?php echo esc_attr__('change package', "wp-job-portal"); ?>" href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multicompany','wpjobportallt'=>'addcompany'))); ?>">
+                    <?php echo esc_html__("Change Package", "wp-job-portal") ?>
                 </a>
             </div>
             <div class="wpj-jp-pkg-list-exp-date">
-                <?php echo esc_html__('Ends On','job-portal').': '.date_i18n(wpjobportal::$_configuration['date_format'],strtotime(wpjobportal::$_data['package']->enddate)); ?> 
+                <?php echo esc_html__('Ends On','wp-job-portal').': '.date_i18n(wpjobportal::$_configuration['date_format'],strtotime(wpjobportal::$_data['package']->enddate)); ?>
             </div>        
         </div>
     </div>
@@ -48,7 +50,7 @@ if(isset($packages)){
             <div class="wjportal-pkg-list-item-top">
                 <div class="wjportal-pkg-list-item-title">
                     <div class="wjportal-pkg-list-item-title-txt">
-                        <?php echo esc_html(__($packages->title,'wp-job-portal')); ?>
+                        <?php echo esc_html(wpjobportal::wpjobportal_getVariableValue($packages->title)); ?>
                     </div>
                 </div>
             </div>
@@ -60,7 +62,7 @@ if(isset($packages)){
                                 <?php echo esc_html(__('Total Company','wp-job-portal')). ' : '; ?>
                             </span>
                             <span class="wjportal-pkg-list-item-row-val">
-                                <?php echo ($packages->companies==-1 ? esc_html(__('Unlimited','wp-job-portal')) : esc_html(__($packages->companies,'wp-job-portal'))); ?>
+                                <?php echo ($packages->companies==-1 ? esc_html(__('Unlimited','wp-job-portal')) : esc_html(wpjobportal::wpjobportal_getVariableValue($packages->companies))); ?>
                             </span>
                         </div>
                         <div class="wjportal-pkg-list-item-row">
@@ -68,7 +70,7 @@ if(isset($packages)){
                                 <?php echo esc_html(__('Remaining Company','wp-job-portal')). ' : '; ?>
                             </span>
                             <span class="wjportal-pkg-list-item-row-val">
-                                <?php echo ($packages->companies==-1 ? esc_html(__('Unlimited','wp-job-portal')) : esc_html(__($packages->remcompany,'wp-job-portal'))); ?>
+                                <?php echo ($packages->companies==-1 ? esc_html(__('Unlimited','wp-job-portal')) : esc_html(wpjobportal::wpjobportal_getVariableValue($packages->remcompany))); ?>
                             </span>
                         </div>
                     <?php } ?>
@@ -76,7 +78,7 @@ if(isset($packages)){
             </div>
             <div class="wjportal-pkg-list-item-btm">
                 <div class="wjportal-pkg-list-item-action-wrp">
-                    <a href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'multicompany','wpjobportallt'=>'addcompany'))); ?>" class="wjportal-pkg-list-item-act-btn" title="<?php echo esc_attr(__('change package','wp-job-portal')); ?>">
+                    <a href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multicompany','wpjobportallt'=>'addcompany'))); ?>" class="wjportal-pkg-list-item-act-btn" title="<?php echo esc_attr(__('change package','wp-job-portal')); ?>">
                         <?php echo esc_html(__('Change Package','wp-job-portal')); ?>
                     </a>
                 </div>

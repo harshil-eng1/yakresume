@@ -69,7 +69,7 @@ class WPJOBPORTALwpjpnotification {
 
 
             $data = json_encode($data , true);
-            $sessionmsg = base64_encode($data);
+            $sessionmsg = wpjobportalphplib::wpJP_safe_encoding($data);
             if(!$update){
                 $wpdb->insert( "{$wpdb->prefix}wj_portal_jswjsessiondata", array("usersessionid" => wpjobportal::$_jsjpsession->sessionid, "sessionmsg" => $sessionmsg, "sessionexpire" => wpjobportal::$_jsjpsession->sessionexpire, "sessionfor" => $sessiondatafor , "msgkey" => $msgkey) );
             }else{
@@ -83,10 +83,13 @@ class WPJOBPORTALwpjpnotification {
         if(wpjobportal::$_jsjpsession->sessionid == '')
             return false;
         global $wpdb;
-        $data = $wpdb->get_var( "SELECT sessionmsg FROM {$wpdb->prefix}wj_portal_jswjsessiondata WHERE usersessionid = '" . wpjobportal::$_jsjpsession->sessionid . "' AND sessionfor = '" . $sessionfor . "' AND sessionexpire > '" . time() . "'");
+        $query = "SELECT sessionmsg FROM `" . wpjobportal::$_db->prefix . "wj_portal_jswjsessiondata` WHERE usersessionid = '" . wpjobportal::$_jsjpsession->sessionid . "' AND sessionfor = '" . $sessionfor . "' AND sessionexpire > '" . time() . "'";
+        $data = wpjobportal::$_db->get_var($query);
+
         if(!empty($data)){
-            $data = base64_decode($data);
+            $data = wpjobportalphplib::wpJP_safe_decoding($data);
             $data = json_decode( $data , true);
+            //$deldata = true; // to remove notices once shown
         }
         if($deldata){
             $wpdb->delete( "{$wpdb->prefix}wj_portal_jswjsessiondata", array( 'usersessionid' => wpjobportal::$_jsjpsession->sessionid , 'sessionfor' => $sessionfor , 'msgkey' => $msgkey) );

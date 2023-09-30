@@ -31,7 +31,7 @@ class WPJOBPORTALJobController {
                             wpjobportal::$_common->validateEmployerArea();
                             wpjobportal::$_error_flag = true;
                             if (WPJOBPORTALincluder::getObjectClass('user')->isguest()) {
-                                $linktext = __('Login','wp-job-portal');
+                                $linktext = esc_html(__('Login','wp-job-portal'));
                                 $link = wpjobportal::$_common->jsMakeRedirectURL('job', $layout, 1);
                             }
                             if(isset($link) && isset($linktext)){
@@ -76,6 +76,7 @@ class WPJOBPORTALJobController {
                     if ($flag === true) {
                         $vars = $wpjpjob->getjobsvar();
                         $wpjpjob->getJobs($vars);
+                        $empflag = 1;
                         wpjobportal::$_data['vars'] = $vars;
                         $issearchform = WPJOBPORTALrequest::getVar('issearchform', 'post', null);
                         if ($issearchform != null) {
@@ -83,14 +84,14 @@ class WPJOBPORTALJobController {
                         }
                     }elseif($flag === 2){
                         $link = wpjobportal::$_common->jsMakeRedirectURL('job', $layout, 1);
-                        $linktext = __('Login','wp-job-portal');
+                        $linktext = esc_html(__('Login','wp-job-portal'));
                         wpjobportal::$_error_flag_message = WPJOBPORTALLayout::setMessageFor(1 , $link , $linktext,1);
                         wpjobportal::$_error_flag_message_for=1; // user is guest
                         wpjobportal::$_error_flag_message_register_for=1; // register as jobseeker
                         wpjobportal::$_error_flag = true;
                     }elseif($flag === 3){
-                        $link = wpjobportal::makeUrl(array('wpjobportalme'=>'common', 'wpjobportallt'=>'newinwpjobportal'));
-                        $linktext = __('Select role','wp-job-portal');
+                        $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'common', 'wpjobportallt'=>'newinwpjobportal'));
+                        $linktext = esc_html(__('Select role','wp-job-portal'));
                         wpjobportal::$_error_flag_message = WPJOBPORTALLayout::setMessageFor(9 , $link , $linktext,1);
                         wpjobportal::$_error_flag_message_for=9;
                         wpjobportal::$_error_flag = true;
@@ -123,7 +124,7 @@ class WPJOBPORTALJobController {
                         $expiryflag = false;
                     }
                     if (WPJOBPORTALincluder::getObjectClass('user')->isguest() && $config_array['visitorview_emp_viewjob'] != 1) {
-                        $linktext = __('Login','wp-job-portal');
+                        $linktext = esc_html(__('Login','wp-job-portal'));
                         $link = wpjobportal::$_common->jsMakeRedirectURL('job', $layout, 1);
                         wpjobportal::$_error_flag_message = WPJOBPORTALLayout::setMessageFor(1 , $link , $linktext,1);
                         wpjobportal::$_error_flag = true;
@@ -139,6 +140,7 @@ class WPJOBPORTALJobController {
                             $check = WPJOBPORTALincluder::getJSModel('jobapply')->canAddJobApply($jobid,$uid);
                         }
                         $wpjpjob->getJobbyIdForView($jobid);
+                        $empflag = 1;
                     }
                     if(isset($link) && isset($linktext)){
                         wpjobportal::$_error_flag_message_for_link=$link;
@@ -147,13 +149,21 @@ class WPJOBPORTALJobController {
                     break;
                 case 'jobsbycategories':
                     try {
-                        if ((WPJOBPORTALincluder::getObjectClass('user')->isjobseeker()) || ($config_array['visitorview_js_jobcat'] == 1)) {
+                        if (WPJOBPORTALincluder::getObjectClass('user')->isguest() && $config_array['visitorview_js_jobcat'] != 1) {
+                            $link = WPJOBPORTALincluder::getJSModel('common')->jsMakeRedirectURL('company', $layout, 1);
+                            $linktext = esc_html(__('Login','wp-job-portal'));
+                            wpjobportal::$_error_flag_message_for=1;
+                            wpjobportal::$_error_flag_message_register_for=2;
+                            throw new Exception(WPJOBPORTALLayout::setMessageFor(1 , $link , $linktext,1));
+
+                        } elseif ((WPJOBPORTALincluder::getObjectClass('user')->isjobseeker()) || ($config_array['visitorview_js_jobcat'] == 1)) {
                             $wpjpjob->getJobsByCategories();
+                            $empflag = 1;
                         } else {
                             wpjobportal::$_common->validateEmployerArea();
                             wpjobportal::$_error_flag = true;
                             $link = wpjobportal::$_common->jsMakeRedirectURL('job', $layout, 1);
-                            $linktext = __('Login','wp-job-portal');
+                            $linktext = esc_html(__('Login','wp-job-portal'));
                             wpjobportal::$_error_flag_message_for=1; // user is guest;
                             wpjobportal::$_error_flag_message_register_for=1;
                             if(isset($link) && isset($linktext)){
@@ -162,12 +172,21 @@ class WPJOBPORTALJobController {
                             }
                         }
                     } catch (Exception $ex) {
-                         wpjobportal::$_error_flag = true;
+                        wpjobportal::$_error_flag = true;
                         wpjobportal::$_error_flag_message = $ex->getMessage();
+                        if(isset($link) && isset($linktext) && wpjobportal::$theme_chk == 1){
+                            wpjobportal::$_error_flag_message_for_link=$link;
+                            wpjobportal::$_error_flag_message_for_link_text=$linktext;
+                        }
                     }
                     break;
                 case 'jobsbytypes':
                     $wpjpjob->getJobsByTypes();
+                    $empflag = 1;
+                    break;
+                case 'jobsbycities':
+                    $wpjpjob->getJobsByCities();
+                    $empflag = 1;
                     break;
                 case 'admin_jobs':
                     $wpjpjob->getAllJobs();
@@ -209,7 +228,7 @@ class WPJOBPORTALJobController {
                                 $wpjpjob->getJobbyId($id);
                             }elseif($id != ''){
                                 wpjobportal::$_error_flag_message_for=4; //credit not enough to perform this action
-                                throw new Exception( WPJOBPORTALLayout::setMessageFor(10));
+                                throw new Exception( WPJOBPORTALLayout::setMessageFor(10,null,null,1));// was showing a log error
 
                             }else {
                                 wpjobportal::$_common->getBuyErrMsg();
@@ -226,7 +245,7 @@ class WPJOBPORTALJobController {
                                         $visitor_add_job = 1;
                                     }else{
                                         $link = WPJOBPORTALincluder::getJSModel('common')->jsMakeRedirectURL('job', $layout, 1);
-                                        $linktext = __('Login','wp-job-portal');
+                                        $linktext = esc_html(__('Login','wp-job-portal'));
                                         wpjobportal::$_error_flag_message_for=1;
                                         wpjobportal::$_error_flag_message_register_for=2;
                                         throw new Exception(WPJOBPORTALLayout::setMessageFor(1 , $link , $linktext,1));
@@ -250,7 +269,7 @@ class WPJOBPORTALJobController {
                             } else{
                                 if(wpjobportal::$theme_chk == 1){
                                     $link = WPJOBPORTALincluder::getJSModel('common')->jsMakeRedirectURL('job', $layout, 1);
-                                    $linktext = __('Login','wp-job-portal');
+                                    $linktext = esc_html(__('Login','wp-job-portal'));
                                     wpjobportal::$_error_flag_message_for=1;
                                     wpjobportal::$_error_flag_message_register_for=2;
                                     throw new Exception(WPJOBPORTALLayout::setMessageFor(1 , $link , $linktext,1));
@@ -288,7 +307,6 @@ class WPJOBPORTALJobController {
                     $wpjpjob->getJobbyIdForView($jobid);
                     break;
             }
-
             if ($empflag == 0) {
                 WPJOBPORTALLayout::setMessageFor(5);
                 wpjobportal::$_error_flag_message_for=5;
@@ -298,8 +316,10 @@ class WPJOBPORTALJobController {
                 $module = (wpjobportal::$_common->wpjp_isadmin()) ? 'page' : 'wpjobportalme';
                 $module = WPJOBPORTALrequest::getVar($module, null, 'job');
             }
-            $module = str_replace('wpjobportal_', '', $module);
-            //die($module);
+            $module = wpjobportalphplib::wpJP_str_replace('wpjobportal_', '', $module);
+            if(is_numeric($module)){
+                $module = WPJOBPORTALrequest::getVar('wpjobportalme', null, 'job');
+            }
             WPJOBPORTALincluder::include_file($layout, $module);
         }
     }
@@ -393,13 +413,13 @@ class WPJOBPORTALJobController {
                             # credit to save
                             $url = apply_filters('wpjobportal_addons_credit_save_perlisting',false,wpjobportal::$_data['id'],'payjob');
                         }else{
-                            $url = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs'));
+                            $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs'));
                         }
                     }else{
-                        $url = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs'));
+                        $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs'));
                     }
                 }else{
-                    $url = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs'));
+                    $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs'));
                 }
             }
             if(WPJOBPORTALincluder::getObjectClass('user')->isguest()){
@@ -410,7 +430,7 @@ class WPJOBPORTALJobController {
             if (wpjobportal::$_common->wpjp_isadmin()) {
                 $url = admin_url("admin.php?page=wpjobportal_job&wpjobportallt=formjob");
             } else {
-                $url = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'addjob'));
+                $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'addjob'));
             }
         }
         $msg = WPJOBPORTALMessages::getMessage($result, 'job');
@@ -441,7 +461,7 @@ class WPJOBPORTALJobController {
                 $url = admin_url("admin.php?page=wpjobportal_job&wpjobportallt=jobs");
             }
         } else {
-            $url = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs'));
+            $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs'));
         }
         wp_redirect($url);
         die();
@@ -459,6 +479,10 @@ class WPJOBPORTALJobController {
         $mailextradata = array();
         $mailextradata['jobtitle'] = $resultforsendmail->jobtitle;
         $mailextradata['useremail'] = $resultforsendmail->useremail;
+        // log error resolved
+        $mailextradata['companyname'] = $resultforsendmail->companyname;
+        $mailextradata['user'] = $resultforsendmail->username;
+
         $result = WPJOBPORTALincluder::getJSModel('job')->jobEnforceDelete($jobid, $uid);
 
         $msg = WPJOBPORTALMessages::getMessage($result, 'job');

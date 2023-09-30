@@ -1,10 +1,10 @@
 === WP Job Manager ===
 Contributors: mikejolley, automattic, adamkheckler, alexsanford1, annezazu, cena, chaselivingston, csonnek, davor.altman, donnapep, donncha, drawmyface, erania-pinnera, fjorgemota, jacobshere, jakeom, jeherve, jenhooks, jgs, jonryan, kraftbj, lamdayap, lschuyler, macmanx, nancythanki, orangesareorange, rachelsquirrel, renathoc, ryancowles, richardmtl, scarstocea
 Tags: job manager, job listing, job board, job management, job lists, job list, job, jobs, company, hiring, employment, employer, employees, candidate, freelance, internship, job listings, positions, board, application, hiring, listing, manager, recruiting, recruitment, talent
-Requires at least: 5.8
-Tested up to: 6.1
+Requires at least: 6.0
+Tested up to: 6.2
 Requires PHP: 7.2
-Stable tag: 1.39.0
+Stable tag: 1.41.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -152,6 +152,40 @@ It then creates a database based on the parameters passed to it.
 6. Job listings in admin.
 
 == Changelog ==
+
+= 1.41.0 =
+* Enhancement: Introduce listing renewals #2422
+* Enhancement: Allow searching multiple job locations at once #2433
+* Fix: Add check for job listing limit being 0 #2362
+* Fix: Trigger search when submitting search form #2457
+* Fix: Always show search actions #2454
+* Fix: Fix PHP 8.2 deprecations #2456
+* Fix: Make forms responsive #2453
+* Fix: Update $company_tagline check for PHP8+ #2430
+* Fix:  Update notice string from 'c' to 's' license spelling #2429
+* Change: Update WPJM logo #2482
+* Change: Add hook in job-submitted template #2458
+* Change: Run job_manager_job_submitted_content filter in every case #2474
+* Change: Update historical notices to use the new render_notice method. #2409
+
+= 1.40.2 =
+* Revert: Hide expired job listings from archives
+
+= 1.40.1 =
+* Fix: Icons not displaying properly
+
+= 1.40.0 =
+* Enhancement: Improve licensing page experience
+* Enhancement: New email notifications setting
+* Enhancement: Improve discoverability of addon updates
+* Enhancement: New admin notices sytem with redesign
+* Fix: "Hide Expired Listings Content" setting
+* Fix: Hide expired job listings from archives
+* Fix: Show license notice only to users who can manage licenses
+* Fix: Select menu overlapping in Job Listing frontend
+* Fix: Company video overlapping when no tagline set
+* Change: Update tipTip library to use WooCommerce’s version
+* Change: Bumped minimum PHP version from 7.2 to 7.4
 
 = 1.39.0 =
 * Enhancement: Download first-party plugin extension translations

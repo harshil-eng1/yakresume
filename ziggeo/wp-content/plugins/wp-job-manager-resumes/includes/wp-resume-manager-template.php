@@ -20,9 +20,9 @@ function the_candidate_location( $map_link = true, $post = null ) {
 
 	if ( $location ) {
 		if ( $map_link ) {
-			echo apply_filters( 'the_candidate_location_map_link', '<a class="google_map_link candidate-location" href="http://maps.google.com/maps?q=' . urlencode( $location ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false">' . $location . '</a>', $location, $post );
+			echo apply_filters( 'the_candidate_location_map_link', '<a class="google_map_link candidate-location" href="http://maps.google.com/maps?q=' . urlencode( $location ) . '&zoom=14&size=512x512&maptype=roadmap&sensor=false">' . esc_html( $location ) . '</a>', $location, $post );
 		} else {
-			echo '<span class="candidate-location">' . $location . '</span>';
+			echo '<span class="candidate-location">' . esc_html( $location ) . '</span>';
 		}
 	}
 }
@@ -82,6 +82,20 @@ function get_the_candidate_title( $post = null ) {
 	}
 
 	return apply_filters( 'the_candidate_title', $post->_candidate_title, $post );
+}
+
+/**
+ * Output the resume ID.
+ *
+ * @since 1.18.5
+ *
+ * @param WP_Post|int $post (default: null)
+ *
+ * @return int
+ */
+function the_resume_id( $post = null ) {
+	$post = get_post( $post );
+	return $post->ID;
 }
 
 /**
@@ -160,12 +174,12 @@ function the_candidate_photo( $size = 'thumbnail', $default = null, $post = null
 			$logo = job_manager_get_resized_image( $logo, $size );
 		}
 
-		echo '<img class="candidate_photo" src="' . $logo . '" alt="Photo" />';
+		echo '<img class="candidate_photo" src="' . esc_attr( $logo ) . '" alt="Photo" />';
 
 	} elseif ( $default ) {
-		echo '<img class="candidate_photo" src="' . $default . '" alt="Photo" />';
+		echo '<img class="candidate_photo" src="' . esc_attr( $default ) . '" alt="Photo" />';
 	} else {
-		echo '<img class="candidate_photo" src="' . apply_filters( 'resume_manager_default_candidate_photo', RESUME_MANAGER_PLUGIN_URL . '/assets/images/candidate.png' ) . '" alt="Logo" />';
+		echo '<img class="candidate_photo" src="' . esc_attr( apply_filters( 'resume_manager_default_candidate_photo', RESUME_MANAGER_PLUGIN_URL . '/assets/images/candidate.png' ) ). '" alt="Logo" />';
 	}
 }
 

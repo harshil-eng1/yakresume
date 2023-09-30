@@ -51,7 +51,7 @@ if (wpjobportal::$_error_flag == null) {
                         $price = wpjobportal::$_config->getConfigValue('job_viewcompanycontact_price_perlisting');
                         $currencyid = wpjobportal::$_config->getConfigValue('job_currency_viewcompanycontact_perlisting');
                         $decimals = WPJOBPORTALincluder::getJSModel('currency')->getDecimalPlaces($currencyid);
-                        $formattedPrice = number_format($price,$decimals);
+                        $formattedPrice = wpjobportalphplib::wpJP_number_format($price,$decimals);
                         //Price Listing For Department
                         $priceCompanytlist = wpjobportal::$_common->getFancyPrice($price,$currencyid,array('decimal_places'=>$decimals));
                         //Apply Filter's
@@ -60,11 +60,13 @@ if (wpjobportal::$_error_flag == null) {
                 }
             ?>
         </div>
+    </div>
         <?php 
         } else {
             // Error Message Throw
-            echo wp_kses_post(wpjobportal::$_error_flag_message);
+            if(wpjobportal::$_error_flag_message !=''){
+                echo wp_kses_post(wpjobportal::$_error_flag_message);
+            }
         }
         ?>
-    </div>
 </div>

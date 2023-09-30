@@ -116,41 +116,43 @@ class WPJOBPORTALjobapplyModel {
         $query = "SELECT title FROM `" . wpjobportal::$_db->prefix . "wj_portal_jobs` WHERE id = " . $jobid;
         wpjobportal::$_data['jobtitle'] = wpjobportal::$_db->get_var($query);
 
-        $title = WPJOBPORTALrequest::getVar('application_title');
-        $name = WPJOBPORTALrequest::getVar('applicantname');
-        $nationality = WPJOBPORTALrequest::getVar('nationality');
-        $jobcategory = WPJOBPORTALrequest::getVar('jobcategory');
+        $title = isset(wpjobportal::$_search['search_filter']['title']) ? wpjobportal::$_search['search_filter']['title']: '';
 
-        $gender = WPJOBPORTALrequest::getVar('gender');
-        $jobtype = WPJOBPORTALrequest::getVar('jobtype');
-        $currency = WPJOBPORTALrequest::getVar('currency');
-        $jobsalaryrange = WPJOBPORTALrequest::getVar('jobsalaryrange');
-        $heighestfinisheducation = WPJOBPORTALrequest::getVar('heighestfinisheducation');
+        $name = isset(wpjobportal::$_search['search_filter']['name']) ? wpjobportal::$_search['search_filter']['name']: '';
+        $nationality = isset(wpjobportal::$_search['search_filter']['nationality']) ? wpjobportal::$_search['search_filter']['nationality']: '';
+        $jobcategory = isset(wpjobportal::$_search['search_filter']['jobcategory']) ? wpjobportal::$_search['search_filter']['jobcategory']: '';
+        $gender = isset(wpjobportal::$_search['search_filter']['gender']) ? wpjobportal::$_search['search_filter']['gender']: '';
+        $jobtype = isset(wpjobportal::$_search['search_filter']['jobtype']) ? wpjobportal::$_search['search_filter']['jobtype']: '';
+        $currency = isset(wpjobportal::$_search['search_filter']['currency']) ? wpjobportal::$_search['search_filter']['currency']: '';
+        $jobsalaryrange = isset(wpjobportal::$_search['search_filter']['jobsalaryrange']) ? wpjobportal::$_search['search_filter']['jobsalaryrange']: '';
+        $heighestfinisheducation = isset(wpjobportal::$_search['search_filter']['heighestfinisheducation']) ? wpjobportal::$_search['search_filter']['heighestfinisheducation']: '';
 
-        $formsearch = WPJOBPORTALrequest::getVar('WPJOBPORTAL_form_search', 'post');
-        if ($formsearch == 'WPJOBPORTAL_SEARCH') {
-            $_SESSION['WPJOBPORTAL_SEARCH']['title'] = $title;
-            $_SESSION['WPJOBPORTAL_SEARCH']['name'] = $name;
-            $_SESSION['WPJOBPORTAL_SEARCH']['nationality'] = $nationality;
-            $_SESSION['WPJOBPORTAL_SEARCH']['jobcategory'] = $jobcategory;
-            $_SESSION['WPJOBPORTAL_SEARCH']['jobtype'] = $jobtype;
-            $_SESSION['WPJOBPORTAL_SEARCH']['heighestfinisheducation'] = $heighestfinisheducation;
-        }
-        if (WPJOBPORTALrequest::getVar('pagenum', 'get', null) != null) {
-            $title = (isset($_SESSION['WPJOBPORTAL_SEARCH']['title']) && $_SESSION['WPJOBPORTAL_SEARCH']['title'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['title']) : null;
-            $name = (isset($_SESSION['WPJOBPORTAL_SEARCH']['name']) && $_SESSION['WPJOBPORTAL_SEARCH']['name'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['name']) : null;
-            $nationality = (isset($_SESSION['WPJOBPORTAL_SEARCH']['nationality']) && $_SESSION['WPJOBPORTAL_SEARCH']['nationality'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['nationality']) : null;
-            $jobcategory = (isset($_SESSION['WPJOBPORTAL_SEARCH']['jobcategory']) && $_SESSION['WPJOBPORTAL_SEARCH']['jobcategory'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['jobcategory']) : null;
 
-            $gender = (isset($_SESSION['WPJOBPORTAL_SEARCH']['gender']) && $_SESSION['WPJOBPORTAL_SEARCH']['gender'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['gender']) : null;
-            $jobtype = (isset($_SESSION['WPJOBPORTAL_SEARCH']['jobtype']) && $_SESSION['WPJOBPORTAL_SEARCH']['jobtype'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['jobtype']) : null;
-            $currency = (isset($_SESSION['WPJOBPORTAL_SEARCH']['currency ']) && $_SESSION['WPJOBPORTAL_SEARCH']['currency '] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['currency ']) : null;
-            $jobsalaryrange = (isset($_SESSION['WPJOBPORTAL_SEARCH']['jobsalaryrange']) && $_SESSION['WPJOBPORTAL_SEARCH']['jobsalaryrange'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['jobsalaryrange']) : null;
-            $heighestfinisheducation = (isset($_SESSION['WPJOBPORTAL_SEARCH']['heighestfinisheducation']) && $_SESSION['WPJOBPORTAL_SEARCH']['heighestfinisheducation'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['heighestfinisheducation']) : null;
-        } else if ($formsearch !== 'WPJOBPORTAL_SEARCH') {
-            if(isset($_SESSION['WPJOBPORTAL_SEARCH']))
-                unset($_SESSION['WPJOBPORTAL_SEARCH']);
-        }
+        // $formsearch = WPJOBPORTALrequest::getVar('WPJOBPORTAL_form_search', 'post');
+        // if ($formsearch == 'WPJOBPORTAL_SEARCH') {
+        //     $_SESSION['WPJOBPORTAL_SEARCH']['title'] = $title;
+        //     $_SESSION['WPJOBPORTAL_SEARCH']['name'] = $name;
+        //     $_SESSION['WPJOBPORTAL_SEARCH']['nationality'] = $nationality;
+        //     $_SESSION['WPJOBPORTAL_SEARCH']['jobcategory'] = $jobcategory;
+        //     $_SESSION['WPJOBPORTAL_SEARCH']['jobtype'] = $jobtype;
+        //     $_SESSION['WPJOBPORTAL_SEARCH']['heighestfinisheducation'] = $heighestfinisheducation;
+        // }
+        // if (WPJOBPORTALrequest::getVar('pagenum', 'get', null) != null) {
+        //     $title = (isset($_SESSION['WPJOBPORTAL_SEARCH']['title']) && $_SESSION['WPJOBPORTAL_SEARCH']['title'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['title']) : null;
+        //     $name = (isset($_SESSION['WPJOBPORTAL_SEARCH']['name']) && $_SESSION['WPJOBPORTAL_SEARCH']['name'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['name']) : null;
+        //     $nationality = (isset($_SESSION['WPJOBPORTAL_SEARCH']['nationality']) && $_SESSION['WPJOBPORTAL_SEARCH']['nationality'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['nationality']) : null;
+        //     $jobcategory = (isset($_SESSION['WPJOBPORTAL_SEARCH']['jobcategory']) && $_SESSION['WPJOBPORTAL_SEARCH']['jobcategory'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['jobcategory']) : null;
+
+        //     $gender = (isset($_SESSION['WPJOBPORTAL_SEARCH']['gender']) && $_SESSION['WPJOBPORTAL_SEARCH']['gender'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['gender']) : null;
+        //     $jobtype = (isset($_SESSION['WPJOBPORTAL_SEARCH']['jobtype']) && $_SESSION['WPJOBPORTAL_SEARCH']['jobtype'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['jobtype']) : null;
+        //     $currency = (isset($_SESSION['WPJOBPORTAL_SEARCH']['currency ']) && $_SESSION['WPJOBPORTAL_SEARCH']['currency '] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['currency ']) : null;
+        //     $jobsalaryrange = (isset($_SESSION['WPJOBPORTAL_SEARCH']['jobsalaryrange']) && $_SESSION['WPJOBPORTAL_SEARCH']['jobsalaryrange'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['jobsalaryrange']) : null;
+        //     $heighestfinisheducation = (isset($_SESSION['WPJOBPORTAL_SEARCH']['heighestfinisheducation']) && $_SESSION['WPJOBPORTAL_SEARCH']['heighestfinisheducation'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['heighestfinisheducation']) : null;
+        // } else if ($formsearch !== 'WPJOBPORTAL_SEARCH') {
+        //     if(isset($_SESSION['WPJOBPORTAL_SEARCH']))
+        //         unset($_SESSION['WPJOBPORTAL_SEARCH']);
+        // }
+
         $inquery = "";
         if ($tab_action) {
             $inquery.=" AND jobapply.action_status =" . $tab_action;
@@ -232,7 +234,7 @@ class WPJOBPORTALjobapplyModel {
                 ,CONCAT(app.alias,'-',app.id) resumealiasid, CONCAT(job.alias,'-',job.id) AS jobaliasid
                 ,( Select rinsitute.institute From`" . wpjobportal::$_db->prefix . "wj_portal_resumeinstitutes` AS rinsitute Where rinsitute.resumeid = app.id LIMIT 1 ) AS institute
                 ,( Select rinsitute.institute_study_area From`" . wpjobportal::$_db->prefix . "wj_portal_resumeinstitutes` AS rinsitute Where rinsitute.resumeid = app.id LIMIT 1 ) AS institute_study_area
-                ,job.companyid,app.params";
+                ,job.companyid,app.params, jobapply.coverletterid ";
                 if(in_array('sociallogin', wpjobportal::$_active_addons)){
                     $query.=" ,socialprofiles.profiledata as socialprofile ";
                 }
@@ -257,6 +259,9 @@ class WPJOBPORTALjobapplyModel {
         $data = array();
         foreach ($result AS $d) {
             $d->location = WPJOBPORTALincluder::getJSModel('city')->getLocationDataForView($d->resumecity);
+            if(in_array('coverletter',wpjobportal::$_active_addons)){
+                $d->coverletterdata = WPJOBPORTALincluder::getJSModel('coverletter')->getCoverLetterTitleDescFromID($d->coverletterid);
+            }
             $data[] = $d;
         }
         wpjobportal::$_data[0]['data'] = $data;
@@ -303,6 +308,10 @@ class WPJOBPORTALjobapplyModel {
     }
 
     function getResumeDetail($themecall=null) {
+        $nonce = WPJOBPORTALrequest::getVar('_wpnonce');
+        if (! wp_verify_nonce( $nonce, 'get-resume-detail') ) {
+            die( 'Security check Failed' );
+        }
         $salary = WPJOBPORTALrequest::getVar('sal');
         $exprince = WPJOBPORTALrequest::getVar('expe');
         $insitute = WPJOBPORTALrequest::getVar('institue');
@@ -328,14 +337,14 @@ class WPJOBPORTALjobapplyModel {
             $html.='<img id="close-section" onclick="closeSection()" src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/no.png"/>';
             $html.='<div class="wpj-jp-applied-resume-cnt wpj-jp-actions-detail-wrp">';
             $html.='<div class="wpj-jp-applied-resume-cnt-row">';
-            $html.='<span class="wpj-jp-applied-resume-cnt-tit">' . esc_html__('Current Salary', 'job-portal') . ': </span><span class="wpj-jp-applied-resume-cnt-val">' . $salary;
+            $html.='<span class="wpj-jp-applied-resume-cnt-tit">' . esc_html(__("Current Salary", 'wp-job-portal')) . ': </span><span class="wpj-jp-applied-resume-cnt-val">' . $salary;
             $html.='</span></div>';
             $html.='</div>';
         } else {
             $html.='<img id="close-section" onclick="closeSection()" src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/no.png"/>';
             $html.='<div class="wjportal-applied-job-actions-wrp wjportal-job-actions-detail-wrp">';
             $html.='<div class="wjportal-job-actions-detail-row">';
-            $html.='<span class="wjportal-job-actions-detail-tit">' . __('Current Salary', 'wp-job-portal') . ': </span><span class="wjportal-job-actions-detail-val">' . $salary;
+            $html.='<span class="wjportal-job-actions-detail-tit">' . esc_html(__('Current Salary', 'wp-job-portal')) . ': </span><span class="wjportal-job-actions-detail-val">' . $salary;
             $html.='</span></div>';
             $html.='</div>';
         }
@@ -359,14 +368,14 @@ class WPJOBPORTALjobapplyModel {
                                     <a title="close" class="close '.$this->class_prefix.'-modal-close-icon-wrap" href="#" onclick="wpjobportalClosePopup(1);" >
                                         <img id="popup_cross" alt="popup cross" src="'.WPJOBPORTAL_PLUGIN_URL.'includes/images/popup-close.png">
                                     </a>
-                                    <h2 class="'.$this->class_prefix.'-modal-title">'.__("Applied Info","job-portal").'</h2>
+                                    <h2 class="'.$this->class_prefix.'-modal-title">'.esc_html(__("Applied Info",'wp-job-portal')).'</h2>
                                 </div>
                                 <div class="col-md-12 '.$this->class_prefix.'-appliedinformation-modal-data-wrp">
                                     <div class="modal-body '.$this->class_prefix.'-modal-body">
                                        <div class="'.$this->class_prefix.'-appliedinformation-title">
 
                                        <h5 class="'.$this->class_prefix.'-appliedinformation-title-txt">
-                                            <a href="'.wpjobportal::makeUrl(array("wpjobportalpageid"=>$pageid,"wpjobportalme"=>"resume","wpjobportallt"=>"viewresume","wpjobportalid"=>$result->resumeid)).'">
+                                            <a href="'.wpjobportal::wpjobportal_makeUrl(array("wpjobportalpageid"=>$pageid,"wpjobportalme"=>"resume","wpjobportallt"=>"viewresume","wpjobportalid"=>$result->resumeid)).'">
                                                 '.$result->Name.'
                                             </a>';
                                             if($result->application_title != ''){
@@ -383,9 +392,9 @@ class WPJOBPORTALjobapplyModel {
                     <div class="'.$this->class_prefix.'-modal-header">
                         <a title="close" class="close '.$this->class_prefix.'-modal-close-icon-wrap" href="#" onclick="wpjobportalClosePopup(1);" >
                             <img id="popup_cross" alt="popup cross" src="'.WPJOBPORTAL_PLUGIN_URL.'includes/images/popup-close.png">
-                        </a><h2 class="'.$this->class_prefix.'-modal-title">'.__("Applied Info","job-portal").'</h2></div>
+                        </a><h2 class="'.$this->class_prefix.'-modal-title">'.esc_html(__("Applied Info",'wp-job-portal')).'</h2></div>
                         <div class="col-md-12 '.$this->class_prefix.'-appliedinformation-modal-data-wrp">
-                            <h3 class="'.$this->class_prefix.'-modal-title">'.__("No Record Found","job-portal").'</h3>
+                            <h3 class="'.$this->class_prefix.'-modal-title">'.esc_html(__("No Record Found",'wp-job-portal')).'</h3>
                         </div>
                         </div>';
             }
@@ -394,9 +403,9 @@ class WPJOBPORTALjobapplyModel {
             <div class="'.$this->class_prefix.'-modal-header">
                 <a title="close" class="close '.$this->class_prefix.'-modal-close-icon-wrap" href="#" onclick="wpjobportalClosePopup(1);" >
                     <img id="popup_cross" alt="popup cross" src="'.WPJOBPORTAL_PLUGIN_URL.'includes/images/popup-close.png">
-                </a><h2 class="'.$this->class_prefix.'-modal-title">'.__("Applied Info","job-portal").'</h2></div>
+                </a><h2 class="'.$this->class_prefix.'-modal-title">'.esc_html(__("Applied Info",'wp-job-portal')).'</h2></div>
                 <div class="col-md-12 '.$this->class_prefix.'-appliedinformation-modal-data-wrp">
-                    <h3 class="'.$this->class_prefix.'-modal-title">'.__("Something wrong pleas try later","job-portal").'</h3>
+                    <h3 class="'.$this->class_prefix.'-modal-title">'.esc_html(__("Something wrong pleas try later",'wp-job-portal')).'</h3>
                 </div>
                 </div>';
         }
@@ -405,6 +414,10 @@ class WPJOBPORTALjobapplyModel {
     }
 
     function getApplyNowByJobid() {
+        $nonce = WPJOBPORTALrequest::getVar('js_nonce');
+        if (! wp_verify_nonce( $nonce, 'wp-job-portal-nonce') ) {
+            die( 'Security check Failed' );
+        }
         $jobid = WPJOBPORTALrequest::getVar('jobid');
         $themecall = WPJOBPORTALrequest::getVar('themecall');
         $upakid = WPJOBPORTALrequest::getVar('upkid');
@@ -412,24 +425,40 @@ class WPJOBPORTALjobapplyModel {
         $user = WPJOBPORTALincluder::getObjectClass('user');
         $config_array = wpjobportal::$_config->getConfigByFor('jobapply');
         if ($jobid && is_numeric($jobid)) {
-                $query = "SELECT job.title FROM `" . wpjobportal::$_db->prefix . "wj_portal_jobs` AS job WHERE job.id = " . $jobid;
-                $jobtitle = wpjobportal::$_db->get_var($query);
+
+                // redundunt code
+                // $query = "SELECT job.title FROM `" . wpjobportal::$_db->prefix . "wj_portal_jobs` AS job WHERE job.id = " . $jobid;
+                // $jobtitle = wpjobportal::$_db->get_var($query);
+
                 # Credit Member Ship Type
                 $visitorcanapply = wpjobportal::$_config->getConfigurationByConfigName('visitor_can_apply_to_job');
                 if((in_array('credits', wpjobportal::$_active_addons) && WPJOBPORTALincluder::getObjectClass('user')->isguest() && $visitorcanapply != 1) || (in_array('credits', wpjobportal::$_active_addons) && !WPJOBPORTALincluder::getObjectClass('user')->isguest())){
                     if(wpjobportal::$_config->getConfigValue('submission_type') == 3){
                         /** 21/02/2019***/
                         //Member ship Show
+                        $title = '';
+                        $content = '';
                         $package = apply_filters('wpjobportal_addons_userpackages_permodule',false,$upakid,$user->uid(),'remjobapply');
                         if( !$package ){
-                            return WPJOBPORTAL_SAVE_ERROR;
+                            $title = esc_html(__('Apply Now Failed', 'wp-job-portal'));
+                            $content = esc_html(__('You do not have package required for job apply', 'wp-job-portal'));
+                        }else{
+                            if( $package->expired ){
+                                $title = esc_html(__('Apply Now Failed', 'wp-job-portal'));
+                                $content = esc_html(__('You package has expired', 'wp-job-portal'));
+                            }
+                            //if Department are not unlimited & there is no remaining left
+                            if( $package->jobapply!=-1 && !$package->remjobapply ){ //-1 = unlimited
+                                $title = esc_html(__('Apply Now Failed', 'wp-job-portal'));
+                                $content = esc_html(__('You do not any more job apply available', 'wp-job-portal'));
+                            }
                         }
-                        if( $package->expired ){
-                            return WPJOBPORTAL_SAVE_ERROR;
-                        }
-                        //if Department are not unlimited & there is no remaining left
-                        if( $package->jobapply!=-1 && !$package->remjobapply ){ //-1 = unlimited
-                            return WPJOBPORTAL_SAVE_ERROR;
+                        // show proper messages
+                        if($title != '' && $content != ''){
+                            $title = wpjobportalphplib::wpJP_safe_encoding($title);
+                            $content = wpjobportalphplib::wpJP_safe_encoding($content);
+                            $array = array('title' => $title, 'content' => $content);
+                            return json_encode($array);
                         }
 
                         $data['status'] = 1;
@@ -440,7 +469,8 @@ class WPJOBPORTALjobapplyModel {
                 // die($user->uid());
                 $result = $this->getJobByid($jobid);
                 $job = $result[0];
-                $title = __('Apply Now', 'wp-job-portal');
+                $title = esc_html(__('Apply Now', 'wp-job-portal'));
+                $content = '';// to handle log error of appending to non exsistent variable content
                 if (wpjobportal::$theme_chk == 1) {
                     /*Pop up detail data For Job(Extra Detail)*/
                     $content .=  '<div class="wpj-jp-popup-cnt-wrp">';
@@ -452,7 +482,7 @@ class WPJOBPORTALjobapplyModel {
                         $data_directory = wpjobportal::$_config->getConfigurationByConfigName('data_directory');
                         $path = $wpdir['baseurl'] . '/' . $data_directory . '/data/employer/comp_' . $job->companyid . '/logo/' . $job->logofilename;
                     } else {
-                        $path = JOB_PORTAL_IMAGE . '/default_logo.png';
+                        $path = JOB_PORTAL_THEME_IMAGE . '/default_logo.png';
                     }
                     if(in_array('multicompany', wpjobportal::$_active_addons)){
                         $mod = "multicompany";
@@ -460,25 +490,25 @@ class WPJOBPORTALjobapplyModel {
                         $mod = "company";
                     }
                     $content .= '<div class="wpj-jp-popup-list-logo">';
-                    $content .=     '<a href='. esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$job->companyid,'wpjobportalpageid'=>wpjobportal::getPageid()))) .' title='. esc_attr__('company logo','job-portal').'>';
-                    $content .=         '<img src='. esc_url($path) .' alt="'.esc_attr__('Company logo','job-portal').'" >';
+                    $content .=     '<a href='. esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$job->companyid,'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()))) .' title='. esc_attr(__('company logo','wp-job-portal')).'>';
+                    $content .=         '<img src='. esc_url($path) .' alt="'.esc_attr(__('Company logo','wp-job-portal')).'" >';
                     $content .=     '</a>';
                     $content .= '</div>';
                     $content .= '<div class="wpj-jp-popup-list-cnt-wrp">';
                     $content .=     '<div class="wpj-jp-popup-list-cnt">';
                     $content .=          '<span class="wpj-jp-job-type" style="color:'.$job->jobtypecolor.'">';
-                    $content .=             sprintf(__('%s','job-portal'), $job->jobtypetitle);
+                    $content .=             wpjobportal::wpjobportal_getVariableValue($job->jobtypetitle);
                     $content .=          '</span>';
                     $content .=     '</div>';
                     $content .=     '<div class="wpj-jp-popup-list-cnt">';
-                    $content .=         '<a class="wpj-jp-popup-list-comp-tit" href='. esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$job->companyid,'wpjobportalpageid'=>wpjobportal::getPageid()))).' title="'.esc_attr__('Company name','job-portal').'">
-                                            '.sprintf(__('%s','job-portal'), $job->companyname).'
+                    $content .=         '<a class="wpj-jp-popup-list-comp-tit" href='. esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$job->companyid,'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()))).' title="'.esc_attr(__('Company name','wp-job-portal')).'">
+                                            '.wpjobportal::wpjobportal_getVariableValue($job->companyname).'
                                         </a>';
                     $content .=     '</div>';
                     $content .=     '<div class="wpj-jp-popup-list-cnt">';
                     $content .=         '<h5 class="wpj-jp-popup-list-tit">
-                                            <a href='.esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$job->jobaliasid,'wpjobportalpageid'=>wpjobportal::getPageid()))).' title="'.esc_attr__('job title','job-portal').'">
-                                                '.sprintf(__('%s','job-portal'), $job->title).'
+                                            <a href='.esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$job->jobaliasid,'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()))).' title="'.esc_attr(__('job title','wp-job-portal')).'">
+                                                '.wpjobportal::wpjobportal_getVariableValue($job->title).'
                                             </a>
                                         </h5>';
                     $content .=     '</div>';
@@ -487,26 +517,26 @@ class WPJOBPORTALjobapplyModel {
                     $content .=             '<li>';
                                                 if(isset($job) && !empty($job->cat_title)){
                     $content .=                     '<span class="wpj-jp-popup-list-meta-tit">';
-                    $content .=                         esc_html__('Category','job-portal'). ':';
+                    $content .=                         esc_html(__('Category','wp-job-portal')). ':';
                     $content .=                     '</span>';
-                    $content .=                      sprintf(__('%s','job-portal'), $job->cat_title);
+                    $content .=                      wpjobportal::wpjobportal_getVariableValue($job->cat_title);
                                                 }
                     $content .=             '</li>';
                     $content .=             '<li>';
                     $content .=                  '<span class="wpj-jp-popup-list-meta-tit">';
-                    $content .=                       esc_html__('Salary','job-portal'). ':';
+                    $content .=                       esc_html(__('Salary','wp-job-portal')). ':';
                     $content .=                   '</span>';
                     $content .=                    wpjobportal::$_common->getSalaryRangeView($job->salarytype, $job->salarymin, $job->salarymax,$job->currency);
                                                    if($job->salarytype==3 || $job->salarytype==2) {
-                    $content .=                      ' - ' .$job->srangetypetitle;
+                    $content .=                      ' - ' .wpjobportal::wpjobportal_getVariableValue($job->srangetypetitle);
                                                    }
                     $content .=             '</li>';
                     $content .=             '<li>';
                                                 if(isset($job) && !empty($job->location)){
                     $content .=                     '<span class="wpj-jp-popup-list-meta-tit">';
-                    $content .=                         esc_html__('Location','job-portal'). ':';
+                    $content .=                         esc_html(__('Location','wp-job-portal')). ':';
                     $content .=                     '</span>';
-                    $content .=                     sprintf(__('%s','job-portal'), $job->location);
+                    $content .=                     wpjobportal::wpjobportal_getVariableValue($job->location);
                                                 }
                     $content .=             '</li>';
                     $content .=         '</ul>';
@@ -516,75 +546,75 @@ class WPJOBPORTALjobapplyModel {
                     $content .= '</div>'; // right div
                     // Pop up detail data For Job Ends there
                 } else {
-                /*Pop up detail data For Job(Extra Detail)*/
-                $content =  '<div class="wjportal-jobs-list">';
-                $content .= ' <div class="wjportal-jobs-list-top-wrp">';
-                if ($job->logofilename != "") {
-                    $wpdir = wp_upload_dir();
-                    $data_directory = wpjobportal::$_config->getConfigurationByConfigName('data_directory');
-                    $path = $wpdir['baseurl'] . '/' . $data_directory . '/data/employer/comp_' . $job->companyid . '/logo/' . $job->logofilename;
-                } else {
-                    $path = WPJOBPORTAL_PLUGIN_URL . '/includes/images/default_logo.png';
-                }
-                if(in_array('multicompany', wpjobportal::$_active_addons)){
-                    $mod = "multicompany";
-                }else{
-                    $mod = "company";
-                }
-                $content .= '<div class="wjportal-jobs-logo">';
-                $content .=     '<a href='. wpjobportal::makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$job->companyid,'wpjobportalpageid'=>wpjobportal::getPageid())) .'>';
-                $content .=         '<img src='. $path .' alt="'.__('Company logo','wp-job-portal').'" >';
-                $content .=     '</a>';
-                $content .= '</div>';
-                $content .= '<div class="wjportal-jobs-cnt-wrp">';
-                $content .= '<div class="wjportal-jobs-middle-wrp">';
-                $content .=     '<div class="wjportal-jobs-data">';
-                $content .=         '<a class="wjportal-companyname" href='. wpjobportal::makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$job->companyid,'wpjobportalpageid'=>wpjobportal::getPageid())).' title="'.__('Company name','wp-job-portal').'">'. $job->companyname.'</a>';
-                $content .=     '</div>';
-                $content .=     '<div class="wjportal-jobs-data">';
-                $content .=         '<span class="wjportal-job-title">';
-                $content .=             '<a href='.wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$job->jobaliasid,'wpjobportalpageid'=>wpjobportal::getPageid())).' title="'.__('Job title','wp-job-portal').'">';
-                $content .=                 $job->title;
-                $content .=             '</a>';
-                $content .=         '</span>';
-                $content .=     '</div>';
-                $content .=     '<div class="wjportal-jobs-data">';
-                if(isset($job) && !empty($job->cat_title)){
-                    $content .= '<span class="wjportal-jobs-data-text">
-                                    '. __($job->cat_title,'wp-job-portal').'
-                                </span>';
-                }
-                if(isset($job) && !empty($job->location)){
-                    $content .= '<span class="wjportal-jobs-data-text">'. $job->location.'</span>';
-                }
-                $content .=     '</div>';
-                $content .= '</div>';
-                $content .= '<div class="wjportal-jobs-right-wrp">';
-                $content .=     '<div class="wjportal-jobs-info">';
-                                    // if ($print[0] == 1) {
-                $content .=            '<span class="wjportal-job-type" style="background:'.$job->jobtypecolor.'">';
-                $content .=                 __($job->jobtypetitle,'wp-job-portal');
-                $content .=             '</span>';
-                                    //}
-                $content .=     '</div>';
-                $content .=     '<div class="wjportal-jobs-info">';
-                $content .=         '<div class="wjportal-jobs-salary">';
-                $content .=             wpjobportal::$_common->getSalaryRangeView($job->salarytype, $job->salarymin, $job->salarymax,$job->currency);
-                                        if($job->salarytype==3 || $job->salarytype==2) {
-                $content .=                 '<span class="wjportal-salary-type">'. ' / ' .__($job->srangetypetitle, 'wp-job-portal').'</span>';
-                                        }
-                $content .=         '</div>';
-                $content .=     '</div>';
-                $content .=     '<div class="wjportal-jobs-info">';
-                $dateformat =       wpjobportal::$_configuration['date_format'];
-                $content .=         date_i18n($dateformat, strtotime($job->created));
-                $print =            WPJOBPORTALincluder::getJSModel('job')->checkLinks('jobtype');
-                $content .=     '</div>';
-                $content .= '</div>';
-                $content .= '</div>';
-                $content .= '</div>';
-                $content .= '</div>';
-                /*Pop up detail data For Job Ends there*/
+                    /*Pop up detail data For Job(Extra Detail)*/
+                    $content =  '<div class="wjportal-jobs-list">';
+                    $content .= ' <div class="wjportal-jobs-list-top-wrp">';
+                    if ($job->logofilename != "") {
+                        $wpdir = wp_upload_dir();
+                        $data_directory = wpjobportal::$_config->getConfigurationByConfigName('data_directory');
+                        $path = $wpdir['baseurl'] . '/' . $data_directory . '/data/employer/comp_' . $job->companyid . '/logo/' . $job->logofilename;
+                    } else {
+                        $path = WPJOBPORTAL_PLUGIN_URL . '/includes/images/default_logo.png';
+                    }
+                    if(in_array('multicompany', wpjobportal::$_active_addons)){
+                        $mod = "multicompany";
+                    }else{
+                        $mod = "company";
+                    }
+                    $content .= '<div class="wjportal-jobs-logo">';
+                    $content .=     '<a href='. wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$job->companyid,'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())) .'>';
+                    $content .=         '<img src='. $path .' alt="'.esc_html(__('Company logo','wp-job-portal')).'" >';
+                    $content .=     '</a>';
+                    $content .= '</div>';
+                    $content .= '<div class="wjportal-jobs-cnt-wrp">';
+                    $content .= '<div class="wjportal-jobs-middle-wrp">';
+                    $content .=     '<div class="wjportal-jobs-data">';
+                    $content .=         '<a class="wjportal-companyname" href='. wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$job->companyid,'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())).' title="'.esc_html(__('Company name','wp-job-portal')).'">'. $job->companyname.'</a>';
+                    $content .=     '</div>';
+                    $content .=     '<div class="wjportal-jobs-data">';
+                    $content .=         '<span class="wjportal-job-title">';
+                    $content .=             '<a href='.wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$job->jobaliasid,'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())).' title="'.esc_html(__('Job title','wp-job-portal')).'">';
+                    $content .=                 $job->title;
+                    $content .=             '</a>';
+                    $content .=         '</span>';
+                    $content .=     '</div>';
+                    $content .=     '<div class="wjportal-jobs-data">';
+                    if(isset($job) && !empty($job->cat_title)){
+                        $content .= '<span class="wjportal-jobs-data-text">
+                                        '. wpjobportal::wpjobportal_getVariableValue($job->cat_title).'
+                                    </span>';
+                    }
+                    if(isset($job) && !empty($job->location)){
+                        $content .= '<span class="wjportal-jobs-data-text">'. $job->location.'</span>';
+                    }
+                    $content .=     '</div>';
+                    $content .= '</div>';
+                    $content .= '<div class="wjportal-jobs-right-wrp">';
+                    $content .=     '<div class="wjportal-jobs-info">';
+                                        // if ($print[0] == 1) {
+                    $content .=            '<span class="wjportal-job-type" style="background:'.$job->jobtypecolor.'">';
+                    $content .=                 wpjobportal::wpjobportal_getVariableValue($job->jobtypetitle);
+                    $content .=             '</span>';
+                                        //}
+                    $content .=     '</div>';
+                    $content .=     '<div class="wjportal-jobs-info">';
+                    $content .=         '<div class="wjportal-jobs-salary">';
+                    $content .=             wpjobportal::$_common->getSalaryRangeView($job->salarytype, $job->salarymin, $job->salarymax,$job->currency);
+                                            if($job->salarytype==3 || $job->salarytype==2) {
+                    $content .=                 '<span class="wjportal-salary-type">'. ' / ' .wpjobportal::wpjobportal_getVariableValue($job->srangetypetitle).'</span>';
+                                            }
+                    $content .=         '</div>';
+                    $content .=     '</div>';
+                    $content .=     '<div class="wjportal-jobs-info">';
+                    $dateformat =       wpjobportal::$_configuration['date_format'];
+                    $content .=         date_i18n($dateformat, strtotime($job->created));
+                    $print =            WPJOBPORTALincluder::getJSModel('job')->checkLinks('jobtype');
+                    $content .=     '</div>';
+                    $content .= '</div>';
+                    $content .= '</div>';
+                    $content .= '</div>';
+                    $content .= '</div>';
+                    /*Pop up detail data For Job Ends there*/
                 }
                 $showlink = true;
                 if (wpjobportal::$theme_chk == 1) {
@@ -603,9 +633,24 @@ class WPJOBPORTALjobapplyModel {
                     if ($resumelist != null && $isjobseeker == true) {
                         $content .= '<div class="'.$this->class_prefix.'-popup-field-wrp">';
                         $content .= '<div class="'.$this->class_prefix.'-popup-field">';
-                        $content .= '<label for="cvid">' . __('Apply With Resume', 'wp-job-portal') . '</label>';
+                        $content .= '<label for="cvid">' . esc_html(__('Apply With Resume', 'wp-job-portal')) . '</label>';
                         $content .= WPJOBPORTALformfield::select('cvid', $resumelist, '');
                         $content .= '</div>';
+
+                        // to add coverletter combo box on popup
+                        if(in_array('coverletter', wpjobportal::$_active_addons)){
+
+                            $cover_letter_list = WPJOBPORTALincluder::getJSModel('coverletter')->getCoverLetterForCombocoverletter($uid);
+                            $content .= '<div class="'.$this->class_prefix.'-popup-field">';
+                                $content .= '<label for="coverletterid">' . esc_html(__('Cover Letter', 'wp-job-portal')) . '</label>';
+                            if($cover_letter_list !='' && !empty($cover_letter_list)){
+                                $content .= WPJOBPORTALformfield::select('coverletterid', $cover_letter_list, '');
+                            }else{
+                                $content .= esc_html(__('No Cover Letter', 'wp-job-portal'));
+                            }
+                            $content .= '</div>';
+
+                        }
                         $content .= '</div>';
                         if (wpjobportal::$theme_chk == 1) {
                             if (!isset($upakid)) {
@@ -616,7 +661,7 @@ class WPJOBPORTALjobapplyModel {
                             $link1 = 'href="#" onclick="jobApply(' . $jobid . ',' .$upakid. ');"';
                         }
                         $link2 = 'href="#" onclick="closePopup();"';
-                        $text1 = __('Apply Now', 'wp-job-portal');
+                        $text1 = esc_html(__('Apply Now', 'wp-job-portal'));
                         $text2 = '';
                         $class1 = '';
                         $class2 = '';
@@ -625,55 +670,56 @@ class WPJOBPORTALjobapplyModel {
                         if ($isjobseeker == true) {
                             $content .= '<div class="'.$this->class_prefix.'-visitor-msg-wrp">';
                             if (wpjobportal::$theme_chk == 1) {
-                                $content .= '<span class="'.$this->class_prefix.'-visitor-msg">' . __('You do not have any resume!', 'wp-job-portal') . '</span>';
+                                $content .= '<span class="'.$this->class_prefix.'-visitor-msg">' . esc_html(__('You do not have any resume!', 'wp-job-portal')) . '</span>';
                             } else {
-                                $content .= '<span class="'.$this->class_prefix.'-visitor-msg"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/not-loggedin.png" />' . __('You do not have any resume!', 'wp-job-portal') . '</span>';
+                                $content .= '<span class="'.$this->class_prefix.'-visitor-msg"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/not-loggedin.png" />' . esc_html(__('You do not have any resume!', 'wp-job-portal')) . '</span>';
                             }
                             $content .= '</div>';
                             $content .= '   <div class="'.$this->class_prefix.'-visitor-msg-btn-wrp">
-                                                <a class="'.$this->class_prefix.'-visitor-msg-btn" href="'.wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'addresume', 'wpjobportalpageid'=>wpjobportal::getPageid())).'" class="resumeaddlink">' . __('Add Resume', 'wp-job-portal') . '</a>
+                                                <a class="'.$this->class_prefix.'-visitor-msg-btn wpj-jp-visitor-msg-primary-btn" href="'.wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'addresume', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())).'" class="resumeaddlink">' . esc_html(__('Add Resume', 'wp-job-portal')) . '</a>
                                             </div>';
                         } elseif($isemployer == true) {
                             $content .= '<div class="'.$this->class_prefix.'-visitor-msg-wrp">';
                             if (wpjobportal::$theme_chk == 1) {
-                                $content .= '<span class="'.$this->class_prefix.'-visitor-msg">' . __('You are employer, you can not apply to job', 'wp-job-portal') . '!</span>';
+                                $content .= '<span class="'.$this->class_prefix.'-visitor-msg"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/not-loggedin.png" />' . esc_html(__('You are employer, you can not apply to job', 'wp-job-portal')) . '!</span>';
+                            }else{
+                                $content .= '<span class="'.$this->class_prefix.'-visitor-msg">' . esc_html(__('You are employer, you can not apply to job', 'wp-job-portal')) . '!</span>';
                             }
-                            $content .= '<span class="'.$this->class_prefix.'-visitor-msg"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/not-loggedin.png" />' . __('You are employer, you can not apply to job', 'wp-job-portal') . '!</span>';
                             $content .= '</div>';
                         } else {
                             $showlink = true;
                             $content .= '<div class="'.$this->class_prefix.'-visitor-msg-wrp">';
                             if (wpjobportal::$theme_chk == 1) {
-                                $content .= '<span class="'.$this->class_prefix.'-visitor-msg">' . __('You do not have any role', 'wp-job-portal') . '!</span>';
+                                $content .= '<span class="'.$this->class_prefix.'-visitor-msg">' . esc_html(__('You do not have any role', 'wp-job-portal')) . '!</span>';
                             } else {
-                                $content .= '<span class="'.$this->class_prefix.'-visitor-msg"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/not-loggedin.png" />' . __('You do not have any role', 'wp-job-portal') . '!</span>';
+                                $content .= '<span class="'.$this->class_prefix.'-visitor-msg"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/not-loggedin.png" />' . esc_html(__('You do not have any role', 'wp-job-portal')) . '!</span>';
                             }
                             $content .= '</div>';
-                            $link1 = 'href="' . wpjobportal::makeUrl(array('wpjobportalme'=>'common','wpjobportallt'=>'newinwpjobportal', 'wpjobportalid-jobid'=>$jobid, 'wpjobportalpageid'=>wpjobportal::getPageid())) . '" target="_blank" ';
-                            $text1 = __('Select Role', 'wp-job-portal');
+                            $link1 = 'href="' . wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'common','wpjobportallt'=>'newinwpjobportal', 'wpjobportalid-jobid'=>$jobid, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())) . '" target="_blank" ';
+                            $text1 = esc_html(__('Select Role', 'wp-job-portal'));
                             // $link2 = 'href="#" onclick="closePopup();"';
-                            // $text2 = __('Close', 'wp-job-portal');
+                            // $text2 = esc_html(__('Close', 'wp-job-portal'));
                         }
                     }
                 } else {
                     $msgapply = "You are not a logged in member. Please select below option";
                     $content .= '<div class="'.$this->class_prefix.'-visitor-msg-wrp">';
                     if (wpjobportal::$theme_chk == 1) {
-                        $content .= '<span class="'.$this->class_prefix.'-visitor-msg">' . __($msgapply , 'wp-job-portal') . '</span>';
+                        $content .= '<span class="'.$this->class_prefix.'-visitor-msg">' . wpjobportal::wpjobportal_getVariableValue($msgapply) . '</span>';
                     } else {
-                        $content .= '<span class="'.$this->class_prefix.'-visitor-msg"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/not-loggedin.png" />' . __($msgapply , 'wp-job-portal') . '</span>';
+                        $content .= '<span class="'.$this->class_prefix.'-visitor-msg"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/not-loggedin.png" />' . wpjobportal::wpjobportal_getVariableValue($msgapply) . '</span>';
                     }
                     $content .= '</div>';
-                    $link1 = 'href="' . wpjobportal::makeUrl(array('wpjobportalme'=>'jobapply', 'action'=>'wpjobportaltask', 'task'=>'jobapplyasvisitor', 'wpjobportalid-jobid'=>$jobid, 'wpjobportalpageid'=>wpjobportal::getPageid())) . '"';
-                    $thiscpurl = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$jobid, 'wpjobportalpageid'=>wpjobportal::getPageid()));
-                    $thiscpurl = base64_encode($thiscpurl);
-                    $link2 = 'href="'.wpjobportal::makeUrl(array('wpjobportalme'=>'wpjobportal', 'wpjobportallt'=>'login', 'wpjobportalredirecturl'=>$thiscpurl, 'wpjobportalpageid'=>wpjobportal::getPageid())).'"';
-                    $text1 = __('Apply as visitor', 'wp-job-portal');
-                    $text2 = __('Login', 'wp-job-portal');
+                    $link1 = 'href="' . wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'jobapply', 'action'=>'wpjobportaltask', 'task'=>'jobapplyasvisitor', 'wpjobportalid-jobid'=>$jobid, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())) . '"';
+                    $thiscpurl = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'viewjob', 'wpjobportalid'=>$jobid, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
+                    $thiscpurl = wpjobportalphplib::wpJP_safe_encoding($thiscpurl);
+                    $link2 = 'href="'.wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'wpjobportal', 'wpjobportallt'=>'login', 'wpjobportalredirecturl'=>$thiscpurl, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())).'"';
+                    $text1 = esc_html(__('Apply as visitor', 'wp-job-portal'));
+                    $text2 = esc_html(__('Login', 'wp-job-portal'));
                     $class1 = 'login';
                     $class2 = 'applyvisitor';
                 }
-                $jsnext = wpjobportal::makeUrl(array('wpjobportalme'=>'job','wpjobportallt'=>'viewjob','wpjobportalid'=>$jobid,'wpjobportalpageid'=>wpjobportal::getPageid()));
+                $jsnext = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job','wpjobportallt'=>'viewjob','wpjobportalid'=>$jobid,'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
                 $visitor_can_apply_to_job = wpjobportal::$_config->getConfigurationByConfigName('visitor_can_apply_to_job');
                 if ($showlink == true) {
                     $content .= '   <div class="'.$this->class_prefix.'-visitor-msg-btn-wrp">';
@@ -697,40 +743,50 @@ class WPJOBPORTALjobapplyModel {
                     $content .= '</div>'; /// end cnt wrp
                 }
             } else {
-                $title = __('No record found', 'wp-job-portal');
-                $content = '<h1>' . __('No record found', 'wp-job-portal') . '</h1>';
+                $title = esc_html(__('No record found', 'wp-job-portal'));
+                $content = '<h1>' . esc_html(__('No record found', 'wp-job-portal')) . '</h1>';
             }
+        $title = mb_convert_encoding($title, 'UTF-8', mb_detect_encoding($title));
+        $content = mb_convert_encoding($content, 'UTF-8', mb_detect_encoding($content));
         $array = array('title' => $title, 'content' => $content);
-        $array = array_map('utf8_encode', $array);
         return json_encode($array);
     }
 
     function jobapplyjobmanager(){
+        $nonce = WPJOBPORTALrequest::getVar('js_nonce');
+        if (! wp_verify_nonce( $nonce, 'wp-job-portal-nonce') ) {
+            die( 'Security check Failed' );
+        }
         $jobid = WPJOBPORTALrequest::getVar('jobid');
         $return_val=$this->jobapply(1);
         if($return_val===1){
             $msg = '<div id="'.$this->class_prefix.'-notification-not-ok"><div id="'.$this->class_prefix.'-popup_message">
-            <img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/unpublish.png"/><spam class="'.$this->class_prefix.'-popup_msg_txt">' . __("please select a resume first", "wp-job-portal") . '</spam><button class="applynow-closebutton" onclick="wpjobportalClosePopup(1);" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.__('Close','wp-job-portal').'</button></div></div>';
+            <img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/unpublish.png"/><spam class="'.$this->class_prefix.'-popup_msg_txt">' . esc_html(__("please select a resume first", 'wp-job-portal')) . '</spam><button class="applynow-closebutton" onclick="wpjobportalClosePopup(1);" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.esc_html(__('Close','wp-job-portal')).'</button></div></div>';
         }elseif($return_val === 2) {
             $msg = '<div id="'.$this->class_prefix.'-notification-ok"><div id="'.$this->class_prefix.'-popup_message">
-            <img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/approve.png"/><spam class="'.$this->class_prefix.'-popup_msg_txt">' . __("You have already applied this job", "wp-job-portal") . '</spam><button class="applynow-closebutton" onclick="wpjobportalClosePopup(1);" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.__('Close','wp-job-portal').'</button></div></div>';
+            <img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/approve.png"/><spam class="'.$this->class_prefix.'-popup_msg_txt">' . esc_html(__("You have already applied this job", 'wp-job-portal')) . '</spam><button class="applynow-closebutton" onclick="wpjobportalClosePopup(1);" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.esc_html(__('Close','wp-job-portal')).'</button></div></div>';
         }elseif($return_val == WPJOBPORTAL_SAVE_ERROR) {
             $msg = '<div id="'.$this->class_prefix.'-notification-not-ok"><div id="'.$this->class_prefix.'-popup_message">
-            <img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/unpublish.png"/><spam class="'.$this->class_prefix.'-popup_msg_txt">' . __("Failed while performing this action", "wp-job-portal") . '</spam><button class="applynow-closebutton" onclick="wpjobportalClosePopup(1);" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.__('Close','wp-job-portal').'</button></div></div>';
+            <img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/unpublish.png"/><spam class="'.$this->class_prefix.'-popup_msg_txt">' . esc_html(__("Failed while performing this action", 'wp-job-portal')) . '</spam><button class="applynow-closebutton" onclick="wpjobportalClosePopup(1);" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.esc_html(__('Close','wp-job-portal')).'</button></div></div>';
         }elseif($return_val == 3) { //payment
-            $arr = array('wpjobportalme'=>'purchasehistory','wpjobportallt'=>'payjobapply','wpjobportalid'=>$jobid,'wpjobportalpageid'=>wpjobportal::getPageid());
+            $arr = array('wpjobportalme'=>'purchasehistory','wpjobportallt'=>'payjobapply','wpjobportalid'=>$jobid,'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid());
             $msg = '<div id="'.$this->class_prefix.'-notification-ok"><div id="'.$this->class_prefix.'-popup_message">
-            <img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/approve.png"/><spam class="'.$this->class_prefix.'-popup_msg_txt"><a href="'.esc_url(wpjobportal::makeUrl($arr)).'">' . __("Job has been Pending Due to Payment", "wp-job-portal") . '</a></spam><button class="applynow-closebutton" onclick="wpjobportalClosePopup(1);" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.__('Close','wp-job-portal').'</button></div></div>';
+            <img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/approve.png"/><spam class="'.$this->class_prefix.'-popup_msg_txt"><a href="'.esc_url(wpjobportal::wpjobportal_makeUrl($arr)).'">' . esc_html(__("Job has been Pending Due to Payment", 'wp-job-portal')) . '</a></spam><button class="applynow-closebutton" onclick="wpjobportalClosePopup(1);" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.esc_html(__('Close','wp-job-portal')).'</button></div></div>';
         }elseif($return_val == WPJOBPORTAL_SAVED) {
             $msg = '<div id="'.$this->class_prefix.'-notification-ok"><div id="'.$this->class_prefix.'-popup_message">
-            <img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/approve.png"/><spam class="'.$this->class_prefix.'-popup_msg_txt">' . __("Job has been applied", "wp-job-portal") . '</spam><button class="applynow-closebutton" onclick="wpjobportalClosePopup(1);" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.__('Close','wp-job-portal').'</button></div></div>';
+            <img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/approve.png"/><spam class="'.$this->class_prefix.'-popup_msg_txt">' . esc_html(__("Job has been applied", 'wp-job-portal')) . '</spam><button class="applynow-closebutton" onclick="wpjobportalClosePopup(1);" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.esc_html(__('Close','wp-job-portal')).'</button></div></div>';
         }
         return $msg;
     }
 
     function jobapply($themecall=null) {
+        $nonce = WPJOBPORTALrequest::getVar('js_nonce');
+        if (! wp_verify_nonce( $nonce, 'wp-job-portal-nonce') ) {
+            die( 'Security check Failed' );
+        }
         $jobid = WPJOBPORTALrequest::getVar('jobid');
         $cvid = WPJOBPORTALrequest::getVar('cvid');
+        $coverletterid = WPJOBPORTALrequest::getVar('coverletterid');
         $upkid = WPJOBPORTALrequest::getVar('upkid');
         $uid = WPJOBPORTALincluder::getObjectClass('user')->uid();
         $user = WPJOBPORTALincluder::getObjectClass('user');
@@ -738,7 +794,7 @@ class WPJOBPORTALjobapplyModel {
 
         if (! is_numeric($cvid)) {
             if(null !=$themecall) return 1;
-            $msg = '<div id="notification-not-ok"><label id="popup_message"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/unpublish.png"/>' . __("please select a resume first", "wp-job-portal") . '</label><button class="applynow-closebutton" onclick="closePopup();" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.__('Close','wp-job-portal').'</button></div>';
+            $msg = '<div id="notification-not-ok"><label id="popup_message"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/unpublish.png"/>' . esc_html(__("please select a resume first", 'wp-job-portal')) . '</label><button class="applynow-closebutton" onclick="closePopup();" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.esc_html(__('Close','wp-job-portal')).'</button></div>';
             return $msg;
         }
 
@@ -751,6 +807,7 @@ class WPJOBPORTALjobapplyModel {
         $data = array();
         $data['jobid'] = $jobid;
         $data['cvid'] = $cvid;
+        $data['coverletterid'] = $coverletterid;
         $data['uid'] = $uid;
         $data['action_status'] = $action_status;
         $data['apply_date'] = date('Y-m-d H:i:s');
@@ -760,7 +817,7 @@ class WPJOBPORTALjobapplyModel {
 
         if ($alreadycheck == false) {
             if(null !=$themecall) return 2;
-            $msg = '<div id="notification-ok"><label id="popup_message"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/approve.png"/>' . __("You have already applied this job", "wp-job-portal") . '</label><button class="applynow-closebutton" onclick="closePopup();" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.__('Close','wp-job-portal').'</button></div>';
+            $msg = '<div id="notification-ok"><label id="popup_message"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/approve.png"/>' . esc_html(__("You have already applied this job", 'wp-job-portal')) . '</label><button class="applynow-closebutton" onclick="closePopup();" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.esc_html(__('Close','wp-job-portal')).'</button></div>';
             return $msg;
         }
         $return = WPJOBPORTAL_SAVED;
@@ -795,13 +852,14 @@ class WPJOBPORTALjobapplyModel {
                 $data['status'] = 1;
             }
         }
-
+        $data = wpjobportal::wpjobportal_sanitizeData($data);
         if (!$row->bind($data)) {
             $return = WPJOBPORTAL_SAVE_ERROR;
         }
         if (!$row->store()) {
             $return = WPJOBPORTAL_SAVE_ERROR;
         }
+        $job_apply_id = $row->id;
         if(in_array('credits', wpjobportal::$_active_addons)){
             if($submitType == 3 &&  WPJOBPORTALincluder::getObjectClass('user')->isjobseeker()){
             # Transaction For Job Apply--
@@ -819,31 +877,31 @@ class WPJOBPORTALjobapplyModel {
         }
 
         if ($return != WPJOBPORTAL_SAVE_ERROR) {
-            if($submitType == 2){
+            if($submitType == 2 && in_array('credits', wpjobportal::$_active_addons)){
                 if(wpjobportal::$_config->getConfigValue('job_jobapply_price_perlisting') > 0){
-                    $arr = array('wpjobportalme'=>'purchasehistory','wpjobportallt'=>'payjobapply','wpjobportalid'=>$row->jobid,'wpjobportalpageid'=>wpjobportal::getPageid());
-                    $msg = '<div id="notification-ok"><label id="popup_message"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/approve.png"/>' . __("Job has been Pending Due to Payment", "wp-job-portal") . '</label><a class="wjportal-job-act-btn" href='. esc_url(wpjobportal::makeUrl($arr)).' title='. esc_attr(__('make payment','wp-job-portal')).'>
-                                '. esc_html(__('Make Payment To Apply', 'wp-job-portal')).'
+                    $arr = array('wpjobportalme'=>'purchasehistory','wpjobportallt'=>'payjobapply','wpjobportalid'=>$row->jobid,'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid());
+                    $msg = '<div id="notification-ok"><label id="popup_message"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/approve.png"/>' . esc_html(__("Job has been Pending Due to Payment", 'wp-job-portal')) . '</label><a class="wjportal-job-act-btn" href='. esc_url(wpjobportal::wpjobportal_makeUrl($arr)).' title='. esc_attr(esc_html(__('make payment','wp-job-portal'))).'>
+                                '. esc_html(esc_html(__('Make Payment To Apply', 'wp-job-portal'))).'
                         </a>
                     </div>';
                     $return = 3;
                 }else{
-                    $msg = '<div id="notification-ok"><label id="popup_message"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/approve.png"/>' . __("Job has been applied", "wp-job-portal") . '</label><button class="applynow-closebutton" onclick="closePopup();" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.__('Close','wp-job-portal').'</button></div>';
-                    $this->sendMail($jobid,$cvid);
+                    $msg = '<div id="notification-ok"><label id="popup_message"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/approve.png"/>' . esc_html(__("Job has been applied", 'wp-job-portal')) . '</label><button class="applynow-closebutton" onclick="closePopup();" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.esc_html(__('Close','wp-job-portal')).'</button></div>';
+                    $this->sendMail($jobid,$cvid,$job_apply_id);
                 }
             }else{
-                $msg = '<div id="notification-ok"><label id="popup_message"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/approve.png"/>' . __("Job has been applied", "wp-job-portal") . '</label><button class="applynow-closebutton" onclick="closePopup();" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.__('Close','wp-job-portal').'</button></div>';
-                $this->sendMail($jobid,$cvid);
+                $msg = '<div id="notification-ok"><label id="popup_message"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/approve.png"/>' . esc_html(__("Job has been applied", 'wp-job-portal')) . '</label><button class="applynow-closebutton" onclick="closePopup();" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.esc_html(__('Close','wp-job-portal')).'</button></div>';
+                $this->sendMail($jobid,$cvid,$job_apply_id);
             }
             $uid = wpjobportal::$_common->getUidByObjectId('job', $row->jobid);
         } else {
-            $msg = '<div id="notification-not-ok"><label id="popup_message"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/unpublish.png"/>' . __("Failed while performing this action", "wp-job-portal") . '</label><button class="applynow-closebutton" onclick="closePopup();" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.__('Close','wp-job-portal').'</button></div>';
+            $msg = '<div id="notification-not-ok"><label id="popup_message"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/unpublish.png"/>' . esc_html(__("Failed while performing this action", 'wp-job-portal')) . '</label><button class="applynow-closebutton" onclick="closePopup();" ><img src="'.WPJOBPORTAL_PLUGIN_URL.'/includes/images/popupcloseicon.png"/>'.esc_html(__('Close','wp-job-portal')).'</button></div>';
         }
         if(null !=$themecall) return $return;
         return $msg;
     }
 
-    private function sendMail($jobid, $resumeid) {
+    private function sendMail($jobid, $resumeid,$jobapplyid = '') {
         //this code is not moved into email template model bcz of its high complextiy and low usage
 
         if ($jobid)
@@ -852,6 +910,10 @@ class WPJOBPORTALjobapplyModel {
         if ($resumeid)
             if ((is_numeric($resumeid) == false) || ($resumeid == 0) || ($resumeid == ''))
                 return false;
+        if ($jobapplyid)
+            if ((is_numeric($jobapplyid) == false) || ($jobapplyid == 0) || ($jobapplyid == ''))
+                return false;
+
 
         $jobquery = "SELECT company.name AS companyname, company.contactemail AS email, job.title, job.sendemail
             FROM `".wpjobportal::$_db->prefix."wj_portal_companies` AS company
@@ -879,27 +941,46 @@ class WPJOBPORTALjobapplyModel {
         $JobTitle = $jobuser->title;
         $siteTitle = wpjobportal::$_config->getConfigValue('title');
 
-        $msgSubject = str_replace('{JOBSEEKER_NAME}', $ApplicantName, $msgSubject);
-        $msgSubject = str_replace('{EMPLOYER_NAME}', $EmployerName, $msgSubject);
-        $msgSubject = str_replace('{JOB_TITLE}', $JobTitle, $msgSubject);
-        $msgBody = str_replace('{JOBSEEKER_NAME}', $ApplicantName, $msgBody);
-        $msgBody = str_replace('{EMPLOYER_NAME}', $EmployerName, $msgBody);
-        $msgBody = str_replace('{JOB_TITLE}', $JobTitle, $msgBody);
-        $msgSubject['{SITETITLE}'] = $siteTitle;
-        $msgBody['{SITETITLE}'] = $siteTitle;
-        $msgBody['{EMAIL}'] = $EmployerEmail;
-        $msgBody['{CURRENT_YEAR}'] = date('Y');
+        $msgSubject = wpjobportalphplib::wpJP_str_replace('{JOBSEEKER_NAME}', $ApplicantName, $msgSubject);
+        $msgSubject = wpjobportalphplib::wpJP_str_replace('{EMPLOYER_NAME}', $EmployerName, $msgSubject);
+        $msgSubject = wpjobportalphplib::wpJP_str_replace('{JOB_TITLE}', $JobTitle, $msgSubject);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{JOBSEEKER_NAME}', $ApplicantName, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{EMPLOYER_NAME}', $EmployerName, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{JOB_TITLE}', $JobTitle, $msgBody);
+
+        // fatal error cause setting up string type variable as a array
+        // $msgSubject['{SITETITLE}'] = $siteTitle;
+        // $msgBody['{SITETITLE}'] = $siteTitle;
+        // $msgBody['{EMAIL}'] = $EmployerEmail;
+        // $msgBody['{CURRENT_YEAR}'] = date('Y');
+
+        $msgSubject = wpjobportalphplib::wpJP_str_replace('{SITETITLE}', $siteTitle, $msgSubject);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{SITETITLE}', $siteTitle, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{EMAIL}', $EmployerEmail, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{CURRENT_YEAR}', date('Y'), $msgBody);
+        if(in_array('coverletter', wpjobportal::$_active_addons)){
+            $jobquery = "SELECT jobapply.coverletterid
+            FROM `".wpjobportal::$_db->prefix."wj_portal_jobapply` AS jobapply
+            WHERE jobapply.id = " . $jobapplyid;
+            $coverletterid = wpjobportaldb::get_var($jobquery);
+            $coverletdata = WPJOBPORTALincluder::getJSModel('coverletter')->getCoverLetterTitleDescFromID($coverletterid);
+            if(!empty($coverletdata) && isset($coverletdata->description)){
+                $msgBody = wpjobportalphplib::wpJP_str_replace('{COVER_LETTER_DESCRIPTION}', $coverletdata->description, $msgBody);
+            }
+        }else{
+            $msgBody = wpjobportalphplib::wpJP_str_replace('{COVER_LETTER_DESCRIPTION}', '&nbsp;', $msgBody);
+        }
 
         $emailstatus = WPJOBPORTALincluder::getJSModel('emailtemplatestatus')->getEmailTemplateStatus('jobapply_jobapply');
         $senderName = $emailconfig['mailfromname'];
         $senderEmail = $emailconfig['mailfromaddress'];
         $resume_data = $this->prepareResumeDataForEmployer($resumeid);
-        if (strstr($msgBody, '{RESUME_DATA}')) {
-            $msgBody = str_replace('{RESUME_DATA}', $resume_data, $msgBody);
+        if (wpjobportalphplib::wpJP_strstr($msgBody, '{RESUME_DATA}')) {
+            $msgBody = wpjobportalphplib::wpJP_str_replace('{RESUME_DATA}', $resume_data, $msgBody);
         }
             $parsed_url_admin = admin_url('admin.php?page=wpjobportal_resume&wpjobportallt=viewresume&wpjobportalid='.$resumeid);
-            $applied_resume_link_admin = '<br><a href="' . $parsed_url_admin . '" target="_blank" >' . __('Resume','wp-job-portal') . '</a>';
-            $msgBody = str_replace('{RESUME_LINK}', $applied_resume_link_admin , $msgBody);
+            //$applied_resume_link_admin = '<br><a href="' . $parsed_url_admin . '" target="_blank" >' . esc_html(__('Resume','wp-job-portal')) . '</a>';
+            $msgBody = wpjobportalphplib::wpJP_str_replace('{RESUME_LINK}', $parsed_url_admin , $msgBody);
             $recevierEmail = $EmployerEmail;
             $subject = $msgSubject;
             $body = $msgBody;
@@ -929,29 +1010,75 @@ class WPJOBPORTALjobapplyModel {
 
         $ApplicantName = $user->name;
         $EmployerEmail = $jobuser->email;
-        $EmployerName = $user->name;
+        $EmployerName = $jobuser->companyname;
         $JobTitle = $jobuser->title;
-        $msgSubject = str_replace('{JOBSEEKER_NAME}', $ApplicantName, $msgSubject);
-        $msgSubject = str_replace('{JOB_TITLE}', $JobTitle, $msgSubject);
-        $msgBody = str_replace('{JOBSEEKER_NAME}', $ApplicantName, $msgBody);
-        $msgBody = str_replace('{JOB_TITLE}', $JobTitle, $msgBody);
-        $msgBody = str_replace('{EMPLOYER_NAME}', $EmployerName, $msgBody);
-        $msgBody['{EMAIL}'] = $EmployerEmail;
+        $siteTitle = wpjobportal::$_config->getConfigValue('title');
+        $msgSubject = wpjobportalphplib::wpJP_str_replace('{JOBSEEKER_NAME}', $ApplicantName, $msgSubject);
+        $msgSubject = wpjobportalphplib::wpJP_str_replace('{JOB_TITLE}', $JobTitle, $msgSubject);
+        $msgSubject = wpjobportalphplib::wpJP_str_replace('{SITETITLE}', $siteTitle, $msgSubject);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{SITETITLE}', $siteTitle, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{JOBSEEKER_NAME}', $ApplicantName, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{JOB_TITLE}', $JobTitle, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{EMPLOYER_NAME}', $EmployerName, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{EMAIL}', $EmployerEmail, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{CURRENT_YEAR}', date('Y'), $msgBody);
+        if(in_array('coverletter', wpjobportal::$_active_addons)){
+            $jobquery = "SELECT jobapply.coverletterid
+            FROM `".wpjobportal::$_db->prefix."wj_portal_jobapply` AS jobapply
+            WHERE jobapply.id = " . $jobapplyid;
+            $coverletterid = wpjobportaldb::get_var($jobquery);
+            $coverletdata = WPJOBPORTALincluder::getJSModel('coverletter')->getCoverLetterTitleDescFromID($coverletterid);
+            if(!empty($coverletdata) && isset($coverletdata->description)){
+                $msgBody = wpjobportalphplib::wpJP_str_replace('{COVER_LETTER_DESCRIPTION}', $coverletdata->description, $msgBody);
+            }
+        }else{
+            $msgBody = wpjobportalphplib::wpJP_str_replace('{COVER_LETTER_DESCRIPTION}', '&nbsp;', $msgBody);
+        }
+
+        //$msgBody['{EMAIL}'] = $EmployerEmail;
         $emailconfig = wpjobportal::$_config->getConfigByFor('email');
         $senderName = $emailconfig['mailfromname'];
         $senderEmail = $emailconfig['mailfromaddress'];
-            $resume_data = $this->prepareResumeDataForEmployer($resumeid);
-            if (strstr($msgBody, '{RESUME_DATA}')) {
-                $msgBody = str_replace('{RESUME_DATA}', $resume_data, $msgBody);
+        $resume_data = $this->prepareResumeDataForEmployer($resumeid);
+        if (wpjobportalphplib::wpJP_strstr($msgBody, '{RESUME_DATA}')) {
+            $msgBody = wpjobportalphplib::wpJP_str_replace('{RESUME_DATA}', $resume_data, $msgBody);
+        }
+        $parsed_url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume','wpjobportalid'=>$resumeid,'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid()));
+
+        // to handle job apply action status
+        $jobquery = "SELECT jobapply.action_status
+            FROM `".wpjobportal::$_db->prefix."wj_portal_jobapply` AS jobapply
+            WHERE jobapply.id = " . $jobapplyid;
+        $job_apply_action_status = wpjobportaldb::get_var($jobquery);
+
+        $applied_resume_status = '';
+        if(isset($job_apply_action_status) &&  $job_apply_action_status != ''){
+            switch ($job_apply_action_status) {
+                case 1:
+                    $applied_resume_status = esc_html(__('Inbox','wp-job-portal'));
+                break;
+                case 2:
+                    $applied_resume_status = esc_html(__('Spam','wp-job-portal'));
+                break;
+                case 3:
+                    $applied_resume_status = esc_html(__('Hired','wp-job-portal'));
+                break;
+                case 4:
+                    $applied_resume_status = esc_html(__('Rejected','wp-job-portal'));
+                break;
+                case 5:
+                    $applied_resume_status = esc_html(__('Short listed','wp-job-portal'));
+                break;
             }
-            $parsed_url = wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'viewresume','wpjobportalid'=>$resumeid,'wpjobportalpageid'=>wpjobportal::getPageid()));
-            $applied_resume_status = '';
-            $applied_resume_link = '<br><a href="' . $parsed_url . '" target="_blank" >' . __('Resume','wp-job-portal') . '</a>';
-            $msgBody = str_replace('{RESUME_LINK}', $applied_resume_link, $msgBody);
-            $msgBody = str_replace('{RESUME_APPLIED_STATUS}', $applied_resume_status, $msgBody);
-            $recevierEmail = $EmployerEmail;
-            $subject = $msgSubject;
-            $body = $msgBody;
+        }
+
+
+        //$applied_resume_link = '<br><a href="' . $parsed_url . '" target="_blank" >' . esc_html(__('Resume','wp-job-portal')) . '</a>';
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{RESUME_LINK}', $parsed_url, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{RESUME_APPLIED_STATUS}', $applied_resume_status, $msgBody);
+        $recevierEmail = $EmployerEmail;
+        $subject = $msgSubject;
+        $body = $msgBody;
         if ($jobuser->sendemail == 1 && $emailstatus->employer == 1) {
             $attachments = '';
             wpjobportal::$_common->sendEmail($recevierEmail, $subject, $body, $senderEmail, $senderName, $attachments);
@@ -979,13 +1106,40 @@ class WPJOBPORTALjobapplyModel {
         $msgBody = $template->body;
 
         $applied_resume_status = '';
-        $msgSubject = str_replace('{JOB_TITLE}', $JobTitle, $msgSubject);
-        $msgBody = str_replace('{JOBSEEKER_NAME}', $ApplicantName, $msgBody);
-        $msgBody = str_replace('{JOB_TITLE}', $JobTitle, $msgBody);
-        $msgBody = str_replace('{RESUME_APPLIED_STATUS}', $applied_resume_status, $msgBody);
-        $msgBody = str_replace('{RESUME_TITLE}', $user->application_title, $msgBody);
-        $msgBody = str_replace('{COMPANY_NAME}', $jobuser->companyname, $msgBody);
-        $msgBody = str_replace('{EMAIL}', $user->email, $msgBody);
+        $jobquery = "SELECT jobapply.action_status
+            FROM `".wpjobportal::$_db->prefix."wj_portal_jobapply` AS jobapply
+            WHERE jobapply.id = " . $jobapplyid;
+        $job_apply_action_status = wpjobportaldb::get_var($jobquery);
+
+        if(isset($job_apply_action_status) &&  $job_apply_action_status != ''){
+            switch ($job_apply_action_status) {
+                case 1:
+                    $applied_resume_status = esc_html(__('Inbox','wp-job-portal'));
+                break;
+                case 2:
+                    $applied_resume_status = esc_html(__('Spam','wp-job-portal'));
+                break;
+                case 3:
+                    $applied_resume_status = esc_html(__('Hired','wp-job-portal'));
+                break;
+                case 4:
+                    $applied_resume_status = esc_html(__('Rejected','wp-job-portal'));
+                break;
+                case 5:
+                    $applied_resume_status = esc_html(__('Short listed','wp-job-portal'));
+                break;
+            }
+        }
+        $msgSubject = wpjobportalphplib::wpJP_str_replace('{JOB_TITLE}', $JobTitle, $msgSubject);
+        $msgSubject = wpjobportalphplib::wpJP_str_replace('{SITETITLE}', $siteTitle, $msgSubject);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{SITETITLE}', $siteTitle, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{JOBSEEKER_NAME}', $ApplicantName, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{JOB_TITLE}', $JobTitle, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{RESUME_APPLIED_STATUS}', $applied_resume_status, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{RESUME_TITLE}', $user->application_title, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{COMPANY_NAME}', $jobuser->companyname, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{EMAIL}', $user->email, $msgBody);
+        $msgBody = wpjobportalphplib::wpJP_str_replace('{CURRENT_YEAR}', date('Y'), $msgBody);
         $subject = $msgSubject;
         $body = $msgBody;
         $recevierEmail = $user->email;
@@ -1034,27 +1188,27 @@ class WPJOBPORTALjobapplyModel {
                     <form class="">
                         <div class="col-md-4">
                             <div class="form-group">
-                                <label for="">'. __('Job seeker', 'job-portal'). ':</label>
+                                <label for="">'. esc_html(__('Job seeker', 'wp-job-portal')). ':</label>
                                 <input type="text" id="jobseeker" class="form-control" value="' . $email . '" disabled >
                             </div>
                             <div class="form-group">
-                                <label for="exampleInputName2">'. __('Subject', 'job-portal'). ':</label>
-                                <input type="text" id="subject" class="form-control" placeholder="' . __('Subject', 'job-portal') . '">
+                                <label for="exampleInputName2">'. esc_html(__('Subject', 'wp-job-portal')). ':</label>
+                                <input type="text" id="subject" class="form-control" placeholder="' . esc_html(__('Subject', 'wp-job-portal')) . '">
                             </div>
                             <div class="form-group">
-                                <label for="exampleInputName2">'. __('Sender Email', 'job-portal'). ':</label>
-                                <input type="email" id="sender"  class="form-control " placeholder="'. __('Sender Email', 'job-portal'). '">
+                                <label for="exampleInputName2">'. esc_html(__('Sender Email', 'wp-job-portal')). ':</label>
+                                <input type="email" id="sender"  class="form-control " placeholder="'. esc_html(__('Sender Email', 'wp-job-portal')). '">
                             </div>
                         </div>
                         <div class="col-md-4 '.$this->class_prefix.'-ar-se">
                             <div class="form-group">
-                                <textarea id="email-body" placeholder="' . __('Type here', 'job-portal') . '" class="form-control note-txt" rows="8"></textarea>
+                                <textarea id="email-body" placeholder="' . esc_html(__('Type here', 'wp-job-portal')) . '" class="form-control note-txt" rows="8"></textarea>
                             </div>
                         </div>
                         <div class="col-md-4 '.$this->class_prefix.'-sendemail-btn-wrp">
                             <div class="form-group '.$this->class_prefix.'-sendemail-btn-data">
-                                <input type="button" class="form-control '.$this->class_prefix.'-sendemail-btn" value="' . __('Send', 'job-portal') . '" onclick="sendEmail('.$resumeid.')">
-                                <input type="button" class="form-control '.$this->class_prefix.'-sendemail-btn" onclick="closeSection()" value="' . __('Cancel', 'job-portal') . '">
+                                <input type="button" class="form-control '.$this->class_prefix.'-sendemail-btn" value="' . esc_html(__('Send', 'wp-job-portal')) . '" onclick="sendEmail('.$resumeid.')">
+                                <input type="button" class="form-control '.$this->class_prefix.'-sendemail-btn" onclick="closeSection()" value="' . esc_html(__('Cancel', 'wp-job-portal')) . '">
                             </div>
                         </div>
                     </form>
@@ -1099,7 +1253,7 @@ class WPJOBPORTALjobapplyModel {
                     $isspam = 1;
             }
             if($job_filters->location == 1){
-                $joblocation = explode(',', $job->city);
+                $joblocation = wpjobportalphplib::wpJP_explode(',', $job->city);
                 if(! in_array($resume->address_city, $joblocation))
                     $isspam = 1;
             }
@@ -1135,7 +1289,7 @@ class WPJOBPORTALjobapplyModel {
                  company.id AS companyid, company.name AS companyname,company.logofilename,category.cat_title,
                  jobtype.title AS jobtypetitle, jobstatus.title AS jobstatustitle,resume.id AS resumeid,resume.salaryfixed as salary,resume.application_title,job.params,job.created,LOWER(jobtype.title) AS jobtype
                 ,jobapply.id AS id,resume.first_name,resume.last_name,job.salarytype,job.salarymin,job.salarymax,jobapply.status AS applystatus,
-                salaryrangetype.title AS srangetypetitle,jobtype.color AS jobtypecolor
+                salaryrangetype.title AS srangetypetitle,jobtype.color AS jobtypecolor, jobapply.coverletterid
                  FROM `" . wpjobportal::$_db->prefix . "wj_portal_jobapply` AS jobapply
                  JOIN `" . wpjobportal::$_db->prefix . "wj_portal_jobs` AS job ON job.id = jobapply.jobid
                  JOIN `" . wpjobportal::$_db->prefix . "wj_portal_resume` AS resume ON resume.id = jobapply.cvid
@@ -1152,6 +1306,9 @@ class WPJOBPORTALjobapplyModel {
         $data = array();
         foreach ($results AS $d) {
             $d->location = WPJOBPORTALincluder::getJSModel('city')->getLocationDataForView($d->city);
+            if(in_array('coverletter', wpjobportal::$_active_addons)){
+                $d->coverlettertitle = WPJOBPORTALincluder::getJSModel('coverletter')->getCoverLetterTitleFromID($d->coverletterid);
+            }
             $data[] = $d;
         }
         $results = $data;
@@ -1207,7 +1364,7 @@ class WPJOBPORTALjobapplyModel {
 
     function getSortArg($type, $sort) {
         $mat = array();
-        if (preg_match("/(\w+)(asc|desc)/i", $sort, $mat)) {
+        if (wpjobportalphplib::wpJP_preg_match("/(\w+)(asc|desc)/i", $sort, $mat)) {
             if ($type == $mat[1]) {
                 return ( $mat[2] == "asc" ) ? "{$type}desc" : "{$type}asc";
             } else {
@@ -1264,59 +1421,61 @@ class WPJOBPORTALjobapplyModel {
             switch ($field) {
                 case "section_personal":
                     $temp_body .= "<tr style='background: #eee;'>";
-                    $temp_body .= "<td colspan='2' align='center'><strong>" . __('Personal Information','wp-job-portal') . "</strong></td></tr>";
+                    $temp_body .= "<td colspan='2' align='center'><strong>" . esc_html(__('Personal Information','wp-job-portal')) . "</strong></td></tr>";
                     break;
                 case "application_title":
-                    $this->getRowForResume(__('Application title','wp-job-portal'), $personalInfo->application_title, $temp_body, $required,$send_only_filled_fields , $flag);
+                    $this->getRowForResume(esc_html(__('Application title','wp-job-portal')), $personalInfo->application_title, $temp_body, $required,$send_only_filled_fields , $flag);
                     break;
                 case "first_name":
-                    $this->getRowForResume(__('First name','wp-job-portal'), $personalInfo->first_name, $temp_body, $required,$send_only_filled_fields , $flag);
+                    $this->getRowForResume(esc_html(__('First name','wp-job-portal')), $personalInfo->first_name, $temp_body, $required,$send_only_filled_fields , $flag);
                     break;
                 case "last_name":
-                    $this->getRowForResume(__('Last name','wp-job-portal'), $personalInfo->last_name, $temp_body, $required,$send_only_filled_fields , $flag);
+                    $this->getRowForResume(esc_html(__('Last name','wp-job-portal')), $personalInfo->last_name, $temp_body, $required,$send_only_filled_fields , $flag);
                     break;
                 case "email_address":
                     if($show_contact_detail){
-                        $this->getRowForResume(__('Email address','wp-job-portal'), $personalInfo->email_address, $temp_body, $required,$send_only_filled_fields , $flag);
+                        $this->getRowForResume(esc_html(__('Email address','wp-job-portal')), $personalInfo->email_address, $temp_body, $required,$send_only_filled_fields , $flag);
                     }
                     break;
                 case "cell":
                     if($show_contact_detail){
-                        $this->getRowForResume(__('Cell','wp-job-portal'), $personalInfo->cell, $temp_body, $required,$send_only_filled_fields , $flag);
+                        $this->getRowForResume(esc_html(__('Cell','wp-job-portal')), $personalInfo->cell, $temp_body, $required,$send_only_filled_fields , $flag);
                     }
                     break;
                 case "gender":
-                    $genderText = ($personalInfo->gender == 1) ? __('Male','wp-job-portal') : __('Female','wp-job-portal');
-                    $this->getRowForResume(__('Gender','wp-job-portal'), $genderText, $temp_body, $required,$send_only_filled_fields , $flag);
+                    $genderText = ($personalInfo->gender == 1) ? esc_html(__('Male','wp-job-portal')) : esc_html(__('Female','wp-job-portal'));
+                    $this->getRowForResume(esc_html(__('Gender','wp-job-portal')), $genderText, $temp_body, $required,$send_only_filled_fields , $flag);
                     break;
                 case "nationality":
-                    $this->getRowForResume(__('Country','wp-job-portal'), $personalInfo->nationality, $temp_body, $required,$send_only_filled_fields , $flag);
+                    $this->getRowForResume(esc_html(__('Country','wp-job-portal')), $personalInfo->nationality, $temp_body, $required,$send_only_filled_fields , $flag);
                     break;
                 case "category":
-                    $this->getRowForResume(__('Category','wp-job-portal'), $personalInfo->categorytitle, $temp_body, $required,$send_only_filled_fields , $flag);
+                    $this->getRowForResume(esc_html(__('Category','wp-job-portal')), $personalInfo->categorytitle, $temp_body, $required,$send_only_filled_fields , $flag);
                     break;
 
                 case "salaryfixed":
                     $salary = $personalInfo->salaryfixed;
-                    $this->getRowForResume(__('Salary','wp-job-portal'), $salary, $temp_body, $required,$send_only_filled_fields , $flag);
+                    $this->getRowForResume(esc_html(__('Salary','wp-job-portal')), $salary, $temp_body, $required,$send_only_filled_fields , $flag);
                     break;
 
                 case "jobtype":
-                    $this->getRowForResume(__('Work preference','wp-job-portal'), $personalInfo->jobtypetitle, $temp_body, $required,$send_only_filled_fields , $flag);
+                    $this->getRowForResume(esc_html(__('Work preference','wp-job-portal')), $personalInfo->jobtypetitle, $temp_body, $required,$send_only_filled_fields , $flag);
                     break;
                 default:
                     $data = apply_filters('wpjobportal_addons_show_customfields_params',false,$field,11,$personalInfo->params);
-                    if($send_only_filled_fields == 1){
-                        if(! empty($data['value'])){
-                            $temp_body .= "<tr style='background: #eee;'>";
-                            $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
-                            $temp_body .= "<td>" . $data['value'] . "</td></tr>";
-                        }
-                    }else{
-                        if(is_array($data)){
-                            $temp_body .= "<tr style='background: #eee;'>";
-                            $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
-                            $temp_body .= "<td>" . $data['value'] . "</td></tr>";
+                    if(!empty($data)){
+                        if($send_only_filled_fields == 1){
+                            if(! empty($data['value'])){
+                                $temp_body .= "<tr style='background: #eee;'>";
+                                $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
+                                $temp_body .= "<td>" . $data['value'] . "</td></tr>";
+                            }
+                        }else{
+                            if(is_array($data)){
+                                $temp_body .= "<tr style='background: #eee;'>";
+                                $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
+                                $temp_body .= "<td>" . $data['value'] . "</td></tr>";
+                            }
                         }
                     }
                 break;
@@ -1335,7 +1494,7 @@ class WPJOBPORTALjobapplyModel {
 
         $i = 0;
         $temp_body .= "<tr style='background: #eee;'>";
-        $temp_body .= "<td colspan='2' align='center'><strong>" . __('Address','wp-job-portal') . "</strong></td></tr>";
+        $temp_body .= "<td colspan='2' align='center'><strong>" . esc_html(__('Address','wp-job-portal')) . "</strong></td></tr>";
         if(isset($addresses) && is_array($addresses))
         foreach ($addresses as $address) {
             $i++;
@@ -1344,27 +1503,29 @@ class WPJOBPORTALjobapplyModel {
                     case "section_address":
                         if ($required == 1) {
                             $temp_body .= "<tr style='background: #eee;'>";
-                            $temp_body .= "<td colspan='2' align='center'><strong>" . __('Address','wp-job-portal') . "-" . $i . "</strong></td></tr>";
+                            $temp_body .= "<td colspan='2' align='center'><strong>" . esc_html(__('Address','wp-job-portal')) . "-" . $i . "</strong></td></tr>";
                         }
                         break;
                     case "address_city":
-                        $this->getRowForResume(__('City'), $address->cityname, $temp_body, $required,$send_only_filled_fields , $flag);
+                        $this->getRowForResume(esc_html(__('City','wp-job-portal')), $address->cityname, $temp_body, $required,$send_only_filled_fields , $flag);
                         break;
                     case "address":
-                        $this->getRowForResume(__('Address','wp-job-portal'), $address->address, $temp_body, $required,$send_only_filled_fields , $flag);
+                        $this->getRowForResume(esc_html(__('Address','wp-job-portal')), $address->address, $temp_body, $required,$send_only_filled_fields , $flag);
                         break;
                     default:
                         $data = apply_filters('wpjobportal_addons_show_customfields_params',false,$field,11,$address->params);
-                        if($send_only_filled_fields == 1){
-                            if(! empty($data['value'])){
+                        if(!empty($data)){
+                            if($send_only_filled_fields == 1){
+                                if(! empty($data['value'])){
+                                    $temp_body .= "<tr style='background: #eee;'>";
+                                    $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
+                                    $temp_body .= "<td>" . $data['value'] . "</td></tr>";
+                                }
+                            }else{
                                 $temp_body .= "<tr style='background: #eee;'>";
                                 $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
                                 $temp_body .= "<td>" . $data['value'] . "</td></tr>";
                             }
-                        }else{
-                            $temp_body .= "<tr style='background: #eee;'>";
-                            $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
-                            $temp_body .= "<td>" . $data['value'] . "</td></tr>";
                         }
                         break;
                 }
@@ -1386,7 +1547,7 @@ class WPJOBPORTALjobapplyModel {
 
         $i = 0;
         $temp_body .= "<tr style='background: #eee;'>";
-        $temp_body .= "<td colspan='2' align='center'><strong>" . __('Institutes','wp-job-portal') . "</strong></td></tr>";
+        $temp_body .= "<td colspan='2' align='center'><strong>" . esc_html(__('Institutes','wp-job-portal')) . "</strong></td></tr>";
         if(isset($institutes) && is_array($institutes))
         foreach ($institutes as $institute) {
             $i++;
@@ -1395,30 +1556,33 @@ class WPJOBPORTALjobapplyModel {
                     case "section_education":
                         if ($required == 1) {
                             $temp_body .= "<tr style='background: #eee;'>";
-                            $temp_body .= "<td colspan='2' align='center'><strong>" . __('Institute','wp-job-portal') . "-" . $i . "</strong></td></tr>";
+                            $temp_body .= "<td colspan='2' align='center'><strong>" . esc_html(__('Institute','wp-job-portal')) . "-" . $i . "</strong></td></tr>";
                         }
                         break;
                     case "institute":
-                        $this->getRowForResume(__('Institution Name','wp-job-portal'), $institute->institute, $temp_body, $required,$send_only_filled_fields , $flag);
+                        $this->getRowForResume(esc_html(__('Institution Name','wp-job-portal')), $institute->institute, $temp_body, $required,$send_only_filled_fields , $flag);
                         break;
                     case "institute_city":
-                        $this->getRowForResume(__('City'), $institute->cityname, $temp_body, $required,$send_only_filled_fields , $flag);
+                        // institute table does not have city field
+                        //$this->getRowForResume(esc_html(__('City'), $institute->cityname, $temp_body, $required,$send_only_filled_fields , $flag);
                         break;
                     case "institute_certificate":
-                        $this->getRowForResume(__('Cert/deg/oth'), $institute->institute_certificate, $temp_body, $required,$send_only_filled_fields , $flag);
+                        $this->getRowForResume(esc_html(__('Cert/deg/oth','wp-job-portal')), $institute->institute_certificate, $temp_body, $required,$send_only_filled_fields , $flag);
                         break;
                     default:
                         $data = apply_filters('wpjobportal_addons_show_customfields_params',false,$field,11,$institute->params);
-                        if($send_only_filled_fields == 1){
-                            if(! empty($data['value'])){
+                        if(!empty($data)){
+                            if($send_only_filled_fields == 1){
+                                if(! empty($data['value'])){
+                                    $temp_body .= "<tr style='background: #eee;'>";
+                                    $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
+                                    $temp_body .= "<td>" . $data['value'] . "</td></tr>";
+                                }
+                            }else{
                                 $temp_body .= "<tr style='background: #eee;'>";
                                 $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
                                 $temp_body .= "<td>" . $data['value'] . "</td></tr>";
                             }
-                        }else{
-                            $temp_body .= "<tr style='background: #eee;'>";
-                            $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
-                            $temp_body .= "<td>" . $data['value'] . "</td></tr>";
                         }
                         break;
                 }
@@ -1438,7 +1602,7 @@ class WPJOBPORTALjobapplyModel {
 
         $i = 0;
         $temp_body .= "<tr style='background: #eee;'>";
-        $temp_body .= "<td colspan='2' align='center'><strong>" . __('Employers','wp-job-portal') . "</strong></td></tr>";
+        $temp_body .= "<td colspan='2' align='center'><strong>" . esc_html(__('Employers','wp-job-portal')) . "</strong></td></tr>";
         if(isset($employers) && is_array($employers))
         foreach ($employers as $employer) {
             $i++;
@@ -1447,42 +1611,44 @@ class WPJOBPORTALjobapplyModel {
                     case "section_employer":
                         if ($required == 1) {
                             $temp_body .= "<tr style='background: #eee;'>";
-                            $temp_body .= "<td colspan='2' align='center'><strong>" . __('Employer','wp-job-portal') . "-" . $i . "</strong></td></tr>";
+                            $temp_body .= "<td colspan='2' align='center'><strong>" . esc_html(__('Employer','wp-job-portal')) . "-" . $i . "</strong></td></tr>";
                         }
                         break;
                     case "employer":
-                        $this->getRowForResume(__('Employer','wp-job-portal'), $employer->employer, $temp_body, $required,$send_only_filled_fields , $flag);
+                        $this->getRowForResume(esc_html(__('Employer','wp-job-portal')), $employer->employer, $temp_body, $required,$send_only_filled_fields , $flag);
                         break;
                     case "employer_position":
-                        $this->getRowForResume(__('Position','wp-job-portal'), $employer->employer_position, $temp_body, $required,$send_only_filled_fields , $flag);
+                        $this->getRowForResume(esc_html(__('Position','wp-job-portal')), $employer->employer_position, $temp_body, $required,$send_only_filled_fields , $flag);
                         break;
                     case "employer_from_date":
-                        $this->getRowForResume(__('From Date','wp-job-portal'), $employer->employer_from_date, $temp_body, $required,$send_only_filled_fields , $flag);
+                        $this->getRowForResume(esc_html(__('From Date','wp-job-portal')), $employer->employer_from_date, $temp_body, $required,$send_only_filled_fields , $flag);
                         break;
                     case "employer_to_date":
-                        $this->getRowForResume(__('To Date','wp-job-portal'), $employer->employer_to_date, $temp_body, $required,$send_only_filled_fields , $flag);
+                        $this->getRowForResume(esc_html(__('To Date','wp-job-portal')), $employer->employer_to_date, $temp_body, $required,$send_only_filled_fields , $flag);
                         break;
                    case "employer_city":
-                        $this->getRowForResume(__('City'), $employer->cityname, $temp_body, $required,$send_only_filled_fields , $flag);
+                        $this->getRowForResume(esc_html(__('City','wp-job-portal')), $employer->cityname, $temp_body, $required,$send_only_filled_fields , $flag);
                         break;
                     case "employer_address":
-                        $this->getRowForResume(__('Address','wp-job-portal'), $employer->employer_address, $temp_body, $required,$send_only_filled_fields , $flag);
+                        $this->getRowForResume(esc_html(__('Address','wp-job-portal')), $employer->employer_address, $temp_body, $required,$send_only_filled_fields , $flag);
                         break;
                     case "employer_phone":
-                        $this->getRowForResume(__('Phone','wp-job-portal'), $employer->employer_phone, $temp_body, $required,$send_only_filled_fields , $flag);
+                        $this->getRowForResume(esc_html(__('Phone','wp-job-portal')), $employer->employer_phone, $temp_body, $required,$send_only_filled_fields , $flag);
                         break;
                     default:
                         $data = apply_filters('wpjobportal_addons_show_customfields_params',false,$field,11,$employer->params);
-                        if($send_only_filled_fields == 1){
-                            if(! empty($data['value'])){
+                        if(!empty($data)){
+                            if($send_only_filled_fields == 1){
+                                if(! empty($data['value'])){
+                                    $temp_body .= "<tr style='background: #eee;'>";
+                                    $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
+                                    $temp_body .= "<td>" . $data['value'] . "</td></tr>";
+                                }
+                            }else{
                                 $temp_body .= "<tr style='background: #eee;'>";
                                 $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
                                 $temp_body .= "<td>" . $data['value'] . "</td></tr>";
                             }
-                        }else{
-                            $temp_body .= "<tr style='background: #eee;'>";
-                            $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
-                            $temp_body .= "<td>" . $data['value'] . "</td></tr>";
                         }
                         break;
                 }
@@ -1506,24 +1672,26 @@ class WPJOBPORTALjobapplyModel {
                 case "section_skills":
                     if ($required == 1) {
                         $temp_body .= "<tr style='background: #eee;'>";
-                        $temp_body .= "<td colspan='2' align='center'><strong>" . __('Skills','wp-job-portal') . "</strong></td></tr>";
+                        $temp_body .= "<td colspan='2' align='center'><strong>" . esc_html(__('Skills','wp-job-portal')) . "</strong></td></tr>";
                     }
                     break;
                 case "skills":
-                    $this->getRowForResume(__('Skills','wp-job-portal'), $personalInfo->skills, $temp_body, $required,$send_only_filled_fields , $flag);
+                    $this->getRowForResume(esc_html(__('Skills','wp-job-portal')), $personalInfo->skills, $temp_body, $required,$send_only_filled_fields , $flag);
                     break;
                 default:
                     $data = apply_filters('wpjobportal_addons_show_customfields_params',false,$field,11,$personalInfo->params);
-                    if($send_only_filled_fields == 1){
-                        if(! empty($data['value'])){
+                    if(!empty($data)){
+                        if($send_only_filled_fields == 1){
+                            if(! empty($data['value'])){
+                                $temp_body .= "<tr style='background: #eee;'>";
+                                $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
+                                $temp_body .= "<td>" . $data['value'] . "</td></tr>";
+                            }
+                        }else{
                             $temp_body .= "<tr style='background: #eee;'>";
                             $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
                             $temp_body .= "<td>" . $data['value'] . "</td></tr>";
                         }
-                    }else{
-                        $temp_body .= "<tr style='background: #eee;'>";
-                        $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
-                        $temp_body .= "<td>" . $data['value'] . "</td></tr>";
                     }
                     break;
             }
@@ -1547,24 +1715,26 @@ class WPJOBPORTALjobapplyModel {
                 case "section_resume":
                     if ($required == 1) {
                         $temp_body .= "<tr style='background: #eee;'>";
-                        $temp_body .= "<td colspan='2' align='center'><strong>" . __('Resume','wp-job-portal') . "</strong></td></tr>";
+                        $temp_body .= "<td colspan='2' align='center'><strong>" . esc_html(__('Resume','wp-job-portal')) . "</strong></td></tr>";
                     }
                     break;
                 case "resume":
-                    $this->getRowForResume(__('Resume','wp-job-portal'), $personalInfo->resume, $temp_body, $required,$send_only_filled_fields , $flag);
+                    $this->getRowForResume(esc_html(__('Resume','wp-job-portal')), $personalInfo->resume, $temp_body, $required,$send_only_filled_fields , $flag);
                     break;
                 default:
                     $data = apply_filters('wpjobportal_addons_show_customfields_params',false,$field,11,$personalInfo->params);
-                    if($send_only_filled_fields == 1){
-                        if(! empty($data['value'])){
+                    if(!empty($data)){
+                        if($send_only_filled_fields == 1){
+                            if(! empty($data['value'])){
+                                $temp_body .= "<tr style='background: #eee;'>";
+                                $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
+                                $temp_body .= "<td>" . $data['value'] . "</td></tr>";
+                            }
+                        }else{
                             $temp_body .= "<tr style='background: #eee;'>";
                             $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
                             $temp_body .= "<td>" . $data['value'] . "</td></tr>";
                         }
-                    }else{
-                        $temp_body .= "<tr style='background: #eee;'>";
-                        $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
-                        $temp_body .= "<td>" . $data['value'] . "</td></tr>";
                     }
                     break;
             }
@@ -1584,7 +1754,7 @@ class WPJOBPORTALjobapplyModel {
 
         $i = 0;
         $temp_body .= "<tr style='background: #eee;'>";
-        $temp_body .= "<td colspan='2' align='center'><strong>" . __('References','wp-job-portal') . "</strong></td></tr>";
+        $temp_body .= "<td colspan='2' align='center'><strong>" . esc_html(__('References','wp-job-portal')) . "</strong></td></tr>";
         if(isset($references) && is_array($references))
             if($show_only_section_that_have_value == 1){
                 if($flag > 0){
@@ -1599,7 +1769,7 @@ class WPJOBPORTALjobapplyModel {
 
         $i = 0;
         $temp_body .= "<tr style='background: #eee;'>";
-        $temp_body .= "<td colspan='2' align='center'><strong>" . __('Language','wp-job-portal') . "</strong></td></tr>";
+        $temp_body .= "<td colspan='2' align='center'><strong>" . esc_html(__('Language','wp-job-portal')) . "</strong></td></tr>";
         if(isset($languages) && is_array($languages))
         foreach ($languages as $language) {
             $i++;
@@ -1608,24 +1778,26 @@ class WPJOBPORTALjobapplyModel {
                     case "section_language":
                         if ($required == 1) {
                             $temp_body .= "<tr style='background: #eee;'>";
-                            $temp_body .= "<td colspan='2' align='center'><strong>" . __('Language','wp-job-portal') . "-" . $i . "</strong></td></tr>";
+                            $temp_body .= "<td colspan='2' align='center'><strong>" . esc_html(__('Language','wp-job-portal')) . "-" . $i . "</strong></td></tr>";
                         }
                         break;
                     case "language_name":
-                        $this->getRowForResume(__('Language Name','wp-job-portal'), $language->language, $temp_body, $required,$send_only_filled_fields , $flag);
+                        $this->getRowForResume(esc_html(__('Language Name','wp-job-portal')), $language->language, $temp_body, $required,$send_only_filled_fields , $flag);
                         break;
                     default:
                         $data = apply_filters('wpjobportal_addons_show_customfields_params',false,$field,11,$language->params);
-                        if($send_only_filled_fields == 1){
-                            if(! empty($data['value'])){
+                        if(!empty($data)){
+                            if($send_only_filled_fields == 1){
+                                if(! empty($data['value'])){
+                                    $temp_body .= "<tr style='background: #eee;'>";
+                                    $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
+                                    $temp_body .= "<td>" . $data['value'] . "</td></tr>";
+                                }
+                            }else{
                                 $temp_body .= "<tr style='background: #eee;'>";
                                 $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
                                 $temp_body .= "<td>" . $data['value'] . "</td></tr>";
                             }
-                        }else{
-                            $temp_body .= "<tr style='background: #eee;'>";
-                            $temp_body .= "<td><strong>" . $data['title'] . "</strong></td>";
-                            $temp_body .= "<td>" . $data['value'] . "</td></tr>";
                         }
                         break;
                 }
@@ -1675,13 +1847,17 @@ class WPJOBPORTALjobapplyModel {
         }
     }
     function canceljobapplyasvisitor(){
-        setcookie('wpjobportal_apply_visitor' , '' , time() - 3600 , COOKIEPATH);
+        $nonce = WPJOBPORTALrequest::getVar('_wpnonce');
+        if (! wp_verify_nonce( $nonce, 'cancel-jobapply-as-visitor') ) {
+            die( 'Security check Failed' );
+        }
+        wpjobportalphplib::wpJP_setcookie('wpjobportal_apply_visitor' , '' , time() - 3600 , COOKIEPATH);
         if ( SITECOOKIEPATH != COOKIEPATH ){
-            setcookie('wpjobportal_apply_visitor' , '' , time() - 3600 , SITECOOKIEPATH);
+            wpjobportalphplib::wpJP_setcookie('wpjobportal_apply_visitor' , '' , time() - 3600 , SITECOOKIEPATH);
         }
 
         unset($_SESSION['wp-wpjobportal']);
-        $link = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'newestjobs'));
+        $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'newestjobs'));
         echo esc_url($link);
         die();
     }
@@ -1783,19 +1959,27 @@ class WPJOBPORTALjobapplyModel {
     }
 
     function sendEmailToJobSeeker() {
+        $nonce = WPJOBPORTALrequest::getVar('_wpnonce');
+        if (! wp_verify_nonce( $nonce, 'send-email-to-jobseeker') ) {
+            die( 'Security check Failed' );
+        }
         $jobseekeremail = WPJOBPORTALrequest::getVar('jobseekerid');
         $subject = WPJOBPORTALrequest::getVar('emailsubject');
         $senderemail = WPJOBPORTALrequest::getVar('senderid');
         $mail = WPJOBPORTALrequest::getVar('mailbody');
         $return = wpjobportal::$_common->sendEmail($jobseekeremail, $subject, $mail, $senderemail, '');
         if($return == 1){
-            return __('Email has been send','wp-job-portal');
+            return esc_html(__('Email has been send','wp-job-portal'));
         }else{
-            return __('Email has not been send','wp-job-portal');
+            return esc_html(__('Email has not been send','wp-job-portal'));
         }
     }
 
     function getEmailFields() {
+        $nonce = WPJOBPORTALrequest::getVar('_wpnonce');
+        if (! wp_verify_nonce( $nonce, 'get-email-fields') ) {
+            die( 'Security check Failed' );
+        }
         $email = WPJOBPORTALrequest::getVar('em');
         $resumeid = WPJOBPORTALrequest::getVar('resumeid');
         $html = '';
@@ -1803,32 +1987,32 @@ class WPJOBPORTALjobapplyModel {
             $html.='<img id="close-section" onclick="closeSection()" src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/no.png"/>';
             $html.='<div class="email-feilds wpj-jp-applied-resume-cnt wpj-jp-email-actions-wrp"><div class="wpj-jp-applied-resume-cnt-row">';
             $html.='<label for="jobseeker">'
-                    . esc_html__('Job Seeker', 'job-portal')
+                    . esc_html(__("Job Seeker", 'wp-job-portal'))
                     . ' : </label>';
             $html.='<input type="text" id="jobseeker" value="' . $email . '" disabled /></div><div class="wpj-jp-applied-resume-cnt-row"><label for="subject">'
-                    . esc_html__('Subject', 'job-portal') .
+                    . esc_html(__('Subject', 'wp-job-portal')) .
                     ' : </label>';
             $html.='<input type="text" id="e-subject" />';
             $html.='</div><div class="wpj-jp-applied-resume-cnt-row">';
-            $html.='<label for="sender">' . esc_html__('Sender Email', 'job-portal') . '  : </label>';
+            $html.='<label for="sender">' . esc_html(__("Sender Email", 'wp-job-portal')) . '  : </label>';
             $html.='<input type="text" id="sender"  /></div>';
-            $html.='<div class="wpj-jp-applied-resume-cnt-row"><textarea id="email-body" placeholder=' . esc_html__('Type here', 'job-portal') . '>';
-            $html.='</textarea></div> <div class="wpj-jp-applied-resume-cnt-row"><input class="wpj-jp-outline-btn" type="button" id="send" value=' . esc_html__('Send', 'job-portal') . ' onclick="sendEmail('.$resumeid.')" /></div></div>';
+            $html.='<div class="wpj-jp-applied-resume-cnt-row"><textarea id="email-body" placeholder=' . esc_html(__('Type here', 'wp-job-portal')) . '>';
+            $html.='</textarea></div> <div class="wpj-jp-applied-resume-cnt-row"><input class="wpj-jp-outline-btn" type="button" id="send" value=' . esc_html(__("Send", 'wp-job-portal')) . ' onclick="sendEmail('.$resumeid.')" /></div></div>';
         } else {
             $html.='<img id="close-section" onclick="closeSection()" src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/no.png"/>';
             $html.='<div class="email-feilds wjportal-applied-job-actions-wrp wjportal-email-actions-wrp"><div class="wjportal-applied-job-actions-row">';
             $html.='<label for="jobseeker">'
-                    . __('Job Seeker', 'wp-job-portal')
+                    . esc_html(__('Job Seeker', 'wp-job-portal'))
                     . ' : </label>';
             $html.='<input type="text" id="jobseeker" value="' . $email . '" disabled /></div><div class="wjportal-applied-job-actions-row"><label for="subject">'
-                    . __('Subject', 'wp-job-portal') .
+                    . esc_html(__('Subject', 'wp-job-portal')) .
                     ' : </label>';
             $html.='<input type="text" id="e-subject" />';
             $html.='</div><div class="wjportal-applied-job-actions-row">';
-            $html.='<label for="sender">' . __('Sender Email', 'wp-job-portal') . '  : </label>';
+            $html.='<label for="sender">' . esc_html(__('Sender Email', 'wp-job-portal')) . '  : </label>';
             $html.='<input type="text" id="sender"  /></div>';
-            $html.='<div class="wjportal-applied-job-actions-row"><textarea id="email-body" placeholder=' . __('Type here', 'wp-job-portal') . '>';
-            $html.='</textarea></div> <div class="wjportal-job-applied-actions-btn-wrp"><input class="wjportal-job-applied-actions-btn" type="button" id="send" value=' . __('Send', 'wp-job-portal') . ' onclick="sendEmail('.$resumeid.')" /></div></div>';
+            $html.='<div class="wjportal-applied-job-actions-row"><textarea id="email-body" placeholder=' . esc_html(__('Type here', 'wp-job-portal')) . '>';
+            $html.='</textarea></div> <div class="wjportal-job-applied-actions-btn-wrp"><input class="wjportal-job-applied-actions-btn" type="button" id="send" value=' . esc_html(__('Send', 'wp-job-portal')) . ' onclick="sendEmail('.$resumeid.')" /></div></div>';
         }
         return $html;
     }

@@ -72,6 +72,10 @@ class WPJOBPORTALjobTable extends WPJOBPORTALtable {
     public $params = '';
     public $userpackageid = '';
     public $price = '';
+    // log error
+    public $startfeatureddate = '';
+    public $endfeatureddate = '';
+
 
     public function check() {
         if ($this->companyid == '') {

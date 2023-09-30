@@ -15,10 +15,14 @@ use TIOB\Importers\Cleanup\Active_State;
  * @package templates-patterns-collection
  */
 class Admin {
+	use White_Label_Config;
+
 	const API = 'api.themeisle.com';
 
 	const IMPORTED_TEMPLATES_COUNT_OPT = 'tiob_premade_imported';
 	const FEEDBACK_DISMISSED_OPT       = 'tiob_feedback_dismiss';
+
+	const VISITED_LIBRARY_OPT = 'tiob_library_visited';
 
 	/**
 	 * Admin page slug
@@ -28,18 +32,15 @@ class Admin {
 	private $page_slug = 'tiob-starter-sites';
 
 	/**
-	 * White label config
-	 *
-	 * @var array
-	 */
-	private $wl_config = null;
-
-	/**
 	 * Option and transient namespace for email skip.
 	 *
 	 * @var string
 	 */
 	private $skip_email_subscribe_namespace = 'tpc_skip_email_subscribe';
+
+	public static function get_templates_cloud_endpoint() {
+		return 'https://' . self::API . '/templates-cloud/';
+	}
 
 	/**
 	 * Initialize the Admin.
@@ -53,18 +54,106 @@ class Admin {
 		add_action( 'admin_enqueue_scripts', array( $this, 'enqueue' ) );
 		add_filter( 'ti_tpc_editor_data', array( $this, 'add_tpc_editor_data' ), 20 );
 
-		$white_label_module = get_option( 'nv_pro_white_label_status' );
-		if ( ! empty( $white_label_module ) && (bool) $white_label_module === true ) {
-			$branding = get_option( 'ti_white_label_inputs' );
-			if ( ! empty( $branding ) ) {
-				$this->wl_config = json_decode( $branding, true );
-			}
-		}
+		$this->setup_white_label();
 
 		add_action( 'wp_ajax_skip_subscribe', array( $this, 'skip_subscribe' ) );
 		add_action( 'wp_ajax_nopriv_skip_subscribe', array( $this, 'skip_subscribe' ) );
 
 		$this->register_feedback_settings();
+
+		$this->register_prevent_clone_hooks();
+	}
+
+	/**
+	 * Register hooks to prevent meta cloning for the templates.
+	 * This is needed because the template id is unique, and we don't want to clone it.
+	 * @return void
+	 */
+	public function register_prevent_clone_hooks() {
+		$allowed_post_types = Editor::get_allowed_post_types();
+		if ( empty( $allowed_post_types ) ) {
+			return;
+		}
+		foreach ( $allowed_post_types as $post_type ) {
+			add_filter(
+				'update_' . $post_type . '_metadata',
+				function ( $value, $post_id, $meta_key, $meta_value, $prev_value ) use ( $post_type ) {
+					if ( $this->check_unique_template_id_on_meta_change( $post_id, $meta_key, $post_type, $meta_value ) ) {
+						return true;
+					}
+					return $value;
+				},
+				10,
+				5
+			);
+			add_filter(
+				'add_' . $post_type . '_metadata',
+				function ( $value, $post_id, $meta_key, $meta_value, $unique ) use ( $post_type ) {
+					if ( $this->check_unique_template_id_on_meta_change( $post_id, $meta_key, $post_type, $meta_value ) ) {
+						return true;
+					}
+					return $value;
+				},
+				10,
+				5
+			);
+		}
+	}
+
+	/**
+	 * Check that the meta value is unique for the allowed post types that support Templates Cloud.
+	 *
+	 * @param int $post_id The post ID.
+	 * @param string $meta_key The meta key.
+	 * @param string $meta_type The meta type. The post type ( post, page, neve_custom_layouts etc. ).
+	 * @param string $meta_value The meta value.
+	 *
+	 * @return bool
+	 */
+	public function check_unique_template_id_on_meta_change( $post_id, $meta_key, $meta_type, $meta_value ) {
+		// Skip check if the meta key is not one of the allowed ones.
+		if ( ! in_array(
+			$meta_key,
+			array(
+				'_ti_tpc_template_sync',
+				'_ti_tpc_template_id',
+				'_ti_tpc_screenshot_url',
+				'_ti_tpc_site_slug',
+				'_ti_tpc_published',
+			),
+			true
+		)
+		) {
+			return false;
+		}
+
+		if ( empty( $meta_value ) ) {
+			return false;
+		}
+
+		$template_id = get_post_meta( $post_id, '_ti_tpc_template_id', true );
+		if ( empty( $template_id ) && $meta_key === '_ti_tpc_template_id' ) {
+			$template_id = $meta_value;
+		}
+
+		// Check if the template ID is used on any other posts or pages
+		// exclude the current post from the query
+		$args         = array(
+			'post_type'      => $meta_type,
+			'meta_key'       => '_ti_tpc_template_id',
+			'meta_value'     => $template_id,
+			'post__not_in'   => array( $post_id ),
+			'posts_per_page' => 1,
+			'fields'         => 'ids',
+		);
+		$query        = new \WP_Query( $args );
+		$duplicate_id = $query->get_posts();
+
+		if ( ! empty( $duplicate_id ) ) {
+			// The template ID is already used on another post
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -170,12 +259,63 @@ class Admin {
 	}
 
 	/**
+	 * Use the Neve builtin compatibility to check for specific support.
+	 *
+	 * @return bool
+	 */
+	private function neve_theme_has_support( $feature ) {
+		return defined( 'NEVE_COMPATIBILITY_FEATURES' ) && isset( NEVE_COMPATIBILITY_FEATURES[ $feature ] );
+	}
+
+	/**
+	 * Utility method to add a theme page from an array.
+	 *
+	 * @param array $page_data Page data.
+	 *
+	 * @return void
+	 */
+	private function add_theme_page_for_tiob( $page_data ) {
+
+		if ( $this->neve_theme_has_support( 'theme_dedicated_menu' ) ) {
+			global $submenu;
+
+			$theme_page = 'neve-welcome';
+			$capability = 'activate_plugins';
+			add_submenu_page(
+				$theme_page,
+				$page_data['page_title'],
+				$page_data['page_title'],
+				$capability,
+				$page_data['menu_slug'],
+				$page_data['callback']
+			);
+
+			$offset = 2;
+			if ( $this->page_slug !== $page_data['menu_slug'] ) {
+				$offset = 3;
+			}
+
+			$item = array_pop( $submenu[ $theme_page ] );
+			array_splice( $submenu[ $theme_page ], $offset, 0, array( $item ) );
+			return;
+		}
+
+		add_theme_page(
+			$page_data['page_title'],
+			$page_data['menu_title'],
+			$page_data['capability'],
+			$page_data['menu_slug'],
+			$page_data['callback']
+		);
+	}
+
+	/**
 	 * Register theme options page.
 	 *
 	 * @return bool|void
 	 */
 	public function register() {
-		if ( isset( $this->wl_config['starter_sites'] ) && (bool) $this->wl_config['starter_sites'] === true ) {
+		if ( $this->is_library_disabled() && $this->is_starter_sites_disabled() ) {
 			return false;
 		}
 
@@ -188,21 +328,41 @@ class Admin {
 		}
 
 		$prefix = defined( 'NEVE_VERSION' ) ? '<span style="' . esc_attr( $style ) . '">&crarr;</span>' : '';
-		add_theme_page(
-			__( 'Starter Sites', 'templates-patterns-collection' ),
-			$prefix . __( 'Starter Sites', 'templates-patterns-collection' ),
-			'activate_plugins',
-			$this->page_slug,
-			array(
+
+		$starter_site_data = array(
+			'page_title' => __( 'Starter Sites', 'templates-patterns-collection' ),
+			'menu_title' => $prefix . __( 'Starter Sites', 'templates-patterns-collection' ),
+			'capability' => 'activate_plugins',
+			'menu_slug'  => $this->page_slug,
+			'callback'   => array(
 				$this,
 				'render_starter_sites',
-			)
+			),
 		);
 
-		if ( isset( $this->wl_config['my_library'] ) && (bool) $this->wl_config['my_library'] === true ) {
+		$library_data = array(
+			'page_title' => __( 'My Library', 'templates-patterns-collection' ),
+			'menu_title' => $prefix . __( 'My Library', 'templates-patterns-collection' ),
+			'capability' => 'activate_plugins',
+			'menu_slug'  => ( $this->neve_theme_has_support( 'theme_dedicated_menu' ) ? 'admin.php' : 'themes.php' ) . '?page=' . $this->page_slug . '#library',
+			'callback'   => '',
+		);
+
+		if ( $this->is_starter_sites_disabled() && ! $this->is_library_disabled() ) {
+			$library_data['menu_slug'] = $this->page_slug;
+			$library_data['callback']  = array(
+				$this,
+				'render_starter_sites',
+			);
+			$this->add_theme_page_for_tiob( $library_data );
 			return false;
 		}
-		add_theme_page( __( 'My Library', 'templates-patterns-collection' ), $prefix . __( 'My Library', 'templates-patterns-collection' ), 'activate_plugins', 'themes.php?page=' . $this->page_slug . '#library' );
+		$this->add_theme_page_for_tiob( $starter_site_data );
+
+		if ( $this->is_library_disabled() ) {
+			return false;
+		}
+		$this->add_theme_page_for_tiob( $library_data );
 	}
 
 	/**
@@ -242,22 +402,22 @@ class Admin {
 			return;
 		}
 
-		if ( $screen->id !== 'appearance_page_' . $this->page_slug ) {
+		if ( strpos( $screen->id, '_page_' . $this->page_slug ) === false ) {
 			return;
 		}
 
 		$dismiss_notice = isset( $_GET['dismiss_notice'] ) && $_GET['dismiss_notice'] === 'yes';
 		if ( $dismiss_notice ) {
-			set_transient( 'tiob_library_visited', true );
+			update_option( self::VISITED_LIBRARY_OPT, 'yes' );
 		}
 
 		$dependencies = ( include TIOB_PATH . 'assets/build/app.asset.php' );
 
-		wp_register_style( 'tiob', TIOB_URL . '/assets/build/style-app.css', array( 'wp-components' ), $dependencies['version'] );
+		wp_register_style( 'tiob', TIOB_URL . 'assets/build/style-app.css', array( 'wp-components' ), $dependencies['version'] );
 		wp_style_add_data( 'tiob', 'rtl', 'replace' );
 		wp_enqueue_style( 'tiob' );
 
-		wp_register_script( 'tiob', TIOB_URL . '/assets/build/app.js', array_merge( $dependencies['dependencies'], array( 'updates' ) ), $dependencies['version'], true );
+		wp_register_script( 'tiob', TIOB_URL . 'assets/build/app.js', array_merge( $dependencies['dependencies'], array( 'updates' ) ), $dependencies['version'], true );
 		wp_localize_script( 'tiob', 'tiobDash', apply_filters( 'neve_dashboard_page_data', $this->get_localization() ) );
 		wp_enqueue_script( 'tiob' );
 	}
@@ -287,7 +447,7 @@ class Admin {
 		return array(
 			'version'             => TIOB_VERSION,
 			'nonce'               => wp_create_nonce( 'wp_rest' ),
-			'assets'              => TIOB_URL . '/assets/',
+			'assets'              => TIOB_URL . 'assets/',
 			'upgradeURL'          => $upgrade_url,
 			'upgradeURLTpc'       => $upgrade_url_tpc,
 			'strings'             => array(
@@ -299,9 +459,10 @@ class Admin {
 			'hasFileSystem'       => WP_Filesystem(),
 			'themesURL'           => admin_url( 'themes.php' ),
 			'themeAction'         => $this->get_theme_action(),
-			'brandedTheme'        => isset( $this->wl_config['theme_name'] ) ? $this->wl_config['theme_name'] : false,
-			'hideMyLibrary'       => isset( $this->wl_config['my_library'] ) ? $this->wl_config['my_library'] : false,
-			'endpoint'            => TPC_TEMPLATES_CLOUD_ENDPOINT,
+			'brandedTheme'        => $this->get_whitelabel_name(),
+			'hideStarterSites'    => $this->is_starter_sites_disabled(),
+			'hideMyLibrary'       => $this->is_library_disabled(),
+			'endpoint'            => ( defined( 'TPC_TEMPLATES_CLOUD_ENDPOINT' ) ) ? TPC_TEMPLATES_CLOUD_ENDPOINT : self::get_templates_cloud_endpoint(),
 			'params'              => array(
 				'site_url'   => get_site_url(),
 				'license_id' => License::get_license_data()->key,
@@ -413,11 +574,20 @@ class Admin {
 		$array['onboarding'] = $api;
 
 		// Do not display the notification if starter sites are disabled
-		if ( isset( $this->wl_config['starter_sites'] ) && (bool) $this->wl_config['starter_sites'] === true ) {
+		if ( $this->is_starter_sites_disabled() ) {
 			return $array;
 		}
-		$page_was_visited = (bool) get_transient( 'tiob_library_visited' );
-		if ( $this->is_agency_plan() && ! $page_was_visited ) {
+
+		// Previously the library was visited check was stored in a transient. To ensure the notification is not displayed anymore once the user has visited the library
+		// the transient was moved to an option and here we check that if the transient is set we also update the option.
+		$visited_transient = (bool) get_transient( self::VISITED_LIBRARY_OPT );
+		$page_was_visited  = get_option( self::VISITED_LIBRARY_OPT, false );
+		if ( $visited_transient && $page_was_visited === false ) {
+			update_option( self::VISITED_LIBRARY_OPT, 'yes' );
+			$page_was_visited = 'yes';
+		}
+		if ( $this->is_agency_plan() && $page_was_visited !== 'yes' ) {
+
 			$array['notifications']['template-cloud'] = array(
 				'text' => __( 'Great news!  Now you can export your own custom designs to the cloud and then reuse them on other sites.', 'templates-patterns-collection' ),
 				'cta'  => sprintf(
@@ -425,7 +595,7 @@ class Admin {
 					__( 'Open %s', 'templates-patterns-collection' ),
 					'Templates Cloud'
 				),
-				'url'  => 'themes.php?page=' . $this->page_slug . '&dismiss_notice=yes#library',
+				'url'  => ( $this->neve_theme_has_support( 'theme_dedicated_menu' ) ? 'admin.php' : 'themes.php' ) . '?page=' . $this->page_slug . '&dismiss_notice=yes#library',
 			);
 		}
 
@@ -519,8 +689,8 @@ class Admin {
 
 		$options = array(
 			'theme_name'          => ! empty( $data[ $old_theme ]['theme_name'] ) ? esc_html( $data[ $old_theme ]['theme_name'] ) : '',
-			'screenshot'          => TIOB_URL . '/migration/' . $folder_name . '/' . $data[ $old_theme ]['template'] . '.png',
-			'template'            => TIOB_PATH . '/migration/' . $folder_name . '/' . $data[ $old_theme ]['template'] . '.json',
+			'screenshot'          => TIOB_URL . 'migration/' . $folder_name . '/' . $data[ $old_theme ]['template'] . '.png',
+			'template'            => TIOB_PATH . 'migration/' . $folder_name . '/' . $data[ $old_theme ]['template'] . '.json',
 			'template_name'       => $data[ $old_theme ]['template'],
 			'heading'             => $data[ $old_theme ]['heading'],
 			'description'         => $data[ $old_theme ]['description'],

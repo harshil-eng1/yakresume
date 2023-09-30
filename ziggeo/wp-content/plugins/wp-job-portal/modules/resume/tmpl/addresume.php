@@ -16,25 +16,25 @@ echo wp_kses(WPJOBPORTALformfield::hidden('resume_temp', wpjobportal::$_data['re
     </div>
     <div id="resume-files-popup-wrapper" class="wpjp-resume-popup-wrp"style="display:none;">
         <span class="close-resume-files">
-            <?php echo __('Resume Files', 'wp-job-portal'); ?>
+            <?php echo esc_html(__('Resume Files', 'wp-job-portal')); ?>
             <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>/includes/images/popup-close.png" />
         </span>
         <div class="wpjp-resumepopup-section-wrapper">
-            <span class="wpjp-clickable-files"><img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/resume/select-file.png"/><?php echo __('Select files', 'wp-job-portal'); ?></span>
-            <span class="clickablefiles"><?php echo __('Selected files', 'wp-job-portal'); ?></span>
-            <span id="resume-files-selected"><?php echo __('No file selected', 'wp-job-portal'); ?></span>
+            <span class="wpjp-clickable-files"><img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/resume/select-file.png"/><?php echo esc_html(__('Select files', 'wp-job-portal')); ?></span>
+            <span class="clickablefiles"><?php echo esc_html(__('Selected files', 'wp-job-portal')); ?></span>
+            <span id="resume-files-selected"><?php echo esc_html(__('No file selected', 'wp-job-portal')); ?></span>
             <div class="wpjp-resume-filepopup-lowersection-wrapper">
-                <div class="allowedfiles"><?php echo __('Files allowed', 'wp-job-portal') . ' ( ' . esc_html(wpjobportal::$_config->getConfigurationByConfigName('document_max_files')) . ' )'; ?></div>
+                <div class="allowedfiles"><?php echo esc_html(__('Files allowed', 'wp-job-portal')) . ' ( ' . esc_html(wpjobportal::$_config->getConfigurationByConfigName('document_max_files')) . ' )'; ?></div>
                 <div class="allowedextension">( <?php echo esc_html(wpjobportal::$_config->getConfigurationByConfigName('document_file_type')); ?> )</div>
-                <div class="allowedsize"><?php echo __('Maximum file size', 'wp-job-portal') . ' ( ' . esc_html(wpjobportal::$_config->getConfigurationByConfigName('document_file_size')) . ' KB )'; ?></div>
+                <div class="allowedsize"><?php echo esc_html(__('Maximum file size', 'wp-job-portal')) . ' ( ' . esc_html(wpjobportal::$_config->getConfigurationByConfigName('document_file_size')) . ' KB )'; ?></div>
             </div>
         </div>
     </div>
     <div class="wjportal-main-wrapper wjportal-clearfix" <?php if (isset($_COOKIE['wpjobportal_apply_visitor'])) echo 'style="padding-bottom:63px;"'; ?>>
-        <?php $msg = isset(wpjobportal::$_data[0]) ? __('Edit Resume', 'wp-job-portal') : __('Add New Resume', 'wp-job-portal');
+        <?php $msg = isset(wpjobportal::$_data[0]) ? esc_html(__('Edit Resume', 'wp-job-portal')) : esc_html(__('Add New Resume', 'wp-job-portal'));
             if(isset($_COOKIE['wpjobportal_apply_visitor'])){
                 if (!is_user_logged_in()) {
-                    $msg = __('Job Apply', 'wp-job-portal');
+                    $msg = esc_html(__('Job Apply', 'wp-job-portal'));
                 }
             }
         ?>

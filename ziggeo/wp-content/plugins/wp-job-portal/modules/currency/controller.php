@@ -25,7 +25,7 @@ class WPJOBPORTALCurrencyController {
             }
             $module = (wpjobportal::$_common->wpjp_isadmin()) ? 'page' : 'wpjobportalme';
             $module = WPJOBPORTALrequest::getVar($module, null, 'currency');
-            $module = str_replace('wpjobportal_', '', $module);
+            $module = wpjobportalphplib::wpJP_str_replace('wpjobportal_', '', $module);
             WPJOBPORTALincluder::include_file($layout, $module);
         }
     }

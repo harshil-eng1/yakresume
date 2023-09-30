@@ -10,11 +10,11 @@ add_filter( 'authenticate', 'wpjobportal_authenticate_username_password', 30, 3)
 
 function wpjobportal_login_failed( $username ){
     $referrer = wp_get_referer();
-    if ( $referrer && ! strstr($referrer, 'wp-login') && ! strstr($referrer, 'wp-admin') ){
+    if ( $referrer && ! wpjobportalphplib::wpJP_strstr($referrer, 'wp-login') && ! wpjobportalphplib::wpJP_strstr($referrer, 'wp-admin') ){
         if (isset($_POST['wp-submit'])){
             $key = WPJOBPORTALincluder::getJSModel('user')->getMessagekey();
-            WPJOBPORTALMessages::setLayoutMessage(__('Username / password is incorrect',"wp-job-portal"), 'error',$key);
-            $referrer=wpjobportal::makeUrl(array('wpjobportalpageid'=>wpjobportal::getPageid(),'wpjobportalme'=>'wpjobportal','wpjobportallt'=>'login'));
+            WPJOBPORTALMessages::setLayoutMessage(esc_html(__('Username / password is incorrect',"wp-job-portal")), 'error',$key);
+            $referrer=wpjobportal::wpjobportal_makeUrl(array('wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid(),'wpjobportalme'=>'wpjobportal','wpjobportallt'=>'login'));
             wp_redirect($referrer);
             exit;
         }else{
@@ -52,17 +52,17 @@ function wpjobportal_add_registration_fields() {
     //Get and set any values already sent
     if (isset($_SESSION['js_cpfrom'])) {
         ?>
-        <div class="wjportal-form-title"><?php echo __('User role'); ?></div>
+        <div class="wjportal-form-title"><?php echo esc_html(__('User role', 'wp-job-portal')); ?></div>
         <div class="wjportal-form-value">
             <div class="wjportal-form-text">
                 <?php if ($_SESSION['js_cpfrom'] == 1) { ?>
                     <input type="hidden" name="jobs_role" value="1" />
-                    <?php echo __('Employer', 'wp-job-portal'); ?>
+                    <?php echo esc_html(__('Employer', 'wp-job-portal')); ?>
                     <?php
                 } elseif ($_SESSION['js_cpfrom'] == 2) {
                     ?>
                     <input type="hidden" name="jobs_role" value="2" />
-                     <?php echo __('Job seeker', 'wp-job-portal'); ?>
+                     <?php echo esc_html(__('Job seeker', 'wp-job-portal')); ?>
                <?php } ?>
             </div>
         </div>
@@ -72,14 +72,14 @@ function wpjobportal_add_registration_fields() {
 
             <div class="wjportal-form-title">
                 <label for="jobs_role">
-                    <?php _e('Jobs role', 'wp-job-portal') ?>
+                    <?php echo esc_html(__('Jobs role', 'wp-job-portal')) ?>
                 </label>
             </div>
             <div class="wjportal-form-value">
                 <select id="jobs_role" name="jobs_role" class="input form-control wjportal-form-select-field">
-                    <option value="0"><?php echo __('Select job role', 'wp-job-portal'); ?></option>
-                    <option value="1"><?php echo __('Employer', 'wp-job-portal'); ?></option>
-                    <option value="2"><?php echo __('Job seeker', 'wp-job-portal'); ?></option>
+                    <option value="0"><?php echo esc_html(__('Select job role', 'wp-job-portal')); ?></option>
+                    <option value="1"><?php echo esc_html(__('Employer', 'wp-job-portal')); ?></option>
+                    <option value="2"><?php echo esc_html(__('Job seeker', 'wp-job-portal')); ?></option>
                 </select>
             </div>
             <input type="hidden" name="jobs_notfromourform" value="1" />
@@ -97,7 +97,7 @@ function wpjobportal_registration_errors($errors, $sanitized_user_login, $user_e
 
     if (isset($_POST['jobs_role']) && $_POST['jobs_role'] == 0) {
 
-        $errors->add('user_role_error','<strong>'.__("Error","wp-job-portal").'</strong>:'. __('You must set jobs user role', 'wp-job-portal').'.');
+        $errors->add('user_role_error','<strong>'.esc_html(__("Error","wp-job-portal")).'</strong>:'. esc_html(__('You must set jobs user role', 'wp-job-portal')).'.');
     }
 
     return $errors;
@@ -109,7 +109,7 @@ add_action('user_register', 'wpjobportal_registration_save', 10, 1);
 function wpjobportal_registration_save($user_id) {
     //if (isset($_POST['jobs_role'])) {
     if (isset($_POST['jobs_role']) && !isset($_POST['wpjobportal_jobs_register_nonce']) && !wp_verify_nonce($_POST['wpjobportal_jobs_register_nonce'], 'wpjobportal-jobs-register-nonce') ) {
-        $role = filter_var($_POST['jobs_role'],FILTER_SANITIZE_STRING);
+        $role = wpjobportal::wpjobportal_sanitizeData($_POST['jobs_role']);
         $user_email = sanitize_email($_POST['wpjobportal_user_email']);
         if (is_numeric($role)) {
             if ($role == 1) {
@@ -132,7 +132,7 @@ function wpjobportal_registration_save($user_id) {
                 $data['emailaddress'] = $user_email;
                 $data['status'] = 1;
                 $data['created'] = date_i18n('Y-m-d H:i:s');
-
+                $data = wpjobportal::wpjobportal_sanitizeData($data);
                 if (!$row->bind($data)) {
                     echo WPJOBPORTAL_SAVE_ERROR;
                 }
@@ -153,56 +153,56 @@ function wpjobportal_add_new_member() {
         $user_email = sanitize_email($_POST['wpjobportal_user_email']);
         $user_first = sanitize_text_field($_POST["wpjobportal_user_first"]);
         $user_last = sanitize_text_field($_POST["wpjobportal_user_last"]);
-        $user_pass = filter_var($_POST["wpjobportal_user_pass"] , FILTER_SANITIZE_STRING);
+        $user_pass = wpjobportal::wpjobportal_sanitizeData($_POST["wpjobportal_user_pass"] );
         $photo = sanitize_file_name($_FILES['photo']['name']);
-        $pass_confirm = filter_var($_POST["wpjobportal_user_pass_confirm"] , FILTER_SANITIZE_STRING);
+        $pass_confirm = wpjobportal::wpjobportal_sanitizeData($_POST["wpjobportal_user_pass_confirm"] );
 
         // this is required for username checks
-        // require_once(ABSPATH . WPINC . '/registration.php');
+
         $fieldslist = wpjobportal::$_wpjpfieldordering->getFieldsOrderingforForm(4);
         if ($user_login == '' && $fieldslist['wpjobportal_user_login']->required == 1) {
             // empty username
-            wpjobportal_errors()->add('username_empty', __('Please enter a '.$fieldslist['wpjobportal_user_login']->fieldtitle, 'wp-job-portal'));
+            wpjobportal_errors()->add('username_empty', esc_html(__('Please enter a '.$fieldslist['wpjobportal_user_login']->fieldtitle, 'wp-job-portal')));
         } elseif ($user_login == '' && $fieldslist['wpjobportal_user_login']->required == 0) {
             $user_login = $user_email;
         }
         if (username_exists($user_login)) {
             // Username already registered
-            wpjobportal_errors()->add('username_unavailable', __($fieldslist['wpjobportal_user_login']->fieldtitle.' already taken', 'wp-job-portal'));
+            wpjobportal_errors()->add('username_unavailable', wpjobportal::wpjobportal_getVariableValue($fieldslist['wpjobportal_user_login']->fieldtitle).' already taken');
         }
         if (!validate_username($user_login)) {
             // invalid username
-            wpjobportal_errors()->add('username_invalid', __('Invalid '.$fieldslist['wpjobportal_user_login']->fieldtitle, 'wp-job-portal'));
+            wpjobportal_errors()->add('username_invalid', esc_html(__('Invalid '.$fieldslist['wpjobportal_user_login']->fieldtitle, 'wp-job-portal')));
         }
 
         if ($user_first == ''  && $fieldslist['wpjobportal_user_first']->required == 1) {
             // empty first name
-            wpjobportal_errors()->add('firstname_empty', __('Please enter a '.$fieldslist['wpjobportal_user_first']->fieldtitle, 'wp-job-portal'));
+            wpjobportal_errors()->add('firstname_empty', esc_html(__('Please enter a '.$fieldslist['wpjobportal_user_first']->fieldtitle, 'wp-job-portal')));
         }
 
         if ($user_last == ''  && $fieldslist['wpjobportal_user_last']->required == 1) {
             // empty last name
-            wpjobportal_errors()->add('lastname_empty', __('Please enter a '.$fieldslist['wpjobportal_user_last']->fieldtitle, 'wp-job-portal'));
+            wpjobportal_errors()->add('lastname_empty', esc_html(__('Please enter a '.$fieldslist['wpjobportal_user_last']->fieldtitle, 'wp-job-portal')));
         }
         if ($photo == ''  && $fieldslist['photo']->required == 1) {
             // empty last name
-            wpjobportal_errors()->add('photo_empty', __('Please enter a '.$fieldslist['photo']->fieldtitle, 'wp-job-portal'));
+            wpjobportal_errors()->add('photo_empty', esc_html(__('Please enter a '.$fieldslist['photo']->fieldtitle, 'wp-job-portal')));
         }
         if (!is_email($user_email)) {
             //invalid email
-            wpjobportal_errors()->add('email_invalid', __('Invalid '.$fieldslist['wpjobportal_user_email']->fieldtitle, 'wp-job-portal'));
+            wpjobportal_errors()->add('email_invalid', esc_html(__('Invalid '.$fieldslist['wpjobportal_user_email']->fieldtitle, 'wp-job-portal')));
         }
         if (email_exists($user_email)) {
             //Email address already registered
-            wpjobportal_errors()->add('email_used', __($fieldslist['wpjobportal_user_email']->fieldtitle.' already registered', 'wp-job-portal'));
+            wpjobportal_errors()->add('email_used', wpjobportal::wpjobportal_getVariableValue($fieldslist['wpjobportal_user_email']->fieldtitle).' already registered');
         }
         if ($user_pass == '') {
             // passwords do not match
-            wpjobportal_errors()->add('password_empty', __('Please enter a password', 'wp-job-portal'));
+            wpjobportal_errors()->add('password_empty', esc_html(__('Please enter a password', 'wp-job-portal')));
         }
         if ($user_pass != $pass_confirm) {
             // passwords do not match
-            wpjobportal_errors()->add('password_mismatch', __('Passwords do not match', 'wp-job-portal'));
+            wpjobportal_errors()->add('password_mismatch', esc_html(__('Passwords do not match', 'wp-job-portal')));
         }
 
         foreach ($fieldslist AS $field) {
@@ -211,7 +211,7 @@ function wpjobportal_add_new_member() {
                     $cf_data = $_POST[$field->field];
                 }
                 if (empty($cf_data)) {
-                    wpjobportal_errors()->add($field->fieldtitle.'_empty', __('Please enter a '.$field->fieldtitle, 'wp-job-portal'));
+                    wpjobportal_errors()->add($field->fieldtitle.'_empty', esc_html(__('Please enter a '.$field->fieldtitle, 'wp-job-portal')));
                 }
             }
         }
@@ -220,16 +220,16 @@ function wpjobportal_add_new_member() {
         if ($config_array['cap_on_reg_form'] == 1) {
             if ($config_array['captcha_selection'] == 1) { // Google recaptcha
 
-                $gresponse = filter_var($_POST['g-recaptcha-response'], FILTER_SANITIZE_STRING);
+                $gresponse = wpjobportal::wpjobportal_sanitizeData($_POST['g-recaptcha-response']);
                 $resp = googleRecaptchaHTTPPost($config_array['recaptcha_privatekey'] , $gresponse);
                 if (! $resp) {
-                    wpjobportal_errors()->add('invalid_captcha', __('Invalid captcha', 'wp-job-portal'));
+                    wpjobportal_errors()->add('invalid_captcha', esc_html(__('Invalid captcha', 'wp-job-portal')));
                 }
             } else { // own captcha
                 $captcha = new WPJOBPORTALcaptcha;
                 $result = $captcha->checkCaptchaUserForm();
                 if ($result != 1) {
-                    wpjobportal_errors()->add('invalid_captcha', __('Invalid captcha', 'wp-job-portal'));
+                    wpjobportal_errors()->add('invalid_captcha', esc_html(__('Invalid captcha', 'wp-job-portal')));
                 }
             }
         }
@@ -258,7 +258,7 @@ function wpjobportal_add_new_member() {
                 update_user_option( $new_user_id, 'last_name', $user_last, true );
                 wp_update_user( array ('ID' => $new_user_id,  'display_name' => $display_name) ) ;
             } else {
-                wpjobportal_errors()->add('email_invalid', __($wperrors->get_error_message(), 'wp-job-portal'));
+                wpjobportal_errors()->add('email_invalid', $wperrors->get_error_message());
             }
             if ($new_user_id) {
                 // send an email to the admin alerting them of the registration
@@ -268,7 +268,7 @@ function wpjobportal_add_new_member() {
                 wp_set_auth_cookie($new_user_id);
                 //do_action('wp_login', $user_login);
 
-                $role = filter_var($_POST['jobs_role'] , FILTER_SANITIZE_STRING);
+                $role = wpjobportal::wpjobportal_sanitizeData($_POST['jobs_role'] );
 
                 if (is_numeric($role)) {
                     if ($role == 1) {
@@ -288,11 +288,11 @@ function wpjobportal_add_new_member() {
                 $msguserrole = $userrole;
                 if ($userrole == 'employer') {
                     $userrole = 1;
-                    $url = wpjobportal::makeUrl(array('wpjobportalme'=>'employer', 'wpjobportallt'=>'controlpanel',"wpjobportalpageid"=>wpjobportal::getPageid()));
+                    $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'employer', 'wpjobportallt'=>'controlpanel',"wpjobportalpageid"=>wpjobportal::wpjobportal_getPageid()));
 
                 } elseif ($userrole == 'jobseeker') {
                     $userrole = 2;
-                    $url = wpjobportal::makeUrl(array('wpjobportalme'=>'jobseeker', 'wpjobportallt'=>'controlpanel',"wpjobportalpageid"=>wpjobportal::getPageid()));
+                    $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'jobseeker', 'wpjobportallt'=>'controlpanel',"wpjobportalpageid"=>wpjobportal::wpjobportal_getPageid()));
                 }
                     $row = WPJOBPORTALincluder::getJSTable('users');
                     $data['uid'] = $new_user_id;
@@ -303,12 +303,13 @@ function wpjobportal_add_new_member() {
                     $data['photo'] = $photo;
                     $data['status'] = 1;
                     $data['created'] = date_i18n('Y-m-d H:i:s');
+                    $data = wpjobportal::wpjobportal_sanitizeData($data);
                     $key = WPJOBPORTALincluder::getJSModel($msguserrole)->getMessagekey();
                     if (!$row->bind($data)) {
-                        WPJOBPORTALMessages::setLayoutMessage(__('Error Updating User', 'wp-job-portal'), 'error',$key);
+                        WPJOBPORTALMessages::setLayoutMessage(esc_html(__('Error Updating User', 'wp-job-portal')), 'error',$key);
                     }
                     if (!$row->store()) {
-                        WPJOBPORTALMessages::setLayoutMessage(__('Error Updating User', 'wp-job-portal'), 'error',$key);
+                        WPJOBPORTALMessages::setLayoutMessage(esc_html(__('Error Updating User', 'wp-job-portal')), 'error',$key);
                     }else{
                         $data = WPJOBPORTALrequest::get('post');
                         WPJOBPORTALincluder::getObjectClass('customfields')->storeCustomFields(4,$row->id,$data);
@@ -331,7 +332,7 @@ function wpjobportal_add_new_member() {
                     }elseif($userrole == 2){
                         $pageid = wpjobportal::$_config->getConfigurationByConfigName('register_jobseeker_redirect_page');
                     }
-                    WPJOBPORTALMessages::setLayoutMessage($usercaption." ".__('User been successfully created', 'wp-job-portal'), 'updated',$key);
+                    WPJOBPORTALMessages::setLayoutMessage(esc_html(__('User been successfully created', 'wp-job-portal')), 'updated',$key);
                     // $url = home_url();
                     if(is_numeric($pageid)){
                            if(get_post_status($pageid) == 'publish'){
@@ -428,94 +429,94 @@ add_action('delete_user', 'wpjobportal_remove_jobs_user');
 
 add_action( 'vc_before_init', 'wp_job_portalvcSetAsTheme' );
 function wp_job_portalvcSetAsTheme() {
-    if(wpjobportal::$theme_chk == 0){
+    if(wpjobportal::$theme_chk == 1){
         vc_set_as_theme();
 
         vc_map( array(
-              "name" => __( "Employer Control Panel", "job-hub" ),
+              "name" => esc_html(__( "Employer Control Panel", "wp-job-portal")),
               "base" => "wpjobportal_employer_controlpanel",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/dashboard.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "Jobseeker Control Panel", "job-hub" ),
+              "name" => esc_html(__( "Jobseeker Control Panel", "wp-job-portal")),
               "base" => "wpjobportal_jobseeker_controlpanel",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/dashboard.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "Login", "job-hub" ),
+              "name" => esc_html(__( "Login", "wp-job-portal")),
               "base" => "wpjobportal_login_page",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/login.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "Job Search", "job-hub" ),
+              "name" => esc_html(__( "Job Search", "wp-job-portal")),
               "base" => "wpjobportal_job_search",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/job-search.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "Job Listing", "job-hub" ),
+              "name" => esc_html(__( "Job Listing", "wp-job-portal")),
               "base" => "wpjobportal_job",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/job-list.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "Jobs By Catergories", "job-hub" ),
+              "name" => esc_html(__( "Jobs By Catergories", "wp-job-portal")),
               "base" => "wpjobportal_job_categories",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/job-category.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "Jobs By Types", "job-hub" ),
+              "name" => esc_html(__( "Jobs By Types", "wp-job-portal")),
               "base" => "wpjobportal_job_types",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/job-type.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "My Applied Jobs", "job-hub" ),
+              "name" => esc_html(__( "My Applied Jobs", "wp-job-portal")),
               "base" => "wpjobportal_my_appliedjobs",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/my-applied-job.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "My Companies", "job-hub" ),
+              "name" => esc_html(__( "My Companies", "wp-job-portal")),
               "base" => "wpjobportal_my_companies",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/companies.png',
               "show_settings_on_create" => false,
             )
@@ -523,30 +524,30 @@ function wp_job_portalvcSetAsTheme() {
 
 
         vc_map( array(
-              "name" => __( "My Jobs", "job-hub" ),
+              "name" => esc_html(__( "My Jobs", "wp-job-portal")),
               "base" => "wpjobportal_my_jobs",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/jobs.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "My Resumes", "job-hub" ),
+              "name" => esc_html(__( "My Resumes", "wp-job-portal")),
               "base" => "wpjobportal_my_resumes",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/resume.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "Add Company", "job-hub" ),
+              "name" => esc_html(__( "Add Company", "wp-job-portal")),
               "base" => "wpjobportal_add_company",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/ad-company.png',
               "show_settings_on_create" => false,
             )
@@ -554,60 +555,60 @@ function wp_job_portalvcSetAsTheme() {
 
 
         vc_map( array(
-              "name" => __( "Add Job", "job-hub" ),
+              "name" => esc_html(__( "Add Job", "wp-job-portal")),
               "base" => "wpjobportal_add_job",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/ad-job.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "Add Resume", "job-hub" ),
+              "name" => esc_html(__( "Add Resume", "wp-job-portal")),
               "base" => "wpjobportal_add_resume",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/ad-resume.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "Resume Search", "job-hub" ),
+              "name" => esc_html(__( "Resume Search", "wp-job-portal")),
               "base" => "wpjobportal_resume_search",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/resume-search.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "Employer Registration", "job-hub" ),
+              "name" => esc_html(__( "Employer Registration", "wp-job-portal")),
               "base" => "wpjobportal_employer_registration",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/employer-register.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "Jobseeker Registration", "job-hub" ),
+              "name" => esc_html(__( "Jobseeker Registration", "wp-job-portal")),
               "base" => "wpjobportal_jobseeker_registration",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/jobseeker-register.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "All Companies", "job-hub" ),
+              "name" => esc_html(__( "All Companies", "wp-job-portal")),
               "base" => "wpjobportal_all_companies",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/all-companies.png',
               "show_settings_on_create" => false,
             )
@@ -615,20 +616,20 @@ function wp_job_portalvcSetAsTheme() {
 
 
         vc_map( array(
-              "name" => __( "My Cover Letters", "job-hub" ),
+              "name" => esc_html(__( "My Cover Letters", "wp-job-portal")),
               "base" => "wpjobportal_my_coverletter",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/cover-letter.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "My Departments", "job-hub" ),
+              "name" => esc_html(__( "My Departments", "wp-job-portal")),
               "base" => "wpjobportal_my_departments",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/department.png',
               "show_settings_on_create" => false,
             )
@@ -636,39 +637,39 @@ function wp_job_portalvcSetAsTheme() {
 
 
         vc_map( array(
-              "name" => __( "Add Cover Letter", "job-hub" ),
+              "name" => esc_html(__( "Add Cover Letter", "wp-job-portal")),
               "base" => "wpjobportal_add_coverletter",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/ad-cover-letter.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "Add Department", "job-hub" ),
+              "name" => esc_html(__( "Add Department", "wp-job-portal")),
               "base" => "wpjobportal_add_department",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/ad-department.png',
               "show_settings_on_create" => false,
             )
         );
         vc_map( array(
-              "name" => __( "Employer My Stats", "job-hub" ),
+              "name" => esc_html(__( "Employer My Stats", "wp-job-portal")),
               "base" => "wpjobportal_employer_my_stats",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/employer-stats.png',
               "show_settings_on_create" => false,
             )
         );
 
         vc_map( array(
-              "name" => __( "Jobseeker My Stats", "job-hub" ),
+              "name" => esc_html(__( "Jobseeker My Stats", "wp-job-portal")),
               "base" => "wpjobportal_jobseeker_my_stats",
               "class" => "",
-              "category" => __( "WP JOB PORTAL Pages", "job-hub"),
+              "category" => esc_html(__( "WP JOB PORTAL Pages", "wp-job-portal")),
               "icon" => WPJOBPORTAL_PLUGIN_URL . 'includes/images/vc-icons/jobseeker-stats.png',
               "show_settings_on_create" => false,
             )

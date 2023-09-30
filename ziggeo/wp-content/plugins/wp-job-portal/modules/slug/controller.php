@@ -19,7 +19,7 @@ class WPJOBPORTALslugController {
             }
             $module = 'page';
             $module = WPJOBPORTALrequest::getVar($module, null, 'slug');
-            $module = str_replace('wpjobportal_', '', $module);
+            $module = wpjobportalphplib::wpJP_str_replace('wpjobportal_', '', $module);
             WPJOBPORTALincluder::include_file($layout, $module);
         }
     }

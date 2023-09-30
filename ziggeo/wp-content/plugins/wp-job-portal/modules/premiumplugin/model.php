@@ -64,6 +64,7 @@ class WPJOBPORTALpremiumpluginModel {
         );
 
         $args    = wp_parse_args( $defaults, $args );
+
         $request = wp_remote_get( self::$server_url . '?' . http_build_query( $args, '', '&' ) );
         if ( is_wp_error( $request ) ) {
             return json_encode( array( 'error_code' => $request->get_error_code(), 'error' => $request->get_error_message() ) );
@@ -115,7 +116,7 @@ class WPJOBPORTALpremiumpluginModel {
     function verifyAddonSqlFile($addon_name,$addon_version){
         $option_name = 'transaction_key_for_wp-job-portal-'.$addon_name;
         $transaction_key = wpjobportal::$_common->getTranskey($option_name);
-        // $addonversion = str_replace('.', '', $addon_version);
+        // $addonversion = wpjobportalphplib::wpJP_str_replace('.', '', $addon_version);
         $defaults = array(
             'request'  => 'getactivatesql',
             'domain' => network_site_url(),
@@ -178,9 +179,9 @@ class WPJOBPORTALpremiumpluginModel {
 
                         while (feof($file) === false) {
                             $query[] = fgets($file);
-                            if (preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
-                                $query = trim(implode('', $query));
-                                $query = str_replace("#__", wpjobportal::$_db->prefix, $query);
+                            if (wpjobportalphplib::wpJP_preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
+                                $query = wpjobportalphplib::wpJP_trim(implode('', $query));
+                                $query = wpjobportalphplib::wpJP_str_replace("#__", wpjobportal::$_db->prefix, $query);
                                 if (!empty($query)) {
                                     wpjobportal::$_db->query($query);
                                 }
@@ -202,13 +203,13 @@ class WPJOBPORTALpremiumpluginModel {
             $decodedata = json_decode($addonsql,true);
             $delimiter = ';';
             if(isset($decodedata['verfication_status']) && $decodedata['update_sql'] != ""){
-                $lines = explode(PHP_EOL, $addonsql);
+                $lines = wpjobportalphplib::wpJP_explode(PHP_EOL, $addonsql);
                 if(!empty($lines)){
                     foreach($lines as $line){
                         $query[] = $line;
-                        if (preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
-                            $query = trim(implode('', $query));
-                            $query = str_replace("#__", wpjobportal::$_db->prefix, $query);
+                        if (wpjobportalphplib::wpJP_preg_match('~' . preg_quote($delimiter, '~') . '\s*$~iS', end($query)) === 1) {
+                            $query = wpjobportalphplib::wpJP_trim(implode('', $query));
+                            $query = wpjobportalphplib::wpJP_str_replace("#__", wpjobportal::$_db->prefix, $query);
                             if (!empty($query)) {
                                 wpjobportal::$_db->query($query);
                             }

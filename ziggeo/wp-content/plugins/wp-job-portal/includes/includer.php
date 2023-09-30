@@ -26,7 +26,7 @@ class WPJOBPORTALincluder {
                 }
                 include_once $file_path['tmpl_file'];
             }else if(file_exists($file_path)){
-                $incfilepath = explode('.php', $file_path);
+                $incfilepath = wpjobportalphplib::wpJP_explode('.php', $file_path);
                 $incfilename = $incfilepath[0].'.inc.php';
                 if (file_exists($incfilename)) {
                     require_once($incfilename);
@@ -167,8 +167,8 @@ class WPJOBPORTALincluder {
     }
 
     public static function locateTemplate($template_name,$args= array()){
-        $module = substr($template_name, 0, strpos($template_name, '/'));
-        $template_name = substr($template_name, strpos($template_name, '/')+1);
+        $module = wpjobportalphplib::wpJP_substr($template_name, 0, wpjobportalphplib::wpJP_strpos($template_name, '/'));
+        $template_name = wpjobportalphplib::wpJP_substr($template_name, wpjobportalphplib::wpJP_strpos($template_name, '/')+1);
         $module_name = isset($args['module_name']) ? $args['module_name'] : null;
         /* ADDONS PLUGIN DIR FOR TEMPLATE => module_name  */
        if($module_name!=null && $module_name!=""){
@@ -189,7 +189,7 @@ class WPJOBPORTALincluder {
     }
 
     public static function getPluginPath($module,$type,$file_name = '') {
-        $addons_secondry = array('facebook','linkedin','xing','folderresume','mystats','creditslog','creditspack','purchasehistory','purchase','userpackage','subscription','invoice','userpackage','jobalertsetting','package','jobseekerviewcompany','employerviewresume','rating','transactionlog','jobalertcities','paymentmethodconfiguration','paypal','Stripe','resumeformAdons','ResumeViewAdons','Stripe/init');
+        $addons_secondry = array('socialmedia','facebook','linkedin','xing','folderresume','mystats','creditslog','creditspack','purchasehistory','purchase','userpackage','subscription','invoice','userpackage','jobalertsetting','package','jobseekerviewcompany','employerviewresume','rating','transactionlog','jobalertcities','paymentmethodconfiguration','paypal','Stripe','resumeformAdons','ResumeViewAdons','Stripe/init','coverletter','popup');
         if(in_array($module, wpjobportal::$_active_addons) && $module != 'theme' && $module != 'customfields'){
 
             $path = WP_PLUGIN_DIR.'/'.'wp-job-portal-'.$module.'/';
@@ -227,6 +227,7 @@ class WPJOBPORTALincluder {
                 case 'folderresume':
                     $parent_module = 'folder';
                     break;
+                    case 'socialmedia':
                     case 'facebook':
                     case 'linkedin':
                     case 'xing':
@@ -257,6 +258,7 @@ class WPJOBPORTALincluder {
                 case 'paypal':
                 case 'invoice':
                 case 'Stripe/init':
+                case 'popup':
                     $parent_module = 'credits';
                     break;
                 case 'customfields':

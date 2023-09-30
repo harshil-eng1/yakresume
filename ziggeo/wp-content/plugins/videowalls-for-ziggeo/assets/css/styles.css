@@ -1,0 +1,598 @@
+/* 
+	Minimal styles for video Walls.
+	To override them, you can add CSS to your child theme or
+	if theme allows you to add any CSS into it directly.
+*/
+/*
+
+INDEX:
+	1. General styles
+	2. Slidewall CSS
+	2. Chessboard grid CSS
+	3. Mosaic grid CSS
+	4. VideoSite Playlist CSS
+
+*/
+
+/*******************************************************************************/
+/* 1. GENERAL STYLES */
+/*******************************************************************************/
+
+	.ziggeo_videoWall {
+		/*background-color: beige; /  * falback *  /
+		background-image: linear-gradient(120deg, beige, white);*/
+		box-sizing: border-box;
+		padding: 0.6em;
+	}
+	.ziggeo_wall_title {
+		border-bottom: 2px groove orange;
+		border-bottom-right-radius: 20px;
+		font-style: italic;
+		text-align: center;
+		text-shadow: 1px 1px 2px lightGray;
+	}
+	/* Allowing videos to be centered within the page */
+	.ziggeo_wallpage {
+		text-align: center;
+	}
+	/* centering videos within page only */
+	.ziggeo_wallpage > ziggeo {
+		display: inline-block;
+		margin: 0 auto;
+	}
+	/* spacing between videos on pages */
+	.ziggeo_wallpage > ziggeo {
+		margin: 20px;
+	}
+	/* Hides all pages - otherwise you would have no paging.. */
+	.ziggeo-wall-showPages .ziggeo_wallpage, .ziggeo-wall-slideWall .ziggeo_wallpage {
+		display: none;
+	}
+	/* Display only the first page holding videos */
+	.ziggeo-wall-showPages .ziggeo_wallpage:nth-child(2), .ziggeo-wall-slideWall .ziggeo_wallpage {
+		display: block;
+	}
+	.ziggeo_wallpage_number {
+		box-shadow: 0 0 3px gray;
+		float: left;
+		margin: 0 4px;
+		text-align: center;
+		width: 2em;
+		border-radius: 2em;
+		cursor: pointer;
+		background-color: white;
+		background-image: linear-gradient(210deg, lightgray, white);
+	}
+	.ziggeo_wallpage_number:hover {
+		background-color: lightGray;
+		background-image: linear-gradient(210deg, white, lightGray );
+	}
+	.ziggeo_wallpage_number.current {
+		background-color: lightgreen;
+		background-image: linear-gradient(210deg, lightgreen, green);
+	}
+	.ziggeo_wallpage_number.current:hover {
+		background-color: lime;
+		background-image: linear-gradient(210deg, green, lime);
+	}
+	/* orientation styles */
+	.ba-videoplayer-stretch-height[data-orientation="landscape"] .ba-videoplayer-self-stretched img.ba-videoplayer-video {
+		width: max-content;
+	}
+	.ba-videoplayer-stretch-height[data-orientation="portrait"] .ba-videoplayer-self-stretched img.ba-videoplayer-video {
+		width: auto;
+		left: 0;
+		height: 100%;
+		min-width: 0;
+		max-height: 100%;
+		display: inline-block;
+		transform: translateX(50%);
+	}
+
+
+
+
+/*******************************************************************************/
+/* 2. SLIDEWALL CSS */
+/*******************************************************************************/
+	.ziggeo-wall-slideWall .ziggeo_wallpage,  .ziggeo_wallpage {
+		position: relative;
+	}
+	/* base properties for both previous and next arrows */
+	.ziggeo_videowall_slide_previous, .ziggeo_videowall_slide_next {
+		/*height: 80%;
+		margin-top: 5%;*/
+		min-width: 40px;
+		position: absolute;
+		vertical-align: middle;
+		width: 10%;
+		background-color: transparent;
+		cursor: pointer;
+		background-position: center center;
+		background-repeat: no-repeat;
+		z-index: 2;
+		top: 20px;
+		bottom: 20px;
+		/*height: auto;*/
+	}
+	/* to make previous stick before the video */
+	.ziggeo_videowall_slide_previous {
+		left: 0;
+		border-top-left-radius: 100%;
+		border-bottom-left-radius: 100%;
+		border-left: 2px groove lightgray;
+	}
+	/*.ziggeo_videowall_slide_previous {
+		float: left;
+		border-top-left-radius: 100%;
+		border-bottom-left-radius: 100%;
+		border-left: 2px groove lightgray;
+	}*/
+	.ziggeo_videowall_slide_next {
+		right: 0;
+		border-top-right-radius: 100%;
+		border-bottom-right-radius: 100%;
+		border-right: 2px groove lightgray;
+	}
+	/* to make next arrow stick on the right of the videos */
+	/*.ziggeo_videowall_slide_next {
+		float: right;
+		right: 0;
+		top: 0;
+		/* To make them nice and rounded */
+		/*
+		border-top-right-radius: 100%;
+		border-bottom-right-radius: 100%;
+		border-right: 2px groove lightgray;
+	}*/
+	/* the styles that are applied when mouse is over the slidewall previous button */
+	.ziggeo_videowall_slide_previous:hover {
+		box-shadow: -3px 0 4px lightgray;
+	}
+	/* the styles that are applied when mouse is over the slidewall next button */
+	.ziggeo_videowall_slide_next:hover {
+		box-shadow: 3px 0 4px lightGray;
+	}
+
+
+
+
+/*******************************************************************************/
+/* 3. CHESSBOARD GRID CSS */
+/*******************************************************************************/
+
+	/*.ziggeo-wall-chessboardGrid ziggeoplayer {
+		width: calc( 100% / 8);
+	}*/
+	/* endless scroll chessboard grid implementation */
+	.ziggeo-wall-chessboardGrid ziggeo, .ziggeo-wall-mosaicGrid ziggeo {
+		display: inline-block;
+		margin: 5px;
+	}
+	#ziggeo-endless-loading_more {
+		display: none;
+	}
+	.ziggeo-wall-chessboardGrid .ziggeo_wallpage, .ziggeo-wall-mosaicGrid .ziggeo_wallpage {
+		margin: 0;
+		padding: 0;
+		width: 100%;
+		height: 100%;
+		clear:both;
+	}
+
+	.ziggeo-wall-chessboardGrid {
+		/*background-color: brown;*/
+		text-align: center;
+		padding: 10px;
+		box-sizing: border-box;
+		border-width: 4px;
+		border-style: outset;
+		border-color: brown;
+		position: relative;
+		background-image: url('./../images/wood-330.jpeg');
+	}
+
+	.ziggeo-wall-chessboardGrid ziggeoplayer {
+		margin: 5px;
+	}
+
+	.videowalls_chessboard_grid_row {
+		display: block;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+		box-sizing: border-box;
+		overflow: hidden;
+		vertical-align: top;
+		min-height: 100%;
+		/*height: 100%;*/
+	}
+
+	.chessboard_field {
+		width: 12.5%;
+		display: inline-flex;
+		justify-content: center;
+		vertical-align: middle;
+		flex-direction: column;
+	}
+
+	.chessboard_field.white_field {
+		background-color: rgba(255,255,255,0.8);
+	}
+
+	.chessboard_field.black_field {
+		background-color: rgba(0,0,0,0.8);
+	}
+
+	/* Make the player big once it starts to play */
+	.videowalls_playing {
+		position: absolute;
+		left: 20px;
+		top: 20px;
+		bottom: 20px;
+		right: 20px;
+		z-index: 20;
+	}
+
+	.videowalls_playing video {
+		height: 100%;
+	}
+
+	/* Effects after the video has played or on entry */
+	.videowalls_effect_hide {
+		opacity: 0;
+		transition: 2s all ease-in-out;
+	}
+
+
+
+/*******************************************************************************/
+/* 4. MOSAIC GRID CSS */
+/*******************************************************************************/
+
+	.ziggeo-wall-mosaicGrid ziggeoplayer {
+		/*display: inline-block;*/
+		/*float: left;*/
+		margin: 10px 0px;
+		box-sizing: border-box;
+	}
+
+	.ziggeo-wall-mosaicGrid .ba-videoplayer-video-poster {
+		background-color: none;
+	}
+
+	.ziggeo-wall-mosaicGrid .mosaic_col {
+		/*width: 0;*/
+		height: auto;
+		display: inline-block;
+		margin: 0;
+		/*padding: 0;*/
+		vertical-align: top;
+		box-sizing: border-box;
+		padding: 20px;
+	}
+
+	.ziggeo-wall-mosaicGrid .mosaic_col:nth-child(1) {
+		background-color: tomato;
+		background-image: linear-gradient(90deg, tomato, aquamarine);
+	}
+
+	.ziggeo-wall-mosaicGrid .mosaic_col:nth-child(2) {
+		background-color: aquamarine;
+	}
+
+	.ziggeo-wall-mosaicGrid .mosaic_col:nth-child(3) {
+		background-color: navajowhite;
+		background-image: linear-gradient(90deg, aquamarine, navajowhite, navajowhite);
+	}
+
+	.ziggeo-wall-mosaicGrid .mosaic_col:nth-child(4) {
+		background-color: violet;
+		background-image: linear-gradient(90deg, navajowhite,violet);
+	}
+
+	/* Mosaic 4 rows */
+	.ziggeo-wall-mosaicGrid.wall_4_1_cols .mosaic_col:nth-child(1) { width: 22%; }
+	.ziggeo-wall-mosaicGrid.wall_4_1_cols .mosaic_col:nth-child(2) { width: 24%; }
+	.ziggeo-wall-mosaicGrid.wall_4_1_cols .mosaic_col:nth-child(3) { width: 26%; }
+	.ziggeo-wall-mosaicGrid.wall_4_1_cols .mosaic_col:nth-child(4) { width: 28%; }
+
+	.ziggeo-wall-mosaicGrid.wall_4_2_cols .mosaic_col:nth-child(1) { width: 28%; }
+	.ziggeo-wall-mosaicGrid.wall_4_2_cols .mosaic_col:nth-child(2) { width: 22%; }
+	.ziggeo-wall-mosaicGrid.wall_4_2_cols .mosaic_col:nth-child(3) { width: 24%; }
+	.ziggeo-wall-mosaicGrid.wall_4_2_cols .mosaic_col:nth-child(4) { width: 26%; }
+
+	.ziggeo-wall-mosaicGrid.wall_4_3_cols .mosaic_col:nth-child(1) { width: 22%; }
+	.ziggeo-wall-mosaicGrid.wall_4_3_cols .mosaic_col:nth-child(2) { width: 28%; }
+	.ziggeo-wall-mosaicGrid.wall_4_3_cols .mosaic_col:nth-child(3) { width: 24%; }
+	.ziggeo-wall-mosaicGrid.wall_4_3_cols .mosaic_col:nth-child(4) { width: 26%; }
+
+	.ziggeo-wall-mosaicGrid.wall_4_4_cols .mosaic_col:nth-child(1) { width: 26%; }
+	.ziggeo-wall-mosaicGrid.wall_4_4_cols .mosaic_col:nth-child(2) { width: 24%; }
+	.ziggeo-wall-mosaicGrid.wall_4_4_cols .mosaic_col:nth-child(3) { width: 28%; }
+	.ziggeo-wall-mosaicGrid.wall_4_4_cols .mosaic_col:nth-child(4) { width: 22%; }
+
+	/* Mosaic 3 rows */
+	.ziggeo-wall-mosaicGrid.wall_3_1_cols .mosaic_col:nth-child(1) { width: 34%; }
+	.ziggeo-wall-mosaicGrid.wall_3_1_cols .mosaic_col:nth-child(2) { width: 38%; }
+	.ziggeo-wall-mosaicGrid.wall_3_1_cols .mosaic_col:nth-child(3) { width: 28%; }
+
+	.ziggeo-wall-mosaicGrid.wall_3_2_cols .mosaic_col:nth-child(1) { width: 38%; }
+	.ziggeo-wall-mosaicGrid.wall_3_2_cols .mosaic_col:nth-child(2) { width: 28%; }
+	.ziggeo-wall-mosaicGrid.wall_3_2_cols .mosaic_col:nth-child(3) { width: 34%; }
+
+	.ziggeo-wall-mosaicGrid.wall_3_3_cols .mosaic_col:nth-child(1) { width: 28%; }
+	.ziggeo-wall-mosaicGrid.wall_3_3_cols .mosaic_col:nth-child(2) { width: 34%; }
+	.ziggeo-wall-mosaicGrid.wall_3_3_cols .mosaic_col:nth-child(3) { width: 38%; }
+
+	.ziggeo-wall-mosaicGrid.wall_3_4_cols .mosaic_col:nth-child(1) { width: 34%; }
+	.ziggeo-wall-mosaicGrid.wall_3_4_cols .mosaic_col:nth-child(2) { width: 28%; }
+	.ziggeo-wall-mosaicGrid.wall_3_4_cols .mosaic_col:nth-child(3) { width: 38%; }
+
+	/* Mosaic 2 rows */
+	.ziggeo-wall-mosaicGrid.wall_2_1_cols .mosaic_col:nth-child(1) { width: 33%; }
+	.ziggeo-wall-mosaicGrid.wall_2_1_cols .mosaic_col:nth-child(2) { width: 67%; }
+
+	.ziggeo-wall-mosaicGrid.wall_2_2_cols .mosaic_col:nth-child(1) { width: 67%; }
+	.ziggeo-wall-mosaicGrid.wall_2_2_cols .mosaic_col:nth-child(2) { width: 33%; }
+
+	.ziggeo-wall-mosaicGrid.wall_2_3_cols .mosaic_col:nth-child(1) { width: 45%; }
+	.ziggeo-wall-mosaicGrid.wall_2_3_cols .mosaic_col:nth-child(2) { width: 55%; }
+
+	.ziggeo-wall-mosaicGrid.wall_2_4_cols .mosaic_col:nth-child(1) { width: 40%; }
+	.ziggeo-wall-mosaicGrid.wall_2_4_cols .mosaic_col:nth-child(2) { width: 60%; }
+
+
+
+/*******************************************************************************/
+/* 5. VIDEOSITE PLAYLIST CSS */
+/*******************************************************************************/
+
+	.ziggeo-wall-VideoSitePlaylist {
+		min-width: 920px;
+	}
+	.videosite_playlist_main {
+		max-width: calc(100% - 200px);
+		width: 64%;
+		display: inline-block;
+		box-sizing: border-box;
+		vertical-align: top;
+		padding: 20px;
+	}
+	.videosite_playlist_side {
+		width: 32%;
+		min-width: 320px;
+		display: inline-block;
+		box-sizing: border-box;
+		padding: 20px;
+		overflow-x: hidden;
+		overflow-y: scroll;
+		border: 1px solid gray;
+	}
+	.videosite_playlist_side div.img {
+		border: 4px double silver;
+		width: 50%;
+		height: 120px;
+		display: inline-block;
+		text-align: center;
+		background-color: black;
+		overflow: hidden;
+	}
+	.videosite_playlist_side > div {
+		position: relative;
+	}
+	/*.videosite_playlist_side img {
+		height: 100%;
+		display: inline-block;
+		width: 200px;
+		max-width: 200%; / * Needed to clear our some WP styles twentytwenty/style.css?ver=1.2 * /
+	}*/
+	.videosite_playlist_side img {
+		max-height: 100%;
+		width: 100%;
+		max-width: 100%;
+		object-fit: contain;
+		object-position: center;
+		height: 100%;
+	}
+	.videosite_playlist_side .video_title {
+		display: inline-block;
+		vertical-align: top;
+		padding-left: 10px;
+		box-sizing: border-box;
+		width: 50%;
+		min-height: 1em;
+		font-size: 16px;
+	}
+	.videosite_playlist_side .video_duration {
+		position: absolute;
+		bottom: 6px;
+		right: 50%;
+		background-color: white;
+		display: inline-block;
+		padding: 2px 10px;
+		border-top-left-radius: 25%;
+		font-size: 12px;
+		border-top: 1px solid gray;
+		border-left: 1px solid gray;
+	}
+	.videosite_playlist_playing_next {
+		font-size: 14px;
+		font-weight: bold;
+		border-bottom: 4px double gray;
+		margin-bottom: 10px;
+	}
+	.videosite_playlist_side > div {
+		display: flex;
+		margin: 10px 0px;
+	}
+	.videosite_playlist_side > div:nth-child(2n+1) {
+		background-color: lightgray;
+	}
+
+	/* Responsive styles */
+
+	.ziggeo-wall-VideoSitePlaylist.mobile_wall {
+		width: 100%;
+		min-width: auto;
+	}
+	.ziggeo-wall-VideoSitePlaylist.mobile_wall .videosite_playlist_main,
+	.ziggeo-wall-VideoSitePlaylist.mobile_wall .videosite_playlist_side {
+		width: 100%;
+		max-width: 100%;
+		display: block;
+	}
+	.ziggeo-wall-VideoSitePlaylist.mobile_wall .videosite_playlist_side div.img {
+		width: 120px;
+	}
+	.ziggeo-wall-VideoSitePlaylist.mobile_wall .videosite_playlist_side .video_duration {
+		right: calc(100% - 116px);
+		left: 40px;
+		bottom: 4px;
+	}
+
+/*******************************************************************************/
+/* 6. VIDEO STRIPES CSS */
+/*******************************************************************************/
+
+	.ziggeo_videoWall.stripes_videowall {
+		display: flex;
+		flex-wrap: nowrap;
+		flex-direction: row;
+		height: 420px;
+		overflow-x: hidden;
+		overflow-y: hidden;
+		margin: 20px 10px;
+		scroll-behavior: smooth;
+		padding: 0;
+		z-index: 1;
+		position: relative;
+	}
+
+	.ziggeo_videoWall.stripes_videowall .stripes_players_list {
+		display: flex;
+		flex-wrap: nowrap;
+		flex-direction: row;
+		overflow-x: hidden;
+		overflow-y: hidden;
+		scroll-behavior: smooth;
+		padding: 0;
+	}
+
+	.stripes_videowall .stripe-player {
+		max-width: 200px;
+		min-width: 200px;
+		height: 400px;
+		position: relative;
+		margin: 0 10px 10px;
+	}
+	.stripes_videowall .stripe-player .video_title {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		background-image: linear-gradient(#333, transparent);
+		z-index: 2;
+		text-align: center;
+		color: white;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		padding: 4px;
+	}
+	.stripes_videowall .stripe-player .video_title + div, .stripes_videowall .stripe-player .video_title + div > div {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		aspect-ratio: 1/2 !important;
+	}
+	.stripes_videowall .stripe-player .video_description {
+		bottom: 0;
+		left: 0;
+		width: 100%;
+		background-image: linear-gradient(transparent, #333);
+		position: absolute;
+		z-index: 2;
+		color: white;
+		padding: 4px;
+		overflow: hidden;
+		overflow-y: auto;
+		max-height: 2em;
+		text-overflow: ellipsis;
+		transition: max-height 800ms ease-in-out;
+	}
+	.stripes_videowall .stripe-player:hover .video_description {
+		max-height: 200px;
+	}
+
+	.stripes_videowall .stripe-player video.ba-videoplayer-video {
+		object-fit: cover;
+	}
+
+	.stripes_videowall_arrow_previous.inactive, .stripes_videowall_arrow_next.inactive {
+		opacity: 0.4;
+		pointer-events: none;
+	}
+
+	.stripes_videowall_arrow_previous, .stripes_videowall_arrow_next {
+		display: block;
+		width: 40px;
+		height: 420px;
+		position: relative;
+		background: white;
+		z-index: 3;
+		box-shadow: 0 0 10px gray;
+		cursor: pointer;
+		display: block;
+		min-width: 40px;
+		height: 50%;
+		margin: auto 4px;
+	}
+	.stripes_videowall_arrow_previous {
+		border-radius: 50% 0 0 50%;
+	}
+	.stripes_videowall_arrow_next {
+		border-radius: 0 50% 50% 0;
+	}
+	.stripes_videowall_arrow_previous::before, .stripes_videowall_arrow_previous::after,
+	.stripes_videowall_arrow_next::before, .stripes_videowall_arrow_next::after {
+		content: "";
+		position: relative;
+		display: inline-block;
+		width: 10px;
+		height: 40px;
+	}
+	.stripes_videowall_arrow_previous::before, .stripes_videowall_arrow_next::before {
+		top: calc(50% - 40px);
+		left: calc(50% - 5px);
+		background: silver;
+	}
+	.stripes_videowall_arrow_previous::after, .stripes_videowall_arrow_next::after {
+		top: 50%;
+		left: calc(50% - 15px);
+		background-color: lightgray;
+	}
+	.stripes_videowall_arrow_previous::before {
+		border-radius: 100% 0 0 0;
+	}
+	.stripes_videowall_arrow_previous::after {
+		border-radius: 0 0 0 100%;
+	}
+	.stripes_videowall_arrow_next::before {
+		border-radius: 0 100% 0 0;
+	}
+	.stripes_videowall_arrow_next::after {
+		border-radius: 0 0 100% 0;
+	}
+	.stripes_videowall_arrow_previous:hover::after, .stripes_videowall_arrow_next:hover::after {
+		background-color: lightblue;
+	}
+	.stripes_videowall_arrow_previous:hover::before, .stripes_videowall_arrow_next:hover::before {
+		background-color: lightskyblue;
+	}
+	.stripes_videowall_arrow_previous:active::after, .stripes_videowall_arrow_next:active::after {
+		background-color: lightskyblue;
+	}
+	.stripes_videowall_arrow_previous:active::before, .stripes_videowall_arrow_next:active::before {
+		background-color: lightblue;
+	}

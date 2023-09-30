@@ -59,7 +59,7 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 			'post_status'            => $post_status,
 			'ignore_sticky_posts'    => 1,
 			'offset'                 => absint( $args['offset'] ),
-			'posts_per_page'         => intval( $args['posts_per_page'] ),
+			'posts_per_page'         => intval( $args['posts_per_page'] ), // phpcs:ignore WordPress.WP.PostsPerPage.posts_per_page_posts_per_page -- Known slow query.
 			'orderby'                => $args['orderby'],
 			'order'                  => $args['order'],
 			'tax_query'              => [],
@@ -98,12 +98,21 @@ if ( ! function_exists( 'get_job_listings' ) ) :
 		if ( ! empty( $args['search_location'] ) ) {
 			$location_meta_keys = [ 'geolocation_formatted_address', '_job_location', 'geolocation_state_long' ];
 			$location_search    = [ 'relation' => 'OR' ];
-			foreach ( $location_meta_keys as $meta_key ) {
-				$location_search[] = [
-					'key'     => $meta_key,
-					'value'   => $args['search_location'],
-					'compare' => 'like',
-				];
+			$locations          = explode( ';', $args['search_location'] );
+
+			foreach ( $locations as $location ) {
+				$location = trim( $location );
+				if ( ! empty( $location ) ) {
+					$location_subquery = [ 'relation' => 'OR' ];
+					foreach ( $location_meta_keys as $meta_key ) {
+						$location_subquery[] = [
+							'key'     => $meta_key,
+							'value'   => $location,
+							'compare' => 'like',
+						];
+					}
+					$location_search[] = $location_subquery;
+				}
 			}
 
 			if ( $remote_position_search ) {
@@ -1461,12 +1470,14 @@ function job_manager_get_allowed_mime_types( $field = '' ) {
  *
  * @since 1.22.0
  * @since 1.35.0 Added the `$return_datetime` param.
+ * @since 1.41.0 Added the `$from_timestamp` param.
  *
- * @param  int  $job_id          Job ID.
- * @param  bool $return_datetime Return the date time object.
+ * @param  int                    $job_id          Job ID.
+ * @param  bool                   $return_datetime Return the date time object.
+ * @param  DateTimeImmutable|null $from_timestamp The timestamp to calculate the expiry from.
  * @return string|DateTimeImmutable When `$return_datetime`, it will return either DateTimeImmutable or null.
  */
-function calculate_job_expiry( $job_id, $return_datetime = false ) {
+function calculate_job_expiry( $job_id, $return_datetime = false, $from_timestamp = null ) {
 	// Get duration from the product if set...
 	$duration = get_post_meta( $job_id, '_job_duration', true );
 
@@ -1476,7 +1487,10 @@ function calculate_job_expiry( $job_id, $return_datetime = false ) {
 	}
 
 	if ( $duration ) {
-		$new_job_expiry = current_datetime()->add( new DateInterval( 'P' . absint( $duration ) . 'D' ) );
+		if ( ! $from_timestamp ) {
+			$from_timestamp = current_datetime();
+		}
+		$new_job_expiry = $from_timestamp->add( new DateInterval( 'P' . absint( $duration ) . 'D' ) );
 
 		return $return_datetime ? WP_Job_Manager_Post_Types::instance()->prepare_job_expires_time( $new_job_expiry ) : $new_job_expiry->format( 'Y-m-d' );
 	}
@@ -1661,10 +1675,6 @@ function job_manager_user_can_view_job_listing( $job_id ) {
 		}
 	}
 
-	if ( 'expired' === $job->post_status ) {
-		$can_view = false;
-	}
-
 	if ( $job->post_author > 0 && absint( $job->post_author ) === get_current_user_id() ) {
 		$can_view = true;
 	}
@@ -1706,4 +1716,24 @@ function job_manager_get_salary_unit_options( $include_empty = true ) {
 	 * @param boolean $include_empty Defines if we should include an empty option as default.
 	 */
 	return apply_filters( 'job_manager_get_salary_unit_options', $options, $include_empty );
+}
+
+/**
+ * Check if user can submit job listings.
+ *
+ * @return bool
+ * @since 1.41.0
+ */
+function job_manager_user_can_submit_job_listing() {
+	$submission_limit = get_option( 'job_manager_submission_limit', '' );
+	$job_count        = job_manager_count_user_job_listings();
+	$can_submit       = '' === $submission_limit || $submission_limit >= $job_count;
+	/**
+	 * Filter if the current user can or cannot submit job listings
+	 *
+	 * @since 1.41.0
+	 *
+	 * @param boolean $can_submit
+	 */
+	return apply_filters( 'job_manager_user_can_submit_job_listing', $can_submit );
 }

@@ -6,9 +6,9 @@ if (!defined('ABSPATH'))
 add_filter('product_type_selector', 'wpjobportal_packages_add_product_type');
 
 function wpjobportal_packages_add_product_type($types) {
-    $types['wpjobportal_packages'] = __('WP JOB PORTAL Package');
+    $types['wpjobportal_packages'] = esc_html(__('WP JOB PORTAL Package', 'wp-job-portal'));
     # Per Listing types
-    $types['wpjobportal_perlisting'] = __('WP JOB PORTAL Perlisting');
+    $types['wpjobportal_perlisting'] = esc_html(__('WP JOB PORTAL Perlisting', 'wp-job-portal'));
     return $types;
 }
 
@@ -20,12 +20,14 @@ function wpjobportal_packages_create_custom_product_type() {
     }
     class WC_Product_Wpjobportal_packages extends WC_Product {
 
+        public $product_type = '';
         public function __construct($product) {
             $this->product_type = 'wpjobportal_packages';
             parent::__construct($product);
             // add additional functions here
         }
     }
+
     class WC_Product_Wpjobportal_perlisting extends WC_Product {
 
         public function __construct($product) {
@@ -62,7 +64,7 @@ function wpjobportal_packages_add_custom_settings() {
 
     //parse the packages packs
     if ($result && is_array($result)) {
-        $options = array('' => __('Select Package', 'wp-job-portal'));
+        $options = array('' => esc_html(__('Select Package', 'wp-job-portal')));
         $fielddata = '';
         $i = 0;
          foreach ($result AS $pack) {
@@ -79,10 +81,10 @@ function wpjobportal_packages_add_custom_settings() {
     woocommerce_wp_select(
             array(
                 'id' => 'wpjobportal_packagepack_field',
-                'label' => __('Package combo', 'woocommerce'),
+                'label' => esc_html(__('Package combo', 'woocommerce')),
                 'placeholder' => '',
                 'desc_tip' => 'true',
-                'description' => __('Select packages pack so that user can purchase them.', 'woocommerce'),
+                'description' => esc_html(__('Select packages pack so that user can purchase them.', 'woocommerce')),
                 'type' => 'number',
                 'options' => $options,
                 'custom_attributes' => array('fielddata' => $fielddata)
@@ -90,9 +92,11 @@ function wpjobportal_packages_add_custom_settings() {
 
 
 
-    echo '</div>
-        <script >
-            jQuery(document).ready(function(){
+    echo '</div>';
+        wp_register_script( 'wpjobportal-inline-handle', '' );
+        wp_enqueue_script( 'wpjobportal-inline-handle' );
+        $inline_js_script = '
+        jQuery(document).ready(function(){
                 jQuery( ".options_group.pricing" ).addClass( "show_if_wpjobportal_packages" ).show();
 
                 jQuery("#product-type").change(function(){
@@ -141,15 +145,15 @@ function wpjobportal_packages_add_custom_settings() {
                     }
                 });
             });
-        </script>
     ';
+    wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
 }
 
 add_action('woocommerce_process_product_meta', 'wpjobportal_packages_save_custom_settings');
 
 function wpjobportal_packages_save_custom_settings($post_id) {
     // save wpjobportal_packagepack_field
-    $wpjobportal_packagepack_field = filter_var($_POST['wpjobportal_packagepack_field'] , FILTER_SANITIZE_STRING);
+    $wpjobportal_packagepack_field = wpjobportal::wpjobportal_sanitizeData($_POST['wpjobportal_packagepack_field'] );
     if (!empty($wpjobportal_packagepack_field))
         update_post_meta($post_id, 'wpjobportal_packagepack_field', esc_attr($wpjobportal_packagepack_field));
 }
@@ -197,25 +201,26 @@ add_action('woocommerce_product_options_general_product_data', 'wpjobportal_perl
 function wpjobportal_perlisting_add_custom_settings() {
     global $woocommerce, $post;
    $perlisting = array(
-    (object) array('id' => 'company_price_perlisting', 'text' => __('Company', 'wp-job-portal'),),
-    (object) array('id' => 'company_feature_price_perlisting', 'text' => __('Feature Company', 'wp-job-portal')),
-    (object) array('id' => 'job_currency_price_perlisting', 'text' => __('Add Job', 'wp-job-portal')),
-    (object) array('id' => 'jobs_feature_price_perlisting', 'text' => __('Featuer Job', 'wp-job-portal')),
-    (object) array('id' => 'job_resume_price_perlisting', 'text' => __('Add Resume', 'wp-job-portal')),
-    (object) array('id' => 'job_featureresume_price_perlisting', 'text' => __('Feature Resume', 'wp-job-portal')),
-    (object) array('id' => 'job_department_price_perlisting', 'text' => __('Add  Department', 'wp-job-portal')),
-    (object) array('id' => 'job_resumesavesearch_price_perlisting', 'text' => __('Resume Save Search', 'wp-job-portal')),
-    (object) array('id' => 'job_jobalert_price_perlisting', 'text' => __('Job Alert Time ', 'wp-job-portal')),
-    (object) array('id' => 'job_viewcompanycontact_price_perlisting', 'text' => __('View Company Contact Detail ', 'wp-job-portal')),
-    (object) array('id' => 'job_viewresumecontact_price_perlisting', 'text' => __('View Resume Contact Detail', 'wp-job-portal')),
-    (object) array('id' => 'job_jobapply_price_perlisting', 'text' => __('Job Apply', 'wp-job-portal'))
+    (object) array('id' => 'company_price_perlisting', 'text' => esc_html(__('Company', 'wp-job-portal')),),
+    (object) array('id' => 'company_feature_price_perlisting', 'text' => esc_html(__('Feature Company', 'wp-job-portal'))),
+    (object) array('id' => 'job_currency_price_perlisting', 'text' => esc_html(__('Add Job', 'wp-job-portal'))),
+    (object) array('id' => 'jobs_feature_price_perlisting', 'text' => esc_html(__('Featuer Job', 'wp-job-portal'))),
+    (object) array('id' => 'job_resume_price_perlisting', 'text' => esc_html(__('Add Resume', 'wp-job-portal'))),
+    (object) array('id' => 'job_featureresume_price_perlisting', 'text' => esc_html(__('Feature Resume', 'wp-job-portal'))),
+    (object) array('id' => 'job_department_price_perlisting', 'text' => esc_html(__('Add Department', 'wp-job-portal'))),
+    (object) array('id' => 'job_resumesavesearch_price_perlisting', 'text' => esc_html(__('Resume Save Search', 'wp-job-portal'))),
+    (object) array('id' => 'job_jobalert_price_perlisting', 'text' => esc_html(__('Job Alert Time ', 'wp-job-portal'))),
+    (object) array('id' => 'job_viewcompanycontact_price_perlisting', 'text' => esc_html(__('View Company Contact Detail ', 'wp-job-portal'))),
+    (object) array('id' => 'job_viewresumecontact_price_perlisting', 'text' => esc_html(__('View Resume Contact Detail', 'wp-job-portal'))),
+    (object) array('id' => 'job_jobapply_price_perlisting', 'text' => esc_html(__('Job Apply', 'wp-job-portal'))),
+    (object) array('id' => 'job_coverletter_price_perlisting', 'text' => esc_html(__('Add Cover Letter', 'wp-job-portal')))
 
     );
 
 
 
     echo '<div id="wpjobportal_perlisting_custom_product_option" class="options_group">';
-    $options = array('' => __('Select Package', 'wp-job-portal'));
+    $options = array('' => esc_html(__('Select Package', 'wp-job-portal')));
         $i = 0;
         $fielddata = '';
         foreach ($perlisting as $key => $value) {
@@ -230,16 +235,18 @@ function wpjobportal_perlisting_add_custom_settings() {
     woocommerce_wp_select(
             array(
                 'id' => 'wpjobportal_perlistingpack_field',
-                'label' => __('Package combo', 'woocommerce'),
+                'label' => esc_html(__('Package combo', 'woocommerce')),
                 'placeholder' => '',
                 'desc_tip' => 'true',
-                'description' => __('Select packages pack so that user can purchase them.', 'woocommerce'),
+                'description' => esc_html(__('Select packages pack so that user can purchase them.', 'woocommerce')),
                 'type' => 'number',
                 'options' => $options,
                 'custom_attributes' => array('fielddata' => $fielddata)
     ));
-    echo '</div>
-        <script >
+    echo '</div>';
+    wp_register_script( 'wpjobportal-inline-handle', '' );
+    wp_enqueue_script( 'wpjobportal-inline-handle' );
+    $inline_js_script = '
             jQuery(document).ready(function(){
                 jQuery( ".options_group.pricing" ).addClass( "show_if_wpjobportal_perlisting" ).show();
 
@@ -289,15 +296,15 @@ function wpjobportal_perlisting_add_custom_settings() {
                     }
                 });
             });
-        </script>
     ';
+    wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
 }
 
 add_action('woocommerce_process_product_meta', 'wpjobportal_perlisting_save_custom_settings');
 
 function wpjobportal_perlisting_save_custom_settings($post_id) {
     // save wpjobportal_packagepack_field
-    $wpjobportal_perlistingpack_field = filter_var($_POST['wpjobportal_perlistingpack_field'] , FILTER_SANITIZE_STRING);
+    $wpjobportal_perlistingpack_field = wpjobportal::wpjobportal_sanitizeData($_POST['wpjobportal_perlistingpack_field'] );
     //echo $wpjobportal_perlistingpack_field;
     if (!empty($wpjobportal_perlistingpack_field))
         update_post_meta($post_id, 'wpjobportal_perlistingpack_field', esc_attr($wpjobportal_perlistingpack_field));
@@ -321,7 +328,7 @@ function wpjobportal_paymentperlisting_complete_by_wc($order_id){
             $product_id = $item['product_id'];
             $product_variation_id = $item['variation_id'];
             $module = get_post_meta($order_id, '_wpjobporta_billing_perlisting', true);
-            $parse = explode('-', $module);
+            $parse = wpjobportalphplib::wpJP_explode('-', $module);
             $moduleid = $parse[1];
             $actionname = $parse[0];
             # switch case
@@ -408,14 +415,14 @@ function add_order_delivery_date_to_order ( $order_id ) {
 
 add_action( 'wp_footer', function(){
     # Hide return to shop
-    ?>
-    <script>
+    wp_register_script( 'wpjobportal-inline-handle', '' );
+    wp_enqueue_script( 'wpjobportal-inline-handle' );
+    $inline_js_script = "
     jQuery(window).load(function() {
         if (jQuery('a.button.wc-backward'))
             jQuery('a.button.wc-backward').hide();
-    });
-    </script>
-    <?php
+    });";
+    wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
 });
 
 
@@ -428,7 +435,7 @@ add_action( 'wp_footer', function(){
     //$name = $id;
       if(is_wc_endpoint_url( 'order-received' ))
     # Specific Item Name For a Product
-        $item_name = $name.' ' . __('', 'woocommerce');
+        $item_name = $name.' ' . esc_html(__('', 'woocommerce'));
         return $item_name;
 }
 
@@ -438,7 +445,7 @@ add_filter('woocommerce_get_return_url','override_return_url',10,2);
 function override_return_url($return_url,$order){
     //create empty array to store url parameters in
     $sku_list = array();
-    $id = filter_var($_POST['billing_wpjobportal_mid'] , FILTER_SANITIZE_STRING);
+    $id = wpjobportal::wpjobportal_sanitizeData($_POST['billing_wpjobportal_mid'] );
     // retrive products in order
     if(isset($order)){
         foreach($order->get_items() as $key => $item){

@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 if (wpjobportal::$_config['offline'] == 2) {
     ?>

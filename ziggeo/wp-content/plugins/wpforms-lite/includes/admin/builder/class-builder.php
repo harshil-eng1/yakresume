@@ -422,7 +422,7 @@ class WPForms_Builder {
 			'conditionals',
 			WPFORMS_PLUGIN_URL . 'assets/lib/jquery.conditionals.min.js',
 			[ 'jquery' ],
-			'1.0.0'
+			'1.0.1'
 		);
 
 		wp_enqueue_script(
@@ -443,7 +443,7 @@ class WPForms_Builder {
 			'dom-purify',
 			WPFORMS_PLUGIN_URL . 'assets/lib/purify.min.js',
 			[],
-			'3.0.1'
+			'3.0.5'
 		);
 
 		if ( wp_is_mobile() ) {
@@ -501,12 +501,6 @@ class WPForms_Builder {
 			$this->get_localized_strings()
 		);
 
-		wp_localize_script(
-			'wpforms-builder',
-			'wpforms_addons',
-			$this->get_localized_addons()
-		);
-
 		/**
 		 * Form Builder enqueues action.
 		 *
@@ -543,13 +537,24 @@ class WPForms_Builder {
 			'date_select_day'                => 'DD',
 			'date_select_month'              => 'MM',
 			'debug'                          => wpforms_debug(),
-			'dynamic_choice_limit'           => sprintf( /* translators: %1$s - data source name (e.g. Categories, Posts), %2$s - data source type (e.g. post type, taxonomy), %3$s - display limit, %4$s - total number of items. */
-				esc_html__( 'The %1$s %2$s contains over %3$s items (%4$s). This may make the field difficult for your visitors to use and/or cause the form to be slow.', 'wpforms-lite' ),
-				'{source}',
-				'{type}',
-				'{limit}',
-				'{total}'
-			),
+			'dynamic_choices'                => [
+				'limit_message' => sprintf( /* translators: %1$s - data source name (e.g. Categories, Posts), %2$s - data source type (e.g. post type, taxonomy), %3$s - display limit, %4$s - total number of items. */
+					esc_html__( 'The %1$s %2$s contains over %3$s items (%4$s). This may make the field difficult for your visitors to use and/or cause the form to be slow.', 'wpforms-lite' ),
+					'{source}',
+					'{type}',
+					'{limit}',
+					'{total}'
+				),
+				'empty_message' => sprintf( /* translators: %1$s - data source name (e.g. Categories, Posts), %2$s - data source type (e.g. post type, taxonomy). */
+					esc_html__( 'This field will not be displayed in your form since there are no %2$s belonging to %1$s.', 'wpforms-lite' ),
+					'{source}',
+					'{type}'
+				),
+				'entities'      => [
+					'post_type' => esc_html__( 'posts', 'wpforms-lite' ),
+					'taxonomy'  => esc_html__( 'terms', 'wpforms-lite' ),
+				],
+			],
 			'cancel'                         => esc_html__( 'Cancel', 'wpforms-lite' ),
 			'ok'                             => esc_html__( 'OK', 'wpforms-lite' ),
 			'close'                          => esc_html__( 'Close', 'wpforms-lite' ),
@@ -652,13 +657,7 @@ class WPForms_Builder {
 			'error_save_form'                => esc_html__( 'Something went wrong while saving the form. Please reload the page and try again.', 'wpforms-lite' ),
 			'error_contact_support'          => esc_html__( 'Please contact the plugin support team if this behavior persists.', 'wpforms-lite' ),
 			'ms_win_css_url'                 => WPFORMS_PLUGIN_URL . 'assets/css/builder/builder-ms-win.css',
-			/* translators: %1$s - template name, %2$s - addon name(s). */
-			'template_addon_prompt'          => esc_html( sprintf( __( 'The %1$s template requires the %2$s. Would you like to install and activate it?', 'wpforms-lite' ), '%template%', '%addons%' ) ),
-			/* translators: %1$s - template name, %2$s - addon name(s). */
-			'template_addons_prompt'         => esc_html( sprintf( __( 'The %1$s template requires the %2$s. Would you like to install and activate all the required addons?', 'wpforms-lite' ), '%template%', '%addons%' ) ),
-			'template_addons_error'          => esc_html__( 'Could not install OR activate all the required addons. Please download from wpforms.com and install them manually. Would you like to use the template anyway?', 'wpforms-lite' ),
-			'use_template'                   => esc_html__( 'Yes, use template', 'wpforms-lite' ),
-			'error_select_template'          => esc_html__( 'Something went wrong while applying the template.', 'wpforms-lite' ),
+			'error_select_template'          => esc_html__( 'Please close the form builder and try again. If the error persists, contact our support team.', 'wpforms-lite' ),
 			'blank_form'                     => esc_html__( 'Blank Form', 'wpforms-lite' ),
 			'something_went_wrong'           => esc_html__( 'Something went wrong', 'wpforms-lite' ),
 			'field_cannot_be_reordered'      => esc_html__( 'This field cannot be moved.', 'wpforms-lite' ),
@@ -666,8 +665,10 @@ class WPForms_Builder {
 			'no_pages_found'                 => esc_html__( 'No results found', 'wpforms-lite' ),
 		];
 
+		$strings = $this->add_localized_currencies( $strings );
+
 		$strings['disable_entries'] = sprintf(
-			wp_kses( /* translators: %s - Link to the WPForms.com doc article. */
+			wp_kses( /* translators: %s - link to the WPForms.com doc article. */
 				__( 'Disabling entry storage for this form will completely prevent any new submissions from getting saved to your site. If you still intend to keep a record of entries through notification emails, then please <a href="%s" target="_blank" rel="noopener noreferrer">test your form</a> to ensure emails send reliably.', 'wpforms-lite' ),
 				[
 					'a' => [
@@ -687,7 +688,7 @@ class WPForms_Builder {
 		);
 
 		$strings['akismet_not_installed'] = sprintf(
-			wp_kses( /* translators: %1$s - Link to the plugin search page, %2$s - Link to the WPForms.com doc article. */
+			wp_kses( /* translators: %1$s - link to the plugin search page, %2$s - link to the WPForms.com doc article. */
 				__( 'This feature cannot be used at this time because the Akismet plugin <a href="%1$s" target="_blank" rel="noopener noreferrer">has not been installed</a>. For information on how to use this feature please <a href="%2$s" target="_blank" rel="noopener noreferrer">refer to our documentation</a>.', 'wpforms-lite' ),
 				[
 					'a' => [
@@ -708,7 +709,7 @@ class WPForms_Builder {
 		);
 
 		$strings['akismet_not_activated'] = sprintf(
-			wp_kses( /* translators: %1$s - Link to the plugins page, %2$s - Link to the WPForms.com doc article. */
+			wp_kses( /* translators: %1$s - link to the plugins page, %2$s - link to the WPForms.com doc article. */
 				__( 'This feature cannot be used at this time because the Akismet plugin <a href="%1$s" target="_blank" rel="noopener noreferrer">has not been activated</a>. For information on how to use this feature please <a href="%2$s" target="_blank" rel="noopener noreferrer">refer to our documentation</a>.', 'wpforms-lite' ),
 				[
 					'a' => [
@@ -729,7 +730,7 @@ class WPForms_Builder {
 		);
 
 		$strings['akismet_no_api_key'] = sprintf(
-			wp_kses( /* translators: %1$s - Link to the Akismet settings page, %2$s - Link to the WPForms.com doc article. */
+			wp_kses( /* translators: %1$s - link to the Akismet settings page, %2$s - link to the WPForms.com doc article. */
 				__( 'This feature cannot be used at this time because the Akismet plugin <a href="%1$s" target="_blank" rel="noopener noreferrer">has not been properly configured</a>. For information on how to use this feature please <a href="%2$s" target="_blank" rel="noopener noreferrer">refer to our documentation</a>.', 'wpforms-lite' ),
 				[
 					'a' => [
@@ -761,28 +762,6 @@ class WPForms_Builder {
 		// phpcs:enable
 
 		return $strings;
-	}
-
-	/**
-	 * Get localized addons.
-	 *
-	 * @since 1.6.8
-	 *
-	 * @return array
-	 */
-	private function get_localized_addons() {
-
-		return wpforms_chain( wpforms()->get( 'addons' )->get_available() )
-			->map(
-				function( $addon ) {
-					return [
-						'title'  => $addon['title'],
-						'action' => $addon['action'],
-						'url'    => $addon['url'],
-					];
-				}
-			)
-			->value();
 	}
 
 	/**
@@ -1095,6 +1074,31 @@ class WPForms_Builder {
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Get localized currency strings for the builder.
+	 *
+	 * @since 1.8.2
+	 *
+	 * @param array $strings Array of localized strings.
+	 *
+	 * @return array
+	 */
+	private function add_localized_currencies( array $strings ) {
+
+		$currency   = wpforms_get_currency();
+		$currencies = wpforms_get_currencies();
+
+		$strings['currency']            = sanitize_text_field( $currency );
+		$strings['currency_name']       = isset( $currencies[ $currency ]['name'] ) ? sanitize_text_field( $currencies[ $currency ]['name'] ) : '';
+		$strings['currency_decimals']   = wpforms_get_currency_decimals( $currencies[ $currency ] );
+		$strings['currency_decimal']    = isset( $currencies[ $currency ]['decimal_separator'] ) ? sanitize_text_field( $currencies[ $currency ]['decimal_separator'] ) : '.';
+		$strings['currency_thousands']  = isset( $currencies[ $currency ]['thousands_separator'] ) ? sanitize_text_field( $currencies[ $currency ]['thousands_separator'] ) : ',';
+		$strings['currency_symbol']     = isset( $currencies[ $currency ]['symbol'] ) ? sanitize_text_field( $currencies[ $currency ]['symbol'] ) : '$';
+		$strings['currency_symbol_pos'] = isset( $currencies[ $currency ]['symbol_pos'] ) ? sanitize_text_field( $currencies[ $currency ]['symbol_pos'] ) : 'left';
+
+		return $strings;
 	}
 }
 

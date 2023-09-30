@@ -165,7 +165,7 @@ class WPJOBPORTALPostinstallationModel {
             $url = "https://d3ewuxxxzqg2dd.cloudfront.net/sample_data.zip";
             $filepath = $basepath . "tmp/jp_sample_data.zip";
             if(!function_exists('download_url')){
-               require_once(ABSPATH . "wp-admin" . '/includes/file.php');
+               do_action('wpjobportal_load_wp_file');
             }
 
             if(file_exists($basepath.'tmp')){
@@ -182,7 +182,7 @@ class WPJOBPORTALPostinstallationModel {
                 @unlink( $tmpfile ); // must unlink afterwards
 
                 if (file_exists($basepath . "tmp/jp_sample_data.zip")) {
-                    require_once ABSPATH . 'wp-admin/includes/class-pclzip.php';
+                    do_action('wpjobportal_load_wp_pcl_zip');
                     $archive = new PclZip($basepath . "tmp/jp_sample_data.zip");
                     $v_list = $archive->extract($wp_upload_dir["basedir"]."/".$data_directory."/");
                 }
@@ -690,7 +690,7 @@ class WPJOBPORTALPostinstallationModel {
         // Check for the rev slider
         $wp_upload_dir = wp_upload_dir();
         if (file_exists(get_template_directory() . "/framework/plugins/sample-data.zip")) {
-            require_once ABSPATH . 'wp-admin/includes/class-pclzip.php';
+            do_action('wpjobportal_load_wp_pcl_zip');
             $archive = new PclZip(get_template_directory() . "/framework/plugins/sample-data.zip");
             $v_list = $archive->extract($wp_upload_dir["basedir"]);
         }
@@ -708,21 +708,21 @@ class WPJOBPORTALPostinstallationModel {
         if( ! function_exists("uploadPostFeatureImage")){
             function uploadPostFeatureImage($filename,$parent_post_id){
                 // Check the type of file. We"ll use this as the "post_mime_type".
-                $filetype = wp_check_filetype( basename( $filename ), null );
+                $filetype = wp_check_filetype( wpjobportalphplib::wpJP_basename( $filename ), null );
                 // Get the path to the upload directory.
                 $wp_upload_dir = wp_upload_dir();
                 // Prepare an array of post data for the attachment.
                 $attachment = array(
-                    "guid"           => $wp_upload_dir["url"] . "/" . basename( $filename ),
+                    "guid"           => $wp_upload_dir["url"] . "/" . wpjobportalphplib::wpJP_basename( $filename ),
                     "post_mime_type" => $filetype["type"],
-                    "post_title"     => preg_replace( "/\.[^.]+$/", "", basename( $filename ) ),
+                    "post_title"     => wpjobportalphplib::wpJP_preg_replace( "/\.[^.]+$/", "", wpjobportalphplib::wpJP_basename( $filename ) ),
                     "post_content"   => "",
                     "post_status"    => "inherit"
                 );
                 // Insert the attachment.
                 $attach_id = wp_insert_attachment( $attachment, $filename, $parent_post_id );
                 // Make sure that this file is included, as wp_generate_attachment_metadata() depends on it.
-                require_once( ABSPATH . "wp-admin/includes/image.php" );
+                do_action('wpjobportal_load_wp_image');
                 // Generate the metadata for the attachment, and update the database record.
                 $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
                 wp_update_attachment_metadata( $attach_id, $attach_data );
@@ -818,10 +818,10 @@ class WPJOBPORTALPostinstallationModel {
         $page_array[35] = "Jobseeker Registration";
         $page_array[36] = "Thank You";
         foreach ($page_array as $key => $value) {
-            // $value_string = strtolower($value);
+            // $value_string = wpjobportalphplib::wpJP_strtolower($value);
             // $value_string = sanitize_title($value_string);
-            $value_string = strtolower($value);
-            $value_string = str_replace(" ","_",$value_string);
+            $value_string = wpjobportalphplib::wpJP_strtolower($value);
+            $value_string = wpjobportalphplib::wpJP_str_replace(" ","_",$value_string);
             $new_page_title = $value;
             $new_page_content = '[vc_row][vc_column][jh_job_hub_pages page page="'.$key.'"][/vc_column][/vc_row]';
             $new_page_template = "templates/template-fullwidth.php";
@@ -973,8 +973,8 @@ class WPJOBPORTALPostinstallationModel {
         // Update WP Options
         $wp_page_array = array();
         foreach ($page_array as $key => $value) {
-            $value_string = strtolower($value);
-            $value_string = str_replace(" ","_",$value_string);
+            $value_string = wpjobportalphplib::wpJP_strtolower($value);
+            $value_string = wpjobportalphplib::wpJP_str_replace(" ","_",$value_string);
             $wp_page_array[$value_string] = $jh_pages[$value_string];
         }
         update_option("job-hub-layout", $wp_page_array);
@@ -1763,7 +1763,6 @@ class WPJOBPORTALPostinstallationModel {
                 $wpdb->query($query);
                 update_option("rewrite_rules", "");
             return 1;
-
     }
 
     function insertJobCities($jobid, $cityid) {
@@ -1781,66 +1780,12 @@ class WPJOBPORTALPostinstallationModel {
 
     function getListOfDemoVersions() {
         $post_data = array();// data to posted with curl call
-        $url = "https://setup.joomsky.com/jobmanagertheme/demoimporter/getdemos.php";
-        $response = wp_remote_post( $url, array('body' => $post_data,'timeout'=>7,'sslverify'=>false));
-        if( !is_wp_error($response) && $response['response']['code'] == 200 && isset($response['body']) ){
-            $call_result = $response['body'];
-        }else{
-            $call_result = false;
-            if(!is_wp_error($response)){
-               $error = $response['response']['message'];
-           }else{
-                $error = $response->get_error_message();
-           }
-        }
-        if($call_result){
-            $result = json_decode($call_result,true);
-        }else{
-            $result = array();
-        }
-
-        if(isset($result['result_flag']) && $result['result_flag'] == 1){
-            $response = $result['result_data'];
-        }
-        $combo_array = array();
-        $result = array();
-        if(is_array($response)){
-            foreach ($response as $key => $value) {
-                $combo_array[] = (object)['id'=>$key+1,'text'=>$value['name']];
-                $result[$key+1] = $value;
-            }
-        }
-        wpjobportal::$_data[0] = $combo_array;
-        wpjobportal::$_data[1] = $result;
         return ;
     }
 
     function getDemo($demoid,$foldername,$demo_overwrite =0) {
         if($demoid == ''){
             die('demo not seleceted');
-        }
-        if($demo_overwrite == 1){
-            $this->removeJobManagerDemoData();
-        }
-        $url = 'https://setup.joomsky.com/jobmanagertheme/demoimporter/demos/'.$foldername.'/democode.php';
-        $post_data = array();
-        $response = wp_remote_post( $url, array('body' => $post_data,'timeout'=>7,'sslverify'=>false));
-        if( !is_wp_error($response) && $response['response']['code'] == 200 && isset($response['body']) ){
-            $call_result = $response['body'];
-        }else{
-            $call_result = false;
-            if(!is_wp_error($response)){
-               $error = $response['response']['message'];
-           }else{
-                $error = $response->get_error_message();
-           }
-        }
-
-        if($call_result){
-           $return_string = $call_result;
-           $pro = 0;
-           eval($return_string);
-           update_option('job_manager_demno_id',$demoid);// record the id of the demo currently imported.
         }
         return;
     }
@@ -1904,21 +1849,21 @@ class WPJOBPORTALPostinstallationModel {
 
     function uploadPostFeatureImage($filename,$parent_post_id){
         // Check the type of file. We"ll use this as the "post_mime_type".
-        $filetype = wp_check_filetype( basename( $filename ), null );
+        $filetype = wp_check_filetype( wpjobportalphplib::wpJP_basename( $filename ), null );
         // Get the path to the upload directory.
         $wp_upload_dir = wp_upload_dir();
         // Prepare an array of post data for the attachment.
         $attachment = array(
-            "guid"           => $wp_upload_dir["url"] . "/" . basename( $filename ),
+            "guid"           => $wp_upload_dir["url"] . "/" . wpjobportalphplib::wpJP_basename( $filename ),
             "post_mime_type" => $filetype["type"],
-            "post_title"     => preg_replace( "/\.[^.]+$/", "", basename( $filename ) ),
+            "post_title"     => wpjobportalphplib::wpJP_preg_replace( "/\.[^.]+$/", "", wpjobportalphplib::wpJP_basename( $filename ) ),
             "post_content"   => "",
             "post_status"    => "inherit"
         );
         // Insert the attachment.
         $attach_id = wp_insert_attachment( $attachment, $filename, $parent_post_id );
         // Make sure that this file is included, as wp_generate_attachment_metadata() depends on it.
-        require_once( ABSPATH . "wp-admin/includes/image.php" );
+        do_action('wpjobportal_load_wp_image');
         // Generate the metadata for the attachment, and update the database record.
         $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
         wp_update_attachment_metadata( $attach_id, $attach_data );
@@ -2008,7 +1953,7 @@ class WPJOBPORTALPostinstallationModel {
 
     function recursiveremove($dir) {
         $data_directory = WPJOBPORTALincluder::getJSModel('configuration')->getConfigValue('data_directory');
-        $structure = glob(rtrim($dir, "/").'/*');
+        $structure = glob(wpjobportalphplib::wpJP_rtrim($dir, "/").'/*');
         if (is_array($structure)) {
             foreach($structure as $file) {
                 if (is_dir($file)){
@@ -2046,7 +1991,7 @@ class WPJOBPORTALPostinstallationModel {
     function getWpUsersList() {
         $query = "SELECT id,CONCAT(user_login,' ( ',display_name,' ) - ',id) AS text  FROM `" . wpjobportal::$_db->prefix . "users`";
         $users = wpjobportal::$_db->get_results($query);
-        $data[0] = (object) array('id' => 0, 'text' => __('Select User', 'wp-job-portal'));
+        $data[0] = (object) array('id' => 0, 'text' => esc_html(__('Select User', 'wp-job-portal')));
         foreach ($users as $user) {
             $data[] = $user;
         }
@@ -2054,6 +1999,7 @@ class WPJOBPORTALPostinstallationModel {
     }
 
     function addMissingUsers(){
+        // wpuid column does not esist in the table. it was showing a query error in log
         $missingUser = 0;
         $query = "SELECT id FROM `" . wpjobportal::$_db->prefix . "users`";
         $users = wpjobportal::$_db->get_results($query);
@@ -2062,7 +2008,7 @@ class WPJOBPORTALPostinstallationModel {
         foreach ($users as $key => $user) {
             $wpUsers[] = $user->id;
         }
-        $query = " SELECT wpuid FROM `" . wpjobportal::$_db->prefix . "wj_portal_users`";
+        $query = " SELECT uid AS wpuid FROM `" . wpjobportal::$_db->prefix . "wj_portal_users`";
         $users = wpjobportal::$_db->get_results($query);
         foreach ($users as $key => $user) {
             $jsstUsers[] = $user->wpuid;
@@ -2070,7 +2016,7 @@ class WPJOBPORTALPostinstallationModel {
 
         $missingUsers = array_diff($wpUsers,$jsstUsers);
         foreach ($missingUsers as $missingUser) {
-            $query = "SELECT count(id) FROM `" . wpjobportal::$_db->prefix . "wj_portal_users` WHERE wpuid = " . $missingUser;
+            $query = "SELECT count(id) FROM `" . wpjobportal::$_db->prefix . "wj_portal_users` WHERE uid = " . $missingUser;
             $total = wpjobportal::$_db->get_var($query);
             if ($total == 0) {
                 $query = "SELECT * FROM `" . wpjobportal::$_db->prefix . "users` WHERE id = " . $missingUser;
@@ -2084,6 +2030,7 @@ class WPJOBPORTALPostinstallationModel {
                     $data['socialid'] = null;
                     $data['status'] = 1;
                     $data['created'] = date_i18n('Y-m-d H:i:s');
+                    $data = wpjobportal::wpjobportal_sanitizeData($data);
                     $row->bind($data);
                     $row->store();
                     $missingUser = 1;
@@ -2091,10 +2038,1299 @@ class WPJOBPORTALPostinstallationModel {
             }
         }
         if ($missingUser == 1) {
-            //JSSTmessage::setMessage(__('Missing user(s) added successfully!', 'js-support-ticket'), 'updated');
+            //JSSTmessage::setMessage(esc_html(__('Missing user(s) added successfully!', 'wp-job-portal')), 'updated');
         } else {
-            //JSSTmessage::setMessage(__('No missing user found!', 'js-support-ticket'), 'error');
+            //JSSTmessage::setMessage(esc_html(__('No missing user found!', 'wp-job-portal')), 'error');
         }
         return;
     }
+
+    function installSampleDataTemplateJobPortal() {
+        // $product_type = WPJOBPORTALincluder::getJSModel('configuration')->getConfigurationByConfigName('producttype');
+        // if($flag == 'p'){
+        //     return 0;
+        // }elseif($flag == 'f'){
+        //     if($product_type != 'free'){
+        //         return 0;
+        //     }
+        //     $pro  = 0;
+        // }elseif($flag == 'ftp'){
+        //         return 0;
+        // }
+        // Check for the rev slider
+        $wp_upload_dir = wp_upload_dir();
+        if (file_exists(get_template_directory() . "/framework/plugins/sample-data.zip")) {
+            do_action('wpjobportal_load_wp_pcl_zip');
+            $archive = new PclZip(get_template_directory() . "/framework/plugins/sample-data.zip");
+            $v_list = $archive->extract($wp_upload_dir["basedir"]);
+        }
+        if( ! function_exists("__update_post_meta")){
+            function __update_post_meta( $post_id, $field_name, $value = "" ){
+                if ( empty( $value ) OR ! $value ){
+                    delete_post_meta( $post_id, $field_name );
+                }elseif ( ! get_post_meta( $post_id, $field_name ) ){
+                    add_post_meta( $post_id, $field_name, $value );
+                }else{
+                    update_post_meta( $post_id, $field_name, $value );
+                }
+            }
+        }
+        if( ! function_exists("uploadPostFeatureImage")){
+            function uploadPostFeatureImage($filename,$parent_post_id){
+                // Check the type of file. We"ll use this as the "post_mime_type".
+                $filetype = wp_check_filetype( wpjobportalphplib::wpJP_basename( $filename ), null );
+                // Get the path to the upload directory.
+                $wp_upload_dir = wp_upload_dir();
+                // Prepare an array of post data for the attachment.
+                $attachment = array(
+                    "guid"           => $wp_upload_dir["url"] . "/" . wpjobportalphplib::wpJP_basename( $filename ),
+                    "post_mime_type" => $filetype["type"],
+                    "post_title"     => wpjobportalphplib::wpJP_preg_replace( "/\.[^.]+$/", "", wpjobportalphplib::wpJP_basename( $filename ) ),
+                    "post_content"   => "",
+                    "post_status"    => "inherit"
+                );
+                // Insert the attachment.
+                $attach_id = wp_insert_attachment( $attachment, $filename, $parent_post_id );
+                // Make sure that this file is included, as wp_generate_attachment_metadata() depends on it.
+                do_action('wpjobportal_load_wp_image');
+                // Generate the metadata for the attachment, and update the database record.
+                $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
+                wp_update_attachment_metadata( $attach_id, $attach_data );
+                set_post_thumbnail( $parent_post_id, $attach_id );
+            }
+        }
+        $jp_pages = array();
+        // Home
+        $new_page_title = "Home";
+        $new_page_template = "templates/template-homepage.php";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "page",
+                "post_title" => $new_page_title,
+                "post_content" => "",
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        if(!isset($page_check->ID)){
+            $jp_pages["home"] = wp_insert_post($new_page);
+        }else{
+            $new_page["post_title"] = "Job Portal ".$new_page_title;
+            $jp_pages["home"] = wp_insert_post($new_page);
+        }
+        update_post_meta($jp_pages["home"], "_wp_page_template", $new_page_template);
+        update_post_meta($jp_pages["home"], "jp_show_header", 2);
+        // there is only one homepage for now
+        // Home 1
+        // $new_page_title = "Home 1";
+        // $new_page_template = "templates/template-homepage.php";
+        // $page_check = get_page_by_title($new_page_title);
+        // $new_page = array(
+        //         "post_type" => "page",
+        //         "post_title" => $new_page_title,
+        //         "post_content" => "",
+        //         "post_status" => "publish",
+        //         "post_author" => 1,
+        //         "post_parent" => 0,
+        // );
+        // if(!isset($page_check->ID)){
+        //     $jp_pages["home1"] = wp_insert_post($new_page);
+        // }else{
+        //     $new_page["post_title"] = "Job Portal ".$new_page_title;
+        //     $jp_pages["home1"] = wp_insert_post($new_page);
+        // }
+        // update_post_meta($jp_pages["home1"], "_wp_page_template", $new_page_template);
+        // update_post_meta($jp_pages["home1"], "jp_show_header", 2);
+
+        $wp_upload_dir = wp_upload_dir();
+        /* end of homepages */
+        // Price table
+        $new_page_title = "Pricing Table";
+        $new_page_content = '<div class="wpj-jp-price-box-wrp"><div class="container"><div class="row"><div class="col-md-4"><div class="wpj-jp-price-item"><div class="wpj-jp-price-item-top"><h3 class="wpj-jp-price-heading">Lite Plan</h3><div class="wpj-jp-price-subheading">Individuals and small teams</div></div><div class="wpj-jp-price-item-mid"><ul class="wpj-jp-price-feat-list"><li>10 Jobs</li><li>5 Featured Jobs</li><li>10 Companies</li><li>5 Featured Companies</li></ul></div><div class="wpj-jp-price-item-btm"><div class="wpj-jp-price-for">Per Month</div><div class="wpj-jp-price-amount">$50</div><div class="wpj-jp-price-action"><a class="wpj-jp-price-act-btn" href="#">Select Plan</a></div><div class="wpj-jp-price-validity-date">7 days money back guaranty</div></div></div></div><div class="col-md-4"><div class="wpj-jp-price-item"><div class="wpj-jp-price-item-top"><h3 class="wpj-jp-price-heading">Pro Plan</h3><div class="wpj-jp-price-subheading">Individuals and small teams</div></div><div class="wpj-jp-price-item-mid"><ul class="wpj-jp-price-feat-list"><li>50 Jobs</li><li>10 Featured Jobs</li><li>50 Companies</li><li>10 Featured Companies</li></ul></div><div class="wpj-jp-price-item-btm"><div class="wpj-jp-price-for">Per Month</div><div class="wpj-jp-price-amount">$100</div><div class="wpj-jp-price-action"><a class="wpj-jp-price-act-btn" href="#">Select Plan</a></div><div class="wpj-jp-price-validity-date">12 days money back guaranty</div></div></div></div><div class="col-md-4"><div class="wpj-jp-price-item"><div class="wpj-jp-price-item-top"><h3 class="wpj-jp-price-heading">Enterprise Plan</h3><div class="wpj-jp-price-subheading">Individuals and small teams</div></div><div class="wpj-jp-price-item-mid"><ul class="wpj-jp-price-feat-list"><li>100 Jobs</li><li>30 Featured Jobs</li><li>100 Companies</li><li>30 Featured Companies</li></ul></div><div class="wpj-jp-price-item-btm"><div class="wpj-jp-price-for">Per Month</div><div class="wpj-jp-price-amount">$200</div><div class="wpj-jp-price-action"><a class="wpj-jp-price-act-btn" href="#">Select Plan</a></div><div class="wpj-jp-price-validity-date">15 days money back guaranty</div></div></div></div></div></div></div>';
+        $new_page_template = "templates/template-fullwidth.php";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "page",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        if(!isset($page_check->ID)){
+            $jp_pages["pricing_table"] = wp_insert_post($new_page);
+        }else{
+            $new_page["post_title"] = "Job Portal ".$new_page_title;
+            $jp_pages["pricing_table"] = wp_insert_post($new_page);
+        }
+        update_post_meta($jp_pages["pricing_table"], "jp_show_header", 1);
+        update_post_meta($jp_pages["pricing_table"], "_wp_page_template", $new_page_template);
+    // job portal pages
+        $page_array[1] = "Jobseeker Control Panel";
+        $page_array[2] = "Newest Jobs";
+        $page_array[3] = "Search Job";
+        $page_array[4] = "Jobs By Category";
+        $page_array[5] = "Shortlisted Jobs";
+        $page_array[6] = "Add Resume";
+        $page_array[7] = "My Resume";
+        $page_array[8] = "My Applied Jobs";
+        $page_array[9] = "Job Alert";
+        $page_array[10] = "All Companies";
+
+        //$page_array[18] = "Jobseeker Stats";
+        $page_array[13] = "Employer Control Panel";
+        $page_array[14] = "Add Company";
+        $page_array[15] = "My Companies";
+        $page_array[16] = "Add Job";
+        $page_array[17] = "My Jobs";
+        $page_array[19] = "Resume Search";
+        $page_array[21] = "Resume By Category";
+
+        $page_array[24] = "Login";
+        $page_array[23] = "Employer Registration";
+        $page_array[12] = "Jobseeker Registration";
+        //$page_array[36] = "Thank You";
+        foreach ($page_array as $key => $value) {
+            // $value_string = wpjobportalphplib::wpJP_strtolower($value);
+            // $value_string = sanitize_title($value_string);
+            $value_string = wpjobportalphplib::wpJP_strtolower($value);
+            $value_string = wpjobportalphplib::wpJP_str_replace(" ","_",$value_string);
+            $new_page_title = $value;
+            $new_page_content = '[vc_row][vc_column][jp_job_portal_theme_pages page page="'.$key.'"][/vc_column][/vc_row]';
+            $new_page_template = "templates/template-fullwidth.php";
+            $page_check = get_page_by_title($new_page_title);
+            $new_page = array(
+                    "post_type" => "page",
+                    "post_title" => $new_page_title,
+                    "post_content" => $new_page_content,
+                    "post_status" => "publish",
+                    "post_author" => 1,
+                    "post_parent" => 0,
+            );
+            if(!isset($page_check->ID)){
+                $jp_pages[$value_string] = wp_insert_post($new_page);
+            }else{
+                $new_page["post_title"] = "Job Portal ".$new_page_title;
+                $jp_pages[$value_string] = wp_insert_post($new_page);
+            }
+            update_post_meta($jp_pages[$value_string], "jp_show_header", 1);
+            update_post_meta($jp_pages[$value_string], "_wp_page_template", $new_page_template);
+        }
+    // job portal pages end
+        // News & Rumors
+        $new_page_title = "News & Rumors";
+        $new_page_content = '[vc_row][vc_column][jp_news_and_rumors style="1"][/vc_column][/vc_row]';
+        $new_page_template = "templates/template-news_and_rumors.php";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "page",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        if(!isset($page_check->ID)){
+            $jp_pages["news_and_rumors"] = wp_insert_post($new_page);
+        }else{
+            $new_page["post_title"] = "Job Portal ".$new_page_title;
+            $jp_pages["news_and_rumors"] = wp_insert_post($new_page);
+        }
+        update_post_meta($jp_pages["news_and_rumors"], "jp_show_header", 1);
+        update_post_meta($jp_pages["news_and_rumors"], "_wp_page_template", $new_page_template);
+        // FAQ
+        $new_page_title = "FAQ";
+        $new_page_content = '[vc_row][vc_column][vc_tta_accordion active_section="1" el_class="wpj-jp-faq-wrp"][vc_tta_section title="Lorem Ipsum is simply dummy text of the printing and typesetting industry." tab_id="1607951130596-88b25e02-157b" el_class="wpj-jp-faq-item"][vc_column_text]I am text block. Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.[/vc_column_text][/vc_tta_section][vc_tta_section title="Lorem Ipsum is simply dummy text of the printing and typesetting industry." tab_id="1607951220884-2db479be-60ff" el_class="wpj-jp-faq-item"][vc_column_text]I am text block. Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.[/vc_column_text][/vc_tta_section][vc_tta_section title="Lorem Ipsum is simply dummy text of the printing and typesetting industry." tab_id="1607951219563-3b45a760-05c4" el_class="wpj-jp-faq-item"][vc_column_text]I am text block. Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.[/vc_column_text][/vc_tta_section][vc_tta_section title="Lorem Ipsum is simply dummy text of the printing and typesetting industry." tab_id="1607951218665-3ded33fe-07ba" el_class="wpj-jp-faq-item"][vc_column_text]I am text block. Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.[/vc_column_text][/vc_tta_section][vc_tta_section title="Lorem Ipsum is simply dummy text of the printing and typesetting industry." tab_id="1607951217730-cfcd0f42-e20f" el_class="wpj-jp-faq-item"][vc_column_text]I am text block. Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.[/vc_column_text][/vc_tta_section][vc_tta_section title="Lorem Ipsum is simply dummy text of the printing and typesetting industry." tab_id="1607951216882-7e2f71dd-8b45" el_class="wpj-jp-faq-item"][vc_column_text]I am text block. Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.[/vc_column_text][/vc_tta_section][vc_tta_section title="Lorem Ipsum is simply dummy text of the printing and typesetting industry." tab_id="1607951215858-83a26644-c79c" el_class="wpj-jp-faq-item"][vc_column_text]I am text block. Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.[/vc_column_text][/vc_tta_section][vc_tta_section title="Lorem Ipsum is simply dummy text of the printing and typesetting industry." tab_id="1607951214211-c2266b4e-9781" el_class="wpj-jp-faq-item"][vc_column_text]I am text block. Click edit button to change this text. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus, luctus nec ullamcorper mattis, pulvinar dapibus leo.[/vc_column_text][/vc_tta_section][/vc_tta_accordion][/vc_column][/vc_row]';
+        $new_page_template = "templates/template-fullwidth.php";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "page",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        if(!isset($page_check->ID)){
+            $jp_pages["faq"] = wp_insert_post($new_page);
+        }else{
+            $new_page["post_title"] = "Job Portal ".$new_page_title;
+            $jp_pages["faq"] = wp_insert_post($new_page);
+        }
+        update_post_meta($jp_pages["faq"], "jp_show_header", 1);
+        update_post_meta($jp_pages["faq"], "_wp_page_template", $new_page_template);
+       // Our Team
+        $new_page_title = "Our Team";
+        $new_page_content = '[vc_row][vc_column][jp_team_member per_row="3" posts_per_page="3" heading="Leader Ship Of Job Portal"][/vc_column][/vc_row]';
+        $new_page_template = "templates/template-fullwidth.php";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "page",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        if(!isset($page_check->ID)){
+            $jp_pages["ourteam"] = wp_insert_post($new_page);
+        }else{
+            $new_page["post_title"] = "Job Portal ".$new_page_title;
+            $jp_pages["ourteam"] = wp_insert_post($new_page);
+        }
+        update_post_meta($jp_pages["ourteam"], "_wp_page_template", $new_page_template);
+        update_post_meta($jp_pages["ourteam"], "jp_show_header", 1);
+        // Contact Us
+        $new_page_title = "Contact Us";
+        $new_page_content = "";
+        $new_page_template = "templates/template-contactus.php";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "page",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        if(!isset($page_check->ID)){
+            $jp_pages["contact_us"] = wp_insert_post($new_page);
+        }else{
+            $new_page["post_title"] = "Job Portal ".$new_page_title;
+            $jp_pages["contact_us"] = wp_insert_post($new_page);
+        }
+        update_post_meta($jp_pages["contact_us"], "_wp_page_template", $new_page_template);
+        update_post_meta($jp_pages["contact_us"], "jp_show_header", 1);
+        // Blog Page
+        $new_page_title = "Blog";
+        $new_page_content = "";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "page",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+
+        if(!isset($page_check->ID)){
+            $jp_pages["blog"] = wp_insert_post($new_page);
+        }else{
+            $new_page["post_title"] = "Job Portal ".$new_page_title;
+            $jp_pages["blog"] = wp_insert_post($new_page);
+        }
+        update_option("page_for_posts", $jp_pages["blog"]);
+    // Update home page contents
+        //Home
+//        $new_page_content = '[vc_row][vc_column][jp_job_search wpjobportalpageid="'.$jp_pages["newest_jobs"].'" style="7" subtitle="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard dummy text"][/vc_column][/vc_row][vc_row][vc_column][jp_feature_3box][/vc_column][/vc_row][vc_row][vc_column][jp_jobs_category wpjobportalpageid="'.$jp_pages["newest_jobs"].'" style="2" category="1" category1="1" category2="1" category3="1" category4="1" category5="1" category6="1" category7="1"][/vc_column][/vc_row][vc_row][vc_column][jp_5count_box style="2" count1="587" count2="146" count3="919" count4="796"][/vc_column][/vc_row][vc_row][vc_column][jp_jobs wpjobportalpageid="'.$jp_pages["newest_jobs"].'" title1="Latest Jobs" noofjobs="6" style="2"][/vc_column][/vc_row][vc_row][vc_column][jp_job_hub_custom_link wpjobportalpageid="'.$jp_pages["newest_jobs"].'" style="6" title="REGISTER AS EMPLOYER" description="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut veniam ." description1="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut veniam ."][/vc_column][/vc_row][vc_row][vc_column][jp_price_tables style="2" posts_per_page="3"][/vc_column][/vc_row][vc_row][vc_column][jp_companies wpjobportalpageid="'.$jp_pages["newest_jobs"].'" companytype="1" style="1" bgcolor="#ffffff" title="Popular Companies" scrollstyle="2" speed="1" posts_per_page="10"][/vc_column][/vc_row][vc_row][vc_column][jp_shortdescription_with_btn][/vc_column][/vc_row]';
+        $new_page_content = '[vc_row full_width="stretch_row_content" content_placement="middle" css=".vc_custom_1630562962294{background-image: url(/wp-content/uploads/2021/01/company-bg.png?id=1015) !important;}"][vc_column][jp_job_search wpjobportalpageid="'.$jp_pages["newest_jobs"].'" style="1" title="Simplest Pathway To Grab Your New Job" shortdescription="Design the ideal site for Employers and Jobseekers within seconds." category="13" category1="7" category2="10" category3="14" category4="1"][/vc_column][/vc_row][vc_row el_class="wpj-jp-hp-stats-mod-main"][vc_column][jp_number_stats style="1" stat_count1="1045" stat_count2="1045" stat_count3="1045" stat_count4="1045"][/vc_column][/vc_row][vc_row][vc_column][jp_portal_feature_box style="1" shortdescription="Create an account in a few steps and apply for a job that suits you." description1="Fill out a simple form and register yourself to meet with exciting chances." link1icon="far fa-user" description2="Our match meter indicates which jobs are relevant to your abilities and requests." link2icon="fas fa-search" description3="Don`t delay submitting your CV to apply for a job or get employed by firms." link3icon="far fa-address-card" link1="|||" link2="|||" link3=""][/vc_column][/vc_row][vc_row][vc_column][jp_latest_jobs style="1" wpjobportalpageid="'.$jp_pages["newest_jobs"].'" subheading="We offer" heading="job vacancies right now!" shortdescription="Here we listed the most recent and hottest jobs in tech and other popular fields, find the suitable job according to your skills." noofjobs="7" nooffjobs="3"][/vc_column][/vc_row][vc_row][vc_column][jp_portal_popular_area style="1" heading="Present Your Resume In Front Of leading Employers" shortdescription="Get in contact personally with hiring managers and recruiters." icon1="far fa-user" icon2="far fa-address-card" icon3="far fa-paper-plane"][/vc_column][/vc_row][vc_row][vc_column][jp_latest_resume wpjobportalpageid="'.$jp_pages["newest_jobs"].'" style="1" subheading="Over 1500.000 supporter of all over the world" heading="Fast Resume Submission" shortdescription="Every member of your website can submit their CV by filling out the resume form where they will be providing their basic and academic information & more." post_per_page="5" scrollstyle="1"][/vc_column][/vc_row][vc_row][vc_column][jp_company_portfolio wpjobportalpageid="'.$jp_pages["newest_jobs"].'" style="1" post_per_page="10" scrollstyle="1"][/vc_column][/vc_row][vc_row][vc_column][jp_news_and_rumors style="2" heading="Packed With Core Features" shortdescription="We researched a lot to provide superb and most required features for your website so you can easily manage Your website." posts_per_page="10"][/vc_column][/vc_row][vc_row][vc_column][jp_latest_companies wpjobportalpageid="'.$jp_pages["newest_jobs"].'" companytype="1" style="1" subheading="Over 1500.000 supporter of all over the world" heading="Companies We`ve Supported" posts_per_page="10" shortdescription="Companies we`ve helped recruit excellent applicants over the years." scrollstyle="1"][/vc_column][/vc_row][vc_row][vc_column][jp_call_to_action style="1" heading="Featured Companies" shortdescription="Companies that are featured on our site might recruit applicants." link1icon="far fa-file-alt" link2icon="fas fa-search" link1url="|||" link2url="|||"][/vc_column][/vc_row]';
+        $my_post = array(
+            "ID"           => $jp_pages["home"],
+            "post_content" => $new_page_content,
+        );
+        wp_update_post( $my_post );
+        // //Home 1
+        // $new_page_content = '[vc_row][vc_column][jp_job_search wpjobportalpageid="'.$jp_pages["newest_jobs"].'" style="8"][/vc_column][/vc_row][vc_row][vc_column][jp_latest_featured_jobs wpjobportalpageid="'.$jp_pages["newest_jobs"].'" title="Latest Jobs" heading="Featured Jobs" noofjobs="6"][/vc_column][/vc_row][vc_row][vc_column][jp_job_hub_custom_link wpjobportalpageid="'.$jp_pages["newest_jobs"].'" style="7" description="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo"][/vc_column][/vc_row][vc_row][vc_column][jp_latest_resume wpjobportalpageid="'.$jp_pages["newest_jobs"].'" style="5" title="Latest Resume" description="Here you can see most recent resume added by users.You are able to set how many resume will be displayed ,order them or chose the specific taxonomy terms of resume." post_per_page="5" scrollstyle="2" speed="1"][/vc_column][/vc_row][vc_row][vc_column][jp_5count_box style="6" count1="587" count2="146" count3="919" count4="796"][/vc_column][/vc_row][vc_row][vc_column][jp_job_hub_custom_link wpjobportalpageid="'.$jp_pages["newest_jobs"].'" style="8" description="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo"][/vc_column][/vc_row][vc_row][vc_column][jp_news_and_rumors style="1"][/vc_column][/vc_row][vc_row][vc_column][jp_companies wpjobportalpageid="'.$jp_pages["newest_jobs"].'" companytype="1" style="2" title="Popular Companies" posts_per_page="6"][/vc_column][/vc_row][vc_row][vc_column][jp_shortdescription_with_btn][/vc_column][/vc_row]';
+        // $my_post = array(
+        //     "ID"           => $jp_pages["home1"],
+        //     "post_content" => $new_page_content,
+        // );
+        // wp_update_post( $my_post );
+        // //Home 2
+        // $new_page_content = '[vc_row video_bg="yes"][vc_column][vc_empty_space height="550px"][/vc_column][/vc_row][vc_row][vc_column][jp_job_search wpjobportalpageid="'.$jp_pages["newest_jobs"].'" style="2"][/vc_column][/vc_row][vc_row][vc_column][jp_latest_jobs_types_categories_cities wpjobportalpageid="'.$jp_pages["newest_jobs"].'" title="Latest Jobs" noofjobs="5" display_style="1" show_jobs_by_types="1" number_of_job_type="5" show_number_of_jobs_by_type="1" show_jobs_by_categories="1" number_of_categories="5" show_number_of_jobs_by_category="1" show_jobs_by_cities="1" number_of_cities="5" show_number_of_jobs_by_city="1"][/vc_column][/vc_row][vc_row][vc_column][jp_image_and_text_box_with_links][/vc_column][/vc_row][vc_row][vc_column][jp_latest_resume wpjobportalpageid="'.$jp_pages["newest_jobs"].'" style="4" title="Latest Resume" description="Here you can see most recent resume added by users.You are able to set how many resume will be displayed ,order them or chose the specific taxonomy terms of resume." post_per_page="5"][/vc_column][/vc_row][vc_row][vc_column][jp_news_and_rumors style="4"][/vc_column][/vc_row][vc_row][vc_column][jp_testimonial style="4" heading="Kind Words From Happy Candidates" description="Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et ."][/vc_column][/vc_row][vc_row el_class="jsjb-jh-companies-carasole-without-bg"][vc_column][jp_companies wpjobportalpageid="'.$jp_pages["newest_jobs"].'" companytype="1" style="2" title="Popular Companies" posts_per_page="6"][/vc_column][/vc_row][vc_row][vc_column][jp_post_add style="1"][/vc_column][/vc_row]';
+        // $my_post = array(
+        //     "ID"           => $jp_pages["home2"],
+        //     "post_content" => $new_page_content,
+        // );
+        // wp_update_post( $my_post );
+        // Update WP Options
+        $wp_page_array = array();
+        foreach ($page_array as $key => $value) {
+            $value_string = wpjobportalphplib::wpJP_strtolower($value);
+            $value_string = wpjobportalphplib::wpJP_str_replace(" ","_",$value_string);
+            $wp_page_array[$value_string] = $jp_pages[$value_string];
+        }
+        update_option("job-portal-layout", $wp_page_array);
+        // ----------------Posts -------- //
+        $jp_post_ids = array();
+        $new_page_title = "Lorem ipsum dolor sit amet, consectetur adipiscing.";
+        $new_page_content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed sapien non elit rhoncus faucibus id mattis metus. Integer in dictum lectus. Cras et risus leo. Morbi viverra congue sem vel posuere. Aenean odio turpis, posuere ac sem id, posuere viverra nisi. Integer pellentesque ornare tortor, ut suscipit leo sagittis vitae. In eu porta nisi. In id odio non risus blandit ultricies ut aliquam ex.Curabitur at ante pulvinar, mattis ipsum sit amet, aliquam turpis. Vivamus et sem mollis, ornare odio nec, consequat leo. Quisque commodo eget velit vitae sagittis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas cursus augue at enim fringilla, eget egestas risus hendrerit. In hac habitasse platea dictumst. Nulla vitae enim id odio porttitor mollis. In vehicula finibus eleifend. Aenean gravida, nisl ac dapibus tincidunt, mi orci pretium sapien, eu varius magna nunc egestas metus.Vivamus vitae rhoncus mi, vel ultrices dolor. Mauris vitae ex laoreet, sagittis dolor id, commodo mauris. Integer pellentesque mi non dictum vehicula. Sed a elit velit. Suspendisse vel justo sed enim gravida iaculis. Nulla pretium a odio non convallis. Donec lacus lectus, ultrices vel elit vel, auctor laoreet odio. Donec velit est, consectetur ac condimentum eu, scelerisque in elit. Sed ultricies quis enim id congue. Aliquam nec aliquam urna. Ut iaculis vel purus nec pellentesque. Proin quis lorem eros. Praesent lacinia id sapien sed elementum. Fusce sodales nisl orci, ac venenatis erat tincidunt faucibus. Cras elementum efficitur lorem eu pellentesque. Donec efficitur fringilla arcu ac.  ';
+        $new_page = array(
+                "post_type" => "post",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        $wp_upload_dir = wp_upload_dir();
+        $filename = $wp_upload_dir["basedir"]."/2017/01/post2.jpg";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        $new_page_title = "Lorem ipsum dolor sit";
+        $new_page_content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed sapien non elit rhoncus faucibus id mattis metus. Integer in dictum lectus. Cras et risus leo. Morbi viverra congue sem vel posuere. Aenean odio turpis, posuere ac sem id, posuere viverra nisi. Integer pellentesque ornare tortor, ut suscipit leo sagittis vitae. In eu porta nisi. In id odio non risus blandit ultricies ut aliquam ex.Curabitur at ante pulvinar, mattis ipsum sit amet, aliquam turpis. Vivamus et sem mollis, ornare odio nec, consequat leo. Quisque commodo eget velit vitae sagittis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas cursus augue at enim fringilla, eget egestas risus hendrerit. In hac habitasse platea dictumst. Nulla vitae enim id odio porttitor mollis. In vehicula finibus eleifend. Aenean gravida, nisl ac dapibus tincidunt, mi orci pretium sapien, eu varius magna nunc egestas metus.Vivamus vitae rhoncus mi, vel ultrices dolor. Mauris vitae ex laoreet, sagittis dolor id, commodo mauris. Integer pellentesque mi non dictum vehicula. Sed a elit velit. Suspendisse vel justo sed enim gravida iaculis. Nulla pretium a odio non convallis. Donec lacus lectus, ultrices vel elit vel, auctor laoreet odio. Donec velit est, consectetur ac condimentum eu, scelerisque in elit. Sed ultricies quis enim id congue. Aliquam nec aliquam urna. Ut iaculis vel purus nec pellentesque. Proin quis lorem eros. Praesent lacinia id sapien sed elementum. Fusce sodales nisl orci, ac venenatis erat tincidunt faucibus. Cras elementum efficitur lorem eu pellentesque. Donec efficitur fringilla arcu ac.  ';
+        $new_page = array(
+                "post_type" => "post",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        $wp_upload_dir = wp_upload_dir();
+        $filename = $wp_upload_dir["basedir"]."/2017/01/post3.jpg";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        $new_page_title = "Lorem ipsum dolor sit amet, consectetur";
+        $new_page_content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed sapien non elit rhoncus faucibus id mattis metus. Integer in dictum lectus. Cras et risus leo. Morbi viverra congue sem vel posuere. Aenean odio turpis, posuere ac sem id, posuere viverra nisi. Integer pellentesque ornare tortor, ut suscipit leo sagittis vitae. In eu porta nisi. In id odio non risus blandit ultricies ut aliquam ex.Curabitur at ante pulvinar, mattis ipsum sit amet, aliquam turpis. Vivamus et sem mollis, ornare odio nec, consequat leo. Quisque commodo eget velit vitae sagittis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas cursus augue at enim fringilla, eget egestas risus hendrerit. In hac habitasse platea dictumst. Nulla vitae enim id odio porttitor mollis. In vehicula finibus eleifend. Aenean gravida, nisl ac dapibus tincidunt, mi orci pretium sapien, eu varius magna nunc egestas metus.Vivamus vitae rhoncus mi, vel ultrices dolor. Mauris vitae ex laoreet, sagittis dolor id, commodo mauris. Integer pellentesque mi non dictum vehicula. Sed a elit velit. Suspendisse vel justo sed enim gravida iaculis. Nulla pretium a odio non convallis. Donec lacus lectus, ultrices vel elit vel, auctor laoreet odio. Donec velit est, consectetur ac condimentum eu, scelerisque in elit. Sed ultricies quis enim id congue. Aliquam nec aliquam urna. Ut iaculis vel purus nec pellentesque. Proin quis lorem eros. Praesent lacinia id sapien sed elementum. Fusce sodales nisl orci, ac venenatis erat tincidunt faucibus. Cras elementum efficitur lorem eu pellentesque. Donec efficitur fringilla arcu ac.  ';
+        $new_page = array(
+                "post_type" => "post",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        $wp_upload_dir = wp_upload_dir();
+        $filename = $wp_upload_dir["basedir"]."/2017/01/post1.jpg";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        $new_page_title = "Lorem ipsum dolor sit amet, consectetur adipiscing elit.";
+        $new_page_content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed sapien non elit rhoncus faucibus id mattis metus. Integer in dictum lectus. Cras et risus leo. Morbi viverra congue sem vel posuere. Aenean odio turpis, posuere ac sem id, posuere viverra nisi. Integer pellentesque ornare tortor, ut suscipit leo sagittis vitae. In eu porta nisi. In id odio non risus blandit ultricies ut aliquam ex.Curabitur at ante pulvinar, mattis ipsum sit amet, aliquam turpis. Vivamus et sem mollis, ornare odio nec, consequat leo. Quisque commodo eget velit vitae sagittis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas cursus augue at enim fringilla, eget egestas risus hendrerit. In hac habitasse platea dictumst. Nulla vitae enim id odio porttitor mollis. In vehicula finibus eleifend. Aenean gravida, nisl ac dapibus tincidunt, mi orci pretium sapien, eu varius magna nunc egestas metus.Vivamus vitae rhoncus mi, vel ultrices dolor. Mauris vitae ex laoreet, sagittis dolor id, commodo mauris. Integer pellentesque mi non dictum vehicula. Sed a elit velit. Suspendisse vel justo sed enim gravida iaculis. Nulla pretium a odio non convallis. Donec lacus lectus, ultrices vel elit vel, auctor laoreet odio. Donec velit est, consectetur ac condimentum eu, scelerisque in elit. Sed ultricies quis enim id congue. Aliquam nec aliquam urna. Ut iaculis vel purus nec pellentesque. Proin quis lorem eros. Praesent lacinia id sapien sed elementum. Fusce sodales nisl orci, ac venenatis erat tincidunt faucibus. Cras elementum efficitur lorem eu pellentesque. Donec efficitur fringilla arcu ac.  ';
+        $new_page = array(
+                "post_type" => "post",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        $wp_upload_dir = wp_upload_dir();
+        $filename = $wp_upload_dir["basedir"]."/2017/01/post5.jpg";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        $new_page_title = "Lorem ipsum dolor sit amet";
+        $new_page_content = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Phasellus sed sapien non elit rhoncus faucibus id mattis metus. Integer in dictum lectus. Cras et risus leo. Morbi viverra congue sem vel posuere. Aenean odio turpis, posuere ac sem id, posuere viverra nisi. Integer pellentesque ornare tortor, ut suscipit leo sagittis vitae. In eu porta nisi. In id odio non risus blandit ultricies ut aliquam ex.Curabitur at ante pulvinar, mattis ipsum sit amet, aliquam turpis. Vivamus et sem mollis, ornare odio nec, consequat leo. Quisque commodo eget velit vitae sagittis. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Maecenas cursus augue at enim fringilla, eget egestas risus hendrerit. In hac habitasse platea dictumst. Nulla vitae enim id odio porttitor mollis. In vehicula finibus eleifend. Aenean gravida, nisl ac dapibus tincidunt, mi orci pretium sapien, eu varius magna nunc egestas metus.Vivamus vitae rhoncus mi, vel ultrices dolor. Mauris vitae ex laoreet, sagittis dolor id, commodo mauris. Integer pellentesque mi non dictum vehicula. Sed a elit velit. Suspendisse vel justo sed enim gravida iaculis. Nulla pretium a odio non convallis. Donec lacus lectus, ultrices vel elit vel, auctor laoreet odio. Donec velit est, consectetur ac condimentum eu, scelerisque in elit. Sed ultricies quis enim id congue. Aliquam nec aliquam urna. Ut iaculis vel purus nec pellentesque. Proin quis lorem eros. Praesent lacinia id sapien sed elementum. Fusce sodales nisl orci, ac venenatis erat tincidunt faucibus. Cras elementum efficitur lorem eu pellentesque. Donec efficitur fringilla arcu ac.  ';
+        $new_page = array(
+                "post_type" => "post",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        $wp_upload_dir = wp_upload_dir();
+        $filename = $wp_upload_dir["basedir"]."/2017/01/post4.jpg";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        // ----------------Custom posts -------- //
+        // News & Rumors
+        $new_page_title = "Advertising For Your Business";
+        $new_page_content = 'It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using "Content here, content here", making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for "lorem ipsum" will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).';
+        $new_page = array(
+                "post_type" => "jp_news_and_rumors",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        $wp_upload_dir = wp_upload_dir();
+        $filename = $wp_upload_dir["basedir"]."/2017/01/nar_1.png";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        $new_page_title = "Attract More Attention Sales";
+        $new_page_content = '<strong>Lorem Ipsum</strong> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry"s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.<strong></strong>';
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "jp_news_and_rumors",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        $filename = $wp_upload_dir["basedir"]."/2017/01/nar_2.png";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        $new_page_title = "Top fun activities tips for you ";
+        $new_page_content = '<strong>Lorem Ipsum</strong> is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry"s standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.';
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "jp_news_and_rumors",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        $filename = $wp_upload_dir["basedir"]."/2017/01/nar_3.png";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+
+        // Team members
+        $new_page_title = "Member 4";
+        $new_page_content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+        $new_page = array(
+                "post_type" => "jp_team_member",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        update_post_meta($new_page_id, "team_member_title", "Front-end Developer");
+        update_post_meta($new_page_id, "team_member_facebook", "http://www.facebook.com");
+        update_post_meta($new_page_id, "team_member_twitter", "http://www.twitter.com");
+        update_post_meta($new_page_id, "team_member_linkedin", "http://www.linkedin.com");
+        update_post_meta($new_page_id, "team_member_gplus", "http://www.googleplus.com");
+        update_post_meta($new_page_id, "team_member_instagram", "http://www.instagram.com");
+        update_post_meta($new_page_id, "team_member_pinterest", "http://www.pinterest.com");
+        $wp_upload_dir = wp_upload_dir();
+        $filename = $wp_upload_dir["basedir"]."/2017/01/tm_1.png";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        $new_page_title = "Member 3";
+        $new_page_content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+        $new_page = array(
+                "post_type" => "jp_team_member",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        update_post_meta($new_page_id, "team_member_title", "Project Manager");
+        update_post_meta($new_page_id, "team_member_facebook", "http://www.facebook.com");
+        update_post_meta($new_page_id, "team_member_twitter", "http://www.twitter.com");
+        update_post_meta($new_page_id, "team_member_linkedin", "http://www.linkedin.com");
+        update_post_meta($new_page_id, "team_member_gplus", "http://www.googleplus.com");
+        update_post_meta($new_page_id, "team_member_instagram", "http://www.instagram.com");
+        update_post_meta($new_page_id, "team_member_pinterest", "http://www.pinterest.com");
+        $wp_upload_dir = wp_upload_dir();
+        $filename = $wp_upload_dir["basedir"]."/2017/01/tm_2.jpg";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        $new_page_title = "Member 2";
+        $new_page_content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+        $new_page = array(
+                "post_type" => "jp_team_member",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        update_post_meta($new_page_id, "team_member_title", "Team Leader");
+        update_post_meta($new_page_id, "team_member_facebook", "http://www.facebook.com");
+        update_post_meta($new_page_id, "team_member_twitter", "http://www.twitter.com");
+        update_post_meta($new_page_id, "team_member_linkedin", "http://www.linkedin.com");
+        update_post_meta($new_page_id, "team_member_gplus", "http://www.googleplus.com");
+        update_post_meta($new_page_id, "team_member_instagram", "http://www.instagram.com");
+        update_post_meta($new_page_id, "team_member_pinterest", "http://www.pinterest.com");
+        $wp_upload_dir = wp_upload_dir();
+        $filename = $wp_upload_dir["basedir"]."/2017/01/tm_3.png";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        $new_page_title = "Member 1";
+        $new_page_content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.";
+        $new_page = array(
+                "post_type" => "jp_team_member",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        update_post_meta($new_page_id, "team_member_title", "Cheif executive office / CEO");
+        update_post_meta($new_page_id, "team_member_facebook", "http://www.facebook.com");
+        update_post_meta($new_page_id, "team_member_twitter", "http://www.twitter.com");
+        update_post_meta($new_page_id, "team_member_linkedin", "http://www.linkedin.com");
+        update_post_meta($new_page_id, "team_member_gplus", "http://www.googleplus.com");
+        update_post_meta($new_page_id, "team_member_instagram", "http://www.instagram.com");
+        update_post_meta($new_page_id, "team_member_pinterest", "http://www.pinterest.com");
+        $wp_upload_dir = wp_upload_dir();
+        $filename = $wp_upload_dir["basedir"]."/2017/01/tm_4.jpg";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        // Price Table
+        $new_page_title = "Basic Package";
+        $new_page_content = "";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "jp_price_table",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        $jp_post_ids[] = $new_page_id;
+        update_post_meta($new_page_id, "_wp_page_template", $new_page_template);
+        __update_post_meta($new_page_id, "jp_price" , "$ 500");
+        __update_post_meta($new_page_id, "jp_line1" , "1500 Credits");
+        __update_post_meta($new_page_id, "jp_line2" , "New Company 500 Credits");
+        __update_post_meta($new_page_id, "jp_line3" , "New Job 250 Credits");
+        __update_post_meta($new_page_id, "jp_line4" , "Featured Job 100 Credits");
+        __update_post_meta($new_page_id, "jp_buynowlink" , "#");
+
+        $new_page_title = "Business Package";
+        $new_page_content = "";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "jp_price_table",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        $jp_post_ids[] = $new_page_id;
+        update_post_meta($new_page_id, "_wp_page_template", $new_page_template);
+        __update_post_meta($new_page_id, "jp_price" , "$ 750");
+        __update_post_meta($new_page_id, "jp_line1" , "2500 Credits");
+        __update_post_meta($new_page_id, "jp_line2" , "New Company 500 Credits");
+        __update_post_meta($new_page_id, "jp_line3" , "New Job 250 Credits");
+        __update_post_meta($new_page_id, "jp_line4" , "Featured Job 100 Credits");
+        __update_post_meta($new_page_id, "jp_buynowlink" , "#");
+
+        $new_page_title = "Complete Package";
+        $new_page_content = "";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "jp_price_table",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        $jp_post_ids[] = $new_page_id;
+        update_post_meta($new_page_id, "_wp_page_template", $new_page_template);
+        __update_post_meta($new_page_id, "jp_price" , "$ 1500");
+        __update_post_meta($new_page_id, "jp_line1" , "6000 Credits");
+        __update_post_meta($new_page_id, "jp_line2" , "New Company 500 Credits");
+        __update_post_meta($new_page_id, "jp_line3" , "New Job 250 Credits");
+        __update_post_meta($new_page_id, "jp_line4" , "Featured Job 100 Credits");
+        __update_post_meta($new_page_id, "jp_buynowlink" , "#");
+
+        // TESTIMONIAL
+        $new_page_title = "Auro Navanth";
+        $new_page_content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam iaculis quam sit amet dolor fermentum, in porta nisi egestas. Nullam convallis laoreet gravida. Pellentesque sed.";
+        $new_page_template = "";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "jp_testimonials",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+
+        $new_page_id = wp_insert_post($new_page);
+        update_post_meta($new_page_id, "_wp_page_template", $new_page_template);
+        // set feature image
+        $filename = $wp_upload_dir["basedir"]."/2017/01/tsti_1.jpg";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        $new_page_title = "Naro MathDoe";
+        $new_page_content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec at tempus velit. Aliquam et diam convallis, tempus ligula ut, placerat sem. Nulla condimentum nulla a.";
+        $new_page_template = "";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "jp_testimonials",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        update_post_meta($new_page_id, "_wp_page_template", $new_page_template);
+        // set feature image
+        $filename = $wp_upload_dir["basedir"]."/2017/01/tsti_2.jpg";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        $new_page_title = "MARY DOE";
+        $new_page_content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce accumsan vitae massa vel aliquet. Morbi sed nibh eget lectus consequat tempor. Aliquam erat volutpat. Nam.";
+        $new_page_template = "";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "jp_testimonials",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        update_post_meta($new_page_id, "_wp_page_template", $new_page_template);
+        // set feature image
+        $filename = $wp_upload_dir["basedir"]."/2017/01/tsti_3.jpg";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        $new_page_title = "Robert Lafore";
+        $new_page_content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eleifend lacinia enim at dapibus. Nam eget accumsan neque. Nam felis augue, egestas ut varius vel.";
+        $new_page_template = "";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "jp_testimonials",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        update_post_meta($new_page_id, "_wp_page_template", $new_page_template);
+        // set feature image
+        $filename = $wp_upload_dir["basedir"]."/2017/01/tsti_4.jpeg";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+
+        $new_page_title = "Auro Navanth";
+        $new_page_content = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam commodo laoreet neque, vitae facilisis quam eleifend a. In consectetur purus quis arcu dictum, sit amet.";
+        $new_page_template = "";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "jp_testimonials",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $new_page_id = wp_insert_post($new_page);
+        update_post_meta($new_page_id, "_wp_page_template", $new_page_template);
+        // set feature image
+        $filename = $wp_upload_dir["basedir"]."/2017/01/tsti_5.png";
+        $parent_post_id = $new_page_id;
+        $jp_post_ids[] = $parent_post_id;
+        uploadPostFeatureImage($filename,$parent_post_id);
+        // Pages and custom post are created Now create Menu ----------------
+
+        update_option( "page_on_front", $jp_pages["home"] );
+        update_option( "show_on_front", "page" );
+
+
+        // custom menu widgets
+        // $new_page_title = "Register As Job Seeker";
+        // $new_page_content = "";
+        // $new_page_template = "";
+        // $page_check = get_page_by_title($new_page_title);
+        // $new_page = array(
+        //         "post_type" => "jp_menu_widget",
+        //         "post_title" => $new_page_title,
+        //         "post_content" => $new_page_content,
+        //         "post_status" => "publish",
+        //         "post_author" => 1,
+        //         "post_parent" => 0,
+        //         "wpj_mw_widget" => 1,
+        //         "wpj_mw_register_btn_title" => "Register As Job Seeker",
+        //         "wpj_mw_register_btn_link" => "#",
+        //         "wpj_jp_widget_image_URL_two" => JOB_PORTAL_THEME_IMAGE.'/register-jobseeker.png',
+        //         "wpj_mw_banner_description" => "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+        // );
+        // $menu_widget_1_id = wp_insert_post($new_page);
+        //update_post_meta($new_page_id, "_wp_page_template", $new_page_template);
+        // set feature image
+        // $filename = $wp_upload_dir["basedir"]."/2017/01/tsti_5.png";
+        // uploadPostFeatureImage($filename,$menu_widget_1_id);
+
+        // custom menu widgets
+
+
+
+
+         // Custom menu widget 3
+        $new_page_title = "Register As Job Seeker";
+        $new_page_content = "";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "jp_menu_widget",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $widget3_id = wp_insert_post($new_page);
+        update_post_meta($widget3_id, "jp_menu_widget", 4);
+        __update_post_meta($widget3_id, "wpj_mw_widget" , 1);
+        __update_post_meta($widget3_id, "widget_type" , 1);
+        __update_post_meta($widget3_id, "wpj_mw_register_btn_title" , "Register As Job Seeker");
+        __update_post_meta($widget3_id, "wpj_jp_widget_image_URL_two", JOB_PORTAL_THEME_IMAGE.'/register-jobseeker.png');
+        __update_post_meta($widget3_id, "wpj_mw_register_btn_link" , get_the_permalink($jp_pages["jobseeker_registration"]));
+        __update_post_meta($widget3_id, "wpj_mw_banner_description" , "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.");
+
+
+
+         // Custom menu widget 4
+        $new_page_title = "Register As Employer";
+        $new_page_content = "";
+        $page_check = get_page_by_title($new_page_title);
+        $new_page = array(
+                "post_type" => "jp_menu_widget",
+                "post_title" => $new_page_title,
+                "post_content" => $new_page_content,
+                "post_status" => "publish",
+                "post_author" => 1,
+                "post_parent" => 0,
+        );
+        $widget4_id = wp_insert_post($new_page);
+        update_post_meta($widget4_id, "jp_menu_widget", 5);
+        __update_post_meta($widget4_id, "wpj_mw_widget" , 1);
+        __update_post_meta($widget4_id, "widget_type" , 1);
+        __update_post_meta($widget4_id, "wpj_mw_register_btn_title" , "Register As Employer");
+        __update_post_meta($widget4_id, "wpj_jp_widget_image_URL_two", JOB_PORTAL_THEME_IMAGE.'/register-employer.png');
+        __update_post_meta($widget4_id, "wpj_mw_register_btn_link" , get_the_permalink($jp_pages["employer_registration"]));
+        __update_post_meta($widget4_id, "wpj_mw_banner_description" , "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.");
+
+
+
+
+        // $new_page_title = "Register as a Instructor";
+        // $new_page_content = "";
+        // $new_page_template = "";
+        // $page_check = get_page_by_title($new_page_title);
+        // $new_page = array(
+        //         "post_type" => "jp_menu_widget",
+        //         "post_title" => $new_page_title,
+        //         "post_content" => $new_page_content,
+        //         "post_status" => "publish",
+        //         "post_author" => 1,
+        //         "post_parent" => 0,
+        //         "wpj_mw_widget" => 1,
+        //         "wpj_mw_register_btn_title" => "Register As Employer",
+        //         "wpj_jp_widget_image_URL_two" => JOB_PORTAL_THEME_IMAGE.'/register-employer.png',
+        //         "wpj_mw_register_btn_link" => "#",
+        //         "wpj_mw_banner_description" => "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.",
+        // );
+        // $menu_widget_2_id = wp_insert_post($new_page);
+        //update_post_meta($new_page_id, "_wp_page_template", $new_page_template);
+        // set feature image
+        // $filename = $wp_upload_dir["basedir"]."/2017/01/tsti_5.png";
+        // uploadPostFeatureImage($filename,$menu_widget_2_id);
+
+        // MENU
+        // Check if the menu exists
+        $menu_name = "Job Portal";
+        $menu_exists = wp_get_nav_menu_object( $menu_name );
+
+        // If it doesn"t exist, let"s create it.
+        if( !$menu_exists){
+            $menu_id = wp_create_nav_menu($menu_name);
+
+            $locations = get_theme_mod("nav_menu_locations");
+            $locations["primary"] = $menu_id;
+            set_theme_mod( "nav_menu_locations", $locations );
+
+            $itemData =  array(
+                "menu-item-object-id" => $jp_pages["home"],
+                "menu-item-parent-id" => 0,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+              );
+            $parent_home = wp_update_nav_menu_item($menu_id, 0, $itemData);
+            // $itemData =  array(
+            //     "menu-item-object-id" => $jp_pages["home1"],
+            //     "menu-item-parent-id" => $parent_home,
+            //     "menu-item-object" => "page",
+            //     "menu-item-type"      => "post_type",
+            //     "menu-item-status"    => "publish"
+            //   );
+            // wp_update_nav_menu_item($menu_id, 0, $itemData);
+            // $itemData =  array(
+            //     "menu-item-object-id" => $jp_pages["home2"],
+            //     "menu-item-parent-id" => $parent_home,
+            //     "menu-item-object" => "page",
+            //     "menu-item-type"      => "post_type",
+            //     "menu-item-status"    => "publish"
+            //   );
+            // wp_update_nav_menu_item($menu_id, 0, $itemData);
+            // Job seeker
+
+            $itemData =  array(
+                "menu-item-title" => "Job Seeker",
+                "menu-item-object-id" => $jp_pages["jobseeker_control_panel"],
+                "menu-item-parent-id" => 0,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-numberofsubcolumns" =>  "4",
+                "menu-item-status"    => "publish"
+            );
+            $parent_jobseeker = wp_update_nav_menu_item($menu_id, 0, $itemData);
+            update_post_meta( $parent_jobseeker, '_menu_item_numberofsubcolumns', 4 );
+            $itemData =  array(
+                "menu-item-title" => "Jobs",
+                "menu-item-object-id" => $jp_pages["newest_jobs"],
+                "menu-item-parent-id" => $parent_jobseeker,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+            );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            $itemData =  array(
+                "menu-item-title" => "Search Job",
+                "menu-item-object-id" => $jp_pages["search_job"],
+                "menu-item-parent-id" => $parent_jobseeker,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+            );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            $itemData =  array(
+                "menu-item-title" => "Jobs By Categories",
+                "menu-item-object-id" => $jp_pages["jobs_by_category"],
+                "menu-item-parent-id" => $parent_jobseeker,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+            );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            $itemData =  array(
+                "menu-item-title" => "Add Resume",
+                "menu-item-object-id" => $jp_pages["add_resume"],
+                "menu-item-parent-id" => $parent_jobseeker,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+            );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            $itemData =  array(
+                "menu-item-title" => "My Resumes",
+                "menu-item-object-id" => $jp_pages["my_resume"],
+                "menu-item-parent-id" => $parent_jobseeker,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+            );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+
+            $itemData =  array(
+                "menu-item-title" => "My Applied Jobs",
+                "menu-item-object-id" => $jp_pages["my_applied_jobs"],
+                "menu-item-parent-id" => $parent_jobseeker,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+            );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            $itemData =  array(
+                "menu-item-title" => "Register As Jobseeker",
+                "menu-item-object-id" => $widget3_id,
+                "menu-item-parent-id" => $parent_jobseeker,
+                "menu-item-object" => "jp_menu_widget",
+                "menu-item-type"      => "post_type",
+                "menu-item-numberofsubcolumns"      => "3",
+                "menu-item-status"    => "publish"
+            );
+            $submenuid = wp_update_nav_menu_item($menu_id, 0, $itemData);
+            update_post_meta( $submenuid, '_menu_item_numberofsubcolumns', 3 );
+
+
+            // employer
+            $itemData =  array(
+                "menu-item-title" => "Employer",
+                "menu-item-object-id" => $jp_pages["employer_control_panel"],
+                "menu-item-parent-id" => 0,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-numberofsubcolumns"      => 4,
+                "menu-item-status"    => "publish"
+            );
+            $parent_employer = wp_update_nav_menu_item($menu_id, 0, $itemData);
+            update_post_meta( $parent_employer, '_menu_item_numberofsubcolumns', 4 );
+            $itemData =  array(
+                "menu-item-title" => "Add Job",
+                "menu-item-object-id" => $jp_pages["add_job"],
+                "menu-item-parent-id" => $parent_employer,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+            );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            $itemData =  array(
+                "menu-item-title" => "My Jobs",
+                "menu-item-object-id" => $jp_pages["my_jobs"],
+                "menu-item-parent-id" => $parent_employer,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+            );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            $itemData =  array(
+                "menu-item-title" => "Resume Search",
+                "menu-item-object-id" => $jp_pages["resume_search"],
+                "menu-item-parent-id" => $parent_employer,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+            );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            $itemData =  array(
+                "menu-item-title" => "Resumes By Categories",
+                "menu-item-object-id" => $jp_pages["resume_by_category"],
+                "menu-item-parent-id" => $parent_employer,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+            );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            $itemData =  array(
+                "menu-item-title" => "My Companies",
+                "menu-item-object-id" => $jp_pages["my_companies"],
+                "menu-item-parent-id" => $parent_employer,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+            );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+
+            $itemData =  array(
+                "menu-item-title" => "Register As Employer",
+                "menu-item-object-id" => $widget4_id,
+                "menu-item-parent-id" => $parent_employer,
+                "menu-item-object" => "jp_menu_widget",
+                "menu-item-type"      => "post_type",
+                "menu-item-numberofsubcolumns"      => 3,
+                "menu-item-status"    => "publish"
+            );
+            $submenuid = wp_update_nav_menu_item($menu_id, 0, $itemData);
+            update_post_meta( $submenuid, '_menu_item_numberofsubcolumns', 3 );
+
+            $itemData =  array(
+                "menu-item-title" => "Pages",
+                "menu-item-object-id" => $jp_pages["blog"],
+                "menu-item-parent-id" => 0,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+              );
+            $parent_pages = wp_update_nav_menu_item($menu_id, 0, $itemData);
+            $itemData =  array(
+                "menu-item-object-id" => $jp_pages["news_and_rumors"],
+                "menu-item-parent-id" => $parent_pages,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+              );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            $itemData =  array(
+                "menu-item-object-id" => $jp_pages["faq"],
+                "menu-item-parent-id" => $parent_pages,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+              );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            $itemData =  array(
+                "menu-item-object-id" => $jp_pages["blog"],
+                "menu-item-parent-id" => $parent_pages,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+              );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            $itemData =  array(
+                "menu-item-object-id" => $jp_pages["pricing_table"],
+                "menu-item-parent-id" => $parent_pages,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+              );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            // $itemData =  array(
+            //     "menu-item-object-id" => $jp_pages["thank_you"],
+            //     "menu-item-parent-id" => $parent_pages,
+            //     "menu-item-object" => "page",
+            //     "menu-item-type"      => "post_type",
+            //     "menu-item-status"    => "publish"
+            //   );
+            // wp_update_nav_menu_item($menu_id, 0, $itemData);
+
+            $itemData =  array(
+                "menu-item-object-id" => $jp_pages["ourteam"],
+                "menu-item-parent-id" => $parent_pages,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+              );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            $itemData =  array(
+                "menu-item-object-id" => $jp_pages["contact_us"],
+                "menu-item-parent-id" => 0,
+                "menu-item-object" => "page",
+                "menu-item-type"      => "post_type",
+                "menu-item-status"    => "publish"
+              );
+            wp_update_nav_menu_item($menu_id, 0, $itemData);
+            }
+            $widget_positions = get_option("sidebars_widgets");
+            // Woocommerce sidebar
+                $widget_positions["woocommerce-sidebar"][] = "woocommerce_widget_cart-1";
+                $widget_woocommerce_widget_cart_array[1] = array("title" => "My Cart");
+                $widget_woocommerce_widget_cart_array["_multiwidget"] = 1;
+                // Left sidebar
+                $widget_positions["left-sidebar"][] = "search-1";
+                $search_array[1] = array("title" => "Search");
+                $search_array["_multiwidget"] = 1;
+                $widget_positions["left-sidebar"][] = "recent-posts-1";
+                $recent_posts_array[1] = array("title" => "Recent Posts", "number" => 5);
+                $recent_posts_array["_multiwidget"] = 1;
+                $widget_positions["left-sidebar"][] = "recent-comments-1";
+                $recent_comments_array[1] = array("title" => "Recent Comments", "number" => 5);
+                $recent_comments_array["_multiwidget"] = 1;
+                $widget_positions["left-sidebar"][] = "archives-1";
+                $archives_array[1] = array("title" => "Archives");
+                $archives_array["_multiwidget"] = 1;
+                $widget_positions["left-sidebar"][] = "categories-1";
+                $categories_array[1] = array("title" => "Categories");
+                $categories_array["_multiwidget"] = 1;
+                $widget_positions["left-sidebar"][] = "meta-1";
+                $meta_array[1] = array("title" => "Meta");
+                $meta_array["_multiwidget"] = 1;
+                // Right sidebar
+                $widget_positions["right-sidebar"][] = "calendar-1";
+                $calendar_array[1] = array("title" => "Calendar");
+                $calendar_array["_multiwidget"] = 1;
+                $widget_positions["right-sidebar"][] = "widget_wpj_recent_comments-1";
+                $widget_wpj_recent_comments_array[1] = array("title" => "Job Portal Recent Comments", "count" => 2);
+                $widget_wpj_recent_comments_array["_multiwidget"] = 1;
+                $widget_positions["right-sidebar"][] = "widget_wpj_recent_posts-1";
+                $widget_wpj_recent_posts_array[1] = array("title" => "Job Portal Recent Posts", "category" => "");
+                $widget_wpj_recent_posts_array["_multiwidget"] = 1;
+                $widget_positions["right-sidebar"][] = "nav_menu-1";
+                $nav_menu_array[1] = array("title" => "Custom Menu", "nav_menu" => "");
+                $nav_menu_array["_multiwidget"] = 1;
+                $widget_positions["right-sidebar"][] = "pages-1";
+                $pages_array[1] = array("title" => "Pages", "sortby" => "post_title");
+                $pages_array["_multiwidget"] = 1;
+                $widget_positions["right-sidebar"][] = "tag_cloud-1";
+                $tag_cloud_array[1] = array("title" => "Tag Cloud", "taxonomy" => "post_tag");
+                $tag_cloud_array["_multiwidget"] = 1;
+                $widget_positions["right-sidebar"][] = "text-1";
+                $text_array[1] = array("title" => "Text Heading", "text" => "Text body is here for lorem ipsum Text body is here for lorem ipsum Text body is here for lorem ipsum Text body is here for lorem ipsum Text body is here for lorem ipsum Text body is here for lorem ipsum Text body is here for lorem ipsum Text body is here for lorem ipsum Text body is here for lorem ipsum Text body is here for lorem ipsum Text body is here for lorem ipsum Text body is here for lorem ipsum");
+                $text_array["_multiwidget"] = 1;
+                // News and rumors
+                $widget_positions["news_and_rumors"][] = "search-2";
+                $search_array[2] = array("title" => "Search");
+                $search_array["_multiwidget"] = 1;
+                $widget_positions["news_and_rumors"][] = "recent-posts-2";
+                $recent_posts_array[2] = array("title" => "Recent Posts", "number" => 5);
+                $recent_posts_array["_multiwidget"] = 1;
+                // footer1
+                // $custom_logo_id = get_theme_mod( 'custom_logo' );
+                // $image = wp_get_attachment_image_src( $custom_logo_id , 'full' );
+                $logo_url = JOB_PORTAL_THEME_IMAGE.'/logo.png';
+                // if(is_array($image) && !empty($image) && isset($image[0])){
+                //     $logo_url =  $image[0];
+                // }
+                // if (!is_active_sidebar( 'footer1' ) ) { // check if widget was activated from template. to avoid dupilication
+                    $widget_positions["footer1"][] = "widget_wpj_footeraboutus-1";
+                    $widget_wpj_footeraboutus_array[1] = array("title" => "Job portal", "description" => "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.","logo"=>$logo_url);
+                    $widget_wpj_footeraboutus_array["_multiwidget"] = 1;
+                // }
+                // footer2
+                $widget_positions["footer2"][] = "widget_wpj_footerusefullinks-1";
+                $widget_wpj_footerusefullinks_array[1] = array(
+                    "title" => "For Job Seeker",
+                    "title1"=>"Newest Jobs", "link1"=> get_the_permalink($jp_pages["newest_jobs"]),
+                    "title3"=>"Search Job", "link3"=> get_the_permalink($jp_pages["search_job"]),
+                    "title2"=>"Resume Search", "link2"=> get_the_permalink($jp_pages["resume_search"]),
+                    "title4"=>"Shortlisted Jobs", "link4"=> get_the_permalink($jp_pages["shortlisted_jobs"]),
+                    "title5"=>"All Companies", "link5"=> get_the_permalink($jp_pages["all_companies"]),
+                    "title6"=>"", "link6"=> "#",
+                    "title7"=>"", "link7"=> "#",
+                    "title8"=>"", "link8"=> "#",
+                    "title9"=>"", "link9"=> "#",
+                    "title10"=>"", "link10"=> "#",
+                    );
+                $widget_wpj_footerusefullinks_array["_multiwidget"] = 1;
+                // footer3
+                $widget_positions["footer3"][] = "widget_wpj_footerusefullinks-2";
+                $widget_wpj_footerusefullinks_array[2] = array(
+                    "title" => "For Employer",
+                    "title1"=>"My Jobs", "link1"=> get_the_permalink($jp_pages["my_jobs"]),
+                    "title2"=>"Add Job", "link2"=> get_the_permalink($jp_pages["add_job"]),
+                    "title3"=>"Resume Search", "link3"=> get_the_permalink($jp_pages["resume_search"]),
+                    "title4"=>"My Companies", "link4"=> get_the_permalink($jp_pages["my_companies"]),
+                    "title5"=>"", "link5"=> "#",
+                    "title6"=>"", "link6"=> "#",
+                    "title7"=>"", "link7"=> "#",
+                    "title8"=>"", "link8"=> "#",
+                    "title9"=>"", "link9"=> "#",
+                    "title10"=>"", "link10"=> "#",
+                    );
+                $widget_wpj_footerusefullinks_array2["_multiwidget"] = 1;
+                // $widget_positions["footer3"][] = "widget_jsjs_footercompaniesimages-1";
+                // $widget_jsjs_footercompaniesimages_array[1] = array("title" => "Featured Companies", "companytype" => 1, "max_images"=>9, "column"=>3);
+                // $widget_jsjs_footercompaniesimages_array["_multiwidget"] = 1;
+
+                // footer4
+                //if (!is_active_sidebar( 'footer4' ) ) { // check if widget was activated from template. to avoid dupilication
+                    $widget_positions["footer4"][] = "widget_wpj_footercontactus-1";
+                    $widget_wpj_footercontactus_array[1] = array("title" => "Contact Us", "email" => "jobportal@yourdomain.com", "address"=>"At vero eos et accusamus et iusto odio dignissimos", "phone"=>"+1234567890");
+                    $widget_wpj_footercontactus_array["_multiwidget"] = 1;
+                    update_option( "sidebars_widgets" , $widget_positions);
+                //}
+
+                update_option("widget_"."widget_woocommerce_widget_cart"  , $widget_woocommerce_widget_cart_array);
+                update_option("widget_"."search"  , $search_array);
+                update_option("widget_"."recent-posts"  , $recent_posts_array);
+                update_option("widget_"."recent-comments"  , $recent_comments_array);
+                update_option("widget_"."archives"  , $archives_array);
+                update_option("widget_"."categories"  , $categories_array);
+                update_option("widget_"."meta"  , $meta_array);
+                update_option("widget_"."calendar"  , $calendar_array);
+                update_option("widget_"."widget_wpj_recent_comments"  , $widget_wpj_recent_comments_array);
+                update_option("widget_"."widget_wpj_recent_posts"  , $widget_wpj_recent_posts_array);
+                update_option("widget_"."nav_menu"  , $nav_menu_array);
+                update_option("widget_"."pages"  , $pages_array);
+                update_option("widget_"."tag_cloud"  , $tag_cloud_array);
+                update_option("widget_"."text"  , $text_array);
+                update_option("widget_"."widget_wpj_footerusefullinks"  , $widget_wpj_footerusefullinks_array);
+                //update_option("widget_"."widget_jsjs_footercompaniesimages"  , $widget_jsjs_footercompaniesimages_array);
+                // if (!is_active_sidebar( 'footer4' ) ) { // check if widget was activated from template. to avoid dupilication
+                    update_option("widget_"."widget_wpj_footercontactus"  , $widget_wpj_footercontactus_array);
+                // }
+                // if (!is_active_sidebar( 'footer1' ) ) { // check if widget was activated from template. to avoid dupilication
+                    update_option("widget_"."widget_wpj_footeraboutus"  , $widget_wpj_footeraboutus_array);
+                // }
+
+                // update this array at last
+                update_option( "sidebars_widgets" , $widget_positions);
+
+                //
+                // redux options// template options
+                $redux_options_json = '{"animated_menu":"1", "fixed_menu":"1", "menu_login_logout":"1", "jobs_layout":"1", "footer_copyright_show":"1", "header_bg":"#378AD8", "primary_color":"#378AD8", "copyright_bg":"#378AD8"}';// json is generated from export redux options interface,
+                $options = json_decode($redux_options_json, true);
+                $redux_option = ReduxFrameworkInstances::get_instance('job_portal_theme_options');
+                global $job_portal_theme_options;
+                if(isset($job_portal_theme_options['header_bg']['hover'])){
+                    $options['header_bg']['hover'] = $job_portal_theme_options['header_bg']['hover'];// to solve a merge array problem;
+                }
+                $options = array_merge($job_portal_theme_options,$options);
+                $redux_option->set_options($options);
+
+                // storing values of pages and posts
+                update_option('job_portal_theme_demo_pages_ids',$jp_pages);
+                update_option('job_portal_theme_demo_post_ids',$jp_post_ids);
+                $demo_data_array = array();
+                $demo_data_array['color'] = "#378AD8";
+                update_option('job_portal_theme_demo_demo_specific_data',$demo_data_array);
+
+
+                global $wpdb;
+                $pageid = $wpdb->get_var("Select id FROM `" . $wpdb->prefix . "posts` WHERE post_name = 'js-support-ticket-controlpanel'");
+                if(is_numeric($pageid) && $pageid > 0){
+                    update_post_meta($pageid, "_wp_page_template", "templates/template-fullwidth.php");
+                }
+            // Update the configuration default page to Vehicles
+                $query = "UPDATE `".$wpdb->prefix."wj_portal_config` SET configvalue = '".$jp_pages["newest_jobs"]."' WHERE configname = 'default_pageid'";
+                $wpdb->query($query);
+                update_option("rewrite_rules", "");
+                die(' all code executed');
+            return 1;
+    }
+
+    function removeJobPortalDemoData(){
+        delete_option("widget_widget_woocommerce_widget_cart");
+        delete_option("widget_search");
+        delete_option("widget_recent-posts");
+        delete_option("widget_recent-comments");
+        delete_option("widget_archives");
+        delete_option("widget_categories");
+        delete_option("widget_meta");
+        delete_option("widget_calendar");
+        delete_option("widget_widget_wpj_recent_comments");
+        delete_option("widget_widget_wpj_recent_posts");
+        delete_option("widget_nav_menu");
+        delete_option("widget_pages");
+        delete_option("widget_tag_cloud");
+        delete_option("widget_text");
+        delete_option("widget_widget_wpj_footeraboutus");
+        delete_option("widget_widget_wpj_footerusefullinks");
+        delete_option("widget_widget_wpj_footercontactus");
+
+        $widget_positions = get_option("sidebars_widgets");
+        unset($widget_positions["footer1"]);
+        unset($widget_positions["footer2"]);
+        unset($widget_positions["footer3"]);
+        unset($widget_positions["footer4"]);
+        unset($widget_positions["left-sidebar"]);
+        unset($widget_positions["right-sidebar"]);
+        unset($widget_positions["news_and_rumors"]);
+
+        update_option( "sidebars_widgets" , $widget_positions);
+
+        $menu_name = "Job Portal";
+        $del_flag = wp_delete_nav_menu($menu_name);
+        $menu_exists = wp_get_nav_menu_object( $menu_name );
+
+        $pages_array = get_option('job_portal_theme_demo_pages_ids');
+        if(!empty($pages_array) && is_array($pages_array) ){
+            foreach ($pages_array as $key => $value) {
+                wp_delete_post($value,true);
+            }
+        }
+
+        $post_array = get_option('job_portal_theme_demo_post_ids');
+        if(!empty($post_array) && is_array($post_array) ){
+            foreach ($post_array as $key => $value) {
+                wp_delete_post($value,true);
+            }
+        }
+        return;
+    }
+
 }?>

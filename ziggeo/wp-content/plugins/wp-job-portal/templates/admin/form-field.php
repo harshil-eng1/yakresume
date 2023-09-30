@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
  * @param field 		fieldordering field object
@@ -37,7 +38,7 @@ if(isset($field->field) && $field->field == 'description') {
 ?>
 <div class="wpjobportal-form-wrapper <?php echo esc_attr($fullwidth_class); ?>">
     <div class="wpjobportal-form-title">
-        <?php echo esc_html(__($title, 'wp-job-portal')); ?>
+        <?php echo esc_html(wpjobportal::wpjobportal_getVariableValue($title)); ?>
         <?php if($required == 1): ?>
         	<span color="red">*</span>
     	<?php endif; ?>
@@ -47,5 +48,5 @@ if(isset($field->field) && $field->field == 'description') {
         <?php if(!empty($description)): ?>
         <?php endif; ?>
     </div>
-    <div class="wpjobportal-form-description"><?php echo __(esc_html($description),'wp-job-portal'); ?></div>
+    <div class="wpjobportal-form-description"><?php echo esc_html(__(esc_html($description),'wp-job-portal')); ?></div>
 </div>

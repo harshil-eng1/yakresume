@@ -44,25 +44,33 @@ class WPJOBPORTALCustomFieldModel {
     function getFieldsOrdering($fieldfor) {
         if (is_numeric($fieldfor) == false)
             return false;
-        $title = WPJOBPORTALrequest::getVar('title');
-        $ustatus = WPJOBPORTALrequest::getVar('ustatus');
-        $vstatus = WPJOBPORTALrequest::getVar('vstatus');
-        $required = WPJOBPORTALrequest::getVar('required');
-        $formsearch = WPJOBPORTALrequest::getVar('WPJOBPORTAL_form_search', 'post');
-        if ($formsearch == 'WPJOBPORTAL_SEARCH') {
-            $_SESSION['WPJOBPORTAL_SEARCH']['title'] = $title;
-            $_SESSION['WPJOBPORTAL_SEARCH']['ustatus'] = $ustatus;
-            $_SESSION['WPJOBPORTAL_SEARCH']['vstatus'] = $vstatus;
-            $_SESSION['WPJOBPORTAL_SEARCH']['required'] = $required;
-        }
-        if (WPJOBPORTALrequest::getVar('pagenum', 'get', null) != null) {
-            $title = (isset($_SESSION['WPJOBPORTAL_SEARCH']['title']) && $_SESSION['WPJOBPORTAL_SEARCH']['title'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['title']) : null;
-            $ustatus = (isset($_SESSION['WPJOBPORTAL_SEARCH']['ustatus']) && $_SESSION['WPJOBPORTAL_SEARCH']['ustatus'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['ustatus']) : null;
-            $vstatus = (isset($_SESSION['WPJOBPORTAL_SEARCH']['vstatus']) && $_SESSION['WPJOBPORTAL_SEARCH']['vstatus'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['vstatus']) : null;
-            $required = (isset($_SESSION['WPJOBPORTAL_SEARCH']['required']) && $_SESSION['WPJOBPORTAL_SEARCH']['required'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['required']) : null;
-        } else if ($formsearch !== 'WPJOBPORTAL_SEARCH') {
-            unset($_SESSION['WPJOBPORTAL_SEARCH']);
-        }
+        // $title = WPJOBPORTALrequest::getVar('title');
+        // $ustatus = WPJOBPORTALrequest::getVar('ustatus');
+        // $vstatus = WPJOBPORTALrequest::getVar('vstatus');
+        // $required = WPJOBPORTALrequest::getVar('required');
+        // $formsearch = WPJOBPORTALrequest::getVar('WPJOBPORTAL_form_search', 'post');
+        // if ($formsearch == 'WPJOBPORTAL_SEARCH') {
+        //     $_SESSION['WPJOBPORTAL_SEARCH']['title'] = $title;
+        //     $_SESSION['WPJOBPORTAL_SEARCH']['ustatus'] = $ustatus;
+        //     $_SESSION['WPJOBPORTAL_SEARCH']['vstatus'] = $vstatus;
+        //     $_SESSION['WPJOBPORTAL_SEARCH']['required'] = $required;
+        // }
+        // if (WPJOBPORTALrequest::getVar('pagenum', 'get', null) != null) {
+        //     $title = (isset($_SESSION['WPJOBPORTAL_SEARCH']['title']) && $_SESSION['WPJOBPORTAL_SEARCH']['title'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['title']) : null;
+        //     $ustatus = (isset($_SESSION['WPJOBPORTAL_SEARCH']['ustatus']) && $_SESSION['WPJOBPORTAL_SEARCH']['ustatus'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['ustatus']) : null;
+        //     $vstatus = (isset($_SESSION['WPJOBPORTAL_SEARCH']['vstatus']) && $_SESSION['WPJOBPORTAL_SEARCH']['vstatus'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['vstatus']) : null;
+        //     $required = (isset($_SESSION['WPJOBPORTAL_SEARCH']['required']) && $_SESSION['WPJOBPORTAL_SEARCH']['required'] != '') ? sanitize_key($_SESSION['WPJOBPORTAL_SEARCH']['required']) : null;
+        // } else if ($formsearch !== 'WPJOBPORTAL_SEARCH') {
+        //     unset($_SESSION['WPJOBPORTAL_SEARCH']);
+        // }
+
+
+
+        $title = wpjobportal::$_search['search_filter']['title'];
+        $ustatus = wpjobportal::$_search['search_filter']['ustatus'];
+        $vstatus = wpjobportal::$_search['search_filter']['vstatus'];
+        $required = wpjobportal::$_search['search_filter']['required'];
+
         $inquery = '';
         if ($title != null)
             $inquery .= " AND field.fieldtitle LIKE '%$title%'";
@@ -328,11 +336,11 @@ class WPJOBPORTALCustomFieldModel {
                     return WPJOBPORTAL_SAVE_ERROR;
                 }
                 if (!empty($data['arraynames'])) {
-                    $valarrays = explode(',', $data['arraynames']);
+                    $valarrays = wpjobportalphplib::wpJP_explode(',', $data['arraynames']);
                     foreach ($valarrays as $key => $value) {
                         $keyvalue = $value;
-                        $value = str_replace(' ','__',$value);
-                        $value = str_replace('.','___',$value);
+                        $value = wpjobportalphplib::wpJP_str_replace(' ','__',$value);
+                        $value = wpjobportalphplib::wpJP_str_replace('.','___',$value);
                         if ( isset($data[$value]) && $data[$value] != null) {
                             $params[$keyvalue] = array_filter($data[$value]);
                         }
@@ -343,13 +351,13 @@ class WPJOBPORTALCustomFieldModel {
             /*if (!empty($data['values'])) {
                 foreach ($data['values'] as $key => $value) {
                     if ($value != null) {
-                        $params[] = trim($value);
+                        $params[] = wpjobportalphplib::wpJP_trim($value);
                     }
                 }
             }*/
-            $options = trim($data['options']);
+            $options = wpjobportalphplib::wpJP_trim($data['options']);
             if(!empty($options)){
-                $options = preg_split('/\s*(\r\n|\n|\r)\s*/', $options);
+                $options = wpjobportalphplib::wpJP_preg_split('/\s*(\r\n|\n|\r)\s*/', $options);
                 foreach($options as $value){
                     $params[] = $value;
                 }
@@ -361,6 +369,7 @@ class WPJOBPORTALCustomFieldModel {
         if($data['fieldfor'] == 3 && $data['section'] != 1){
             $data['cannotshowonlisting'] = 1;
         }
+        $data = wpjobportal::wpjobportal_sanitizeData($data);
         $data = WPJOBPORTALincluder::getJSmodel('common')->stripslashesFull($data);// remove slashes with quotes.
         if (!$row->bind($data)) {
             return WPJOBPORTAL_SAVE_ERROR;
@@ -391,6 +400,7 @@ class WPJOBPORTALCustomFieldModel {
             return false;
         }
         $row = WPJOBPORTALincluder::getJSTable('fieldsordering');
+        $data = wpjobportal::wpjobportal_sanitizeData($data);
         if (!$row->bind($data)) {
             return WPJOBPORTAL_SAVE_ERROR;
         }
@@ -407,7 +417,7 @@ class WPJOBPORTALCustomFieldModel {
         if (empty($data)) {
             return false;
         }
-        parse_str($data['fields_ordering_new'],$sorted_array);
+        wpjobportalphplib::wpJP_parse_str($data['fields_ordering_new'],$sorted_array);
         $sorted_array = reset($sorted_array);
         if(!empty($sorted_array)){
             $row = WPJOBPORTALincluder::getJSTable('fieldsordering');
@@ -434,7 +444,7 @@ class WPJOBPORTALCustomFieldModel {
         $query = "SELECT fieldtitle AS text ,id FROM " . wpjobportal::$_db->prefix . "wj_portal_fieldsordering WHERE fieldfor = " . $fieldfor . " AND (userfieldtype = 'radio' OR userfieldtype = 'combo' OR userfieldtype = 'depandant_field') && ( depandant_field = '' ".$wherequery." ) ";
         $data = wpjobportaldb::get_results($query);
         $jsFunction = 'getDataOfSelectedField();';
-        $html = WPJOBPORTALformfield::select('parentfield', $data, $parent, __('Select','wp-job-portal') .' '. __('Parent Field', 'wp-job-portal'), array('onchange' => $jsFunction, 'class' => 'inputbox one'));
+        $html = WPJOBPORTALformfield::select('parentfield', $data, $parent, esc_html(__('Select','wp-job-portal')) .' '. esc_html(__('Parent Field', 'wp-job-portal')), array('onchange' => $jsFunction, 'class' => 'inputbox one'));
         $data = json_encode($html);
         return $data;
     }
@@ -452,8 +462,8 @@ class WPJOBPORTALCustomFieldModel {
                 for ($i = 0; $i < count($data); $i++) {
                     $fieldsvar .= $comma . "$data[$i]";
                     $textvar = $data[$i];
-                    $textvar = str_replace(' ','__',$textvar);
-                    $textvar = str_replace('.','___',$textvar);
+                    $textvar = wpjobportalphplib::wpJP_str_replace(' ','__',$textvar);
+                    $textvar = wpjobportalphplib::wpJP_str_replace('.','___',$textvar);
                     $divid = $textvar;
                     $textvar = $textvar."[]";
                     $html .= "<div class='js-field-wrapper js-row no-margin'>";
@@ -471,8 +481,8 @@ class WPJOBPORTALCustomFieldModel {
             }else{
                 $fieldsvar .= $comma . $data;
                 $textvar = $data;
-                $textvar = str_replace(' ','__',$data);
-                $textvar = str_replace('.','___',$data);
+                $textvar = wpjobportalphplib::wpJP_str_replace(' ','__',$data);
+                $textvar = wpjobportalphplib::wpJP_str_replace('.','___',$data);
                 $divid = $textvar;
                 $textvar = $textvar."[]";
                 $html .= "<div class='js-field-wrapper js-row no-margin'>";
@@ -496,8 +506,8 @@ class WPJOBPORTALCustomFieldModel {
     /*function getOptionsForFieldEdit() {
         $field = WPJOBPORTALrequest::getVar('field');
         $yesno = array(
-            (object) array('id' => 1, 'text' => __('Yes', 'wp-job-portal')),
-            (object) array('id' => 0, 'text' => __('No', 'wp-job-portal')));
+            (object) array('id' => 1, 'text' => esc_html(__('Yes', 'wp-job-portal'))),
+            (object) array('id' => 0, 'text' => esc_html(__('No', 'wp-job-portal'))));
 
         if(!is_numeric($field)) return false;
         $query = "SELECT * FROM " . wpjobportal::$_db->prefix . "wj_portal_fieldsordering WHERE id=" . $field;
@@ -505,38 +515,38 @@ class WPJOBPORTALCustomFieldModel {
 
         $html = '<span class="popup-top">
                     <span id="popup_title" >
-                    ' . __("Edit Field", "wp-job-portal") . '
+                    ' . esc_html(__("Edit Field", "wp-job-portal")) . '
                     </span>
-                    <img id="popup_cross" alt="'.__('popup close','wp-job-portal').'" title="'.__('popup close','wp-job-portal').'" onClick="closePopup();" src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/popup-close.png">
+                    <img id="popup_cross" alt="'.esc_html(__('popup close','wp-job-portal')).'" title="'.esc_html(__('popup close','wp-job-portal')).'" onClick="closePopup();" src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/popup-close.png">
                 </span>';
         $html .= '<form id="wpjobportal-form" class="popup-field-from" method="post" action="' . admin_url("admin.php?page=wpjobportal_fieldordering&task=saveuserfield") . '">';
         $html .= '<div class="popup-field-wrapper">
-                    <div class="popup-field-title">' . __('Field Title', 'wp-job-portal') . '<font class="required-notifier">*</font></div>
+                    <div class="popup-field-title">' . esc_html(__('Field Title', 'wp-job-portal')) . '<font class="required-notifier">*</font></div>
                     <div class="popup-field-obj">' . WPJOBPORTALformfield::text('fieldtitle', isset($data->fieldtitle) ? $data->fieldtitle : 'text', '', array('class' => 'inputbox one', 'data-validation' => 'required')) . '</div>
                 </div>';
         if ($data->cannotunpublish == 0) {
             $html .= '<div class="popup-field-wrapper">
-                        <div class="popup-field-title">' . __('User Published', 'wp-job-portal') . '</div>
+                        <div class="popup-field-title">' . esc_html(__('User Published', 'wp-job-portal')) . '</div>
                         <div class="popup-field-obj">' . WPJOBPORTALformfield::select('published', $yesno, isset($data->published) ? $data->published : 0, '', array('class' => 'inputbox one', 'data-validation' => 'required')) . '</div>
                     </div>';
             $html .= '<div class="popup-field-wrapper">
-                        <div class="popup-field-title">' . __('Visitor published', 'wp-job-portal') . '</div>
+                        <div class="popup-field-title">' . esc_html(__('Visitor published', 'wp-job-portal')) . '</div>
                         <div class="popup-field-obj">' . WPJOBPORTALformfield::select('isvisitorpublished', $yesno, isset($data->isvisitorpublished) ? $data->isvisitorpublished : 0, '', array('class' => 'inputbox one', 'data-validation' => 'required')) . '</div>
                     </div>';
 
             $html .= '<div class="popup-field-wrapper">
-                    <div class="popup-field-title">' . __('Required', 'wp-job-portal') . '</div>
+                    <div class="popup-field-title">' . esc_html(__('Required', 'wp-job-portal')) . '</div>
                     <div class="popup-field-obj">' . WPJOBPORTALformfield::select('required', $yesno, isset($data->required) ? $data->required : 0, '', array('class' => 'inputbox one', 'data-validation' => 'required')) . '</div>
                 </div>';
         }
 
         if ($data->cannotsearch == 0) {
             $html .= '<div class="popup-field-wrapper">
-                        <div class="popup-field-title">' . __('User Search', 'wp-job-portal') . '</div>
+                        <div class="popup-field-title">' . esc_html(__('User Search', 'wp-job-portal')) . '</div>
                         <div class="popup-field-obj">' . WPJOBPORTALformfield::select('search_user', $yesno, isset($data->search_user) ? $data->search_user : 0, '', array('class' => 'inputbox one', 'data-validation' => 'required')) . '</div>
                     </div>';
             $html .= '<div class="popup-field-wrapper">
-                        <div class="popup-field-title">' . __('Visitor Search', 'wp-job-portal') . '</div>
+                        <div class="popup-field-title">' . esc_html(__('Visitor Search', 'wp-job-portal')) . '</div>
                         <div class="popup-field-obj">' . WPJOBPORTALformfield::select('search_visitor', $yesno, isset($data->search_visitor) ? $data->search_visitor : 0, '', array('class' => 'inputbox one', 'data-validation' => 'required')) . '</div>
                     </div>';
         }
@@ -546,7 +556,7 @@ class WPJOBPORTALCustomFieldModel {
         }
         if (($data->isuserfield == 1 || $data->cannotshowonlisting == 0) && $showonlisting == true) {
             $html .= '<div class="popup-field-wrapper">
-                        <div class="popup-field-title">' . __('Show On Listing', 'wp-job-portal') . '</div>
+                        <div class="popup-field-title">' . esc_html(__('Show On Listing', 'wp-job-portal')) . '</div>
                         <div class="popup-field-obj">' . WPJOBPORTALformfield::select('showonlisting', $yesno, isset($data->showonlisting) ? $data->showonlisting : 0, '', array('class' => 'inputbox one', 'data-validation' => 'required')) . '</div>
                     </div>';
         }
@@ -555,9 +565,9 @@ class WPJOBPORTALCustomFieldModel {
         $html .= WPJOBPORTALformfield::hidden('isuserfield', $data->isuserfield);
         $html .= WPJOBPORTALformfield::hidden('fieldfor', $data->fieldfor);
         $html .='<div class="js-submit-container js-col-lg-10 js-col-md-10 js-col-md-offset-1 js-col-md-offset-1">
-                    ' . WPJOBPORTALformfield::submitbutton('save', __('Save', 'wp-job-portal'), array('class' => 'button'));
+                    ' . WPJOBPORTALformfield::submitbutton('save', esc_html(__('Save', 'wp-job-portal')), array('class' => 'button'));
         if ($data->isuserfield == 1) {
-            $html .= '<a id="user-field-anchor" href="'.admin_url('admin.php?page=wpjobportal_fieldordering&wpjobportallt=formuserfield&wpjobportalid=' . $data->id . '&ff='.$data->fieldfor).'"> ' . __('Advanced', 'wp-job-portal') . ' </a>';
+            $html .= '<a id="user-field-anchor" href="'.admin_url('admin.php?page=wpjobportal_fieldordering&wpjobportallt=formuserfield&wpjobportalid=' . $data->id . '&ff='.$data->fieldfor).'"> ' . esc_html(__('Advanced', 'wp-job-portal')) . ' </a>';
         }
 
         $html .='</div>
@@ -693,12 +703,16 @@ class WPJOBPORTALCustomFieldModel {
                 }
             }
         }
-        $textvar =  ($flag == 1) ?  __('Select', 'wp-job-portal').' '.$data->fieldtitle : '';
+        $textvar =  ($flag == 1) ?  esc_html(__('Select', 'wp-job-portal')).' '.$data->fieldtitle : '';
         $html =WPJOBPORTALincluder::getObjectClass('customfields')->selectResume($childfield, $comboOptions, '', $textvar, $extraattr , null,$section , $sectionid);
         $phtml = json_encode($html);
         return $phtml;
     }
     function DataForDepandantFieldResume(){
+        $nonce = WPJOBPORTALrequest::getVar('js_nonce');
+        if (! wp_verify_nonce( $nonce, 'wp-job-portal-nonce') ) {
+            die( 'Security check Failed' );
+        }
         $val = WPJOBPORTALrequest::getVar('fvalue');
         $childfield = WPJOBPORTALrequest::getVar('child');
         $section = WPJOBPORTALrequest::getVar('section');
@@ -715,6 +729,10 @@ class WPJOBPORTALCustomFieldModel {
     }
 
     function DataForDepandantField(){
+        $nonce = WPJOBPORTALrequest::getVar('js_nonce');
+        if (! wp_verify_nonce( $nonce, 'wp-job-portal-nonce') ) {
+            die( 'Security check Failed' );
+        }
         $val = WPJOBPORTALrequest::getVar('fvalue');
         $childfield = WPJOBPORTALrequest::getVar('child');
         $themecall = WPJOBPORTALrequest::getVar('themecall');
@@ -742,7 +760,7 @@ class WPJOBPORTALCustomFieldModel {
                 }
             }
         }
-        $textvar =  ($flag == 1) ?  __('Select', 'wp-job-portal').' '.$data->fieldtitle : '';
+        $textvar =  ($flag == 1) ?  esc_html(__('Select', 'wp-job-portal')).' '.$data->fieldtitle : '';
         $required = '';
         if($data->required == 1){
             $required = 'required';

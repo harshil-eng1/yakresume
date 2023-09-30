@@ -8994,3 +8994,6 @@ msgstr ""
 
 msgid "Fresh"
 msgstr ""
+
+msgid "Register an account"
+msgstr ""

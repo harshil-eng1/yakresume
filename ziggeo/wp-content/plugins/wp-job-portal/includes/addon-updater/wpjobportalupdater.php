@@ -1,4 +1,6 @@
 <?php
+if (!defined('ABSPATH'))
+    die('Restricted Access');
 /* Update for custom plugins by joomsky */
 class WP_JOBPORTALUpdater {
 
@@ -35,7 +37,6 @@ class WP_JOBPORTALUpdater {
 	// admin init hook triggers this fuction. sets up admin specific hooks and filter
 	public function jsAdminIntilization() {
 
-		add_filter( 'site_transient_update_plugins', array( $this, 'jsCheckVersionUpdate' ) );
 
 		add_filter( 'plugins_api', array( $this, 'jsPluginsAPI' ), 10, 3 );
 
@@ -47,10 +48,10 @@ class WP_JOBPORTALUpdater {
 	}
 
 	public function jsKeyInput( $file ) {
-		$file_array = explode('/', $file);
+		$file_array = wpjobportalphplib::wpJP_explode('/', $file);
 		$addon_slug = $file_array[0];
-		if(strstr($addon_slug, 'wp-job-portal-')){
-			$addon_name = str_replace('wp-job-portal-', '', $addon_slug);
+		if(wpjobportalphplib::wpJP_strstr($addon_slug, 'wp-job-portal-')){
+			$addon_name = wpjobportalphplib::wpJP_str_replace('wp-job-portal-', '', $addon_slug);
 			if(isset($this->addon_update_data[$file]) || !in_array($addon_name, wpjobportal::$_active_addons)){ // Only checking which addon have update version
 				$option_name = 'transaction_key_for_wp-job-portal-'.$addon_name;
 				$transaction_key = wpjobportal::$_common->getTranskey($option_name);
@@ -62,10 +63,10 @@ class WP_JOBPORTALUpdater {
 		            'plugin_slug'    => $addon_name
 		        ) );
 		        if(isset($verify_results['verfication_status']) && $verify_results['verfication_status'] == 0){
-		        	$updateaddon_slug = str_replace("-", " ", $addon_slug);
-		        	$message = strtoupper( substr( $updateaddon_slug, 0, 2 ) ).substr(  ucwords($updateaddon_slug), 2 ) .' authentication failed. Please insert valid key for authentication.';
+		        	$updateaddon_slug = wpjobportalphplib::wpJP_str_replace("-", " ", $addon_slug);
+		        	$message = wpjobportalphplib::wpJP_strtoupper( wpjobportalphplib::wpJP_substr( $updateaddon_slug, 0, 2 ) ).wpjobportalphplib::wpJP_substr(  wpjobportalphplib::wpJP_ucwords($updateaddon_slug), 2 ) .' authentication failed. Please insert valid key for authentication.';
 		        	if(isset($this->addon_update_data[$file])){
-		        		$message = 'There is new version of '. strtoupper( substr( $updateaddon_slug, 0, 2 ) ).substr(  ucwords($updateaddon_slug), 2 ) .' avaible. Please insert valid activation key for updation.';
+		        		$message = 'There is new version of '. wpjobportalphplib::wpJP_strtoupper( wpjobportalphplib::wpJP_substr( $updateaddon_slug, 0, 2 ) ).wpjobportalphplib::wpJP_substr(  wpjobportalphplib::wpJP_ucwords($updateaddon_slug), 2 ) .' avaible. Please insert valid activation key for updation.';
 		        		remove_action('after_plugin_row_'.$file,'wp_plugin_update_row');
 					}
 		        	include( 'views/html-key-input.php' );
@@ -88,7 +89,7 @@ class WP_JOBPORTALUpdater {
 		$response_version_data_cdn = get_transient('wpjobportal_addon_update_temp_data_cdn');
 
 		if(isset($_SERVER) &&  $_SERVER['REQUEST_URI'] !=''){
-            if(strstr( $_SERVER['REQUEST_URI'], 'plugins.php')) {
+            if(wpjobportalphplib::wpJP_strstr( $_SERVER['REQUEST_URI'], 'plugins.php')) {
 				$response_version_data = get_transient('wpjobportal_addon_update_temp_data_plugins');
 				$response_version_data_cdn = get_transient('wpjobportal_addon_update_temp_data_plugins_cdn');
 			}
@@ -104,9 +105,9 @@ class WP_JOBPORTALUpdater {
 		if ( $cdnversiondata) {
 			if(is_object($cdnversiondata) ){
 				foreach ($update_data->checked AS $key => $value) {
-					$c_key_array = explode('/', $key);
+					$c_key_array = wpjobportalphplib::wpJP_explode('/', $key);
 					$c_key = $c_key_array[0];
-					$c_key = str_replace("-","",$c_key);
+					$c_key = wpjobportalphplib::wpJP_str_replace("-","",$c_key);
 					$newversion = $this->getVersionFromLiveData($cdnversiondata, $c_key);
 					if($newversion){
 						if(version_compare( $newversion, $value, '>' )){
@@ -128,7 +129,7 @@ class WP_JOBPORTALUpdater {
 				if(is_object($response) ){
 					if(isset($response->addon_response_type) && $response->addon_response_type == 'no_key'){
 						foreach ($update_data->checked AS $key => $value) {
-							$c_key_array = explode('/', $key);
+							$c_key_array = wpjobportalphplib::wpJP_explode('/', $key);
 							$c_key = $c_key_array[0];
 							if(isset($response->addon_version_data->{$c_key})){
 								if(version_compare( $response->addon_version_data->{$c_key}, $value, '>' )){
@@ -142,7 +143,7 @@ class WP_JOBPORTALUpdater {
 						}
 					}else{// addon_response_type other than no_key
 						foreach ($update_data->checked AS $key => $value) {
-							$c_key_array = explode('/', $key);
+							$c_key_array = wpjobportalphplib::wpJP_explode('/', $key);
 							$c_key = $c_key_array[0];
 							if(isset($response->addon_update_data) && !empty($response->addon_update_data) && isset( $response->addon_update_data->{$c_key})){
 								if(version_compare( $response->addon_update_data->{$c_key}->new_version, $value, '>' )){
@@ -161,7 +162,7 @@ class WP_JOBPORTALUpdater {
 							}else{ // set latest version from cdn data
 								if ( $cdnversiondata) {
 									if(is_object($cdnversiondata) ){
-										$c_key_plain = str_replace("-","",$c_key);
+										$c_key_plain = wpjobportalphplib::wpJP_str_replace("-","",$c_key);
 										$newversion = $this->getVersionFromLiveData($cdnversiondata, $c_key_plain);
 										if($newversion){
 											if(version_compare( $newversion, $value, '>' )){
@@ -169,7 +170,7 @@ class WP_JOBPORTALUpdater {
 												$option_name = 'transaction_key_for_'.$c_key;
 												$transaction_key = wpjobportal::$_common->getTranskey($option_name);
 												$addon_json_array = array();
-												$addon_json_array[] = str_replace('wp-job-portal-', '', $c_key);
+												$addon_json_array[] = wpjobportalphplib::wpJP_str_replace('wp-job-portal-', '', $c_key);
 												$url = 'https://wpjobportal.com/setup/index.php?token='.$transaction_key.'&productcode='. json_encode($addon_json_array).'&domain='. site_url();
 
 												// prepping data for seamless update of allowed addons
@@ -180,7 +181,7 @@ class WP_JOBPORTALUpdater {
 												$plugin->plugin = $addon_slug.'/'.$addon_slug.'.php';
 												$plugin->slug = $addon_slug;
 												$plugin->version = '1.0.0';
-												$addonwithoutslash = str_replace('-', '', $addon_slug);
+												$addonwithoutslash = wpjobportalphplib::wpJP_str_replace('-', '', $addon_slug);
 												$plugin->new_version = $newversion; 
 												$plugin->url = 'https://www.wpjobportal.com/';
 												$plugin->download_url = $url;
@@ -211,7 +212,7 @@ class WP_JOBPORTALUpdater {
 			return false;
 		}
 
-		if(strstr($args->slug, 'wp-job-portal-')){
+		if(wpjobportalphplib::wpJP_strstr($args->slug, 'wp-job-portal-')){
 			$response = $this->jsGetPluginInfo($args->slug);
 			if ($response) {
 				$response->sections = json_decode(json_encode($response->sections),true);
@@ -235,7 +236,7 @@ class WP_JOBPORTALUpdater {
 
 		// $plugin_file_path = content_url().'/plugins/'.$addon_slug.'/'.$addon_slug.'.php';
 		// $plugin_file_path = plugins_url($addon_slug . '/' . $addon_slug . '.php');
-		$plugin_file_path = ABSPATH.'wp-content/plugins/'.$addon_slug.'/'.$addon_slug.'.php';
+		$plugin_file_path = WP_PLUGIN_DIR."/".$addon_slug.'/'.$addon_slug.'.php';
 		$plugin_data = get_plugin_data($plugin_file_path);
 
 		$response = wpjobportalServerCalls::wpjobportalPluginInformation( array(
@@ -277,7 +278,7 @@ class WP_JOBPORTALUpdater {
 						update_option('transaction_key_for_'.$value,$token);
 					}
 				}else{
-					update_option( 'wpjobportal-addon-key-error-message', __('Something went wrong','wp-job-portal') );
+					update_option( 'wpjobportal-addon-key-error-message', esc_html(__('Something went wrong','wp-job-portal')));
 				}
 			}
 		}else{
@@ -346,7 +347,7 @@ class WP_JOBPORTALUpdater {
 		if (is_array($response) && isset($response['verfication_status']) && $response['verfication_status'] == 1 ) {
 			return $response['token'];
 		}else{
-			$error_message = __('Something went wrong','wp-job-portal');
+			$error_message = esc_html(__('Something went wrong','wp-job-portal'));
 			if(is_array($response) && isset($response['error'])){
 				$error_message = $response['error'];
 			}

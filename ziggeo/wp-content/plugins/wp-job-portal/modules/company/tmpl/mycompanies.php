@@ -19,9 +19,9 @@ $companies = isset(wpjobportal::$_data[0]) && is_array(wpjobportal::$_data[0]) ?
                 <?php
                 if(wpjobportal::$_error_flag == null && WPJOBPORTALincluder::getObjectClass('user')->isemployer()){
                     if(in_array('multicompany',wpjobportal::$_active_addons)){
-                        echo '<a class="wjportal-act-btn" href='.esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'multicompany', 'wpjobportallt'=>'addcompany'))).'><i class="fa fa-plus"></i>'.__('Add New','wp-job-portal') .' '. __('Company', 'wp-job-portal') .'</a> ';
+                        echo '<a class="wjportal-act-btn" href='.esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multicompany', 'wpjobportallt'=>'addcompany'))).'><i class="fa fa-plus"></i>'.esc_html(__('Add New','wp-job-portal')) .' '. esc_html(__('Company', 'wp-job-portal')) .'</a> ';
                     }else{
-                        echo '<a class="wjportal-act-btn" href='.esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'addcompany'))).'><i class="fa fa-plus"></i>'.__('Add New','wp-job-portal') .' '. __('Company', 'wp-job-portal') .'</a> ';
+                        echo '<a class="wjportal-act-btn" href='.esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'addcompany'))).'><i class="fa fa-plus"></i>'.esc_html(__('Add New','wp-job-portal')) .' '. esc_html(__('Company', 'wp-job-portal')) .'</a> ';
                     }
                 }
                 ?>
@@ -52,10 +52,10 @@ $companies = isset(wpjobportal::$_data[0]) && is_array(wpjobportal::$_data[0]) ?
                 ));
             }
         }else{
-            $msg = __('No record found','wp-job-portal');
+            $msg = esc_html(__('No record found','wp-job-portal'));
             $linkcompany[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'addcompany')),
-                'text' => __('Add New','wp-job-portal') .' '. __('Company', 'wp-job-portal')
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'addcompany')),
+                'text' => esc_html(__('Add New','wp-job-portal')) .' '. esc_html(__('Company', 'wp-job-portal'))
             );
             WPJOBPORTALlayout::getNoRecordFound($msg, $linkcompany);
         }

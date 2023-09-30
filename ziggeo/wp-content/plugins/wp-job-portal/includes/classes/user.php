@@ -42,7 +42,7 @@ class WPJOBPORTALuser {
             $id  = $this->currentuser->id;
             $string = "users.id";
         }
-        $query = "SELECT users.id,users.uid,users.first_name,users.photo,users.emailaddress,users.last_name
+        $query = "SELECT users.id,users.uid,users.first_name,users.photo,users.emailaddress,users.last_name,users.socialmedia
             FROM " . wpjobportal::$_db->prefix . "wj_portal_users AS users  
             WHERE users.id != 0 AND ".$string."=".$id ."  LIMIT 1 ";
             return wpjobportal::$_db->get_row($query);
@@ -61,7 +61,7 @@ class WPJOBPORTALuser {
             $id  = $this->currentuser->id;
             $string = "users.id";
         }
-        $query = "SELECT users.id,users.uid,users.first_name,users.photo,users.emailaddress,users.last_name
+        $query = "SELECT users.id,users.uid,users.first_name,users.photo,users.emailaddress,users.last_name,users.socialmedia
             FROM " . wpjobportal::$_db->prefix . "wj_portal_users AS users  
             WHERE users.id != 0 AND ".$string."=".$id ."  LIMIT 1 ";
             return wpjobportal::$_db->get_row($query);

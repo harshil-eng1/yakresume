@@ -35,4 +35,5 @@ return array(
     'TIOB\\Sites_Listing' => $baseDir . '/includes/Sites_Listing.php',
     'TIOB\\TI_Beaver' => $baseDir . '/includes/TI_Beaver.php',
     'TIOB\\WP_Cli' => $baseDir . '/includes/WP_Cli.php',
+    'TIOB\\White_Label_Config' => $baseDir . '/includes/White_Label_Config.php',
 );

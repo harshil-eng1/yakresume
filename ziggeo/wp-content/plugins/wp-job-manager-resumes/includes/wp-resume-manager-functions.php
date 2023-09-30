@@ -17,7 +17,7 @@ if ( ! function_exists( 'get_resumes' ) ) :
 	 * @return void
 	 */
 	function get_resumes( $args = [] ) {
-		global $wpdb, $resume_manager_keyword;
+		global $resume_manager_keyword;
 
 		$args = wp_parse_args(
 			$args,
@@ -25,6 +25,7 @@ if ( ! function_exists( 'get_resumes' ) ) :
 				'search_location'   => '',
 				'search_keywords'   => '',
 				'search_categories' => [],
+				'search_skills'     => '',
 				'offset'            => '',
 				'posts_per_page'    => '-1',
 				'orderby'           => 'date',
@@ -67,6 +68,16 @@ if ( ! function_exists( 'get_resumes' ) ) :
 			$query_args['meta_query'][] = $location_search;
 		}
 
+		if ( ! empty( $args['search_skills'] ) ) {
+			$skills_search = [
+				'key'     => '_resume_skills',
+				'value'   => $args['search_skills'],
+				'compare' => 'like',
+			];
+
+			$query_args['meta_query'][] = $skills_search;
+		}
+
 		if ( ! is_null( $args['featured'] ) ) {
 			$query_args['meta_query'][] = [
 				'key'     => '_featured',
@@ -102,9 +113,13 @@ if ( ! function_exists( 'get_resumes' ) ) :
 			];
 		}
 
+		if ( ! empty( $args['post__not_in'] ) ) {
+			$query_args['post__not_in'] = $args['post__not_in'];
+		}
+
 		if ( $resume_manager_keyword = sanitize_text_field( $args['search_keywords'] ) ) {
-			$query_args['_keyword'] = $resume_manager_keyword; // Does nothing but needed for unique hash
-			add_filter( 'posts_clauses', 'get_resumes_keyword_search' );
+			$query_args['s'] = $resume_manager_keyword;
+			add_filter( 'posts_search', 'get_resumes_keyword_search' );
 		}
 
 		$query_args = apply_filters( 'resume_manager_get_resumes', $query_args, $args );
@@ -141,7 +156,7 @@ if ( ! function_exists( 'get_resumes' ) ) :
 		}
 		do_action( 'after_get_resumes', $query_args, $args );
 
-		remove_filter( 'posts_clauses', 'get_resumes_keyword_search' );
+		remove_filter( 'posts_search', 'get_resumes_keyword_search' );
 
 		return $result;
 	}
@@ -175,30 +190,74 @@ if ( ! function_exists( 'get_resumes_keyword_search' ) ) :
 	/**
 	 * Join and where query for keywords
 	 *
-	 * @param array $args
+	 * @param array $search Search query args.
 	 * @return array
 	 */
-	function get_resumes_keyword_search( $args ) {
+	function get_resumes_keyword_search( $search ) {
 		global $wpdb, $resume_manager_keyword;
 
-		// Meta searching - Query matching ids to avoid more joins
-		$post_ids = $wpdb->get_col( "SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%" . esc_sql( $resume_manager_keyword ) . "%'" );
+		// Searchable Meta Keys: set to empty to search all meta keys.
+		$searchable_meta_keys = [
+			'_candidate_name',
+			'_candidate_title',
+			'_candidate_location',
+		];
+		/**
+		 * Filters meta fields used during search.
+		 *
+		 * @since 1.18.4
+		 *
+		 * @param array $meta_keys Meta key used in search.
+		 */
+		$searchable_meta_keys = apply_filters( 'resume_manager_searchable_meta_keys', $searchable_meta_keys );
 
-		// Term searching
-		$post_ids = array_merge( $post_ids, $wpdb->get_col( "SELECT object_id FROM {$wpdb->term_relationships} AS tr LEFT JOIN {$wpdb->terms} AS t ON tr.term_taxonomy_id = t.term_id WHERE t.name LIKE '" . esc_sql( $resume_manager_keyword ) . "%'" ) );
+		// Set Search DB Conditions.
+		$conditions = [];
 
-		// Title and content searching
-		$conditions   = [];
-		$conditions[] = "{$wpdb->posts}.post_title LIKE '%" . esc_sql( $resume_manager_keyword ) . "%'";
-		$conditions[] = "{$wpdb->posts}.post_content RLIKE '[[:<:]]" . esc_sql( $resume_manager_keyword ) . "[[:>:]]'";
+		/**
+		 * Filters whether to search post meta.
+		 *
+		 * @since 1.18.4
+		 *
+		 * @param bool $search_meta Switch to search meta or not.
+		 */
+		if ( apply_filters( 'resume_manager_search_post_meta', true ) ) {
 
-		if ( $post_ids ) {
-			$conditions[] = "{$wpdb->posts}.ID IN (" . esc_sql( implode( ',', array_unique( $post_ids ) ) ) . ')';
+			// Only selected meta keys.
+			if ( $searchable_meta_keys ) {
+				$conditions[] = "{$wpdb->posts}.ID IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_key IN ( '" . implode( "','", array_map( 'esc_sql', $searchable_meta_keys ) ) . "' ) AND meta_value LIKE '%" . esc_sql( $resume_manager_keyword ) . "%' )";
+			} else {
+				// No meta keys defined, search all post meta value.
+				$conditions[] = "{$wpdb->posts}.ID IN ( SELECT post_id FROM {$wpdb->postmeta} WHERE meta_value LIKE '%" . esc_sql( $resume_manager_keyword ) . "%' )";
+			}
 		}
 
-		$args['where'] .= ' AND ( ' . implode( ' OR ', $conditions ) . ' ) ';
+		// Search taxonomy.
+		$conditions[] = "{$wpdb->posts}.ID IN ( SELECT object_id FROM {$wpdb->term_relationships} AS tr LEFT JOIN {$wpdb->term_taxonomy} AS tt ON tr.term_taxonomy_id = tt.term_taxonomy_id LEFT JOIN {$wpdb->terms} AS t ON tt.term_id = t.term_id WHERE t.name LIKE '%" . esc_sql( $resume_manager_keyword ) . "%' )";
 
-		return $args;
+		/**
+		 * Filters the conditions to use when querying resume listings. Resulting array is joined with OR statements.
+		 *
+		 * @since 1.18.4
+		 *
+		 * @param array  $conditions          Conditions to join by OR when querying resume listings.
+		 * @param string $job_manager_keyword Search query.
+		 */
+		$conditions = apply_filters( 'resume_manager_search_conditions', $conditions, $resume_manager_keyword );
+		if ( empty( $conditions ) ) {
+			return $search;
+		}
+
+		$conditions_str = implode( ' OR ', $conditions );
+
+		if ( ! empty( $search ) ) {
+			$search = preg_replace( '/^ AND /', '', $search );
+			$search = " AND ( {$search} OR ( {$conditions_str} ) )";
+		} else {
+			$search = " AND ( {$conditions_str} )";
+		}
+
+		return $search;
 	}
 endif;
 

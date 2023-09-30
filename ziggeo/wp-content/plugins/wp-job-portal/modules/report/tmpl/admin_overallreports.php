@@ -20,27 +20,27 @@
                 <div id="wpjobportal-breadcrumbs">
                     <ul>
                         <li>
-                            <a href="<?php echo admin_url('admin.php?page=wpjobportal'); ?>" title="<?php echo __('dashboard','wp-job-portal'); ?>">
-                                <?php echo __('Dashboard','wp-job-portal'); ?>
+                            <a href="<?php echo admin_url('admin.php?page=wpjobportal'); ?>" title="<?php echo esc_html(__('dashboard','wp-job-portal')); ?>">
+                                <?php echo esc_html(__('Dashboard','wp-job-portal')); ?>
                             </a>
                         </li>
-                        <li><?php echo __('Overall Reports','wp-job-portal'); ?></li>
+                        <li><?php echo esc_html(__('Overall Reports','wp-job-portal')); ?></li>
                     </ul>
                 </div>
             </div>
             <div id="wpjobportal-wrapper-top-right">
                 <div id="wpjobportal-config-btn">
-                    <a href="admin.php?page=wpjobportal_configuration" title="<?php echo __('configuration','wp-job-portal'); ?>">
+                    <a href="admin.php?page=wpjobportal_configuration" title="<?php echo esc_html(__('configuration','wp-job-portal')); ?>">
                         <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/dashboard/config.png">
                    </a>
                 </div>
                 <div id="wpjobportal-help-btn" class="wpjobportal-help-btn">
-                    <a href="admin.php?page=wpjobportal&wpjobportallt=help" title="<?php echo __('help','wp-job-portal'); ?>">
+                    <a href="admin.php?page=wpjobportal&wpjobportallt=help" title="<?php echo esc_html(__('help','wp-job-portal')); ?>">
                         <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/dashboard/help.png">
                    </a>
                 </div>
                 <div id="wpjobportal-vers-txt">
-                    <?php echo __('Version','wp-job-portal').': '; ?>
+                    <?php echo esc_html(__('Version','wp-job-portal')).': '; ?>
                     <span class="wpjobportal-ver"><?php echo WPJOBPORTALincluder::getJSModel('configuration')->getConfigValue('versioncode'); ?></span>
                 </div>
             </div>
@@ -48,12 +48,11 @@
         <!-- top head -->
         <div id="wpjobportal-head">
             <h1 class="wpjobportal-head-text">
-                <?php echo __('Overall Reports', 'wp-job-portal'); ?>
+                <?php echo esc_html(__('Overall Reports', 'wp-job-portal')); ?>
             </h1>
         </div>
         <!-- page content -->
         <div id="wpjobportal-admin-wrapper" class="p0 bg-n bs-n">
-            <script src="<?php echo $protocol;?>www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}"></script>
             <?php
             if(isset(wpjobportal::$_data['tot_jobs']) && !empty(wpjobportal::$_dat['tot_jobs'])){
                 $total_jobs = @round((wpjobportal::$_data['tot_jobs'] / wpjobportal::$_data['totaljobs']) * 100);
@@ -103,7 +102,7 @@
                         </div>
                         <div class="wpjobportal-count-link-text">
                             <?php
-                                echo __('Total Jobs', 'wp-job-portal');
+                                echo esc_html(__('Total Jobs', 'wp-job-portal'));
                                 echo ' ( '.esc_html(wpjobportal::$_data['totaljobs']).' )';
                             ?>
                         </div>
@@ -129,7 +128,7 @@
                         </div>
                         <div class="wpjobportal-count-link-text">
                             <?php
-                                echo __('Total Resume', 'wp-job-portal');
+                                echo esc_html(__('Total Resume', 'wp-job-portal'));
                                 echo ' ( '. esc_html(wpjobportal::$_data['totalresume']).' )';
                             ?>
                         </div>
@@ -155,7 +154,7 @@
                         </div>
                         <div class="wpjobportal-count-link-text">
                             <?php
-                                echo __('Total Companies', 'wp-job-portal');
+                                echo esc_html(__('Total Companies', 'wp-job-portal'));
                                 echo ' ( '. esc_html(wpjobportal::$_data['totalcompany']).' )';
                             ?>
                         </div>
@@ -181,7 +180,7 @@
                         </div>
                         <div class="wpjobportal-count-link-text">
                             <?php
-                                echo __('Applied resume', 'wp-job-portal');
+                                echo esc_html(__('Applied resume', 'wp-job-portal'));
                                 echo ' ( '. esc_html(wpjobportal::$_data['totalappliedresume']).' )';
                             ?>
                         </div>
@@ -190,69 +189,73 @@
             </div>
             <div class="wpjobportal-report">
                 <div class="wpjobportal-report-heading">
-                    <?php echo __('Overall Statistics','wp-job-portal'); ?>
+                    <?php echo esc_html(__('Overall Statistics','wp-job-portal')); ?>
                 </div>
                 <div id="curve_chart" class="wpjobportal-report-chart"></div>
             </div>
             <div class="wpjobportal-report halfwidth">
                 <div class="wpjobportal-report-heading">
-                    <?php echo __('Report By Job Categories','wp-job-portal'); ?>
+                    <?php echo esc_html(__('Report By Job Categories','wp-job-portal')); ?>
                 </div>
                 <div id="catbar1" class="wpjobportal-report-chart"></div>
             </div>
             <div class="wpjobportal-report halfwidth">
                 <div class="wpjobportal-report-heading">
-                    <?php echo __('Report By Resume Categories','wp-job-portal'); ?>
+                    <?php echo esc_html(__('Report By Resume Categories','wp-job-portal')); ?>
                 </div>
                 <div id="catbar2" class="wpjobportal-report-chart"></div>
             </div>
             <div class="wpjobportal-report halfwidth">
                 <div class="wpjobportal-report-heading">
-                    <?php echo __('Report By Job Cities','wp-job-portal'); ?>
+                    <?php echo esc_html(__('Report By Job Cities','wp-job-portal')); ?>
                 </div>
                 <div id="citybar1" class="wpjobportal-report-chart"></div>
             </div>
             <div class="wpjobportal-report halfwidth">
                 <div class="wpjobportal-report-heading">
-                    <?php echo __('Report By Company Cities','wp-job-portal'); ?>
+                    <?php echo esc_html(__('Report By Company Cities','wp-job-portal')); ?>
                 </div>
                 <div id="citypie" class="wpjobportal-report-chart"></div>
             </div>
             <?php if(in_array('advanceresumebuilder', wpjobportal::$_active_addons)){ ?>
                 <div class="wpjobportal-report halfwidth">
                     <div class="wpjobportal-report-heading">
-                        <?php echo __('Report By Resume Cities','wp-job-portal'); ?>
+                        <?php echo esc_html(__('Report By Resume Cities','wp-job-portal')); ?>
                     </div>
                     <div id="citybar2" class="wpjobportal-report-chart"></div>
                 </div>
             <?php } ?>
             <div class="wpjobportal-report halfwidth">
                 <div class="wpjobportal-report-heading">
-                    <?php echo __('Report By Job Types','wp-job-portal'); ?>
+                    <?php echo esc_html(__('Report By Job Types','wp-job-portal')); ?>
                 </div>
                 <div id="jobtypebar1" class="wpjobportal-report-chart"></div>
             </div>
             <div class="wpjobportal-report halfwidth">
                 <div class="wpjobportal-report-heading">
-                    <?php echo __('Report By Resume Types','wp-job-portal'); ?>
+                    <?php echo esc_html(__('Report By Resume Types','wp-job-portal')); ?>
                 </div>
                 <div id="jobtypebar2" class="wpjobportal-report-chart"></div>
             </div>
         </div>
     </div>
 </div>
-<script >
+<?php
+wp_enqueue_script( 'google-charts', WPJOBPORTAL_PLUGIN_URL.'includes/js/google-charts.js', array(), '', false );
+wp_register_script( 'google-charts-handle', '' );
+wp_enqueue_script( 'google-charts-handle' );
+$drawChartTop_js_script = "
     google.charts.load('current', {'packages':['corechart']});
     google.setOnLoadCallback(drawChartTop);
             function drawChartTop() {
             var data = new google.visualization.DataTable();
-                    data.addColumn("date", "<?php echo __('Dates', 'wp-job-portal'); ?>");
-                    data.addColumn("number", "<?php echo __('Jobs', 'wp-job-portal'); ?>");
-                    data.addColumn("number", "<?php echo __('Resume', 'wp-job-portal'); ?>");
-                    data.addColumn("number", "<?php echo __('Company', 'wp-job-portal'); ?>");
-                    data.addColumn("number", "<?php echo __('Applied resume', 'wp-job-portal'); ?>");
+                    data.addColumn('date', '". esc_html(__("Dates", 'wp-job-portal'))."');
+                    data.addColumn('number', '". esc_html(__("Jobs", 'wp-job-portal')) ."');
+                    data.addColumn('number', '". esc_html(__("Resume", 'wp-job-portal'))."');
+                    data.addColumn('number', '". esc_html(__("Company", 'wp-job-portal'))."');
+                    data.addColumn('number', '". esc_html(__("Applied resume", 'wp-job-portal'))."');
                     data.addRows([
-                        <?php echo wpjobportal::$_data['line_chart_json_array']; ?>
+                        ".wpjobportal::$_data['line_chart_json_array']."
                     ]);
                     var options = {
                     colors:['#1EADD8', '#179650', '#D98E11', '#5F3BBB', '#DB624C'],
@@ -269,156 +272,177 @@
                     chart.draw(data, options);
             }
 
+";
+wp_add_inline_script( 'google-charts-handle', $drawChartTop_js_script );
+
+$drawChartCatBar1_js_script = "
     google.setOnLoadCallback(drawChartCatBar1);
     function drawChartCatBar1(){
     var data = google.visualization.arrayToDataTable([
-            ["<?php echo __('Categories', 'wp-job-portal'); ?>", "<?php echo __('Jobs', 'wp-job-portal'); ?>", { role: 'style' }, { role: 'annotation' } ],
-    <?php echo wpjobportal::$_data['catbar1']; ?>
+            ['". esc_html(__('Categories', 'wp-job-portal')) ."', '". esc_html(__('Jobs', 'wp-job-portal')) ."', { role: 'style' }, { role: 'annotation' } ],
+    ". wpjobportal::$_data['catbar1'] ."
     ]);
             var view = new google.visualization.DataView(data);
             view.setColumns([0, 1,
-            { calc: "stringify",
+            { calc: 'stringify',
                     sourceColumn: 1,
-                    type: "string",
-                    role: "annotation" },
+                    type: 'string',
+                    role: 'annotation' },
                     2]);
             var options = {
-            title: "",
+            title: '',
                     width:'100%',
                     height: 300,
-                    bar: {groupWidth: "80%"},
-                    legend: { position: "none" },
+                    bar: {groupWidth: '80%'},
+                    legend: { position: 'none' },
                     chartArea: {width:'90%', top:50}
             };
-            var chart = new google.visualization.BarChart(document.getElementById("catbar1"));
+            var chart = new google.visualization.BarChart(document.getElementById('catbar1'));
             chart.draw(view, options);
     }
+";
+wp_add_inline_script( 'google-charts-handle', $drawChartCatBar1_js_script );
 
+$drawChartCatBar2_js_script = "
     google.setOnLoadCallback(drawChartCatBar2);
     function drawChartCatBar2(){
     var data = google.visualization.arrayToDataTable([
-            ["<?php echo __('Categories', 'wp-job-portal'); ?>", "<?php echo __('Resume', 'wp-job-portal'); ?>", { role: 'style' }, { role: 'annotation' } ],
-    <?php echo wpjobportal::$_data['catbar2']; ?>
+            ['". esc_html(__('Categories', 'wp-job-portal'))."', '". esc_html(__('Resume', 'wp-job-portal')) ."', { role: 'style' }, { role: 'annotation' } ],
+    ". wpjobportal::$_data['catbar2'] ."
     ]);
             var view = new google.visualization.DataView(data);
             view.setColumns([0, 1,
-            { calc: "stringify",
+            { calc: 'stringify',
                     sourceColumn: 1,
-                    type: "string",
-                    role: "annotation" },
+                    type: 'string',
+                    role: 'annotation' },
                     2]);
-            var options = {title: "", width:'100%', height: 300, bar: {groupWidth: "80%"}, legend: { position: "none" }};
-            var chart = new google.visualization.ColumnChart(document.getElementById("catbar2"));
+            var options = {title: '', width:'100%', height: 300, bar: {groupWidth: '80%'}, legend: { position: 'none' }};
+            var chart = new google.visualization.ColumnChart(document.getElementById('catbar2'));
             chart.draw(view, options);
     }
 
     google.setOnLoadCallback(drawChart);
     function drawChart() {
     var piedata = google.visualization.arrayToDataTable([
-            ["<?php echo __('Categories', 'wp-job-portal'); ?>", "<?php echo __('Companies', 'wp-job-portal'); ?>"],
-    <?php echo wpjobportal::$_data['catpie']; ?>
+            ['". esc_html(__('Categories', 'wp-job-portal')) ."', '". esc_html(__('Companies', 'wp-job-portal')) ."'],
+    ". wpjobportal::$_data['catpie'] ."
     ]);
-            var pieoptions = {title: '', width:'100%', height:300, legend: {position:"bottom"}, pieHole: 0.4, };
+            var pieoptions = {title: '', width:'100%', height:300, legend: {position:'bottom'}, pieHole: 0.4, };
             var piechart = new google.visualization.PieChart(document.getElementById('catpie'));
             piechart.draw(piedata, pieoptions);
     }
+";
+wp_add_inline_script( 'google-charts-handle', $drawChartCatBar2_js_script );
+
+$drawChartCatBar3_js_script = "
 
     google.setOnLoadCallback(drawChartCityBar1);
     function drawChartCityBar1(){
     var data = google.visualization.arrayToDataTable([
-            ["<?php echo __('Cities', 'wp-job-portal'); ?>", "<?php echo __('Jobs', 'wp-job-portal'); ?>", { role: 'style' }, { role: 'annotation' } ],
-    <?php echo wpjobportal::$_data['citybar1']; ?>
+            ['". esc_html(__('Cities', 'wp-job-portal')) ."', '". esc_html(__('Jobs', 'wp-job-portal')) ."', { role: 'style' }, { role: 'annotation' } ],
+    ". wpjobportal::$_data['citybar1'] ."
     ]);
             var view = new google.visualization.DataView(data);
             view.setColumns([0, 1,
-            { calc: "stringify",
+            { calc: 'stringify',
                     sourceColumn: 1,
-                    type: "string",
-                    role: "annotation" },
+                    type: 'string',
+                    role: 'annotation' },
                     2]);
             var options = {
-            title: "",
+            title: '',
                     width:'100%',
                     height: 300,
-                    bar: {groupWidth: "80%"},
-                    legend: { position: "none" },
+                    bar: {groupWidth: '80%'},
+                    legend: { position: 'none' },
                     chartArea: {width:'90%', top:50}
             };
-            var chart = new google.visualization.BarChart(document.getElementById("citybar1"));
+            var chart = new google.visualization.BarChart(document.getElementById('citybar1'));
             chart.draw(view, options);
     }
+";
+wp_add_inline_script( 'google-charts-handle', $drawChartCatBar3_js_script );
+
+$drawChartCatBar4_js_script = "
 
     google.setOnLoadCallback(drawChartCityBar2);
+    //4
     function drawChartCityBar2(){
     var data = google.visualization.arrayToDataTable([
-            ["<?php echo __('Cities', 'wp-job-portal'); ?>", "<?php echo __('Resume', 'wp-job-portal'); ?>", { role: 'style' }, { role: 'annotation' } ],
-    <?php echo wpjobportal::$_data['citybar2']; ?>
+            ['". esc_html(__('Cities', 'wp-job-portal')) ."', '". esc_html(__('Resume', 'wp-job-portal')) ."', { role: 'style' }, { role: 'annotation' } ],
+    ". wpjobportal::$_data['citybar2'] ."
     ]);
-    console.log(data);
             var view = new google.visualization.DataView(data);
             view.setColumns([0, 1,
-            { calc: "stringify",
+            { calc: 'stringify',
                     sourceColumn: 1,
-                    type: "string",
-                    role: "annotation" },
+                    type: 'string',
+                    role: 'annotation' },
                     2]);
-            var options = {title: "", width:'100%', height: 300, bar: {groupWidth: "80%"}, legend: { position: "none" }};
-            var chart = new google.visualization.ColumnChart(document.getElementById("citybar2"));
+            var options = {title: '', width:'100%', height: 300, bar: {groupWidth: '80%'}, legend: { position: 'none' }};
+            var chart = new google.visualization.ColumnChart(document.getElementById('citybar2'));
             chart.draw(view, options);
     }
 
     google.setOnLoadCallback(drawChartCity);
     function drawChartCity() {
     var piedata = google.visualization.arrayToDataTable([
-            ["<?php echo __('Cities', 'wp-job-portal'); ?>", "<?php echo __('Companies', 'wp-job-portal'); ?>"],
-    <?php echo wpjobportal::$_data['citypie']; ?>
+            ['". esc_html(__('Cities', 'wp-job-portal')) ."', '". esc_html(__('Companies', 'wp-job-portal')) ."'],
+    ". wpjobportal::$_data['citypie'] ."
     ]);
-            var pieoptions = {title: '', width:'100%', height:300, legend: {position:"bottom"}, pieHole: 0.4, };
+            var pieoptions = {title: '', width:'100%', height:300, legend: {position:'bottom'}, pieHole: 0.4, };
             var piechart = new google.visualization.PieChart(document.getElementById('citypie'));
             piechart.draw(piedata, pieoptions);
     }
+";
+wp_add_inline_script( 'google-charts-handle', $drawChartCatBar4_js_script );
+
+$drawChartCatBar5_js_script = "
 
     google.setOnLoadCallback(drawChartJobtypeBar1);
     function drawChartJobtypeBar1(){
     var data = google.visualization.arrayToDataTable([
-            ["<?php echo __('Job type', 'wp-job-portal'); ?>", "<?php echo __('Jobs', 'wp-job-portal'); ?>", { role: 'style' }, { role: 'annotation' } ],
-    <?php echo wpjobportal::$_data['jobtypebar1']; ?>
+            ['". esc_html(__('Job type', 'wp-job-portal')) ."', '". esc_html(__('Jobs', 'wp-job-portal')) ."', { role: 'style' }, { role: 'annotation' } ],
+     ". wpjobportal::$_data['jobtypebar1'] ."
     ]);
             var view = new google.visualization.DataView(data);
             view.setColumns([0, 1,
-            { calc: "stringify",
+            { calc: 'stringify',
                     sourceColumn: 1,
-                    type: "string",
-                    role: "annotation" },
+                    type: 'string',
+                    role: 'annotation' },
                     2]);
             var options = {
-            title: "",
+            title: '',
                     width:'100%',
                     height: 300,
-                    bar: {groupWidth: "80%"},
-                    legend: { position: "none" },
+                    bar: {groupWidth: '80%'},
+                    legend: { position: 'none' },
                     chartArea: {width:'90%', top:50}
             };
-            var chart = new google.visualization.BarChart(document.getElementById("jobtypebar1"));
+            var chart = new google.visualization.BarChart(document.getElementById('jobtypebar1'));
             chart.draw(view, options);
     }
 
     google.setOnLoadCallback(drawChartJobtypeBar2);
     function drawChartJobtypeBar2(){
     var data = google.visualization.arrayToDataTable([
-            ["<?php echo __('Job type', 'wp-job-portal'); ?>", "<?php echo __('Resume', 'wp-job-portal'); ?>", { role: 'style' }, { role: 'annotation' } ],
-    <?php echo wpjobportal::$_data['jobtypebar2']; ?>
+            ['". esc_html(__('Job type', 'wp-job-portal')) ."', '". esc_html(__('Resume', 'wp-job-portal')) ."', { role: 'style' }, { role: 'annotation' } ],
+    ". wpjobportal::$_data['jobtypebar2'] ."
     ]);
             var view = new google.visualization.DataView(data);
             view.setColumns([0, 1,
-            { calc: "stringify",
+            { calc: 'stringify',
                     sourceColumn: 1,
-                    type: "string",
-                    role: "annotation" },
+                    type: 'string',
+                    role: 'annotation' },
                     2]);
-            var options = {title: "", width:'100%', height: 300, bar: {groupWidth: "80%"}, legend: { position: "none" }};
-            var chart = new google.visualization.ColumnChart(document.getElementById("jobtypebar2"));
+            var options = {title: '', width:'100%', height: 300, bar: {groupWidth: '80%'}, legend: { position: 'none' }};
+            var chart = new google.visualization.ColumnChart(document.getElementById('jobtypebar2'));
             chart.draw(view, options);
     }
+";
+wp_add_inline_script( 'google-charts-handle', $drawChartCatBar5_js_script );
 
-</script>
+?>

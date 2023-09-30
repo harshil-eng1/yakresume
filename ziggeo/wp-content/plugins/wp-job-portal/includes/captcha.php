@@ -56,29 +56,29 @@ class WPJOBPORTALcaptcha {
         if ($tcalc == 1) { // Addition
             if ($wpjobportal_rot13 == 1) { // ROT13 coding
                 if ($operand == 2) {
-                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(str_rot13(base64_encode($operend_1 + $operend_2)),'','wpjobportal_spamcheckresult','captcha');
+                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(wpjobportalphplib::wpJP_str_rot13(wpjobportalphplib::wpJP_safe_encoding($operend_1 + $operend_2)),'','wpjobportal_spamcheckresult','captcha');
                 } elseif ($operand == 3) {
-                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(str_rot13(base64_encode($operend_1 + $operend_2 + $operend_3)),'','wpjobportal_spamcheckresult','captcha');
+                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(wpjobportalphplib::wpJP_str_rot13(wpjobportalphplib::wpJP_safe_encoding($operend_1 + $operend_2 + $operend_3)),'','wpjobportal_spamcheckresult','captcha');
                 }
             } else {
                 if ($operand == 2) {
-                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(base64_encode($operend_1 + $operend_2),'','wpjobportal_spamcheckresult','captcha');
+                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(wpjobportalphplib::wpJP_safe_encoding($operend_1 + $operend_2),'','wpjobportal_spamcheckresult','captcha');
                 } elseif ($operand == 3) {
-                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(base64_encode($operend_1 + $operend_2 + $operend_3),'','wpjobportal_spamcheckresult','captcha');
+                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(wpjobportalphplib::wpJP_safe_encoding($operend_1 + $operend_2 + $operend_3),'','wpjobportal_spamcheckresult','captcha');
                 }
             }
         } elseif ($tcalc == 2) { // Subtraction
             if ($wpjobportal_rot13 == 1) {
                 if ($operand == 2) {
-                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(str_rot13(base64_encode($operend_1 - $operend_2)),'','wpjobportal_spamcheckresult','captcha');
+                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(wpjobportalphplib::wpJP_str_rot13(wpjobportalphplib::wpJP_safe_encoding($operend_1 - $operend_2)),'','wpjobportal_spamcheckresult','captcha');
                 } elseif ($operand == 3) {
-                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(str_rot13(base64_encode($operend_1 - $operend_2 - $operend_3)),'','wpjobportal_spamcheckresult','captcha');
+                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(wpjobportalphplib::wpJP_str_rot13(wpjobportalphplib::wpJP_safe_encoding($operend_1 - $operend_2 - $operend_3)),'','wpjobportal_spamcheckresult','captcha');
                 }
             } else {
                 if ($operand == 2) {
-                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(base64_encode($operend_1 - $operend_2),'','wpjobportal_spamcheckresult','captcha');
+                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(wpjobportalphplib::wpJP_safe_encoding($operend_1 - $operend_2),'','wpjobportal_spamcheckresult','captcha');
                 } elseif ($operand == 3) {
-                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(base64_encode($operend_1 - $operend_2 - $operend_3),'','wpjobportal_spamcheckresult','captcha');
+                    WPJOBPORTALincluder::getObjectClass('wpjpnotification')->addSessionNotificationDataToTable(wpjobportalphplib::wpJP_safe_encoding($operend_1 - $operend_2 - $operend_3),'','wpjobportal_spamcheckresult','captcha');
                 }
             }
         }
@@ -91,21 +91,21 @@ class WPJOBPORTALcaptcha {
 
         if ($tcalc == 1) {
             if ($operand == 2) {
-                $add_string .= $operend_1 . ' ' . __('Plus', 'wp-job-portal') . ' ' . $operend_2 . ' ' . __('Equals', 'wp-job-portal') . ' ';
+                $add_string .= $operend_1 . ' ' . esc_html(__('Plus', 'wp-job-portal')) . ' ' . $operend_2 . ' ' . esc_html(__('Equals', 'wp-job-portal')) . ' ';
             } elseif ($operand == 3) {
-                $add_string .= $operend_1 . ' ' . __('Plus', 'wp-job-portal') . ' ' . $operend_2 . ' ' . __('Plus', 'wp-job-portal') . ' ' . $operend_3 . ' ' . __('Equals', 'wp-job-portal') . ' ';
+                $add_string .= $operend_1 . ' ' . esc_html(__('Plus', 'wp-job-portal')) . ' ' . $operend_2 . ' ' . esc_html(__('Plus', 'wp-job-portal')) . ' ' . $operend_3 . ' ' . esc_html(__('Equals', 'wp-job-portal')) . ' ';
             }
         } elseif ($tcalc == 2) {
             $converttostring = 0;
             if ($operand == 2) {
-                $add_string .= $operend_1 . ' ' . __('Minus', 'wp-job-portal') . ' ' . $operend_2 . ' ' . __('Equals', 'wp-job-portal') . ' ';
+                $add_string .= $operend_1 . ' ' . esc_html(__('Minus', 'wp-job-portal')) . ' ' . $operend_2 . ' ' . esc_html(__('Equals', 'wp-job-portal')) . ' ';
             } elseif ($operand == 3) {
-                $add_string .= $operend_1 . ' ' . __('Minus', 'wp-job-portal') . ' ' . $operend_2 . ' ' . __('Minus', 'wp-job-portal') . ' ' . $operend_3 . ' ' . __('Equals', 'wp-job-portal') . ' ';
+                $add_string .= $operend_1 . ' ' . esc_html(__('Minus', 'wp-job-portal')) . ' ' . $operend_2 . ' ' . esc_html(__('Minus', 'wp-job-portal')) . ' ' . $operend_3 . ' ' . esc_html(__('Equals', 'wp-job-portal')) . ' ';
             }
         }
 
         $add_string .= '<font color="red">* </font></div>';
-
+        $class_prefix = "";
         if(wpjobportal::$theme_chk == 1){
             $class_prefix = 'wpj-jp';
         }
@@ -138,10 +138,13 @@ class WPJOBPORTALcaptcha {
     private function performChecks() {
         $wpjobportal_rot13 = WPJOBPORTALincluder::getObjectClass('wpjpnotification')->getNotificationDatabySessionId('wpjobportal_rot13',true);
         if ($wpjobportal_rot13 == 1) {
-            $spamcheckresult = base64_decode(str_rot13(WPJOBPORTALincluder::getObjectClass('wpjpnotification')->getNotificationDatabySessionId('wpjobportal_spamcheckresult',true)));
+            $spamcheckresult = wpjobportalphplib::wpJP_str_rot13(WPJOBPORTALincluder::getObjectClass('wpjpnotification')->getNotificationDatabySessionId('wpjobportal_spamcheckresult',true));
         } else {
-            $spamcheckresult = base64_decode(WPJOBPORTALincluder::getObjectClass('wpjpnotification')->getNotificationDatabySessionId('wpjobportal_spamcheckresult',true));
+            $spamcheckresult = WPJOBPORTALincluder::getObjectClass('wpjpnotification')->getNotificationDatabySessionId('wpjobportal_spamcheckresult',true);
         }
+        $spamcheckresult = wpjobportalphplib::wpJP_safe_decoding($spamcheckresult);
+
+
         $spamcheck = WPJOBPORTALincluder::getObjectClass('wpjpnotification')->getNotificationDatabySessionId('wpjobportal_spamcheckid',true);
         $spamcheck = WPJOBPORTALrequest::getVar($spamcheck, '', 'post');
         if (!is_numeric($spamcheckresult) || $spamcheckresult != $spamcheck) {

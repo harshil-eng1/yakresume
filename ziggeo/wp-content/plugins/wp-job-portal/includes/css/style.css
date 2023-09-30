@@ -565,7 +565,7 @@ div.wjportal-resume-detail-wrapper div.wjportal-resume-top-section {float: left;
 div.wjportal-resume-detail-wrapper div.wjportal-resume-top-section div.wjportal-resume-image {float: left;position: relative;width: 150px;height: 150px;margin-bottom: 30px;}
 div.wjportal-resume-detail-wrapper div.wjportal-resume-top-section div.wjportal-resume-image img {max-width: 100%;max-height: 100%;position: absolute;top: 0;left: 0;right: 0;bottom: 0;margin: auto;display: inline-block;}
 div.wjportal-resume-detail-wrapper div.wjportal-resume-top-section div.wjportal-resume-adv-act-wrp {float: right;margin-top: 50px;}
-div.wjportal-resume-detail-wrapper div.wjportal-resume-top-section div.wjportal-resume-adv-act-wrp .wjportal-resume-adv-act-btn {display: inline-block;padding: 9px 18px;text-decoration: underline;font-size: 14px;border-radius: 0;line-height: normal;}
+div.wjportal-resume-detail-wrapper div.wjportal-resume-top-section div.wjportal-resume-adv-act-wrp .wjportal-resume-adv-act-btn {display: inline-block;padding: 9px 18px;text-decoration: underline;font-size: 14px;border-radius: 0;line-height: normal;margin: 0 3px;}
 div.wjportal-resume-detail-wrapper div.wjportal-resume-top-section div.wjportal-personal-data {float: left;width: 100%;}
 div.wjportal-resume-detail-wrapper div.wjportal-resume-top-section div.wjportal-personal-data div.wjportal-resume-title {float: left;width: 100%;font-size: 14px;margin-bottom: 10px;}
 div.wjportal-resume-detail-wrapper div.wjportal-resume-top-section div.wjportal-personal-data div.wjportal-resume-info {float: left;margin: 5px 15px 5px 0;font-size: 14px;}
@@ -1058,3 +1058,68 @@ div#js_job_wrapper div.js_theme_wrapper div.theme_platte div.color_wrapper span.
 div#js_job_wrapper div.js_theme_wrapper div.theme_platte div.color_wrapper a.preview{display:inline-block;width:25px;height:25px;background:url(../images/themes/previewicon.png) no-repeat;margin-right: 20px;margin-top:10px;}
 div#js_job_wrapper div.js_theme_wrapper div.theme_platte div.color_wrapper a.set_theme{display:inline-block;width:25px;height:25px;background:url(../images/themes/themeicon.png) no-repeat;background-size: 100% 100%;margin-top:10px;}
 div#js_job_wrapper div.js_theme_wrapper div.theme_platte div.color_wrapper div.color{display:inline-block;height:50px;width:12.5%;float:left;}
+
+
+/**********************
+	coverletter list
+**********************/
+div.wjportal-coverletter-list-wrapper {float: left;width: 100%;}
+div.wjportal-coverletter-list {float: left;width: 100%;margin-bottom: 20px;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp {float: left;width: 100%;padding: 20px;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp {float: left;width: 100%;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp {float: left;width: 85%;font-size: 14px;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp div.wjportal-coverletter-data {padding-bottom: 5px;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp div.wjportal-coverletter-data:last-child {padding-bottom: 0;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp div.wjportal-coverletter-data div.wjportal-coverletter-title {font-size: 16px;font-weight: bold;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp div.wjportal-coverletter-data div.wjportal-coverletter-info-data {display: inline-block;margin-right: 15px;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp div.wjportal-coverletter-data div.wjportal-coverletter-info-data a.wjportal-companyname {text-decoration: underline;display: inline-block;} 
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp div.wjportal-coverletter-data div.wjportal-coverletter-info-data span.wjportal-coverletter-info-tit {display: inline-block;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp div.wjportal-coverletter-data div.wjportal-coverletter-info-data span.wjportal-coverletter-info-val {display: inline-block;margin-left: 5px;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp div.wjportal-coverletter-data div.wjportal-coverletter-desc {padding: 5px 0;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 97%;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp div.wjportal-coverletter-data div.wjportal-coverletter-desc p {overflow: hidden;text-overflow: ellipsis;white-space: nowrap;width: 97%;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-right-wrp {float: right;width: 15%;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-right-wrp div.wjportal-coverletter-info {padding-bottom: 5px;font-size: 14px;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-right-wrp div.wjportal-coverletter-info:last-child {padding-bottom: 0;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-right-wrp div.wjportal-coverletter-info span.wjportal-coverletter-status {padding: 5px 15px;display: inline-block;font-size: 13px;margin: 30px 0 0;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-btm-wrp {float: left;width: 100%;padding: 20px;font-size: 14px;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-btm-wrp div.wjportal-coverletter-action-wrp {float: left;width: 100%;}
+div.wjportal-coverletter-list div.wjportal-coverletter-list-btm-wrp div.wjportal-coverletter-action-wrp a.wjportal-coverletter-act-btn {float: left;margin-right: 5px;padding: 9px 18px;text-decoration: underline;font-size: 14px;}
+
+/**********************
+	coverletter detail
+**********************/
+div.wjportal-coverletterdetail-wrapper {float: left;width: 100%;}
+div.wjportal-coverletterdetail-wrapper div.wjportal-coverletter-data-wrp {float: left;width: 100%;margin-bottom: 20px;}
+div.wjportal-coverletterdetail-wrapper div.wjportal-coverletter-data-wrp div.wjportal-coverletter-sec-title {float: left;width: 100%;font-size: 16px;font-weight: bold;}
+div.wjportal-coverletterdetail-wrapper div.wjportal-coverletter-data-wrp div.wjportal-coverletter-data {float: left;margin-right: 15px;font-size: 14px;}
+div.wjportal-coverletterdetail-wrapper div.wjportal-coverletter-data-wrp div.wjportal-coverletter-data a.wjportal-companyname {display: inline-block;}
+div.wjportal-coverletterdetail-wrapper div.wjportal-coverletter-data-wrp div.wjportal-coverletter-data span.wjportal-coverletter-data-tit {display: inline-block;}
+div.wjportal-coverletterdetail-wrapper div.wjportal-coverletter-data-wrp div.wjportal-coverletter-data span.wjportal-coverletter-data-val {display: inline-block;margin-left: 5px;}
+div.wjportal-coverletterdetail-wrapper div.wjportal-coverletter-data-wrp div.wjportal-coverletter-desc {float: left;width: 100%;}
+div.wjportal-coverletterdetail-wrapper div.wjportal-coverletter-btn-wrp {float: left;width: 100%;}
+div.wjportal-coverletterdetail-wrapper div.wjportal-coverletter-btn-wrp .wjportal-coverletter-act-btn {display: inline-block;width: 100%;padding: 10px;height: 45px;font-size: 14px;text-align: center;cursor: pointer;}
+
+
+div.wjportal-resume-list .wjportal-coverletter-act-btn {margin: 3px;padding: 9px 18px;text-decoration: underline;font-size: 14px;margin-top: 10px;display: inline-block;}
+
+div.wjportal-form-wrp div.wjportal-form-row div.wjportal-form-value .wpjobportal-form-coverletter-gpt-button{display: inline-block;width: 100%;padding: 10px 15px;text-align: center;color:#fff;background: #10A37F;margin-top: 10px;text-decoration: none;border:1px solid #0C7A5E ;line-height: 24px;}
+div.wjportal-form-wrp div.wjportal-form-row div.wjportal-form-value .wpjobportal-form-coverletter-gpt-button img{width: 35px;margin-left: 5px;}
+
+div.wjportal-form-wrp div.wjportal-form-row div.wjportal-form-value .wpjobportal-form-coverletter-youtube-button{display: inline-block;width: 100%;padding: 10px 15px;color:#666;background: #C8EAFB;margin-top: 10px;text-decoration: none;border:1px solid #8DD3F4 ;}
+
+div.wjportal-form-wrp div.wjportal-form-row div.wjportal-form-value .wpjobportal-form-coverletter-youtube-button img{height: 24px;width: 24px;margin-right: 5px;}
+div.wjportal-resume-list .wjportal-no-coverletter-btn {color: #666;font-size: 14px;}
+
+.visitor-apply-job-jobinforamtion-message{
+	width: 100%;
+    margin-bottom: 10px;
+    padding: 10px;
+    display: inline-block;
+}
+/* below css handles the myapplied jobs layout break  */
+div.wjportal-jobs-list{
+	float: none !important;
+}
+div.wjportal-jobs-list-wrapper{
+	float: none !important;
+}

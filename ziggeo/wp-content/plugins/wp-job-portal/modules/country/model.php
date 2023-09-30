@@ -16,9 +16,9 @@ class WPJOBPORTALcountryModel {
             }
         }
 
-        $data['shortCountry'] = str_replace(' ', '-', $data['name']);
+        $data['shortCountry'] = wpjobportalphplib::wpJP_str_replace(' ', '-', $data['name']);
         $row = WPJOBPORTALincluder::getJSTable('country');
-        $data = filter_var_array($data, FILTER_SANITIZE_STRING);
+        $data = wpjobportal::wpjobportal_sanitizeData($data);
         $data = WPJOBPORTALincluder::getJSmodel('common')->stripslashesFull($data);// remove slashes with quotes.
         if (!$row->bind($data)) {
             return WPJOBPORTAL_SAVE_ERROR;
@@ -238,8 +238,9 @@ class WPJOBPORTALcountryModel {
         $jsjp_search_array = array();
         $wpjp_search_cookie_data = '';
         if(isset($_COOKIE['jsjp_jobportal_search_data'])){
-            $wpjp_search_cookie_data = filter_var($_COOKIE['jsjp_jobportal_search_data'], FILTER_SANITIZE_STRING);
-            $wpjp_search_cookie_data = json_decode( base64_decode($wpjp_search_cookie_data) , true );
+            $wpjp_search_cookie_data = wpjobportal::wpjobportal_sanitizeData($_COOKIE['jsjp_jobportal_search_data']);
+            $wpjp_search_cookie_data = wpjobportalphplib::wpJP_safe_decoding($wpjp_search_cookie_data);
+            $wpjp_search_cookie_data = json_decode( $wpjp_search_cookie_data , true );
         }
         if($wpjp_search_cookie_data != '' && isset($wpjp_search_cookie_data['search_from_country']) && $wpjp_search_cookie_data['search_from_country'] == 1){
             $jsjp_search_array['countryname'] = $wpjp_search_cookie_data['countryname'];

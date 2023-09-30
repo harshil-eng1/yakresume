@@ -27,13 +27,13 @@ if ($labelinlisting != 1) {
                         $image = $image2;
                     }
                     $categoryarray = array(
-                        (object) array('id' => 1, 'text' => __('Job Title', 'wp-job-portal')),
-                        (object) array('id' => 2, 'text' => __('Company Name', 'wp-job-portal')),
-                        (object) array('id' => 5, 'text' => __('Location', 'wp-job-portal')),
-                        (object) array('id' => 7, 'text' => __('Status', 'wp-job-portal')),
-                        (object) array('id' => 4, 'text' => __('Job Type', 'wp-job-portal')),
-                        (object) array('id' => 6, 'text' => __('Created', 'wp-job-portal')),
-                        (object) array('id' => 8, 'text' => __('Salary', 'wp-job-portal'))
+                        (object) array('id' => 1, 'text' => esc_html(__('Job Title', 'wp-job-portal'))),
+                        (object) array('id' => 2, 'text' => esc_html(__('Company Name', 'wp-job-portal'))),
+                        (object) array('id' => 5, 'text' => esc_html(__('Location', 'wp-job-portal'))),
+                        (object) array('id' => 7, 'text' => esc_html(__('Status', 'wp-job-portal'))),
+                        (object) array('id' => 4, 'text' => esc_html(__('Job Type', 'wp-job-portal'))),
+                        (object) array('id' => 6, 'text' => esc_html(__('Created', 'wp-job-portal'))),
+                        (object) array('id' => 8, 'text' => esc_html(__('Salary', 'wp-job-portal')))
                     );
                     // resume filters
                      WPJOBPORTALincluder::getTemplate('jobapply/views/frontend/filter',array(
@@ -51,7 +51,7 @@ if ($labelinlisting != 1) {
         } ?>
     </div>
     <?php if (isset(wpjobportal::$_data[0]) && !empty(wpjobportal::$_data[0])) { ?>
-            <form id="job_form" method="post" action="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'jobapply','wpjobportallt'=>'myappliedjobs'))); ?>">
+            <form id="job_form" method="post" action="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'jobapply','wpjobportallt'=>'myappliedjobs'))); ?>">
                 <div class="wjportal-jobs-list-wrapper wjportal-applied-jobs-wrp">
                     <?php
                         foreach (wpjobportal::$_data[0] AS $appliedJobs) {
@@ -71,12 +71,12 @@ if ($labelinlisting != 1) {
                     echo wp_kses(WPJOBPORTALformfield::hidden('wpjobportallay', 'appliedjobs'),WPJOBPORTAL_ALLOWED_TAGS);
                 ?>
           </form>
+
           <?php
 
         } else {
-            wp_kses_post(WPJOBPORTALlayout::getNoRecordFound(), WPJOBPORTAL_ALLOWED_TAGS);
+            WPJOBPORTALlayout::getNoRecordFound();
         }
     ?>
-</div>
 </div>
 

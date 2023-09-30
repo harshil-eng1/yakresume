@@ -1,37 +1,42 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
  * @param job      job object - optional
 */
 ?>
 <?php
-    $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+wp_enqueue_script( 'google-charts', WPJOBPORTAL_PLUGIN_URL.'includes/js/google-charts.js', array(), '', false );
+wp_register_script( 'google-charts-handle', '' );
+wp_enqueue_script( 'google-charts-handle' );
+
 ?>
 
 <div id='wpjobportal-center' class="wjportal-cp-graph-inner-wrp">
-    <script src="<?php echo $protocol;?>www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['corechart']}]}"></script>
-    <script >
+<?php
+$js_script = "    
         google.charts.load('current', {'packages':['corechart']});
         google.setOnLoadCallback(drawStackChartHorizontal);
         function drawStackChartHorizontal() {
             var data = google.visualization.arrayToDataTable([
-            	<?php
-                    echo wpjobportal::$_data['stack_chart_horizontal']['title'] . ',';
-                    echo wpjobportal::$_data['stack_chart_horizontal']['data'];
-                ?>
+            	". wpjobportal::$_data['stack_chart_horizontal']['title'] . ",
+                ". wpjobportal::$_data['stack_chart_horizontal']['data']."
 	        ]);
             var view = new google.visualization.DataView(data);
-            <?php if (wpjobportal::$theme_chk == 1) { ?>
+            ";
+            if (wpjobportal::$theme_chk == 1) { 
+                $js_script .= " 
                 var options = {
-                    title: 'Job Type',
+                    title: '". esc_html(__("Job Type","wp-job-portal")) ."',
                     'height':500,
                     isStacked: 'relative',
                     legend: {position: 'top'},
                     hAxis: {title: 'Month',  titleTextStyle: {color: '#333'}},
                     vAxis: {minValue: 0},
-                };
-            <?php } else { ?>
+                };";
+            } else { 
+                $js_script .= " 
                 var options = {
-                    title: 'Job Type',
+                    title: '". esc_html(__("Job Type","wp-job-portal")) ."',
                     'height':400,
                     'width':734,
                     isStacked: 'relative',
@@ -42,11 +47,14 @@
                         left: 65,
                         width: 640,
                     }
-                };
-            <?php } ?>
+                };";
+            } 
+            $js_script .= " 
             var chart = new google.visualization.AreaChart(document.getElementById('chart_div'));
             chart.draw(data, options);
         }
-    </script>
+        ";
+wp_add_inline_script( 'google-charts-handle', $js_script );        
+    ?>
     <div id="chart_div" class="wjportal-cp-graph jobseeker"></div>
 </div>

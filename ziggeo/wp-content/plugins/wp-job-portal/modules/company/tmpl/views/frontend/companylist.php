@@ -1,4 +1,6 @@
 <?php
+if (!defined('ABSPATH'))
+    die('Restricted Access');
 /**
 * @param company 	company object
 */
@@ -26,13 +28,15 @@ if (!$company) {
         	));
     	?>
     </div>
-    <div class="wjportal-company-list-btm-wrp">
-    	<?php
-        	WPJOBPORTALincluder::getTemplate('company/views/frontend/control', array(
-        		'company' => $company,
-                'layout' => $layout,
-                'module' => 'company'
-        	));
-    	?>
-    </div>
+    <?php if($layout != 'companies'){ ?>
+        <div class="wjportal-company-list-btm-wrp">
+        	<?php
+            	WPJOBPORTALincluder::getTemplate('company/views/frontend/control', array(
+            		'company' => $company,
+                    'layout' => $layout,
+                    'module' => 'company'
+            	));
+        	?>
+        </div>
+    <?php } ?>
 </div>

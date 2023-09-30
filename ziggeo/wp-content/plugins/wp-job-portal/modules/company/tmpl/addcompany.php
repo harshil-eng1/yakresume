@@ -20,7 +20,7 @@ $company = isset(wpjobportal::$_data[0]) ? wpjobportal::$_data[0] : null;
                 WPJOBPORTALincluder::getTemplate('company/views/packages',array('module' => 'company','packages'=>wpjobportal::$_data['package']));
             }
         ?>
-        <form class="wjportal-form" id="wpjobportal-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'task'=>'savecompany'))); ?>">
+        <form class="wjportal-form" id="wpjobportal-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'task'=>'savecompany'))); ?>">
             <?php
                 $formfields = WPJOBPORTALincluder::getTemplate('company/form-fields', array(
                     'company' => $company,
@@ -30,28 +30,31 @@ $company = isset(wpjobportal::$_data[0]) ? wpjobportal::$_data[0] : null;
                     WPJOBPORTALincluder::getTemplate('templates/form-field', $formfield);
                 }
                 $termsandconditions_flag = 0;
-                foreach (wpjobportal::$_data[2] AS $field) {
-                    switch ($field->field) {
-                        case 'termsandconditions':
-                        if(!isset(wpjobportal::$_data[0])){
-                            $termsandconditions_flag = 1;
-                            $termsandconditions_fieldtitle = $field->fieldtitle;
-                            $termsandconditions_link = get_the_permalink(wpjobportal::$_configuration['terms_and_conditions_page_company']);
+                if(isset(wpjobportal::$_data[2])){
+                    foreach (wpjobportal::$_data[2] AS $field) {
+                        switch ($field->field) {
+                            case 'termsandconditions':
+                            if(!isset(wpjobportal::$_data[0])){
+                                $termsandconditions_flag = 1;
+                                $termsandconditions_fieldtitle = $field->fieldtitle;
+                                $termsandconditions_link = get_the_permalink(wpjobportal::$_configuration['terms_and_conditions_page_company']);
+                            }
+                        break;
                         }
-                    break;
                     }
                 }
+
                 if($termsandconditions_flag == 1){
                     ?>
                     <div class="wpjobportal-terms-and-conditions-wrap" data-wpjobportal-terms-and-conditions="1" >
-                        <?php echo WPJOBPORTALformfield::checkbox('termsconditions', array('1' => __($termsandconditions_fieldtitle, 'wp-job-portal')), 0, array('class' => 'checkbox')); ?>
-                        <a title="<?php echo __('Terms and Conditions','wp-job-portal'); ?>" href="<?php echo $termsandconditions_link; ?>" target="_blank" >
-                        <img alt="<?php echo __('Terms and Conditions','wp-job-portal'); ?>" title="<?php echo __('Terms and Conditions','wp-job-portal'); ?>" src="<?php echo WPJOBPORTAL_PLUGIN_URL.'includes/images/widget-link.png'; ?>" /></a>
+                        <?php echo WPJOBPORTALformfield::checkbox('termsconditions', array('1' => wpjobportal::wpjobportal_getVariableValue($termsandconditions_fieldtitle)), 0, array('class' => 'checkbox')); ?>
+                        <a title="<?php echo esc_html(__('Terms and Conditions','wp-job-portal')); ?>" href="<?php echo esc_url($termsandconditions_link); ?>" target="_blank" >
+                        <img alt="<?php echo esc_html(__('Terms and Conditions','wp-job-portal')); ?>" title="<?php echo esc_html(__('Terms and Conditions','wp-job-portal')); ?>" src="<?php echo WPJOBPORTAL_PLUGIN_URL.'includes/images/widget-link.png'; ?>" /></a>
                     </div>
                 <?php }
         	?>
             <div class="wjportal-form-btn-wrp">
-                <?php echo wp_kses(WPJOBPORTALformfield::submitbutton('save', __('Save','wp-job-portal') .' '. __('Company', 'wp-job-portal'), array('class' => 'button wjportal-form-btn wjportal-save-btn','onclick'=>"submitresume()")),WPJOBPORTAL_ALLOWED_TAGS); ?>
+                <?php echo wp_kses(WPJOBPORTALformfield::submitbutton('save', esc_html(__('Save','wp-job-portal')) .' '. esc_html(__('Company', 'wp-job-portal')), array('class' => 'button wjportal-form-btn wjportal-save-btn','onclick'=>"submitresume()")),WPJOBPORTAL_ALLOWED_TAGS); ?>
             </div>
             <?php echo wp_kses(WPJOBPORTALformfield::hidden('id', $company ? $company->id : '' ),WPJOBPORTAL_ALLOWED_TAGS); ?>
             <?php echo wp_kses(WPJOBPORTALformfield::hidden('wpjobportalpageid', get_the_ID()),WPJOBPORTAL_ALLOWED_TAGS); ?>

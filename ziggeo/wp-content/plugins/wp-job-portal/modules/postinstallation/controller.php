@@ -33,7 +33,7 @@ class WPJOBPORTALpostinstallationController {
             }
             $module = (wpjobportal::$_common->wpjp_isadmin()) ? 'page' : 'wpjobportalme';
             $module = WPJOBPORTALrequest::getVar($module, null, 'postinstallation');
-            $module = str_replace('wpjobportal_', '', $module);
+            $module = wpjobportalphplib::wpJP_str_replace('wpjobportal_', '', $module);
             WPJOBPORTALincluder::include_file($layout, $module);
         }
 
@@ -124,6 +124,14 @@ class WPJOBPORTALpostinstallationController {
         wp_redirect($url);
         exit();
     }
+
+    function installjobportaldemodata(){
+        $result = WPJOBPORTALincluder::getJSModel('postinstallation')->installSampleDataTemplateJobPortal();
+        $url = admin_url("admin.php?page=wpjobportal");
+        wp_redirect($url);
+        exit();
+    }
+
 }
 $WPJOBPORTALpostinstallationController = new WPJOBPORTALpostinstallationController();
 ?>

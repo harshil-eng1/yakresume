@@ -20,7 +20,7 @@ class WPJOBPORTALformhandler {
             //handle the request
             $modulename = (is_admin()) ? 'page' : 'wpjobportalme';
             $module = WPJOBPORTALrequest::getVar($modulename);
-            $module = str_replace('wpjobportal_', '', $module);
+            $module = wpjobportalphplib::wpJP_str_replace('wpjobportal_', '', $module);
             WPJOBPORTALincluder::include_file($module);
             $class = 'WPJOBPORTAL' . $module . "Controller";
             $task = WPJOBPORTALrequest::getVar('task');
@@ -39,7 +39,7 @@ class WPJOBPORTALformhandler {
             //handle the request
             $modulename = (is_admin()) ? 'page' : 'wpjobportalme';
             $module = WPJOBPORTALrequest::getVar($modulename);
-            $module = str_replace('wpjobportal_', '', $module);
+            $module = wpjobportalphplib::wpJP_str_replace('wpjobportal_', '', $module);
             WPJOBPORTALincluder::include_file($module);
             $class = 'WPJOBPORTAL' . $module . "Controller";
             $action = WPJOBPORTALrequest::getVar('task');

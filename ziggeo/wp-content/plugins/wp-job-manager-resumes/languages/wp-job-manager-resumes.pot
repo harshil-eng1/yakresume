@@ -1,20 +1,42 @@
-# Copyright (C) 2019 Automattic
+# Copyright (C) 2023 Automattic
 # This file is distributed under the GNU General Public License v3.0.
 msgid ""
 msgstr ""
-"Project-Id-Version: WP Job Manager - Resume Manager 1.18.1\n"
-"Report-Msgid-Bugs-To: "
-"https://wordpress.org/support/plugin/wp-job-manager-resumes\n"
-"POT-Creation-Date: 2019-12-06 15:11:51+00:00\n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"PO-Revision-Date: 2019-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: WP Job Manager - Resume Manager 1.19.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/resumes\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <EMAIL@ADDRESS>\n"
-"X-Generator: grunt-wp-i18n 1.0.3\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2023-05-03T14:19:06+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.6.0\n"
+"X-Domain: wp-job-manager-resumes\n"
 
-#: includes/admin/class-wp-resume-manager-admin.php:75
+#. Plugin Name of the plugin
+#: includes/class-wp-resume-manager-privacy.php:41
+#: includes/class-wp-resume-manager-privacy.php:58
+msgid "WP Job Manager - Resume Manager"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://wpjobmanager.com/add-ons/resume-manager/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Manage candidate resumes from the WordPress admin panel, and allow candidates to post their resumes directly to your site."
+msgstr ""
+
+#. Author of the plugin
+msgid "Automattic"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://wpjobmanager.com"
+msgstr ""
+
+#: includes/admin/class-wp-resume-manager-admin.php:74
 msgid "Settings"
 msgstr ""
 
@@ -69,9 +91,7 @@ msgid "Resume submitted. <a target=\"_blank\" href=\"%s\">Preview Resume</a>"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-cpt.php:249
-msgid ""
-"Resume scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" "
-"href=\"%2$s\">Preview Resume</a>"
+msgid "Resume scheduled for: <strong>%1$s</strong>. <a target=\"_blank\" href=\"%2$s\">Preview Resume</a>"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-cpt.php:250
@@ -89,9 +109,9 @@ msgid "Candidate"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-cpt.php:273
-#: includes/class-wp-resume-manager-shortcodes.php:285
+#: includes/class-wp-resume-manager-shortcodes.php:292
 #: includes/class-wp-resume-manager-widgets.php:45
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:237
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:242
 #: templates/resume-filters.php:33
 msgid "Location"
 msgstr ""
@@ -105,14 +125,15 @@ msgid "Posted"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-cpt.php:276
-#: includes/admin/class-wp-resume-manager-writepanels.php:103
+#: includes/class-wp-resume-manager-post-types.php:834
 msgid "Expires"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-cpt.php:279
 #: includes/admin/class-wp-resume-manager-settings.php:101
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:285
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:290
 #: templates/content-single-resume.php:37
+#: templates/resume-filters.php:38
 msgid "Skills"
 msgstr ""
 
@@ -129,43 +150,44 @@ msgstr ""
 msgid "Actions"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-cpt.php:403
+#: includes/admin/class-wp-resume-manager-cpt.php:421
 msgid "Resume ID: %d"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-cpt.php:427
-#: includes/admin/class-wp-resume-manager-cpt.php:432
+#: includes/admin/class-wp-resume-manager-cpt.php:445
+#: includes/admin/class-wp-resume-manager-cpt.php:450
 msgid "M j, Y"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-cpt.php:428
+#: includes/admin/class-wp-resume-manager-cpt.php:446
 msgid "by a guest"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-cpt.php:428
+#: includes/admin/class-wp-resume-manager-cpt.php:446
 msgid "by %s"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-cpt.php:454
+#: includes/admin/class-wp-resume-manager-cpt.php:472
 msgid "Approve"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-cpt.php:462
+#: includes/admin/class-wp-resume-manager-cpt.php:480
 msgid "View"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-cpt.php:468
+#: includes/admin/class-wp-resume-manager-cpt.php:486
 msgid "Email Candidate"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-cpt.php:474
-#: includes/class-wp-resume-manager-post-types.php:228
-#: templates/candidate-dashboard.php:55 templates/candidate-dashboard.php:67
+#: includes/admin/class-wp-resume-manager-cpt.php:492
+#: includes/class-wp-resume-manager-post-types.php:236
+#: templates/candidate-dashboard.php:55
+#: templates/candidate-dashboard.php:67
 #: templates/candidate-dashboard.php:80
 msgid "Edit"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-cpt.php:479
+#: includes/admin/class-wp-resume-manager-cpt.php:497
 #: templates/candidate-dashboard.php:96
 msgid "Delete"
 msgstr ""
@@ -174,9 +196,8 @@ msgstr ""
 msgid "They will then need to be manually removed from the trash"
 msgstr ""
 
+#. translators: Placeholder %d is the number of days before items are removed from trash.
 #: includes/admin/class-wp-resume-manager-settings.php:52
-#. translators: Placeholder %d is the number of days before items are removed
-#. from trash.
 msgid "They will then be permanently deleted after %d days."
 msgstr ""
 
@@ -197,9 +218,7 @@ msgid "Enable resume categories"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:74
-msgid ""
-"Choose whether to enable resume categories. Categories must be setup by an "
-"admin for users to choose during job submission."
+msgid "Choose whether to enable resume categories. Categories must be setup by an admin for users to choose during job submission."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:81
@@ -211,9 +230,7 @@ msgid "Enable category multiselect by default"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:83
-msgid ""
-"If enabled, the category select box will default to a multiselect on the "
-"[resumes] shortcode."
+msgid "If enabled, the category select box will default to a multiselect on the [resumes] shortcode."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:90
@@ -237,9 +254,7 @@ msgid "Enable candidate skills"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:103
-msgid ""
-"Choose whether to enable the candidate skills field. Skills can be added by "
-"users during resume submission."
+msgid "Choose whether to enable the candidate skills field. Skills can be added by users during resume submission."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:110
@@ -251,9 +266,7 @@ msgid "Unlimited"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:112
-msgid ""
-"Enter the number of skills per resume submission you wish to allow, or "
-"leave blank for unlimited skills."
+msgid "Enter the number of skills per resume submission you wish to allow, or leave blank for unlimited skills."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:118
@@ -277,9 +290,7 @@ msgid "Delete uploaded files when a resume is deleted"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:129
-msgid ""
-"Choose whether to deleted uploaded files when a resume is deleted and "
-"removed from the trash."
+msgid "Choose whether to deleted uploaded files when a resume is deleted and removed from the trash."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:136
@@ -290,12 +301,9 @@ msgstr ""
 msgid "Remove resumes on account erasure requests"
 msgstr ""
 
+#. translators: Placeholder %1$s is the URL to the WP Admin page that handles account erasure requests. %2$s is trash notification.
 #: includes/admin/class-wp-resume-manager-settings.php:140
-#. translators: Placeholder %1$s is the URL to the WP Admin page that handles
-#. account erasure requests. %2$s is trash notification.
-msgid ""
-"If enabled, resumes with a matching email address will be sent to the trash "
-"during <a href=\"%1$s\">personal data erasure requests</a>. %2$s"
+msgid "If enabled, resumes with a matching email address will be sent to the trash during <a href=\"%1$s\">personal data erasure requests</a>. %2$s"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:150
@@ -311,10 +319,7 @@ msgid "Submitting listings requires an account"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:157
-msgid ""
-"If disabled, non-logged in users will be able to submit listings without "
-"creating an account. Please note that this will prevent non-registered "
-"users from being able to edit their listings at a later date."
+msgid "If disabled, non-logged in users will be able to submit listings without creating an account. Please note that this will prevent non-registered users from being able to edit their listings at a later date."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:164
@@ -326,9 +331,7 @@ msgid "Allow account creation"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:166
-msgid ""
-"If enabled, non-logged in users will be able to create an account by "
-"entering their email address on the resume submission form."
+msgid "If enabled, non-logged in users will be able to create an account by entering their email address on the resume submission form."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:173
@@ -340,9 +343,7 @@ msgid "Automatically Generate Username from Email Address"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:175
-msgid ""
-"If enabled, a username will be generated from the first part of the user "
-"email address. Otherwise, a username field will be shown."
+msgid "If enabled, a username will be generated from the first part of the user email address. Otherwise, a username field will be shown."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:182
@@ -354,10 +355,7 @@ msgid "Use WordPress' default behavior and email new users link to set a passwor
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:184
-msgid ""
-"If enabled, an email will be sent to the user with their username and a "
-"link to set their password. Otherwise, a password field will be shown and "
-"their email address won't be verified."
+msgid "If enabled, an email will be sent to the user with their username and a link to set their password. Otherwise, a password field will be shown and their email address won't be verified."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:191
@@ -365,9 +363,7 @@ msgid "Account Role"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:192
-msgid ""
-"If you enable registration on your submission form, choose a role for the "
-"new user."
+msgid "If you enable registration on your submission form, choose a role for the new user."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:199
@@ -391,9 +387,7 @@ msgid "Allow editing of pending resumes"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:210
-msgid ""
-"Users can continue to edit pending resumes until they are approved by an "
-"admin."
+msgid "Users can continue to edit pending resumes until they are approved by an admin."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:217
@@ -405,10 +399,7 @@ msgid "Allow editing of published resumes"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:219
-msgid ""
-"Choose whether published resumes can be edited and if edits require admin "
-"approval. When moderation is required, the original resume will be "
-"unpublished while edits await admin approval."
+msgid "Choose whether published resumes can be edited and if edits require admin approval. When moderation is required, the original resume will be unpublished while edits await admin approval."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:222
@@ -428,10 +419,7 @@ msgid "Listing Duration"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:232
-msgid ""
-"How many <strong>days</strong> listings are live before expiring. Can be "
-"left blank to never expire. Expired listings must be relisted to become "
-"visible."
+msgid "How many <strong>days</strong> listings are live before expiring. Can be left blank to never expire. Expired listings must be relisted to become visible."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:234
@@ -443,10 +431,7 @@ msgid "Auto-hide Resumes"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:240
-msgid ""
-"How many <strong>days</strong> un-modified resumes should be published "
-"before being hidden. Can be left blank to never hide resumes automatically. "
-"Candidates can re-publish hidden resumes form their dashboard."
+msgid "How many <strong>days</strong> un-modified resumes should be published before being hidden. Can be left blank to never hide resumes automatically. Candidates can re-publish hidden resumes form their dashboard."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:242
@@ -458,9 +443,7 @@ msgid "Listing Limit"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:248
-msgid ""
-"How many listings are users allowed to post. Can be left blank to allow "
-"unlimited listings per account."
+msgid "How many listings are users allowed to post. Can be left blank to allow unlimited listings per account."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:250
@@ -468,195 +451,166 @@ msgid "No limit"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:255
-msgid "reCAPTCHA"
+msgid "Terms and Conditions Checkbox"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:256
-msgid "Display a reCAPTCHA field on resume submission form."
+msgid "Enable required Terms and Conditions checkbox on the form"
 msgstr ""
 
+#. translators: Placeholder %s is the URL to the page in WP Job Manager's settings to set the pages.
 #: includes/admin/class-wp-resume-manager-settings.php:259
-#. translators: Placeholder %s is the URL to the page in WP Job Manager's
-#. settings to make the change.
-msgid ""
-"This will help prevent bots from submitting resumes. You must have entered "
-"a valid site key and secret key in <a href=\"%s\">WP Job Manager's "
-"settings</a>."
+msgid "Require a Terms and Conditions checkbox to be marked before a resume can be submitted. The linked page can be set from the <a href=\"%s\">WP Job Manager's settings</a>."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:268
+msgid "reCAPTCHA"
+msgstr ""
+
+#: includes/admin/class-wp-resume-manager-settings.php:269
+msgid "Display a reCAPTCHA field on resume submission form."
+msgstr ""
+
+#. translators: Placeholder %s is the URL to the page in WP Job Manager's settings to make the change.
+#: includes/admin/class-wp-resume-manager-settings.php:272
+msgid "This will help prevent bots from submitting resumes. You must have entered a valid site key and secret key in <a href=\"%s\">WP Job Manager's settings</a>."
+msgstr ""
+
+#: includes/admin/class-wp-resume-manager-settings.php:281
 msgid "Apply with Resume"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:273
+#: includes/admin/class-wp-resume-manager-settings.php:286
 msgid "Email Based Applications"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:274
-msgid ""
-"Allow candidates to apply to jobs which use the email application method "
-"using their online resume"
+#: includes/admin/class-wp-resume-manager-settings.php:287
+msgid "Allow candidates to apply to jobs which use the email application method using their online resume"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:277
-#. translators: Placeholder is link to settings tab which includes email
-#. Notifications.
-msgid ""
-"The employer will be mailed their message and a private link to the resume. "
-"Manage notification from the <a href=\"%s\" class=\"nav-internal\">Email "
-"Notifications</a> settings tab."
+#. translators: Placeholder is link to settings tab which includes email Notifications.
+#: includes/admin/class-wp-resume-manager-settings.php:290
+msgid "The employer will be mailed their message and a private link to the resume. Manage notification from the <a href=\"%s\" class=\"nav-internal\">Email Notifications</a> settings tab."
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:285
+#: includes/admin/class-wp-resume-manager-settings.php:298
 msgid "Website Based Applications"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:286
-msgid ""
-"Allow candidates to apply to jobs which use the the website URL application "
-"method using their online resume"
+#: includes/admin/class-wp-resume-manager-settings.php:299
+msgid "Allow candidates to apply to jobs which use the the website URL application method using their online resume"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:287
+#: includes/admin/class-wp-resume-manager-settings.php:300
 msgid "The application will be stored in the database."
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:293
+#: includes/admin/class-wp-resume-manager-settings.php:306
 msgid "Force Resume Creation"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:294
+#: includes/admin/class-wp-resume-manager-settings.php:307
 msgid "Force candidates to create an online resume before applying to a job"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:295
-msgid ""
-"Candidates without a resume on file will be taken through the resume "
-"submission process. Other details, such as the application email address or "
-"application forms, will be hidden."
+#: includes/admin/class-wp-resume-manager-settings.php:308
+msgid "Candidates without a resume on file will be taken through the resume submission process. Other details, such as the application email address or application forms, will be hidden."
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:302
+#: includes/admin/class-wp-resume-manager-settings.php:315
 msgid "Force Apply with Resume"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:303
+#: includes/admin/class-wp-resume-manager-settings.php:316
 msgid "Force candidates to apply through Resume Manager"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:304
-msgid ""
-"If the apply forms are enabled above, they must be used to apply. All other "
-"application methods will be hidden."
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-settings.php:311
-msgid "Pages"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-settings.php:316
-msgid "Submit Resume Page"
-msgstr ""
-
 #: includes/admin/class-wp-resume-manager-settings.php:317
-msgid ""
-"Select the page where you have placed the [submit_resume_form] shortcode. "
-"This lets the plugin know where the form is located."
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-settings.php:323
-msgid "Candidate Dashboard Page"
+msgid "If the apply forms are enabled above, they must be used to apply. All other application methods will be hidden."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:324
-msgid ""
-"Select the page where you have placed the [candidate_dashboard] shortcode. "
-"This lets the plugin know where the dashboard is located."
+msgid "Pages"
+msgstr ""
+
+#: includes/admin/class-wp-resume-manager-settings.php:329
+msgid "Submit Resume Page"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:330
+msgid "Select the page where you have placed the [submit_resume_form] shortcode. This lets the plugin know where the form is located."
+msgstr ""
+
+#: includes/admin/class-wp-resume-manager-settings.php:336
+msgid "Candidate Dashboard Page"
+msgstr ""
+
+#: includes/admin/class-wp-resume-manager-settings.php:337
+msgid "Select the page where you have placed the [candidate_dashboard] shortcode. This lets the plugin know where the dashboard is located."
+msgstr ""
+
+#: includes/admin/class-wp-resume-manager-settings.php:343
 msgid "Resume Listings Page"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:333
-#. translators: Placeholder is link to settings tab which includes resume
-#. visibility settings.
-msgid ""
-"Select the page where you have placed the [resumes] shortcode. This lets "
-"the plugin know where the resume listings page is located. Manage access to "
-"this page and resumes from the <a href=\"%s\" class=\"nav-internal\">Resume "
-"Visibility</a> tab."
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-settings.php:341
-msgid "Resume Visibility"
-msgstr ""
-
+#. translators: Placeholder is link to settings tab which includes resume visibility settings.
 #: includes/admin/class-wp-resume-manager-settings.php:346
-msgid "View Resume name Capability"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-settings.php:349
-#. translators: Placeholder %s is the url to the WordPress core documentation
-#. for capabilities and roles.
-msgid ""
-"Enter which <a href=\"%s\">roles or capabilities</a> allow visitors to view "
-"resumes names. If no value is selected, everyone (including logged out "
-"guests) will be able view candidates full name."
+msgid "Select the page where you have placed the [resumes] shortcode. This lets the plugin know where the resume listings page is located. Manage access to this page and resumes from the <a href=\"%s\" class=\"nav-internal\">Resume Visibility</a> tab."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-settings.php:354
+msgid "Resume Visibility"
+msgstr ""
+
+#: includes/admin/class-wp-resume-manager-settings.php:359
+msgid "View Resume name Capability"
+msgstr ""
+
+#. translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
+#: includes/admin/class-wp-resume-manager-settings.php:362
+msgid "Enter which <a href=\"%s\">roles or capabilities</a> allow visitors to view resumes names. If no value is selected, everyone (including logged out guests) will be able view candidates full name."
+msgstr ""
+
+#: includes/admin/class-wp-resume-manager-settings.php:367
 msgid "Browse Resume Capability"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:357
-#. translators: Placeholder %s is the url to the WordPress core documentation
-#. for capabilities and roles.
-msgid ""
-"Enter which <a href=\"%s\">roles or capabilities</a> allow visitors to "
-"browse resumes. If no value is selected, everyone (including logged out "
-"guests) will be able to browse resumes.."
+#. translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
+#: includes/admin/class-wp-resume-manager-settings.php:370
+msgid "Enter which <a href=\"%s\">roles or capabilities</a> allow visitors to browse resumes. If no value is selected, everyone (including logged out guests) will be able to browse resumes.."
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:362
+#: includes/admin/class-wp-resume-manager-settings.php:375
 msgid "View Resume Capability"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:365
-#. translators: Placeholder %s is the url to the WordPress core documentation
-#. for capabilities and roles.
-msgid ""
-"Enter which <a href=\"%s\">roles or capabilities</a> allow visitors to view "
-"a single resume. If no value is selected, everyone (including logged out "
-"guests) will be able to view resumes."
+#. translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
+#: includes/admin/class-wp-resume-manager-settings.php:378
+msgid "Enter which <a href=\"%s\">roles or capabilities</a> allow visitors to view a single resume. If no value is selected, everyone (including logged out guests) will be able to view resumes."
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:370
+#: includes/admin/class-wp-resume-manager-settings.php:383
 msgid "Contact Details Capability"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:373
-#. translators: Placeholder %s is the url to the WordPress core documentation
-#. for capabilities and roles.
-msgid ""
-"Enter which <a href=\"%s\">roles or capabilities</a> allow visitors to view "
-"contact details on a resume. If no value is selected, contact details will "
-"be publicly available."
+#. translators: Placeholder %s is the url to the WordPress core documentation for capabilities and roles.
+#: includes/admin/class-wp-resume-manager-settings.php:386
+msgid "Enter which <a href=\"%s\">roles or capabilities</a> allow visitors to view contact details on a resume. If no value is selected, contact details will be publicly available."
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:378
+#: includes/admin/class-wp-resume-manager-settings.php:391
 msgid "Search Engine Visibility"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:379
+#: includes/admin/class-wp-resume-manager-settings.php:392
 msgid "Discourage search engines from indexing resume listings"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:380
+#: includes/admin/class-wp-resume-manager-settings.php:393
 msgid "Search engines choose whether to honor this request."
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-settings.php:408
+#: includes/admin/class-wp-resume-manager-settings.php:421
 msgid "Everyone (Public)"
 msgstr ""
 
@@ -689,16 +643,11 @@ msgid "Thanks for installing <em>Resume Manager</em>!"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:163
-msgid ""
-"This setup wizard will help you get started by creating the pages for "
-"resume submission, resume management, and resume listing."
+msgid "This setup wizard will help you get started by creating the pages for resume submission, resume management, and resume listing."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:164
-msgid ""
-"If you want to skip the wizard and setup the pages and shortcodes yourself "
-"manually, the process is still reletively simple. Refer to the "
-"%1$sdocumentation%2$s for help."
+msgid "If you want to skip the wizard and setup the pages and shortcodes yourself manually, the process is still relatively simple. Refer to the %1$sdocumentation%2$s for help."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:167
@@ -714,11 +663,7 @@ msgid "Page Setup"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:176
-msgid ""
-"<em>Resume Manager</em> includes %1$sshortcodes%2$s which can be used "
-"within your %3$spages%2$s to output content. These can be created for you "
-"below. For more information on the resume shortcodes view the %4$sshortcode "
-"documentation%2$s."
+msgid "<em>Resume Manager</em> includes %1$sshortcodes%2$s which can be used within your %3$spages%2$s to output content. These can be created for you below. For more information on the resume shortcodes view the %4$sshortcode documentation%2$s."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:183
@@ -733,35 +678,39 @@ msgstr ""
 msgid "Content Shortcode"
 msgstr ""
 
+#: includes/admin/class-wp-resume-manager-setup.php:191
+msgctxt "Default page title (wizard)"
+msgid "Submit Resume"
+msgstr ""
+
 #: includes/admin/class-wp-resume-manager-setup.php:193
-msgid ""
-"This page allows candidates to post their resume to your website from the "
-"front-end."
+msgid "This page allows candidates to post their resume to your website from the front-end."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:195
-msgid ""
-"If you do not want to accept submissions from users in this way (for "
-"example you just want to post resumes from the admin dashboard) you can "
-"skip creating this page."
+msgid "If you do not want to accept submissions from users in this way (for example you just want to post resumes from the admin dashboard) you can skip creating this page."
+msgstr ""
+
+#: includes/admin/class-wp-resume-manager-setup.php:201
+msgctxt "Default page title (wizard)"
+msgid "Candidate Dashboard"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:203
-msgid ""
-"This page allows candidates to manage and edit their own resumes from the "
-"front-end."
+msgid "This page allows candidates to manage and edit their own resumes from the front-end."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:205
-msgid ""
-"If you plan on managing all listings from the admin dashboard you can skip "
-"creating this page."
+msgid "If you plan on managing all listings from the admin dashboard you can skip creating this page."
+msgstr ""
+
+#: includes/admin/class-wp-resume-manager-setup.php:211
+msgctxt "Default page title (wizard)"
+msgid "Resumes"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:212
-msgid ""
-"This page allows users to browse, search, and filter resume listings on the "
-"front-end of your site."
+msgid "This page allows users to browse, search, and filter resume listings on the front-end of your site."
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:220
@@ -773,9 +722,7 @@ msgid "All Done!"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:232
-msgid ""
-"Looks like you're all set to start using the plugin. In case you're "
-"wondering where to go next:"
+msgid "Looks like you're all set to start using the plugin. In case you're wondering where to go next:"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:235
@@ -799,10 +746,7 @@ msgid "View the candidate dashboard"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:251
-msgid ""
-"And don't forget, if you need any more help using <em>Resume Manager</em> "
-"you can consult the %1$sdocumentation%2$s or %3$scontact us via our support "
-"area%2$s!"
+msgid "And don't forget, if you need any more help using <em>Resume Manager</em> you can consult the %1$sdocumentation%2$s or %3$scontact us via our support area%2$s!"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:254
@@ -810,11 +754,7 @@ msgid "Support the Ongoing Development of WP Job Manager"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:255
-msgid ""
-"There are many ways to support open-source projects such as WP Job Manager, "
-"for example code contribution, translation, or even telling your friends "
-"how awesome the plugin (hopefully) is. Thanks in advance for your support - "
-"it is much appreciated!"
+msgid "There are many ways to support open-source projects such as WP Job Manager, for example code contribution, translation, or even telling your friends how awesome the plugin (hopefully) is. Thanks in advance for your support - it is much appreciated!"
 msgstr ""
 
 #: includes/admin/class-wp-resume-manager-setup.php:257
@@ -833,177 +773,114 @@ msgstr ""
 msgid "Help other users on the forums"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:64
-msgid "Professional Title"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-writepanels.php:69
-msgid "Contact Email"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-writepanels.php:70
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:224
-msgid "you@yourdomain.com"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-writepanels.php:74
-msgid "Candidate Location"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-writepanels.php:75
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:240
-msgid "e.g. \"London, UK\", \"New York\", \"Houston, TX\""
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-writepanels.php:79
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:245
-msgid "Photo"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-writepanels.php:80
-msgid "URL to the candidate photo"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-writepanels.php:84
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:260
-msgid "Video"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-writepanels.php:85
-msgid "URL to the candidate video"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-writepanels.php:89
-msgid "Resume File"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-writepanels.php:90
-msgid "URL to the candidate's resume file"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-writepanels.php:94
+#: includes/admin/class-wp-resume-manager-writepanels.php:68
 #: includes/class-wp-resume-manager-email-notifications.php:284
 msgid "Posted by"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:98
-msgid "Feature this Resume?"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-writepanels.php:100
-msgid ""
-"Featured resumes will be sticky during searches, and can be styled "
-"differently."
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-writepanels.php:104
-msgid "yyyy-mm-dd"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-writepanels.php:120
+#: includes/admin/class-wp-resume-manager-writepanels.php:136
 msgid "Candidate Data"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:121
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:293
+#: includes/admin/class-wp-resume-manager-writepanels.php:137
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:298
 msgid "URL(s)"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:122
-#: includes/admin/class-wp-resume-manager-writepanels.php:372
+#: includes/admin/class-wp-resume-manager-writepanels.php:138
+#: includes/admin/class-wp-resume-manager-writepanels.php:402
 #: includes/class-wp-resume-manager-email-notifications.php:254
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:319
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:325
 #: templates/content-single-resume.php:44
 msgid "Education"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:123
-#: includes/admin/class-wp-resume-manager-writepanels.php:382
+#: includes/admin/class-wp-resume-manager-writepanels.php:139
+#: includes/admin/class-wp-resume-manager-writepanels.php:412
 #: includes/class-wp-resume-manager-email-notifications.php:275
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:354
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:360
 #: templates/content-single-resume.php:65
 msgid "Experience"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:167
-#. translators: %1$s placeholder is the object type singular name; %2$s is the
-#. relative date the resume was edited.
+#. translators: %1$s placeholder is the object type singular name; %2$s is the relative date the resume was edited.
+#: includes/admin/class-wp-resume-manager-writepanels.php:197
 msgid "%1$s was last modified by the user on %2$s."
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:197
-#: includes/class-wp-resume-manager-post-types.php:227
+#: includes/admin/class-wp-resume-manager-writepanels.php:227
+#: includes/class-wp-resume-manager-post-types.php:235
 msgid "Add %s"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:259
-#: includes/class-wp-resume-manager-shortcodes.php:283
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:302
+#: includes/admin/class-wp-resume-manager-writepanels.php:289
+#: includes/class-wp-resume-manager-shortcodes.php:290
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:307
 msgid "Name"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:261
+#: includes/admin/class-wp-resume-manager-writepanels.php:291
 msgid "Your site"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:266
-#: includes/admin/class-wp-resume-manager-writepanels.php:362
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:309
+#: includes/admin/class-wp-resume-manager-writepanels.php:296
+#: includes/admin/class-wp-resume-manager-writepanels.php:392
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:314
 msgid "URL"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:286
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:327
+#: includes/admin/class-wp-resume-manager-writepanels.php:316
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:333
 msgid "School name"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:293
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:333
+#: includes/admin/class-wp-resume-manager-writepanels.php:323
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:339
 msgid "Qualification(s)"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:299
-#: includes/admin/class-wp-resume-manager-writepanels.php:338
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:339
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:374
+#: includes/admin/class-wp-resume-manager-writepanels.php:329
+#: includes/admin/class-wp-resume-manager-writepanels.php:368
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:345
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:380
 msgid "Start/end date"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:305
-#: includes/admin/class-wp-resume-manager-writepanels.php:344
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:345
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:380
+#: includes/admin/class-wp-resume-manager-writepanels.php:335
+#: includes/admin/class-wp-resume-manager-writepanels.php:374
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:351
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:386
 msgid "Notes"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:325
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:362
+#: includes/admin/class-wp-resume-manager-writepanels.php:355
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:368
 msgid "Employer"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:332
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:368
+#: includes/admin/class-wp-resume-manager-writepanels.php:362
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:374
 msgid "Job Title"
 msgstr ""
 
-#: includes/admin/class-wp-resume-manager-writepanels.php:360
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:298
+#: includes/admin/class-wp-resume-manager-writepanels.php:390
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:303
 msgid "Optionally provide links to any of your websites or social network profiles."
 msgstr ""
 
-#: includes/class-wp-resume-manager-ajax.php:78
+#: includes/class-wp-resume-manager-ajax.php:89
 msgid "No resumes found matching your selection."
 msgstr ""
 
-#: includes/class-wp-resume-manager-ajax.php:105
+#: includes/class-wp-resume-manager-ajax.php:116
 msgid "Showing &ldquo;%1$s&rdquo; %2$sresumes"
 msgstr ""
 
-#: includes/class-wp-resume-manager-ajax.php:107
+#: includes/class-wp-resume-manager-ajax.php:118
 msgid "Showing all %sresumes"
 msgstr ""
 
-#: includes/class-wp-resume-manager-ajax.php:110
+#: includes/class-wp-resume-manager-ajax.php:121
 msgid "located in &ldquo;%s&rdquo;"
 msgstr ""
 
@@ -1032,13 +909,13 @@ msgstr ""
 msgid "Error sending application"
 msgstr ""
 
-#: includes/class-wp-resume-manager-email-notifications.php:53
 #. translators: Placeholder is path to old legacy template.
+#: includes/class-wp-resume-manager-email-notifications.php:53
 msgid "Template override in theme: %s"
 msgstr ""
 
-#: includes/class-wp-resume-manager-email-notifications.php:56
 #. translators: Placeholder is path to new replacement template.
+#: includes/class-wp-resume-manager-email-notifications.php:56
 msgid "See the new template here: %s"
 msgstr ""
 
@@ -1050,229 +927,302 @@ msgstr ""
 msgid "Link"
 msgstr ""
 
+#. translators: Placeholder is location of education experience.
+#. translators: The placeholder %s is the location of someone's educational institution on their resume.
 #: includes/class-wp-resume-manager-email-notifications.php:243
 #: includes/class-wp-resume-manager-privacy.php:247
-#. translators: Placeholder is location of education experience.
-#. translators: The placeholder %s is the location of someone's educational
-#. institution on their resume.
 msgid "Location: %s"
 msgstr ""
 
+#. translators: Placeholder is date of education experience.
+#. translators: Placeholder is date of experience.
+#. translators: The placeholder %s is the date (range) someone attended a particular educational institution.
+#. translators: The placeholder %s is the date (range) someone was employed by a particular employer.
 #: includes/class-wp-resume-manager-email-notifications.php:245
 #: includes/class-wp-resume-manager-email-notifications.php:266
 #: includes/class-wp-resume-manager-privacy.php:249
 #: includes/class-wp-resume-manager-privacy.php:289
-#. translators: Placeholder is date of education experience.
-#. translators: Placeholder is date of experience.
-#. translators: The placeholder %s is the date (range) someone attended a
-#. particular educational institution.
-#. translators: The placeholder %s is the date (range) someone was employed by
-#. a particular employer.
 msgid "Date: %s"
 msgstr ""
 
-#: includes/class-wp-resume-manager-email-notifications.php:247
 #. translators: Placeholder is qualifications/degrees of education experience.
+#: includes/class-wp-resume-manager-email-notifications.php:247
 msgid "Qualification: %s"
 msgstr ""
 
+#. translators: Placeholder is notes for education experience.
+#. translators: Placeholder is notes for experience.
+#. translators: The placeholder %s are the notes regarding an education listing on their resume.
+#. translators: The placeholder %s are the notes regarding a work listing on their resume.
 #: includes/class-wp-resume-manager-email-notifications.php:249
 #: includes/class-wp-resume-manager-email-notifications.php:270
 #: includes/class-wp-resume-manager-privacy.php:253
 #: includes/class-wp-resume-manager-privacy.php:293
-#. translators: Placeholder is notes for education experience.
-#. translators: Placeholder is notes for experience.
-#. translators: The placeholder %s are the notes regarding an education listing
-#. on their resume.
-#. translators: The placeholder %s are the notes regarding a work listing on
-#. their resume.
 msgid "Notes: %s"
 msgstr ""
 
-#: includes/class-wp-resume-manager-email-notifications.php:264
-#: includes/class-wp-resume-manager-privacy.php:287
 #. translators: Placeholder is employer name of experience.
 #. translators: The placeholder %s is the name of an employer on a resume.
+#: includes/class-wp-resume-manager-email-notifications.php:264
+#: includes/class-wp-resume-manager-privacy.php:287
 msgid "Employer: %s"
 msgstr ""
 
+#. translators: Placeholder is job title of experience.
+#. translators: The placeholder %s is the job title of a work experience on a resume.
 #: includes/class-wp-resume-manager-email-notifications.php:268
 #: includes/class-wp-resume-manager-privacy.php:291
-#. translators: Placeholder is job title of experience.
-#. translators: The placeholder %s is the job title of a work experience on a
-#. resume.
 msgid "Job Title: %s"
 msgstr ""
 
-#: includes/class-wp-resume-manager-post-types.php:106
+#: includes/class-wp-resume-manager-post-types.php:110
 msgid "Resume Category"
 msgstr ""
 
-#: includes/class-wp-resume-manager-post-types.php:107
+#: includes/class-wp-resume-manager-post-types.php:111
 msgid "Resume Categories"
 msgstr ""
 
-#: includes/class-wp-resume-manager-post-types.php:129
-#: includes/class-wp-resume-manager-post-types.php:175
-#: includes/class-wp-resume-manager-post-types.php:233
-msgid "Search %s"
-msgstr ""
-
-#: includes/class-wp-resume-manager-post-types.php:130
-#: includes/class-wp-resume-manager-post-types.php:176
-#: includes/class-wp-resume-manager-post-types.php:225
-msgid "All %s"
-msgstr ""
-
-#: includes/class-wp-resume-manager-post-types.php:131
-#: includes/class-wp-resume-manager-post-types.php:177
-#: includes/class-wp-resume-manager-post-types.php:236
-msgid "Parent %s"
-msgstr ""
-
-#: includes/class-wp-resume-manager-post-types.php:132
-#: includes/class-wp-resume-manager-post-types.php:178
-msgid "Parent %s:"
+#: includes/class-wp-resume-manager-post-types.php:115
+msgctxt "Resume category slug - resave permalinks after changing this"
+msgid "resume-category"
 msgstr ""
 
 #: includes/class-wp-resume-manager-post-types.php:133
-#: includes/class-wp-resume-manager-post-types.php:179
-#: includes/class-wp-resume-manager-post-types.php:229
-msgid "Edit %s"
+#: includes/class-wp-resume-manager-post-types.php:181
+#: includes/class-wp-resume-manager-post-types.php:241
+msgid "Search %s"
 msgstr ""
 
 #: includes/class-wp-resume-manager-post-types.php:134
-#: includes/class-wp-resume-manager-post-types.php:180
-msgid "Update %s"
+#: includes/class-wp-resume-manager-post-types.php:182
+#: includes/class-wp-resume-manager-post-types.php:233
+msgid "All %s"
 msgstr ""
 
 #: includes/class-wp-resume-manager-post-types.php:135
-#: includes/class-wp-resume-manager-post-types.php:181
-msgid "Add New %s"
+#: includes/class-wp-resume-manager-post-types.php:183
+#: includes/class-wp-resume-manager-post-types.php:244
+msgid "Parent %s"
 msgstr ""
 
 #: includes/class-wp-resume-manager-post-types.php:136
-#: includes/class-wp-resume-manager-post-types.php:182
+#: includes/class-wp-resume-manager-post-types.php:184
+msgid "Parent %s:"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:137
+#: includes/class-wp-resume-manager-post-types.php:185
+#: includes/class-wp-resume-manager-post-types.php:237
+msgid "Edit %s"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:138
+#: includes/class-wp-resume-manager-post-types.php:186
+msgid "Update %s"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:139
+#: includes/class-wp-resume-manager-post-types.php:187
+msgid "Add New %s"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:140
+#: includes/class-wp-resume-manager-post-types.php:188
 msgid "New %s Name"
 msgstr ""
 
-#: includes/class-wp-resume-manager-post-types.php:152
+#: includes/class-wp-resume-manager-post-types.php:158
 msgid "Candidate Skill"
 msgstr ""
 
-#: includes/class-wp-resume-manager-post-types.php:153
+#: includes/class-wp-resume-manager-post-types.php:159
 msgid "Candidate Skills"
 msgstr ""
 
-#: includes/class-wp-resume-manager-post-types.php:200
+#: includes/class-wp-resume-manager-post-types.php:163
+msgctxt "Resume skill slug - resave permalinks after changing this"
+msgid "resume-skill"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:208
 msgid "Resume"
 msgstr ""
 
-#: includes/class-wp-resume-manager-post-types.php:201
-#: includes/class-wp-resume-manager-post-types.php:407
+#: includes/class-wp-resume-manager-post-types.php:209
+#: includes/class-wp-resume-manager-post-types.php:450
 #: includes/class-wp-resume-manager-privacy.php:81
+#: tests/php/tests/includes/test_class.wp-resume-manager-privacy.php:291
 msgid "Resumes"
 msgstr ""
 
-#: includes/class-wp-resume-manager-post-types.php:226
-msgid "Add New"
+#: includes/class-wp-resume-manager-post-types.php:212
+msgctxt "Post type archive slug - resave permalinks after changing this"
+msgid "resumes"
 msgstr ""
 
-#: includes/class-wp-resume-manager-post-types.php:230
-msgid "New %s"
-msgstr ""
-
-#: includes/class-wp-resume-manager-post-types.php:231
-#: includes/class-wp-resume-manager-post-types.php:232
-msgid "View %s"
+#: includes/class-wp-resume-manager-post-types.php:218
+msgctxt "Resume permalink - resave permalinks after changing this"
+msgid "resume"
 msgstr ""
 
 #: includes/class-wp-resume-manager-post-types.php:234
-msgid "No %s found"
-msgstr ""
-
-#: includes/class-wp-resume-manager-post-types.php:235
-msgid "No %s found in trash"
+msgid "Add New"
 msgstr ""
 
 #: includes/class-wp-resume-manager-post-types.php:238
+msgid "New %s"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:239
+#: includes/class-wp-resume-manager-post-types.php:240
+msgid "View %s"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:242
+msgid "No %s found"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:243
+msgid "No %s found in trash"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:246
 msgid "This is where you can create and manage user resumes."
 msgstr ""
 
-#: includes/class-wp-resume-manager-post-types.php:276
+#: includes/class-wp-resume-manager-post-types.php:284
+#: includes/wp-resume-manager-functions.php:615
+msgctxt "post status"
+msgid "Hidden"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:289
 msgid "Hidden <span class=\"count\">(%s)</span>"
 msgid_plural "Hidden <span class=\"count\">(%s)</span>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: includes/class-wp-resume-manager-post-types.php:355
+#: includes/class-wp-resume-manager-post-types.php:383
 msgid "File not found"
 msgstr ""
 
-#: includes/class-wp-resume-manager-post-types.php:355
+#: includes/class-wp-resume-manager-post-types.php:383
 msgid "Go to homepage"
 msgstr ""
 
-#: includes/class-wp-resume-manager-post-types.php:487
+#: includes/class-wp-resume-manager-post-types.php:534
 msgid "Contact via the resume for \"%1$s\" on %2$s"
 msgstr ""
 
-#. Plugin Name of the plugin/theme
-msgid "WP Job Manager - Resume Manager"
+#: includes/class-wp-resume-manager-post-types.php:769
+msgid "Professional Title"
 msgstr ""
 
+#: includes/class-wp-resume-manager-post-types.php:778
+msgid "Contact Email"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:779
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:229
+msgid "you@yourdomain.com"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:787
+msgid "Candidate Location"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:788
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:245
+msgid "e.g. \"London, UK\", \"New York\", \"Houston, TX\""
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:796
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:250
+msgid "Photo"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:797
+msgid "URL to the candidate photo"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:805
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:265
+msgid "Video"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:806
+msgid "URL to the candidate video"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:815
+msgid "Resume File"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:816
+msgid "URL to the candidate's resume file"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:824
+msgid "Feature this Resume?"
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:826
+msgid "Featured resumes will be sticky during searches, and can be styled differently."
+msgstr ""
+
+#: includes/class-wp-resume-manager-post-types.php:835
+msgid "yyyy-mm-dd"
+msgstr ""
+
+#. translators: The placeholder %s is a list of qualifications someone obtained at a particular education institution.
 #: includes/class-wp-resume-manager-privacy.php:251
-#. translators: The placeholder %s is a list of qualifications someone obtained
-#. at a particular education institution.
 msgid "Qualifications: %s"
 msgstr ""
 
+#. translators: Placeholder %d is the post ID for the resume that couldn't be removed.
 #: includes/class-wp-resume-manager-privacy.php:459
-#. translators: Placeholder %d is the post ID for the resume that couldn't be
-#. removed.
 msgid "Resume ID %d could not be removed at this time."
 msgstr ""
 
-#: includes/class-wp-resume-manager-shortcodes.php:114
+#: includes/class-wp-resume-manager-shortcodes.php:121
 msgid "Invalid Resume ID"
 msgstr ""
 
-#: includes/class-wp-resume-manager-shortcodes.php:123
+#: includes/class-wp-resume-manager-shortcodes.php:130
 msgid "%s has been deleted"
 msgstr ""
 
-#: includes/class-wp-resume-manager-shortcodes.php:133
+#: includes/class-wp-resume-manager-shortcodes.php:140
 msgid "%s has been hidden"
 msgstr ""
 
-#: includes/class-wp-resume-manager-shortcodes.php:143
+#: includes/class-wp-resume-manager-shortcodes.php:150
 msgid "%s has been published"
 msgstr ""
 
-#: includes/class-wp-resume-manager-shortcodes.php:284
+#: includes/class-wp-resume-manager-shortcodes.php:291
 #: includes/class-wp-resume-manager-widgets.php:35
 #: includes/class-wp-resume-manager-widgets.php:152
 msgid "Title"
 msgstr ""
 
-#: includes/class-wp-resume-manager-shortcodes.php:286
-#: templates/resume-filters.php:43
+#: includes/class-wp-resume-manager-shortcodes.php:293
+#: templates/resume-filters.php:48
 msgid "Category"
 msgstr ""
 
-#: includes/class-wp-resume-manager-shortcodes.php:287
+#: includes/class-wp-resume-manager-shortcodes.php:294
 msgid "Date Posted"
 msgstr ""
 
-#: includes/class-wp-resume-manager-shortcodes.php:399
-#: includes/class-wp-resume-manager-shortcodes.php:436
+#: includes/class-wp-resume-manager-shortcodes.php:412
+#: includes/class-wp-resume-manager-shortcodes.php:449
 msgid "Load more resumes"
 msgstr ""
 
 #: includes/class-wp-resume-manager-widgets.php:28
-msgid ""
-"Display a list of recent listings on your site, optionally matching a "
-"keyword and location."
+msgid "Display a list of recent listings on your site, optionally matching a keyword and location."
 msgstr ""
 
 #: includes/class-wp-resume-manager-widgets.php:30
@@ -1303,13 +1253,11 @@ msgid "Admin Notice of New Resume"
 msgstr ""
 
 #: includes/emails/class-wp-resume-manager-email-admin-new-resume.php:45
-msgid ""
-"Send a notice to the site administrator when a new resume is submitted on "
-"the frontend."
+msgid "Send a notice to the site administrator when a new resume is submitted on the frontend."
 msgstr ""
 
-#: includes/emails/class-wp-resume-manager-email-admin-new-resume.php:64
 #. translators: Placeholder is title of resume.
+#: includes/emails/class-wp-resume-manager-email-admin-new-resume.php:64
 msgid "New Resume Submitted: %s"
 msgstr ""
 
@@ -1318,9 +1266,7 @@ msgid "Notify Email Address(es)"
 msgstr ""
 
 #: includes/emails/class-wp-resume-manager-email-admin-new-resume.php:133
-msgid ""
-"Separate email addresses with commas. Recipients are assumed to have "
-"administrator access to this WordPress instance."
+msgid "Separate email addresses with commas. Recipients are assumed to have administrator access to this WordPress instance."
 msgstr ""
 
 #: includes/emails/class-wp-resume-manager-email-apply-with-resume.php:37
@@ -1328,32 +1274,30 @@ msgid "Employer Notice of Application With Resume"
 msgstr ""
 
 #: includes/emails/class-wp-resume-manager-email-apply-with-resume.php:46
-msgid ""
-"Send a notice to the employer when someone applies to a job listing with a "
-"resume when the job listing application method is email."
+msgid "Send a notice to the employer when someone applies to a job listing with a resume when the job listing application method is email."
 msgstr ""
 
 #: includes/emails/class-wp-resume-manager-email-apply-with-resume.php:68
 msgid "Hello"
 msgstr ""
 
-#: includes/emails/class-wp-resume-manager-email-apply-with-resume.php:70
 #. translators: Placeholder is the job title.
+#: includes/emails/class-wp-resume-manager-email-apply-with-resume.php:70
 msgid "A candidate has applied online for the position \"%s\"."
 msgstr ""
 
-#: includes/emails/class-wp-resume-manager-email-apply-with-resume.php:75
 #. translators: Placeholder is the URL to their resume.
+#: includes/emails/class-wp-resume-manager-email-apply-with-resume.php:75
 msgid "You can view their online resume here: %s."
 msgstr ""
 
-#: includes/emails/class-wp-resume-manager-email-apply-with-resume.php:77
 #. translators: Placeholder is the candidate email address.
+#: includes/emails/class-wp-resume-manager-email-apply-with-resume.php:77
 msgid "Or you can contact them directly at: %s."
 msgstr ""
 
-#: includes/emails/class-wp-resume-manager-email-apply-with-resume.php:112
 #. translators: Placeholder is title of resume.
+#: includes/emails/class-wp-resume-manager-email-apply-with-resume.php:112
 msgid "Resume submitted for job listing: %s"
 msgstr ""
 
@@ -1366,9 +1310,7 @@ msgid "Use legacy filter to generate email content"
 msgstr ""
 
 #: includes/emails/class-wp-resume-manager-email-apply-with-resume.php:267
-msgid ""
-"Legacy filter <code>apply_with_resume_email_message</code> has been set "
-"with a customization. Disable to use new template."
+msgid "Legacy filter <code>apply_with_resume_email_message</code> has been set with a customization. Disable to use new template."
 msgstr ""
 
 #: includes/emails/class-wp-resume-manager-email-apply-with-resume.php:275
@@ -1380,7 +1322,7 @@ msgid "Include resume details in the content of the email"
 msgstr ""
 
 #: includes/forms/class-wp-resume-manager-form-edit-resume.php:107
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:1124
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:1151
 msgid "Invalid resume"
 msgstr ""
 
@@ -1401,178 +1343,205 @@ msgid "View &rarr;"
 msgstr ""
 
 #: includes/forms/class-wp-resume-manager-form-edit-resume.php:218
-msgid ""
-"Your changes have been submitted and your resume will be available again "
-"once approved."
+msgid "Your changes have been submitted and your resume will be available again once approved."
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:72
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:77
 msgid "Submit Details"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:78
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:83
 #: templates/resume-preview.php:37
 msgid "Preview"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:84
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:89
 msgid "Done"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:205
-#. translators: Placeholder %d is the maximum number of skills a visitor can
-#. add.
+#. translators: Placeholder %d is the maximum number of skills a visitor can add.
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:210
 msgid "Maximum of %d."
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:213
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:218
 msgid "Your name"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:216
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:221
 msgid "Your full name"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:221
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:226
 msgid "Your email"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:229
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:234
 msgid "Professional title"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:232
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:237
 msgid "e.g. \"Web Developer\""
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:264
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:269
 msgid "A link to a video about yourself"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:268
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:273
 msgid "Resume category"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:277
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:282
 msgid "Resume Content"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:288
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:293
 msgid "Comma separate a list of relevant skills"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:294
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:299
 #: templates/form-fields/repeated-field.php:64
 msgid "Add URL"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:320
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:326
 msgid "Add Education"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:355
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:361
 msgid "Add Experience"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:389
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:395
 msgid "Resume file"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:394
 #. translators: Placeholder %s is the maximum file size of the upload.
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:400
 msgid "Optionally upload your resume for employers to view. Max. file size: %s."
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:557
 #. translators: Placeholder %s is the name of the required field.
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:584
 msgid "%s is a required field"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:564
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:570
 #. translators: Placeholder %s is the name of the invalid field.
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:591
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:597
 msgid "%s is invalid"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:577
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:604
 msgid "Please enter a valid email address"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:591
 #. translators: Placeholder %d is the maximum number of skills they can enter.
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:618
 msgid "Please enter no more than %d skills."
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:608
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:635
 msgid "Invalid attachment provided."
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:680
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:707
 msgid "Preview &rarr;"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:726
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:753
 msgid "Please enter a username."
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:730
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:757
 msgid "Please enter a password."
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:734
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:761
 msgid "Please enter your email address."
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:740
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:767
 msgid "Passwords must match."
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:746
 #. translators: Placeholder %s is password hint.
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:773
 msgid "Invalid Password: %s"
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:748
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:775
 msgid "Password is not valid."
 msgstr ""
 
-#: includes/forms/class-wp-resume-manager-form-submit-resume.php:775
+#: includes/forms/class-wp-resume-manager-form-submit-resume.php:802
 msgid "You must be signed in to post your resume."
 msgstr ""
 
-#: includes/wp-resume-manager-functions.php:272
+#: includes/wp-resume-manager-functions.php:331
 msgid "Reset"
 msgstr ""
 
-#: includes/wp-resume-manager-template.php:242
-msgid "Published"
+#: includes/wp-resume-manager-functions.php:613
+msgctxt "post status"
+msgid "Draft"
 msgstr ""
 
-#: includes/wp-resume-manager-template.php:244
+#: includes/wp-resume-manager-functions.php:614
+msgctxt "post status"
 msgid "Expired"
 msgstr ""
 
-#: includes/wp-resume-manager-template.php:246
+#: includes/wp-resume-manager-functions.php:616
+msgctxt "post status"
+msgid "Preview"
+msgstr ""
+
+#: includes/wp-resume-manager-functions.php:617
+msgctxt "post status"
+msgid "Pending approval"
+msgstr ""
+
+#: includes/wp-resume-manager-functions.php:618
+msgctxt "post status"
+msgid "Pending payment"
+msgstr ""
+
+#: includes/wp-resume-manager-functions.php:619
+msgctxt "post status"
+msgid "Published"
+msgstr ""
+
+#: includes/wp-resume-manager-template.php:256
+msgid "Published"
+msgstr ""
+
+#: includes/wp-resume-manager-template.php:258
+msgid "Expired"
+msgstr ""
+
+#: includes/wp-resume-manager-template.php:260
 msgid "Pending Review"
 msgstr ""
 
-#: includes/wp-resume-manager-template.php:248
+#: includes/wp-resume-manager-template.php:262
 msgid "Hidden"
 msgstr ""
 
-#: includes/wp-resume-manager-template.php:250
+#: includes/wp-resume-manager-template.php:264
 msgid "Inactive"
 msgstr ""
 
-#: includes/wp-resume-manager-template.php:273
+#: includes/wp-resume-manager-template.php:287
 msgid "Username"
 msgstr ""
 
-#: includes/wp-resume-manager-template.php:281
+#: includes/wp-resume-manager-template.php:295
 msgid "Password"
 msgstr ""
 
-#: includes/wp-resume-manager-template.php:291
+#: includes/wp-resume-manager-template.php:305
 msgid "Verify Password"
 msgstr ""
 
@@ -1604,29 +1573,28 @@ msgstr ""
 msgid "Have an account?"
 msgstr ""
 
-#: templates/account-signin.php:42 templates/candidate-dashboard-login.php:20
+#: templates/account-signin.php:42
+#: templates/candidate-dashboard-login.php:20
 msgid "Sign in"
 msgstr ""
 
 #: templates/account-signin.php:46
-msgid ""
-"If you don&rsquo;t have an account you can create one below by entering "
-"your email address. Your account details will be confirmed via email."
+msgid "If you don't have an account you can create one below by entering your email address. Your account details will be confirmed via email."
 msgstr ""
 
 #: templates/account-signin.php:50
 msgid "You must sign in to submit a resume."
 msgstr ""
 
-#: templates/account-signin.php:61 templates/form-fields/repeated-field.php:25
-#: templates/form-fields/repeated-field.php:50 templates/resume-submit.php:37
+#: templates/account-signin.php:61
+#: templates/form-fields/repeated-field.php:25
+#: templates/form-fields/repeated-field.php:50
+#: templates/resume-submit.php:37
 msgid "(optional)"
 msgstr ""
 
 #: templates/apply-with-resume.php:26
-msgid ""
-"Apply using your online resume; just enter a short message to send your "
-"application."
+msgid "Apply using your online resume; just enter a short message to send your application."
 msgstr ""
 
 #: templates/apply-with-resume.php:28
@@ -1637,18 +1605,30 @@ msgstr ""
 msgid "Message"
 msgstr ""
 
-#: templates/apply-with-resume.php:54
+#: templates/apply-with-resume.php:43
+msgctxt "default cover letter"
+msgid "To whom it may concern,"
+msgstr ""
+
+#: templates/apply-with-resume.php:45
+msgctxt "default cover letter"
+msgid "I am very interested in the %1$s position at %2$s. I believe my skills and work experience make me an ideal candidate for this role. I look forward to speaking with you soon about this position."
+msgstr ""
+
+#: templates/apply-with-resume.php:47
+msgctxt "default cover letter"
+msgid "Thank you for your consideration."
+msgstr ""
+
+#: templates/apply-with-resume.php:52
 msgid "Send Application"
 msgstr ""
 
-#: templates/apply-with-resume.php:60
-msgid ""
-"You can apply to this job and others using your online resume. Click the "
-"link below to submit your online resume and email your application to this "
-"employer."
+#: templates/apply-with-resume.php:58
+msgid "You can apply to this job and others using your online resume. Click the link below to submit your online resume and email your application to this employer."
 msgstr ""
 
-#: templates/apply-with-resume.php:63
+#: templates/apply-with-resume.php:61
 msgid "Submit Resume &amp; Apply"
 msgstr ""
 
@@ -1687,9 +1667,7 @@ msgid "Add Resume"
 msgstr ""
 
 #: templates/contact-details-email.php:18
-msgid ""
-"To contact this candidate email <a class=\"job_application_email\" "
-"href=\"mailto:%1$s%2$s\">%1$s</a>"
+msgid "To contact this candidate email <a class=\"job_application_email\" href=\"mailto:%1$s%2$s\">%1$s</a>"
 msgstr ""
 
 #: templates/contact-details-email.php:21
@@ -1721,8 +1699,8 @@ msgstr ""
 msgid "Updated %s ago"
 msgstr ""
 
-#: templates/emails/admin-new-resume.php:32
 #. translators: %1$s is the URL for the site; %2$s is the name of the site.
+#: templates/emails/admin-new-resume.php:32
 msgid "A new resume has been submitted to <a href=\"%1$s\">%2$s</a>."
 msgstr ""
 
@@ -1731,19 +1709,14 @@ msgstr ""
 msgid "It has been published and is now available to the public."
 msgstr ""
 
-#: templates/emails/admin-new-resume.php:40
 #. translators: Placeholder is URL for WP admin.
-msgid ""
-"It is awaiting approval by an administrator in <a href=\"%s\">WordPress "
-"admin</a>."
+#: templates/emails/admin-new-resume.php:40
+msgid "It is awaiting approval by an administrator in <a href=\"%s\">WordPress admin</a>."
 msgstr ""
 
+#. translators: %1$s is the URL for the site; %2$s is the name of the site; %3$s is the job listing permalink; %4$s is the job listing title.
 #: templates/emails/apply-with-resume.php:41
-#. translators: %1$s is the URL for the site; %2$s is the name of the site;
-#. %3$s is the job listing permalink; %4$s is the job listing title.
-msgid ""
-"A candidate has applied on the site <a href=\"%1$s\">%2$s</a> for the "
-"position <a href=\"%3$s\">%4$s</a>."
+msgid "A candidate has applied on the site <a href=\"%1$s\">%2$s</a> for the position <a href=\"%3$s\">%4$s</a>."
 msgstr ""
 
 #: templates/emails/apply-with-resume.php:50
@@ -1751,44 +1724,39 @@ msgstr ""
 msgid "They included the following message along with their resume: "
 msgstr ""
 
-#: templates/emails/apply-with-resume.php:59
 #. translators: Placeholder is the URL to the resume.
+#: templates/emails/apply-with-resume.php:59
 msgid "You can <a href=\"%s\">view their resume online</a>."
 msgstr ""
 
+#. translators: Placeholder is the candidate email address.
 #: templates/emails/apply-with-resume.php:65
 #: templates/emails/plain/apply-with-resume.php:57
-#. translators: Placeholder is the candidate email address.
 msgid " Additionally, you can contact them directly at %s."
 msgstr ""
 
-#: templates/emails/plain/admin-new-resume.php:31
 #. translators: %1$s is the URL for the site; %2$s is the name of the site.
+#: templates/emails/plain/admin-new-resume.php:31
 msgid "A new resume has been submitted to %1$s (%2$s)."
 msgstr ""
 
-#: templates/emails/plain/admin-new-resume.php:39
 #. translators: Placeholder is URL for WP admin.
+#: templates/emails/plain/admin-new-resume.php:39
 msgid "It is awaiting approval by an administrator in WordPress admin (%s)."
 msgstr ""
 
+#. translators:  %1$s is the name of the site, %2$s is the URL for the site, %3$s is the job listing title, %4$s is the job listing permalink.
 #: templates/emails/plain/apply-with-resume.php:40
-#. translators:  %1$s is the name of the site, %2$s is the URL for the site,
-#. %3$s is the job listing title, %4$s is the job listing permalink.
-msgid ""
-"A candidate has applied on the site %1$s (%2$s) for the position %3$s "
-"(%4$s)."
+msgid "A candidate has applied on the site %1$s (%2$s) for the position %3$s (%4$s)."
 msgstr ""
 
-#: templates/emails/plain/apply-with-resume.php:51
 #. translators: Placeholder is the URL to the resume.
+#: templates/emails/plain/apply-with-resume.php:51
 msgid "You can view their online resume by visiting %s."
 msgstr ""
 
 #: templates/force-apply-with-resume.php:22
-msgid ""
-"Before applying for this position you need to submit your <strong>online "
-"resume</strong>. Click the button below to continue."
+msgid "Before applying for this position you need to submit your <strong>online resume</strong>. Click the button below to continue."
 msgstr ""
 
 #: templates/force-apply-with-resume.php:24
@@ -1812,7 +1780,11 @@ msgstr ""
 msgid "Any Location"
 msgstr ""
 
-#: templates/resume-filters.php:63
+#: templates/resume-filters.php:39
+msgid "Any Skills"
+msgstr ""
+
+#: templates/resume-filters.php:68
 msgid "Any category"
 msgstr ""
 
@@ -1824,17 +1796,14 @@ msgstr ""
 msgid "&larr; Edit resume"
 msgstr ""
 
+#. translators: Placeholder %s is a link to the job listing with the title as the text.
 #: templates/resume-submitted-application-form.php:30
-#. translators: Placeholder %s is a link to the job listing with the title as
-#. the text.
 msgid "Submit your application to the job \"%s\"."
 msgstr ""
 
-#: templates/resume-submitted.php:28
 #. translators: Placeholder is URL to view the resume.
-msgid ""
-"Your resume has been submitted successfully. To view your resume <a "
-"href=\"%s\">click here</a>."
+#: templates/resume-submitted.php:28
+msgid "Your resume has been submitted successfully. To view your resume <a href=\"%s\">click here</a>."
 msgstr ""
 
 #: templates/resume-submitted.php:35
@@ -1845,149 +1814,32 @@ msgstr ""
 msgid "Your resume has been submitted successfully and is pending approval."
 msgstr ""
 
+#. translators: %1$s is the url to the job listing; %2$s is the title of the job listing.
 #: templates/resume-submitted.php:52
-#. translators: %1$s is the url to the job listing; %2$s is the title of the
-#. job listing.
-msgid ""
-" You will be able to apply for <a href=\"%1$s\">%2$s</a> once your resume "
-"has been approved."
+msgid " You will be able to apply for <a href=\"%1$s\">%2$s</a> once your resume has been approved."
 msgstr ""
 
-#: wp-job-manager-resumes.php:115
-msgid ""
-"<em>WP Job Manager - Resume Manager</em> requires WP Job Manager to be "
-"installed and activated."
+#: wp-job-manager-resumes.php:120
+msgid "<em>WP Job Manager - Resume Manager</em> requires WP Job Manager to be installed and activated."
 msgstr ""
 
-#: wp-job-manager-resumes.php:130
-#. translators:  %1$s is the version that is required; %2$s is the current
-#. version of WPJM.
-msgid ""
-"<em>WP Job Manager - Resume Manager</em> requires WP Job Manager %1$s (you "
-"are using %2$s)."
+#. translators:  %1$s is the version that is required; %2$s is the current version of WPJM.
+#: wp-job-manager-resumes.php:135
+msgid "<em>WP Job Manager - Resume Manager</em> requires WP Job Manager %1$s (you are using %2$s)."
 msgstr ""
 
-#: wp-job-manager-resumes.php:252
-msgid ""
-"If you wish to edit the posted details use the \"edit resume\" button "
-"instead, otherwise changes may be lost."
+#: wp-job-manager-resumes.php:265
+msgid "If you wish to edit the posted details use the \"edit resume\" button instead, otherwise changes may be lost."
 msgstr ""
 
-#: wp-job-manager-resumes.php:253
+#: wp-job-manager-resumes.php:266
 msgid "Are you sure you want to remove this item?"
 msgstr ""
 
-#: wp-job-manager-resumes.php:254
+#: wp-job-manager-resumes.php:267
 msgid "remove"
 msgstr ""
 
-#: wp-job-manager-resumes.php:269
+#: wp-job-manager-resumes.php:282
 msgid "Are you sure you want to delete this resume?"
-msgstr ""
-
-#. Plugin URI of the plugin/theme
-msgid "https://wpjobmanager.com/add-ons/resume-manager/"
-msgstr ""
-
-#. Description of the plugin/theme
-msgid ""
-"Manage candidate resumes from the WordPress admin panel, and allow "
-"candidates to post their resumes directly to your site."
-msgstr ""
-
-#. Author of the plugin/theme
-msgid "Automattic"
-msgstr ""
-
-#. Author URI of the plugin/theme
-msgid "https://wpjobmanager.com"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-setup.php:191
-msgctxt "Default page title (wizard)"
-msgid "Submit Resume"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-setup.php:201
-msgctxt "Default page title (wizard)"
-msgid "Candidate Dashboard"
-msgstr ""
-
-#: includes/admin/class-wp-resume-manager-setup.php:211
-msgctxt "Default page title (wizard)"
-msgid "Resumes"
-msgstr ""
-
-#: includes/class-wp-resume-manager-post-types.php:111
-msgctxt "Resume category slug - resave permalinks after changing this"
-msgid "resume-category"
-msgstr ""
-
-#: includes/class-wp-resume-manager-post-types.php:157
-msgctxt "Resume skill slug - resave permalinks after changing this"
-msgid "resume-skill"
-msgstr ""
-
-#: includes/class-wp-resume-manager-post-types.php:204
-msgctxt "Post type archive slug - resave permalinks after changing this"
-msgid "resumes"
-msgstr ""
-
-#: includes/class-wp-resume-manager-post-types.php:210
-msgctxt "Resume permalink - resave permalinks after changing this"
-msgid "resume"
-msgstr ""
-
-#: includes/class-wp-resume-manager-post-types.php:271
-#: includes/wp-resume-manager-functions.php:556
-msgctxt "post status"
-msgid "Hidden"
-msgstr ""
-
-#: includes/wp-resume-manager-functions.php:554
-msgctxt "post status"
-msgid "Draft"
-msgstr ""
-
-#: includes/wp-resume-manager-functions.php:555
-msgctxt "post status"
-msgid "Expired"
-msgstr ""
-
-#: includes/wp-resume-manager-functions.php:557
-msgctxt "post status"
-msgid "Preview"
-msgstr ""
-
-#: includes/wp-resume-manager-functions.php:558
-msgctxt "post status"
-msgid "Pending approval"
-msgstr ""
-
-#: includes/wp-resume-manager-functions.php:559
-msgctxt "post status"
-msgid "Pending payment"
-msgstr ""
-
-#: includes/wp-resume-manager-functions.php:560
-msgctxt "post status"
-msgid "Published"
-msgstr ""
-
-#: templates/apply-with-resume.php:44
-msgctxt "default cover letter"
-msgid "To whom it may concern,"
-msgstr ""
-
-#: templates/apply-with-resume.php:46
-msgctxt "default cover letter"
-msgid ""
-"I am very interested in the %1$s position at %2$s. I believe my skills and "
-"work experience make me an ideal candidate for this role. I look forward to "
-"speaking with you soon about this position."
-msgstr ""
-
-#: templates/apply-with-resume.php:48
-msgctxt "default cover letter"
-msgid "Thank you for your consideration."
 msgstr ""

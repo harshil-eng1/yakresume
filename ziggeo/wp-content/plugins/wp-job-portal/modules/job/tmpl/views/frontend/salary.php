@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
  * @param job      job object - optional
@@ -11,6 +12,6 @@
         <span class="get-text"><b><?php echo esc_html(wpjobportal::$_common->getSalaryRangeView( $job->salarytype, $job->salarymin, $job->salarymax, $job->srangetypetitle)); ?></b></span>
     </div>
     <div class="js-col-xs-12 js-col-sm-12 js-col-md-12 js-fields for-rtl joblist-datafields" title="<?php echo esc_attr(date_i18n('d F Y h:i A',strtotime($job->created))); ?>">
-        <?php echo esc_html(human_time_diff(strtotime($job->created)).' '.__("ago",'wp-job-portal')); ?>
+        <?php echo esc_html(human_time_diff(strtotime($job->created)).' '.esc_html(__("ago",'wp-job-portal'))); ?>
     </div>
 </div>

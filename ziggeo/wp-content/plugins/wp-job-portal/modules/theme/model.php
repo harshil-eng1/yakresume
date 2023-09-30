@@ -47,19 +47,19 @@ class WPJOBPORTALthemeModel {
     }
 
     function getColorCode($filestring, $colorNo) {
-        if (strstr($filestring, '$color' . $colorNo)) {
-            $path1 = strpos($filestring, '$color' . $colorNo);
-            $path1 = strpos($filestring, '#', $path1);
-            $path2 = strpos($filestring, ';', $path1);
-            $colorcode = substr($filestring, $path1, $path2 - $path1 - 1);
+        if (wpjobportalphplib::wpJP_strstr($filestring, '$color' . $colorNo)) {
+            $path1 = wpjobportalphplib::wpJP_strpos($filestring, '$color' . $colorNo);
+            $path1 = wpjobportalphplib::wpJP_strpos($filestring, '#', $path1);
+            $path2 = wpjobportalphplib::wpJP_strpos($filestring, ';', $path1);
+            $colorcode = wpjobportalphplib::wpJP_substr($filestring, $path1, $path2 - $path1 - 1);
             return $colorcode;
         }
     }
 
       function replaceString(&$filestring, $colorNo, $data) {
-        if (strstr($filestring, '$color' . $colorNo)) {
-            $path1 = strpos($filestring, '$color' . $colorNo);
-            $path2 = strpos($filestring, ';', $path1);
+        if (wpjobportalphplib::wpJP_strstr($filestring, '$color' . $colorNo)) {
+            $path1 = wpjobportalphplib::wpJP_strpos($filestring, '$color' . $colorNo);
+            $path2 = wpjobportalphplib::wpJP_strpos($filestring, ';', $path1);
             $filestring = substr_replace($filestring, '$color' . $colorNo . ' = "' . $data['color' . $colorNo] . '";', $path1, $path2 - $path1 + 1);
         }
     }

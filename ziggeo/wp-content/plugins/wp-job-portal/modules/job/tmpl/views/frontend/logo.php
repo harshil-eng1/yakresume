@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
  * @param job      job object - optional
@@ -19,15 +20,15 @@
         	$url = "company";
         }
 			echo '<div class="wjportal-jobs-logo">
-                    <a href='. esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>$url, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$job->companyid))) .'>
-                        <img src='. esc_url($path) .' alt="'.__('Company logo','wp-job-portal').'" />
+                    <a href='. esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>$url, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$job->companyid))) .'>
+                        <img src='. esc_url($path) .' alt="'.esc_html(__('Company logo','wp-job-portal')).'" />
                     </a>
                 </div>
 				';
 			break;
 		case 'logo':
 			echo ' <div class="wjportal-job-company-logo">
-	                    <img class="wjportal-job-company-logo-image" src='. esc_url(WPJOBPORTALincluder::getJSModel('company')->getLogoUrl($job->companyid,$job->logofilename)) .'  alt="'.__('Company logo','wp-job-portal').'">
+	                    <img class="wjportal-job-company-logo-image" src='. esc_url(WPJOBPORTALincluder::getJSModel('company')->getLogoUrl($job->companyid,$job->logofilename)) .'  alt="'.esc_html(__('Company logo','wp-job-portal')).'">
 	                </div>';
 			break;
 	}

@@ -1,8 +1,9 @@
-[=== Job Applications ===
-Contributors: mikejolley, jakeom, panoskountanis, adamkheckler, drawmyface
-Requires at least: 4.7
-Tested up to: 5.2
-Stable tag: 2.5.0
+=== Job Applications ===
+Contributors: mikejolley, jakeom, panoskountanis, adamkheckler, drawmyface, gnodesign, onubrooks
+Requires at least: 5.8
+Tested up to: 6.2
+Stable tag: 3.0.0
+Requires PHP: 7.4
 License: GNU General Public License v3.0
 
 Lets candidates submit applications to jobs which are stored on the employers jobs page, rather than simply emailed.
@@ -28,6 +29,30 @@ If you need help with customisation you will need to find and hire a developer c
 To install this plugin, please refer to the guide here: [http://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation](http://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation)
 
 == Changelog ==
+
+= 3.0.0 =
+* Enhancement: Add support for multiple application forms
+* Fix: Handle listing applications with empty full name
+* Fix: Template security improvements
+* Dev - Move application forms to a custom post type. Update related hooks with new form ID parameter.
+
+= 2.5.4 =
+* Enhancement: Adds new hooks for extending application actions and adding new sections - `job_application_content_start`, `job_application_content_end`, `job_application_actions_start`, `job_application_actions_end`. 
+
+= 2.5.3 =
+* Enhancement: Adds agreement checkbox to the application submissions. 
+* Fix: Adds application fields options translation.
+* Fix: Deprecates new_job_application hook, adds a new hook job_manager_applications_new_job_application.
+
+= 2.5.2 =
+* Fix: jQuery 3.x compatibility.
+* Fix: Show application form on error, but don't scroll.
+* Fix: Make dynamic fields translatable.
+
+= 2.5.1 =
+* Fix: Ensure styles are loaded for widgets.
+* Fix: Output field names in application form HTML.
+* Updated Templates: `job-application-footer.php`; `application-form.php`.
 
 = 2.5.0 =
 * Enhancement: Adds the option to have a reCAPTCHA field on the application form. 

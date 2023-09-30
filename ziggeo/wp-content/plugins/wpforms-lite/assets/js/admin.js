@@ -152,6 +152,27 @@
 
 			// Action available for each binding.
 			$( document ).trigger( 'wpformsReady' );
+
+			// Start listening for screen options changes.
+			$( '#screen-options-wrap .hide-column-tog' ).on( 'change', WPFormsAdmin.handleOnChangeScreenOptions );
+		},
+
+		/**
+		 * For styling purposes, we will add a dedicated class name for determining the number of visible columns.
+		 *
+		 * @since 1.8.3
+		 */
+		handleOnChangeScreenOptions: function() {
+
+			const $table         = $( '.wpforms-table-list' );
+			const $columns       = $table.find( 'thead .manage-column' );
+			const $hidden        = $columns.filter( '.hidden' );
+			const hasManyColumns = Boolean( ( $columns.length - $hidden.length ) > 5 );
+
+			// This is used to adjust the table layout.
+			// Add a class to the table to indicate the number of columns.
+			$table.toggleClass( 'has-many-columns', hasManyColumns );
+			$table.toggleClass( 'has-few-columns', ! hasManyColumns );
 		},
 
 		/**
@@ -375,11 +396,11 @@
 
 				event.preventDefault();
 
-				var $this  = $( this ),
-					task   = '',
-					total  = Number( $( '#wpforms-entries-list .starred-num' ).text() ),
-					id     = $this.data( 'id' ),
-					formId = $this.data( 'form-id' );
+				const $this    = $( this );
+				const $counter = $( '#wpforms-entries-list .starred-num' );
+
+				let task  = '';
+				let total = Number( $counter.text() );
 
 				if ( $this.hasClass( 'star' ) ) {
 					task = 'star';
@@ -390,16 +411,21 @@
 					total--;
 					$this.attr( 'title', wpforms_admin.entry_star );
 				}
-				$this.toggleClass( 'star unstar' );
-				$( '#wpforms-entries-list .starred-num' ).text( total );
 
-				var data = {
+				$this.toggleClass( 'star unstar' );
+
+				if ( ! $this.parents( 'table' ).hasClass( 'wpforms-entries-table-spam' ) ) {
+					$counter.text( total );
+				}
+
+				const data = {
 					task    : task,
 					action  : 'wpforms_entry_list_star',
 					nonce   : wpforms_admin.nonce,
-					entryId : id,
-					formId  : formId,
+					entryId : $this.data( 'id' ),
+					formId  : $this.data( 'form-id' ),
 				};
+
 				$.post( wpforms_admin.ajax_url, data );
 			} );
 
@@ -408,10 +434,11 @@
 
 				event.preventDefault();
 
-				var $this = $( this ),
-					task  = '',
-					total = Number( $( '#wpforms-entries-list .unread-num' ).text() ),
-					id    = $this.data( 'id' );
+				const $this    = $( this );
+				const $counter = $( '#wpforms-entries-list .unread-num' );
+
+				let task  = '';
+				let total = Number( $counter.text() );
 
 				if ( $this.hasClass( 'read' ) ) {
 					task = 'read';
@@ -422,16 +449,21 @@
 					total++;
 					$this.attr( 'title', wpforms_admin.entry_read );
 				}
-				$this.toggleClass( 'read unread' );
-				$( '#wpforms-entries-list .unread-num' ).text( total );
 
-				var data = {
+				$this.toggleClass( 'read unread' );
+
+				if ( ! $this.parents( 'table' ).hasClass( 'wpforms-entries-table-spam' ) ) {
+					$counter.text( total );
+				}
+
+				const data = {
 					task    : task,
 					action  : 'wpforms_entry_list_read',
 					nonce   : wpforms_admin.nonce,
-					entryId : id,
+					entryId : $this.data( 'id' ),
 					formId  : $this.data( 'form-id' ),
 				};
+
 				$.post( wpforms_admin.ajax_url, data );
 			} );
 
@@ -687,17 +719,17 @@
 
 			// eslint-disable-next-line complexity
 			$( document ).on( 'keydown', function( event ) {
-				if ( 74 === event.keyCode && ! WPFormsAdmin.isFormTypeNode( event.target.nodeName ) ) {
+				if ( 74 === event.keyCode && ! event.metaKey && ! WPFormsAdmin.isFormTypeNode( event.target.nodeName ) ) {
 
 					// j key has been pressed outside a form element, go to the previous entry.
-					var prevEntry = $( '#wpforms-entry-prev-link' ).attr( 'href' );
+					var prevEntry = $( '#wpforms-admin-single-navigation-prev-link' ).attr( 'href' );
 					if ( '#' !== prevEntry ) {
 						window.location.href = prevEntry;
 					}
-				} else if ( 75 === event.keyCode && ! WPFormsAdmin.isFormTypeNode( event.target.nodeName ) ) {
+				} else if ( 75 === event.keyCode && ! event.metaKey && ! WPFormsAdmin.isFormTypeNode( event.target.nodeName ) ) {
 
 					// k key has been pressed outside a form element, go to the previous entry.
-					var nextEntry = $( '#wpforms-entry-next-link' ).attr( 'href' );
+					var nextEntry = $( '#wpforms-admin-single-navigation-next-link' ).attr( 'href' );
 					if ( '#' !== nextEntry ) {
 						window.location.href = nextEntry;
 					}
@@ -1181,6 +1213,9 @@
 				] );
 			} );
 
+			// Render engine setting.
+			$( document ).on( 'change', '#wpforms-setting-row-render-engine input', WPFormsAdmin.settingsRenderEngineChange );
+
 			// Form styles plugin setting.
 			$( document ).on( 'change', '#wpforms-setting-disable-css', function() {
 
@@ -1269,7 +1304,7 @@
 				$this
 					.parent()
 					.find( '.wpforms-settings-provider-accounts' )
-					.stop()
+					.stop( false, true )
 					.slideToggle( '', function() {
 						$this.parent().find( '.wpforms-settings-provider-logo i' ).toggleClass( 'fa-chevron-right fa-chevron-down' );
 					} );
@@ -1324,6 +1359,22 @@
 				$descOn.toggleClass( 'wpforms-hidden', ! checked && isDoubleDesc );
 				$descOff.toggleClass( 'wpforms-hidden', checked && isDoubleDesc );
 			} );
+		},
+
+		/**
+		 * Render engine setting change event handler.
+		 *
+		 * @since 1.8.1
+		 *
+		 * @param {object} e Event object.
+		 */
+		settingsRenderEngineChange: function( e ) {
+
+			// noinspection JSUnusedLocalSymbols
+			// eslint-disable-next-line
+			const renderEngine = $( this ).val();
+
+			// TODO: Add corresponding code that need to be executed on change render engine setting.
 		},
 
 		/**
@@ -1521,7 +1572,11 @@
 				const msg  = ! data.msg || typeof data.msg !== 'string' ? wpforms_admin.something_went_wrong : data.msg;
 
 				if ( res.success ) {
-					$row.find( '#wpforms-setting-license-key' ).val( '' ).attr( 'value', '' ).prop( { readonly: false, disabled: false } );
+					$row.find( '#wpforms-setting-license-key' )
+						.val( '' )
+						.attr( 'value', '' )
+						.prop( { readonly: false, disabled: false } )
+						.removeClass();
 					$row.find( '.wpforms-license-key-deactivate-remove' ).remove();
 					$row.find( '#wpforms-setting-license-key-info-message' ).html( data.info ).show();
 					$row.find( '#wpforms-setting-license-key-verify' ).prop( 'disabled', false ).show();

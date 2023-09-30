@@ -1,11 +1,17 @@
 <?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
-<script >
-    function resetFrom() {
-        document.getElementById('searchname').value = '';
-        document.getElementById('status').value = '';
-        document.getElementById('wpjobportalform').submit();
-    }
-</script>
+<?php
+    wp_register_script( 'wpjobportal-inline-handle', '' );
+    wp_enqueue_script( 'wpjobportal-inline-handle' );
+
+    $inline_js_script = "
+        function resetFrom() {
+            document.getElementById('searchname').value = '';
+            document.getElementById('status').value = '';
+            document.getElementById('wpjobportalform').submit();
+        }
+    ";
+    wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
+?>
 <?php
     wp_enqueue_script('wpjobportal-res-tables', WPJOBPORTAL_PLUGIN_URL . 'includes/js/responsivetable.js');
     if (!WPJOBPORTALincluder::getTemplate('templates/admin/header',array('module' => 'city'))){
@@ -29,27 +35,27 @@
                 <div id="wpjobportal-breadcrumbs">
                     <ul>
                         <li>
-                            <a href="<?php echo esc_url(admin_url('admin.php?page=wpjobportal')); ?>" title="<?php echo __('dashboard','wp-job-portal'); ?>">
-                                <?php echo __('Dashboard','wp-job-portal'); ?>
+                            <a href="<?php echo esc_url(admin_url('admin.php?page=wpjobportal')); ?>" title="<?php echo esc_html(__('dashboard','wp-job-portal')); ?>">
+                                <?php echo esc_html(__('Dashboard','wp-job-portal')); ?>
                             </a>
                         </li>
-                        <li><?php echo __('Cities','wp-job-portal'); ?></li>
+                        <li><?php echo esc_html(__('Cities','wp-job-portal')); ?></li>
                     </ul>
                 </div>
             </div>
             <div id="wpjobportal-wrapper-top-right">
                 <div id="wpjobportal-config-btn">
-                    <a href="admin.php?page=wpjobportal_configuration" title="<?php echo __('configuration','wp-job-portal'); ?>">
+                    <a href="admin.php?page=wpjobportal_configuration" title="<?php echo esc_html(__('configuration','wp-job-portal')); ?>">
                         <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/dashboard/config.png">
                    </a>
                 </div>
                 <div id="wpjobportal-help-btn" class="wpjobportal-help-btn">
-                    <a href="admin.php?page=wpjobportal&wpjobportallt=help" title="<?php echo __('help','wp-job-portal'); ?>">
+                    <a href="admin.php?page=wpjobportal&wpjobportallt=help" title="<?php echo esc_html(__('help','wp-job-portal')); ?>">
                         <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/dashboard/help.png">
                    </a>
                 </div>
                 <div id="wpjobportal-vers-txt">
-                    <?php echo __('Version','wp-job-portal').': '; ?>
+                    <?php echo esc_html(__('Version','wp-job-portal')).': '; ?>
                     <span class="wpjobportal-ver"><?php echo esc_html(WPJOBPORTALincluder::getJSModel('configuration')->getConfigValue('versioncode')); ?></span>
                 </div>
             </div>
@@ -79,13 +85,13 @@
                                         <input type="checkbox" name="selectall" id="selectall" value="">
                                     </th>
                                     <th>
-                                        <?php echo __('Name', 'wp-job-portal'); ?>
+                                        <?php echo esc_html(__('Name', 'wp-job-portal')); ?>
                                     </th>
                                     <th>
-                                        <?php echo __('Published', 'wp-job-portal'); ?>
+                                        <?php echo esc_html(__('Published', 'wp-job-portal')); ?>
                                     </th>
                                     <th>
-                                        <?php echo __('Action', 'wp-job-portal'); ?>
+                                        <?php echo esc_html(__('Action', 'wp-job-portal')); ?>
                                     </th>
                                 </tr>
                             </thead>
@@ -112,12 +118,12 @@
                             WPJOBPORTALincluder::getTemplate('templates/admin/pagination',array('module' => 'city' , 'pagination' => wpjobportal::$_data[1]));
                         }
                 } else {
-                    $msg = __('No record found','wp-job-portal');
+                    $msg = esc_html(__('No record found','wp-job-portal'));
                     $link[] = array(
                             'link' => 'admin.php?page=wpjobportal_city&wpjobportallt=formcity',
-                            'text' => __('Add New','wp-job-portal') .' '. __('City','wp-job-portal')
+                            'text' => esc_html(__('Add New','wp-job-portal')) .' '. esc_html(__('City','wp-job-portal'))
                         );
-                    echo wp_kses(WPJOBPORTALlayout::getNoRecordFound($msg,$link), WPJOBPORTAL_ALLOWED_TAGS);
+                    WPJOBPORTALlayout::getNoRecordFound($msg,$link);
                 }
             ?>
         </div>

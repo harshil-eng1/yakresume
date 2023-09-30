@@ -7,6 +7,7 @@ class WPJOBPORTALResumeViewlayout {
 
     public $config_array_sec=array();
     public $themecall = 0;
+    public $class_prefix = '';
 
 
     function __construct(){
@@ -34,29 +35,37 @@ class WPJOBPORTALResumeViewlayout {
         if(null != $themecall){
             $html = '<div class="'.$this->class_prefix.'-resumedetail-address-map-wrap">
                         <div class="'.$this->class_prefix.'-resumedetail-address-map">
-                            <span class="'.$this->class_prefix.'-resumedetail-address-map-showhide"><img src="' . JOB_PORTAL_IMAGE . '/hide-map.png" class="image"/></span>
+                            <span class="'.$this->class_prefix.'-resumedetail-address-map-showhide"><img src="' . JOB_PORTAL_THEME_IMAGE . '/cu_loc.png" class="image"/></span>
                             ' . $text . '
                         </div>
-                        <div class="'.$this->class_prefix.'-resumedetail-address-map-area" style="display: block;">
+                        <div class="'.$this->class_prefix.'-resumedetail-address-map-area" style="display: none;">
                             <div class="'.$this->class_prefix.'-map-inner">
                                 <div id="'.$this->class_prefix.'-map" style="position: relative; overflow: hidden;">
                                     <div id="' . $id . '" class="map" style="width:100%;min-height:200px;">' . $longitude . ' - ' . $latitude . '</div>
                                 </div>
                             </div>
-                        </div>
-                        <script id="script_' . $id . '">
+                        </div>';
+                        wp_register_script( 'wpjobportal-inline-handle', '' );
+                        wp_enqueue_script( 'wpjobportal-inline-handle' );
+                        $inline_js_script = '
                             jQuery(document).ready(function(){
                                 initialize("' . $latitude . '","' . $longitude . '","' . $id . '");
-                            });
-                        </script>
+                            });';
+                        wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
+                        $html .='
                     </div>';
         }else{
             $html = '<div class="resume-map">
                     <div class="row-title"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/resume/hide-map.png" class="image"/>' . $text . '</div>
                     <div class="row-value"><div id="' . $id . '" class="map" style="width:100%;min-height:200px;">' . $longitude . ' - ' . $latitude . '</div></div>
-                    <script id="script_' . $id . '">
+                    ';
+                    wp_register_script( 'wpjobportal-inline-handle', '' );
+                    wp_enqueue_script( 'wpjobportal-inline-handle' );
+                    $inline_js_script = '
                         initialize("' . $latitude . '","' . $longitude . '","' . $id . '");
-                    </script>
+                    ';
+                    wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
+                    $html .='
                 </div>';
         }
         return $html;
@@ -75,10 +84,10 @@ class WPJOBPORTALResumeViewlayout {
         $html='<div id="'.$this->class_prefix.'-resumedetail-attachment" class="'.$this->class_prefix.'-resumedetail-section">
             <div class="'.$this->class_prefix.'-resumedetail-section-title">
                 <span class="'.$this->class_prefix.'-resumedetail-section-icon">
-                    <img alt="attachment" title="attachment" src="'.JOB_PORTAL_IMAGE.'/attchments.png">
+                    <img alt="attachment" title="attachment" src="'.JOB_PORTAL_THEME_IMAGE.'/attchments.png">
                 </span>
                 <h5 class="'.$this->class_prefix.'-resumedetail-section-txt">
-                    '.__("Attachment","wp-job-portal").'
+                    '.esc_html(__("Attachment","wp-job-portal")).'
                 </h5>
             </div>
             <div class="'.$this->class_prefix.'-resumedetail-sec-data">
@@ -86,10 +95,10 @@ class WPJOBPORTALResumeViewlayout {
                     <div class="input-group">';
                         foreach (wpjobportal::$_data[0]['file_section'] AS $file) {
                             $files=$file->filename;
-                            $exp_extension = explode(".", $files);
+                            $exp_extension = wpjobportalphplib::wpJP_explode(".", $files);
                             $extension = end($exp_extension);
-                            $filename=substr($files,'0','3')."...";
-                            $html .= '<a target="_blank" href="' . wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'action'=>'wpjobportaltask', 'task'=>'getresumefiledownloadbyid', 'wpjobportalid'=>$file->id, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('wpjobportalpageid'))) . '" class="file">
+                            $filename=wpjobportalphplib::wpJP_substr($files,'0','3')."...";
+                            $html .= '<a target="_blank" href="' . wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'action'=>'wpjobportaltask', 'task'=>'getresumefiledownloadbyid', 'wpjobportalid'=>$file->id, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('wpjobportalpageid'))) . '" class="file">
                                         <span class="wpjp-filename">' . $filename . '</span><span class="wpjp-fileext">'.$extension.'</span>
                                         <i class="fa fa-download download" aria-hidden="true"></i>
                                     </a>';
@@ -108,11 +117,11 @@ class WPJOBPORTALResumeViewlayout {
         if(null !=$themecall) return;
         $html = '<div class="wjportal-resume-sec-row wjportal-resume-attachments-wrp">
                     <div class="wjportal-resume-sec-data wjportal-resume-row-full-width">
-                        <div class="wjportal-resume-sec-data-title">' . __($text,'wp-job-portal') . ':</div>
+                        <div class="wjportal-resume-sec-data-title">' . wpjobportal::wpjobportal_getVariableValue($text) . ':</div>
                         <div class="wjportal-resume-sec-data-value">';
         if (!empty(wpjobportal::$_data[0]['file_section'])) {
             foreach (wpjobportal::$_data[0]['file_section'] AS $file) {
-                $html .= '<a target="_blank" href="' . wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'action'=>'wpjobportaltask', 'task'=>'getresumefiledownloadbyid', 'wpjobportalid'=>$file->id, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('wpjobportalpageid'))) . '" class="file">
+                $html .= '<a target="_blank" href="' . wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'action'=>'wpjobportaltask', 'task'=>'getresumefiledownloadbyid', 'wpjobportalid'=>$file->id, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('wpjobportalpageid'))) . '" class="file">
                             <span class="wjportal-resume-attachment-filename">' . $file->filename . '</span>
                             <span class="wjportal-resume-attachment-file-ext"></span>
                             <img class="wjportal-resume-attachment-file-download" src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/resume/download.png" />
@@ -168,7 +177,7 @@ class WPJOBPORTALResumeViewlayout {
         if ($resumeformview == 0) { // edit form
             if (!empty(wpjobportal::$_data[0]['employer_section'][0]))
                 foreach (wpjobportal::$_data[0]['employer_section'] AS $employer) {
-                    $html .= '<div class="wjportal-resume-section-title">' . __('Employer', 'wp-job-portal') . '</div>';
+                    $html .= '<div class="wjportal-resume-section-title">' . esc_html(__('Employer', 'wp-job-portal')) . '</div>';
                     $html .= '<div class="wjportal-resume-section-wrapper '.$this->class_prefix.'-resumedetail-sec-data" data-section="employers" data-sectionid="' . $employer->id . '">';
                     $i = 0;
                     $value = $employer->employer;
@@ -197,7 +206,7 @@ class WPJOBPORTALResumeViewlayout {
                                 if($value!="" && $value==1){
                                     $originalDate = $employer->employer_from_date;
                                     $currentDate  =date('d/m/Y');
-                                    $multidate=human_time_diff(strtotime($originalDate)).' '.__("",'wp-job-portal');
+                                    $multidate=human_time_diff(strtotime($originalDate)).' '.esc_html(__("",'wp-job-portal'));
                                     /*
                                     $duration=wpjobportal::$_common->getYearMonth($mkarray);
                                     $multidate='';
@@ -206,22 +215,22 @@ class WPJOBPORTALResumeViewlayout {
                                         switch ($name) {
                                             case 'years':
                                                 if($value>0){
-                                                $multidate.=' '.$value.'  '.strtoupper($name);
+                                                $multidate.=' '.$value.'  '.wpjobportalphplib::wpJP_strtoupper($name);
                                                 }
                                                 break;
                                             case 'month':
                                                if($value>0){
-                                                $multidate.=' '.$value.'  '.strtoupper($name);
+                                                $multidate.=' '.$value.'  '.wpjobportalphplib::wpJP_strtoupper($name);
                                                 }
                                                 break;
                                             case 'days':
                                                 if($value>0){
-                                                $multidate.=' '.$value.'  '.strtoupper($name);
+                                                $multidate.=' '.$value.'  '.wpjobportalphplib::wpJP_strtoupper($name);
                                                 }
                                                 break;
                                             default:
                                                 if(isset($value)!=''>0){
-                                                $multidate.=' '.$value.'  '.strtoupper($name);
+                                                $multidate.=' '.$value.'  '.wpjobportalphplib::wpJP_strtoupper($name);
                                                 }
                                                 break;
                                         }
@@ -266,7 +275,7 @@ class WPJOBPORTALResumeViewlayout {
         if ($resumeformview == 0) { // view address sections
             if (!empty(wpjobportal::$_data[0]['address_section'][0]))
                 foreach (wpjobportal::$_data[0]['address_section'] AS $address) {
-                   $html .= '<div class="wjportal-resume-section-title">' . __('Addresses', 'wp-job-portal') . '</div>';
+                   $html .= '<div class="wjportal-resume-section-title">' . esc_html(__('Addresses', 'wp-job-portal')) . '</div>';
                     $html .= '<div class="wjportal-resume-section-wrapper '.$this->class_prefix.'-resumedetail-sec-data" data-section="addresses" data-sectionid="' . $address->id . '">';
                     $i = 0;
                     $loc = 0;
@@ -339,11 +348,11 @@ class WPJOBPORTALResumeViewlayout {
                         $text = $this->getFieldTitleByField($field);
                         $value = '';
                         switch (wpjobportal::$_data[0]['personal_section']->gender) {
-                            case '0':$value = __('Does not matter', 'wp-job-portal');
+                            case '0':$value = esc_html(__('Does not matter', 'wp-job-portal'));
                                 break;
-                            case '1':$value = __('Male', 'wp-job-portal');
+                            case '1':$value = esc_html(__('Male', 'wp-job-portal'));
                                 break;
-                            case '2':$value = __('Female', 'wp-job-portal');
+                            case '2':$value = esc_html(__('Female', 'wp-job-portal'));
                                 break;
                         }
                         $html .= $this->getRowForView($text, $value, $i,$themecall);
@@ -370,7 +379,7 @@ class WPJOBPORTALResumeViewlayout {
                         break;
                     case 'searchable':
                         $text = $this->getFieldTitleByField($field);
-                        $value = (wpjobportal::$_data[0]['personal_section']->searchable == 1) ? __('Yes','wp-job-portal') : __('No','wp-job-portal');
+                        $value = (wpjobportal::$_data[0]['personal_section']->searchable == 1) ? esc_html(__('Yes','wp-job-portal')) : esc_html(__('No','wp-job-portal'));
                         $html .= $this->getRowForView($text, $value, $i,$themecall);
                         break;
                     case 'resumefiles':
@@ -435,7 +444,7 @@ class WPJOBPORTALResumeViewlayout {
                     $html .= apply_filters('wpjobportal_addons_showresume_contact_detail',false,wpjobportal::$_data[0]['personal_section']->id,wpjobportal::$_data['resumecontactdetail'],$adminLogin);
 
                 } elseif ($layout == 'printresume') {
-                    $html .= '<a href="javascript:window.print();" class="grayBtn">' . __('Print', 'wp-job-portal') . '</a>';
+                    $html .= '<a href="javascript:window.print();" class="grayBtn">' . esc_html(__('Print', 'wp-job-portal')) . '</a>';
                 }
             $html .='</div>';
             $html .= '<div class="wjportal-personal-data">';
@@ -455,7 +464,7 @@ class WPJOBPORTALResumeViewlayout {
             }*/
             $html .= '<div id="job-info-sociallink" class="' . $editsocialclass . '">';
             if (!empty(wpjobportal::$_data[0]['personal_section']->facebook)) {
-                if(strstr(wpjobportal::$_data[0]['personal_section']->facebook, 'http') ){
+                if(wpjobportalphplib::wpJP_strstr(wpjobportal::$_data[0]['personal_section']->facebook, 'http') ){
                     $facebook = wpjobportal::$_data[0]['personal_section']->facebook ;
                 }else{
                     $facebook = 'http://'.wpjobportal::$_data[0]['personal_section']->facebook;
@@ -463,7 +472,7 @@ class WPJOBPORTALResumeViewlayout {
                 $html .= '<a href="' . $facebook . '" target="_blank"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/scround/fb.png"/></a>';
             }
             if (!empty(wpjobportal::$_data[0]['personal_section']->twitter)) {
-                if(strstr(wpjobportal::$_data[0]['personal_section']->twitter, 'http') ){
+                if(wpjobportalphplib::wpJP_strstr(wpjobportal::$_data[0]['personal_section']->twitter, 'http') ){
                     $twitter = wpjobportal::$_data[0]['personal_section']->twitter;
                 }else{
                     $twitter = 'http://'.wpjobportal::$_data[0]['personal_section']->twitter;
@@ -471,7 +480,7 @@ class WPJOBPORTALResumeViewlayout {
                 $html .= '<a href="' . $twitter . '" target="_blank"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/scround/twitter.png"/></a>';
             }
             if (!empty(wpjobportal::$_data[0]['personal_section']->googleplus)) {
-                if(strstr(wpjobportal::$_data[0]['personal_section']->googleplus, 'http') ){
+                if(wpjobportalphplib::wpJP_strstr(wpjobportal::$_data[0]['personal_section']->googleplus, 'http') ){
                     $googleplus = wpjobportal::$_data[0]['personal_section']->googleplus;
                 }else{
                     $googleplus = 'http://'.wpjobportal::$_data[0]['personal_section']->googleplus;
@@ -479,7 +488,7 @@ class WPJOBPORTALResumeViewlayout {
                 $html .= '<a href="' . $googleplus . '" target="_blank"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/scround/gmail.png"/></a>';
             }
             if (!empty(wpjobportal::$_data[0]['personal_section']->linkedin)) {
-                if(strstr(wpjobportal::$_data[0]['personal_section']->linkedin, 'http') ){
+                if(wpjobportalphplib::wpJP_strstr(wpjobportal::$_data[0]['personal_section']->linkedin, 'http') ){
                     $linkedin = wpjobportal::$_data[0]['personal_section']->linkedin;
                 }else{
                     $linkedin = 'http://'.wpjobportal::$_data[0]['personal_section']->linkedin;
@@ -500,17 +509,17 @@ class WPJOBPORTALResumeViewlayout {
                     }
             }
             if (isset(wpjobportal::$_data[2][1]['email_address'])) {
-                $html .= '<div class="wjportal-resume-info"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/email.png" alt="'.__('email','wp-job-portal').'" title="'.__('email','wp-job-portal').'" />' . wpjobportal::$_data[0]['personal_section']->email_address . '</div>';
+                $html .= '<div class="wjportal-resume-info"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/email.png" alt="'.esc_html(__('email','wp-job-portal')).'" title="'.esc_html(__('email','wp-job-portal')).'" />' . wpjobportal::$_data[0]['personal_section']->email_address . '</div>';
             }
 
             if (isset(wpjobportal::$_data[2][1]['salaryfixed'])) {
                 if(isset(wpjobportal::$_data[0]) && !empty(wpjobportal::$_data[0]['personal_section']->salaryfixed)){
-                    $html .= '<div class="wjportal-resume-info"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/salary.png" alt="'.__('salary','wp-job-portal').'" title="'.__('salary','wp-job-portal').'"/>'  . wpjobportal::$_data[0]['personal_section']->salaryfixed . '</div>';
+                    $html .= '<div class="wjportal-resume-info"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/salary.png" alt="'.esc_html(__('salary','wp-job-portal')).'" title="'.esc_html(__('salary','wp-job-portal')).'"/>'  . wpjobportal::$_data[0]['personal_section']->salaryfixed . '</div>';
                 }
             }
             if (isset(wpjobportal::$_data[2][1]['cell'])) {
                     if(isset(wpjobportal::$_data[0]) && !empty(wpjobportal::$_data[0]['personal_section']->cell)){
-                        $html .= '<div class="wjportal-resume-info"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/number.png" alt="'.__('number','wp-job-portal').'"title="'.__('number','wp-job-portal').'" />'  . wpjobportal::$_data[0]['personal_section']->cell . '</div>';
+                        $html .= '<div class="wjportal-resume-info"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/number.png" alt="'.esc_html(__('number','wp-job-portal')).'"title="'.esc_html(__('number','wp-job-portal')).'" />'  . wpjobportal::$_data[0]['personal_section']->cell . '</div>';
                     }
             }
 
@@ -518,7 +527,7 @@ class WPJOBPORTALResumeViewlayout {
                 if(isset(wpjobportal::$_data[0]) && !empty(wpjobportal::$_data[0]['personal_section']->address)){
                     $address = isset(wpjobportal::$_data[0]['address_section'][0]) ?  wpjobportal::$_data[0]['address_section'][0]->address : '';
                     $country = isset(wpjobportal::$_data[0]['address_section'][0]) ? wpjobportal::$_data[0]['address_section'][0]->countryname : '';
-                    $html .= '<div class="wjportal-resume-info"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/location.png" alt="'.__('location','wp-job-portal').'" title="'.__('location','wp-job-portal').'"/>' . $address.','.$country . '</div>';
+                    $html .= '<div class="wjportal-resume-info"><img src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/location.png" alt="'.esc_html(__('location','wp-job-portal')).'" title="'.esc_html(__('location','wp-job-portal')).'"/>' . $address.','.$country . '</div>';
                 }
             }
 
@@ -529,8 +538,7 @@ class WPJOBPORTALResumeViewlayout {
     }
 
     function getFieldTitleByField($field){
-
-        return __(wpjobportal::$_data['fieldtitles'][$field],'wp-job-portal');
+        return wpjobportal::wpjobportal_getVariableValue(wpjobportal::$_data['fieldtitles'][$field]);
     }
 
     function getRowForView($text, $value, &$i,$themecall=null,$full=0) {
@@ -550,18 +558,18 @@ class WPJOBPORTALResumeViewlayout {
             if(0==$full){
                 $html .= '<div class="'.$this->class_prefix.'-resumedetail-sec-value-left '.$this->class_prefix.'-bigfont">
                             <span class="'.$this->class_prefix.'-resumedetail-title">' . $text . ':</span>
-                            <span class="'.$this->class_prefix.'-resumedetail-value">' . __($value,'wp-job-portal') . '</span>
+                            <span class="'.$this->class_prefix.'-resumedetail-value">' . wpjobportal::wpjobportal_getVariableValue($value) . '</span>
                         </div>';
             }else if(1==$full){
                 $html .='<div class="'.$this->class_prefix.'-resumedetail-sec-value '.$this->class_prefix.'-bigfont">
                             <span class="'.$this->class_prefix.'-resumedetail-sec-title">' . $text . ':</span>
-                            <span class="'.$this->class_prefix.'-resumedetail-sec-value">' . __($value,'wp-job-portal') . '</span>
+                            <span class="'.$this->class_prefix.'-resumedetail-sec-value">' . wpjobportal::wpjobportal_getVariableValue($value) . '</span>
                         </div>';
             }
         }else{
             $html .= '<div class="wjportal-custom-field wjportal-resume-sec-data">
                         <div class="wjportal-custom-field-tit wjportal-resume-sec-data-title">' . $text . ':</div>
-                        <div class="wjportal-custom-field-val wjportal-resume-sec-data-value">' . __($value,'wp-job-portal') . '</div>
+                        <div class="wjportal-custom-field-val wjportal-resume-sec-data-value">' . wpjobportal::wpjobportal_getVariableValue($value) . '</div>
                     </div>';
         }
         $i++;
@@ -602,20 +610,20 @@ class WPJOBPORTALResumeViewlayout {
             $anchor = '<div id="jsresume-tags-wrapper"></div>';
             return $anchor;
         }
-        $array = explode(',', $tags);
+        $array = wpjobportalphplib::wpJP_explode(',', $tags);
         $anchor="";
         if(null != $themecall){
             for ($i = 0; $i < count($array); $i++) {
                 $with_spaces = wpjobportal::tagfillin($array[$i]);
-                $anchor .= '<a title="tags" class="'.$this->class_prefix.'-tag" href="' . wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'resumes', 'tags'=>$with_spaces)) . '"><i class="fas fa-tags tag" aria-hidden="true"></i>' . __($array[$i], 'wp-job-portal') . '</a>';
+                $anchor .= '<a title="tags" class="'.$this->class_prefix.'-tag" href="' . wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'resumes', 'tags'=>$with_spaces)) . '"><i class="fas fa-tags tag" aria-hidden="true"></i>' . wpjobportal::wpjobportal_getVariableValue($array[$i]) . '</a>';
             }
         }else{
             $anchor .= '<div id="jsresume-tags-wrapper">';
-            $anchor .= '<span class="jsresume-tags-title">' . __('Tags', 'wp-job-portal') . '</span>';
+            $anchor .= '<span class="jsresume-tags-title">' . esc_html(__('Tags', 'wp-job-portal')) . '</span>';
             $anchor .= '<div class="tags-wrapper-border">';
             for ($i = 0; $i < count($array); $i++) {
                 $with_spaces = wpjobportal::tagfillin($array[$i]);
-                $anchor .= '<a class="wpjobportal_tags_a" href="' . wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'resumes', 'tags'=>$with_spaces)) . '">' . __($array[$i], 'wp-job-portal') . '</a>';
+                $anchor .= '<a class="wpjobportal_tags_a" href="' . wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'resumes', 'tags'=>$with_spaces)) . '">' . wpjobportal::wpjobportal_getVariableValue($array[$i]) . '</a>';
             }
             $anchor .= '</div>';
             $anchor .= '</div>';

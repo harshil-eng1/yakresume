@@ -29,3 +29,17 @@ function resume_manager_yoast_discourage_search_index( $url, $type, $post ) {
 if ( resume_manager_discourage_resume_search_indexing() ) {
 	add_action( 'wpseo_sitemap_entry', 'resume_manager_yoast_discourage_search_index', 10, 3 );
 }
+
+/**
+ * Removes the webpage graph pieces from the schema collector.
+ *
+ * @param array  $pieces  The current graph pieces.
+ * @param string $context The current context.
+ *
+ * @return array The remaining graph pieces.
+ */
+function remove_webpage_from_schema( $pieces, $context ) {
+	return array_filter( $pieces, function( $piece ) {
+		return ! $piece instanceof \Yoast\WP\SEO\Generators\Schema\WebPage;
+	} );
+}

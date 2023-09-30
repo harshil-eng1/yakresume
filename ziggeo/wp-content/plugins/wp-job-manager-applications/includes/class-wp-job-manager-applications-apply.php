@@ -30,6 +30,11 @@ class WP_Job_Manager_Applications_Apply extends WP_Job_Manager_Form {
 		add_filter( 'job_manager_enhanced_select_enabled', [ $this, 'enable_enhanced_select_for_job_application' ] );
 		self::$secret_dir = uniqid();
 
+		if ( $this->use_agreement_checkbox() ) {
+			add_action( 'job_application_form_fields_end', [ $this, 'display_agreement_checkbox_field' ] );
+			add_filter( 'application_form_validate_fields', [ $this, 'validate_agreement_checkbox' ] );
+		}
+
 		if ( $this->use_recaptcha_field() ) {
 			add_action( 'job_application_form_fields_end', [ $this, 'display_recaptcha_field' ] );
 			add_action( 'application_form_validate_fields', [ $this, 'validate_recaptcha_field' ] );
@@ -50,6 +55,21 @@ class WP_Job_Manager_Applications_Apply extends WP_Job_Manager_Form {
 	}
 
 	/**
+	 * Use agreement checkbox field on the form?
+	 *
+	 * @since 2.5.3
+	 *
+	 * @return bool
+	 */
+	private function use_agreement_checkbox() {
+		if ( ! method_exists( $this, 'display_agreement_checkbox_field' ) || ! method_exists( $this, 'validate_agreement_checkbox' ) ) {
+			return false;
+		}
+
+		return 1 === absint( get_option( 'job_application_show_agreement_application_submission' ) );
+	}
+
+	/**
 	 * Enqueue application scripts.
 	 *
 	 * @access public
@@ -58,7 +78,7 @@ class WP_Job_Manager_Applications_Apply extends WP_Job_Manager_Form {
 	public function enqueue_scripts() {
 		parent::enqueue_scripts();
 
-		wp_register_script( 'wp-job-manager-applications', JOB_MANAGER_APPLICATIONS_PLUGIN_URL . '/assets/js/application.min.js', [ 'jquery' ], JOB_MANAGER_APPLICATIONS_VERSION, true );
+		wp_register_script( 'wp-job-manager-applications', JOB_MANAGER_APPLICATIONS_PLUGIN_URL . '/assets/dist/js/application.js', [ 'jquery' ], JOB_MANAGER_APPLICATIONS_VERSION, true );
 		wp_localize_script(
 			'wp-job-manager-applications',
 			'job_manager_applications',
@@ -147,17 +167,33 @@ class WP_Job_Manager_Applications_Apply extends WP_Job_Manager_Form {
 	 * Init form fields
 	 */
 	public function init_fields() {
+		global $post;
+
 		if ( ! empty( $this->fields ) ) {
 			return;
 		}
 
-		$current_user = is_user_logged_in() ? wp_get_current_user() : false;
-		$this->fields = get_job_application_form_fields();
+		$current_user     = is_user_logged_in() ? wp_get_current_user() : false;
+		/**
+		 * Filters the application form to use for a job listing.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param int $application_form_id The application form ID if one exists for the listing.
+		 * @param int $post_id             The job listing ID.
+		 */
+		$application_form_id = apply_filters( 'job_application_form_id', get_post_meta( $post->ID, WP_Job_Manager_Applications_Application_Form::FORM_POST_META_KEY, true ), $post->ID );
+		$this->fields        = get_job_application_form_fields( true, $application_form_id );
 
 		// Handle values
 		foreach ( $this->fields as $key => $field ) {
 			if ( ! isset( $this->fields[ $key ]['value'] ) ) {
 				$this->fields[ $key ]['value'] = '';
+			}
+
+			if ( isset( $this->fields[ $key ]['label'] ) ) {
+				// translators: This is the label of user created form fields and can't be translated before the user created them.
+				$this->fields[ $key ]['label'] = esc_html__( $this->fields[ $key ]['label'], 'wp-job-manager-applications' );
 			}
 
 			$field['rules'] = array_filter( isset( $field['rules'] ) ? (array) $field['rules'] : [] );
@@ -174,7 +210,14 @@ class WP_Job_Manager_Applications_Apply extends WP_Job_Manager_Form {
 				}
 			}
 			if ( 'select' === $field['type'] && ! $this->fields[ $key ]['required'] ) {
-				$this->fields[ $key ]['options'] = array_merge( [ 0 => __( 'Choose an option', 'wp-job-manager-applications' ) ], $this->fields[ $key ]['options'] );
+				$options = isset( $this->fields[ $key ][ 'options' ] ) ? $this->fields[ $key ][ 'options' ] : array();
+				$options = array_map(
+					function( $label ) {
+						return __( $label, 'wp-job-manager-applications' );
+					},
+					$options
+				);
+				$this->fields[ $key ]['options'] = array_merge( [ 0 => __( 'Choose an option', 'wp-job-manager-applications' ) ], $options );
 			}
 			if ( 'resumes' === $field['type'] ) {
 				if ( function_exists( 'get_resume_share_link' ) && is_user_logged_in() ) {
@@ -217,7 +260,7 @@ class WP_Job_Manager_Applications_Apply extends WP_Job_Manager_Form {
 				if ( $this->fields[ $key ]['required'] && 1 === count( $resumes ) ) {
 					$this->fields[ $key ]['type']        = 'single-resume';
 					$this->fields[ $key ]['value']       = current( array_keys( $resumes ) );
-					$this->fields[ $key ]['description'] = '<a href="' . esc_url( get_permalink( current( array_keys( $resumes ) ) ) ) . '" target="_blank">' . current( $resumes ) . '</a>';
+					$this->fields[ $key ]['description'] = '<a href="' . esc_url( get_permalink( current( array_keys( $resumes ) ) ) ) . '" target="_blank">' . esc_html( current( $resumes ) ). '</a>';
 				} else {
 					if ( ! $this->fields[ $key ]['required'] ) {
 						$resumes = [ 0 => __( 'Choose an online resume...', 'wp-job-manager-applications' ) ] + $resumes;
@@ -291,6 +334,7 @@ class WP_Job_Manager_Applications_Apply extends WP_Job_Manager_Form {
 		} else {
 			$this->init_fields();
 
+			$form_id = get_post_meta( get_the_ID(), WP_Job_Manager_Applications_Application_Form::FORM_POST_META_KEY, true );
 			wp_enqueue_script( 'wp-job-manager-applications' );
 
 			get_job_manager_template(
@@ -298,6 +342,7 @@ class WP_Job_Manager_Applications_Apply extends WP_Job_Manager_Form {
 				[
 					'application_fields' => $this->fields,
 					'class'              => $this,
+					'form_id'            => $form_id,
 				],
 				'wp-job-manager-applications',
 				JOB_MANAGER_APPLICATIONS_PLUGIN_DIR . '/templates/'
@@ -319,11 +364,12 @@ class WP_Job_Manager_Applications_Apply extends WP_Job_Manager_Form {
 
 		if ( ! empty( $_POST['wp_job_manager_send_application'] ) ) {
 			try {
-				$fields = $this->get_fields();
-				$values = [];
-				$job_id = absint( $_POST['job_id'] );
-				$job    = get_post( $job_id );
-				$meta   = [];
+				$fields  = $this->get_fields();
+				$values  = [];
+				$job_id  = absint( $_POST['job_id'] );
+				$form_id = absint( $_POST['form_id'] );
+				$job     = get_post( $job_id );
+				$meta    = [];
 
 				if ( empty( $job_id ) || ! $job || 'job_listing' !== $job->post_type ) {
 					throw new Exception( __( 'Invalid job', 'wp-job-manager-applications' ) );
@@ -393,6 +439,7 @@ class WP_Job_Manager_Applications_Apply extends WP_Job_Manager_Form {
 				$meta['_secret_dir']      = self::$secret_dir;
 				$meta['_attachment']      = [];
 				$meta['_attachment_file'] = [];
+				$meta['_form_id']         = $form_id;
 
 				foreach ( $fields as $key => $field ) {
 					if ( empty( $values[ $key ] ) ) {
@@ -426,8 +473,11 @@ class WP_Job_Manager_Applications_Apply extends WP_Job_Manager_Form {
 									if ( in_array( 'attachment', $field['rules'] ) ) {
 										$meta['_attachment'][]      = $attachment->url;
 										$meta['_attachment_file'][] = $attachment->file;
-									} else {
+									}
+									if ( true === $field['multiple'] ) {
 										$meta[ $field['label'] . ' ' . $index ] = $attachment->url;
+									} else {
+										$meta[ $field['label'] ] = $attachment->url;
 									}
 								}
 								$index ++;
@@ -452,7 +502,7 @@ class WP_Job_Manager_Applications_Apply extends WP_Job_Manager_Form {
 				}
 
 				// Candidate email
-				$candidate_email_content = get_job_application_candidate_email_content();
+				$candidate_email_content = get_job_application_candidate_email_content( $form_id );
 				if ( $candidate_email_content ) {
 					$existing_shortcode_tags = $GLOBALS['shortcode_tags'];
 					remove_all_shortcodes();
@@ -491,8 +541,16 @@ class WP_Job_Manager_Applications_Apply extends WP_Job_Manager_Form {
 					);
 				}
 
-				// Trigger action.
-				do_action( 'new_job_application', $application_id, $job_id );
+				do_action_deprecated( 'new_job_application', array( $application_id, $job_id), '2.5.3', 'job_manager_applications_new_job_application' );
+				/**
+				 * Perform actions that need to be done after a new application added.
+				 *
+				 * @since 2.5.3
+				 *
+				 * @param int $application_id ID of the added application.
+				 * @param int $job_id ID of the job which user applied for.
+				 */
+				do_action( 'job_manager_applications_new_job_application', $application_id, $job_id );
 
 				// Redirect to show the success message and prevent duplicate submissions.
 				if ( wp_safe_redirect( add_query_arg( 'application_success', '1', get_permalink( $job_id ) ) ) ) {

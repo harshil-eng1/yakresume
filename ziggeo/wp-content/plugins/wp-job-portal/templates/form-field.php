@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
  * @param field 		fieldordering field object
@@ -31,7 +32,7 @@ if (isset($field)) {
 <div class="wjportal-form-row">
     <div class="wjportal-form-title">
 
-        <?php echo __(esc_html($title), 'wp-job-portal'); ?>
+        <?php echo esc_html(__(esc_html($title), 'wp-job-portal')); ?>
         
         <?php if($required == 1 && WPJOBPORTALrequest::getVar('wpjobportalme') != "jobsearch"): ?>
         	<font>*</font>
@@ -43,7 +44,7 @@ if (isset($field)) {
         <?php echo wp_kses($content, WPJOBPORTAL_ALLOWED_TAGS); ?>
 
         <?php if(!empty($description)): ?>
-        	<div class="wjportal-form-help-txt"><?php echo __(esc_html($description), 'wp-job-portal'); ?></div>
+        	<div class="wjportal-form-help-txt"><?php echo esc_html(__(esc_html($description), 'wp-job-portal')); ?></div>
         <?php endif; ?>
 
     </div>

@@ -42,8 +42,8 @@ class WPJOBPORTALCityModel {
         $i = 0;
         foreach($data AS $l){
             if(is_numeric($l->latitude) && is_numeric($l->longitude) ){
-                $link = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs', 'city'=>$l->cityid , 'wpjobportalpageid' => $pageid ));
-                $img =     JOB_PORTAL_IMAGE.'/location-icons/loction-mark-icon-'.$i.'.png';
+                $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs', 'city'=>$l->cityid , 'wpjobportalpageid' => $pageid ));
+                $img =     JOB_PORTAL_THEME_IMAGE.'/location-icons/loction-mark-icon-'.$i.'.png';
                 $final_array[] = array('lat' => $l->latitude, 'lng' => $l->longitude ,'link' => $link, 'img' => $img);
                 $i ++;
                 if($i > 10){
@@ -124,7 +124,7 @@ class WPJOBPORTALCityModel {
 
         $row = WPJOBPORTALincluder::getJSTable('city');
         $data = WPJOBPORTALincluder::getJSmodel('common')->stripslashesFull($data);// remove slashes with quotes.
-        $data = filter_var_array($data, FILTER_SANITIZE_STRING);
+        $data = wpjobportal::wpjobportal_sanitizeData($data);
         if (!$row->bind($data)) {
             return WPJOBPORTAL_SAVE_ERROR;
         }
@@ -227,7 +227,7 @@ class WPJOBPORTALCityModel {
             return false;
 
         $query = "SELECT COUNT(id) FROM " . wpjobportal::$_db->prefix . "wj_portal_cities WHERE countryid=" . $countryid . "
-		AND stateid=" . $stateid . " AND LOWER(name) = '" . strtolower($title) . "'";
+		AND stateid=" . $stateid . " AND LOWER(name) = '" . wpjobportalphplib::wpJP_strtolower($title) . "'";
 
         $result = wpjobportaldb::get_var($query);
         if ($result > 0)
@@ -252,11 +252,14 @@ class WPJOBPORTALCityModel {
         if ($cityids == '')
             return false;
         $location = '';
-        if (strstr($cityids, ',')) { // multi cities id
-            $cities = explode(',', $cityids);
+        if (wpjobportalphplib::wpJP_strstr($cityids, ',')) { // multi cities id
+            $cities = wpjobportalphplib::wpJP_explode(',', $cityids);
             $data = array();
             foreach ($cities AS $city) {
-                $data[] = $this->getDataForLocationByCityID($city);
+                $returndata = $this->getDataForLocationByCityID($city);
+                if($returndata !=''){
+                    $data[] = $returndata;
+                }
             }
             $databycountry = array();
             foreach ($data AS $d) {
@@ -266,19 +269,19 @@ class WPJOBPORTALCityModel {
                 $call = 0;
                 foreach ($locdata AS $dl) {
                     if ($call == 0) {
-                        $location .= '[' . $dl['cityname'];
+                        $location .= '[' . wpjobportal::wpjobportal_getVariableValue($dl['cityname']);
                         if ($dl['statename']) {
-                            $location .= '-' . $dl['statename'];
+                            $location .= '-' . wpjobportal::wpjobportal_getVariableValue($dl['statename']);
                         }
                     } else {
                         $location .= ', ' . $dl['cityname'];
                         if ($dl['statename']) {
-                            $location .= '-' . $dl['statename'];
+                            $location .= '-' . wpjobportal::wpjobportal_getVariableValue($dl['statename']);
                         }
                     }
                     $call++;
                 }
-                $location .= ', ' . $countryname . '] ';
+                $location .= ', ' . wpjobportal::wpjobportal_getVariableValue($countryname) . '] ';
             }
         } else { // single city id
             $data = $this->getDataForLocationByCityID($cityids);
@@ -295,9 +298,9 @@ class WPJOBPORTALCityModel {
             return false;
 
 
-        if (strstr($cityname, ',')) {
-            $cityname = str_replace(' ', '', $cityname);
-            $array = explode(',', $cityname);
+        if (wpjobportalphplib::wpJP_strstr($cityname, ',')) {
+            $cityname = wpjobportalphplib::wpJP_str_replace(' ', '', $cityname);
+            $array = wpjobportalphplib::wpJP_explode(',', $cityname);
             $cityname = $array[0];
 			if(wpjobportal::$_configuration['defaultaddressdisplaytype'] == "cs"){ // City, State
 				$statename = $array[1];
@@ -356,23 +359,23 @@ class WPJOBPORTALCityModel {
         $latitude = WPJOBPORTALrequest::getVar('latitude','','');
         $longitude = WPJOBPORTALrequest::getVar('longitude','','');
 
-        $tempData = explode(',', $input); // array to maintain spaces
-        $input = str_replace(' ', '', $input); // remove spaces from citydata
+        $tempData = wpjobportalphplib::wpJP_explode(',', $input); // array to maintain spaces
+        $input = wpjobportalphplib::wpJP_str_replace(' ', '', $input); // remove spaces from citydata
         // find number of commas
         $num_commas = substr_count($input, ',', 0);
         if ($num_commas == 1) { // only city and country names are given
             $cityname = $tempData[0];
-            $countryname = str_replace(' ', '', $tempData[1]);
+            $countryname = wpjobportalphplib::wpJP_str_replace(' ', '', $tempData[1]);
         } elseif ($num_commas > 1) {
             if ($num_commas > 2)
                 return 5;
             $cityname = $tempData[0];
-            if (mb_strpos($tempData[1], ' ') == 0) { // remove space from start of state name if exists
-                $statename = substr($tempData[1], 1, strlen($tempData[1]));
+            if (mb_wpjobportalphplib::wpJP_strpos($tempData[1], ' ') == 0) { // remove space from start of state name if exists
+                $statename = wpjobportalphplib::wpJP_substr($tempData[1], 1, wpjobportalphplib::wpJP_strlen($tempData[1]));
             } else {
                 $statename = $tempData[1];
             }
-            $countryname = str_replace(' ', '', $tempData[2]);
+            $countryname = wpjobportalphplib::wpJP_str_replace(' ', '', $tempData[2]);
         }
 
         // get list of countries from database and check if exists or not
@@ -382,12 +385,12 @@ class WPJOBPORTALCityModel {
         }
         // if state name given in input check if exists or not otherwise store in database
         if (isset($statename)) {
-            $stateid = WPJOBPORTALincluder::getJSModel('state')->getStateIdByName(str_replace(' ', '', $statename)); // new function coded
+            $stateid = WPJOBPORTALincluder::getJSModel('state')->getStateIdByName(wpjobportalphplib::wpJP_str_replace(' ', '', $statename)); // new function coded
             if (!$stateid) {
                 $statedata = array();
                 $statedata['id'] = null;
-                $statedata['name'] = ucwords($statename);
-                $statedata['shortRegion'] = ucwords($statename);
+                $statedata['name'] = wpjobportalphplib::wpJP_ucwords($statename);
+                $statedata['shortRegion'] = wpjobportalphplib::wpJP_ucwords($statename);
                 $statedata['countryid'] = $countryid;
                 $statedata['enabled'] = 1;
                 $statedata['serverid'] = 0;
@@ -404,8 +407,8 @@ class WPJOBPORTALCityModel {
 
         $data = array();
         $data['id'] = null;
-        $data['cityName'] = ucwords($cityname);
-        $data['name'] = ucwords($cityname);
+        $data['cityName'] = wpjobportalphplib::wpJP_ucwords($cityname);
+        $data['name'] = wpjobportalphplib::wpJP_ucwords($cityname);
         $data['stateid'] = $stateid;
         $data['countryid'] = $countryid;
         $data['isedit'] = 1;
@@ -413,7 +416,7 @@ class WPJOBPORTALCityModel {
         $data['serverid'] = 0;
         $data['latitude'] = $latitude;
         $data['longitude'] = $longitude;
-
+        $data = wpjobportal::wpjobportal_sanitizeData($data);
         $row = WPJOBPORTALincluder::getJSTable('city');
         $data = WPJOBPORTALincluder::getJSmodel('common')->stripslashesFull($data);// remove slashes with quotes.
         if (!$row->bind($data)) {
@@ -423,7 +426,7 @@ class WPJOBPORTALCityModel {
             return 2;
         }
         if (isset($statename)) {
-            $statename = ucwords($statename);
+            $statename = wpjobportalphplib::wpJP_ucwords($statename);
         } else {
             $statename = '';
         }
@@ -436,18 +439,23 @@ class WPJOBPORTALCityModel {
     }
 
     public function savetokeninputcity() {
+
+        $nonce = WPJOBPORTALrequest::getVar('_wpnonce');
+        if (! wp_verify_nonce( $nonce, 'save-token-input-city') ) {
+            die( 'Security check Failed' );
+        }
         $city_string = WPJOBPORTALrequest::getVar('citydata');
         $result = $this->storeTokenInputCity($city_string);
         if (is_array($result)) {
             $return_value = json_encode(array('id' => $result[1], 'name' => $result[2], 'latitude'=>$result[3], 'longitude'=>$result[4] )); // send back the cityid newely created
         } elseif ($result == 2) {
-            $return_value = __('Error in saving records please try again', 'wp-job-portal');
+            $return_value = esc_html(__('Error in saving records please try again', 'wp-job-portal'));
         } elseif ($result == 3) {
-            $return_value = __('Error while saving new state', 'wp-job-portal');
+            $return_value = esc_html(__('Error while saving new state', 'wp-job-portal'));
         } elseif ($result == 4) {
-            $return_value = __('Country not found', 'wp-job-portal');
+            $return_value = esc_html(__('Country not found', 'wp-job-portal'));
         } elseif ($result == 5) {
-            $return_value = __('Location format is not correct please enter city in this format city name, country name', 'wp-job-portal');
+            $return_value = esc_html(__('Location format is not correct please enter city in this format city name, country name', 'wp-job-portal'));
         }
         echo wp_kses($return_value, WPJOBPORTAL_ALLOWED_TAGS);
         exit();
@@ -466,8 +474,9 @@ class WPJOBPORTALCityModel {
         $jsjp_search_array = array();
         $wpjp_search_cookie_data = '';
         if(isset($_COOKIE['jsjp_jobportal_search_data'])){
-            $wpjp_search_cookie_data = filter_var($_COOKIE['jsjp_jobportal_search_data'], FILTER_SANITIZE_STRING);
-            $wpjp_search_cookie_data = json_decode( base64_decode($wpjp_search_cookie_data) , true );
+            $wpjp_search_cookie_data = wpjobportal::wpjobportal_sanitizeData($_COOKIE['jsjp_jobportal_search_data']);
+            $wpjp_search_cookie_data = wpjobportalphplib::wpJP_safe_decoding($wpjp_search_cookie_data);
+            $wpjp_search_cookie_data = json_decode( $wpjp_search_cookie_data , true );
         }
         if($wpjp_search_cookie_data != '' && isset($wpjp_search_cookie_data['search_from_city']) && $wpjp_search_cookie_data['search_from_city'] == 1){
             $jsjp_search_array['searchname'] = $wpjp_search_cookie_data['searchname'];

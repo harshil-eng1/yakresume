@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
  * @param job      job object - optional
@@ -32,15 +33,15 @@
         </div>
     </div>
     <div id="wpjobportallist-comp-body" class="wpjobportallist-comp-body-for-responsive">
-        <span class="datablock" ><span class="txt-resume"><?php echo __('Name', 'wp-job-portal'); ?>: </span><span class="txt notbold color"><?php echo esc_html($resume->first_name) . ' ' . esc_html($resume->last_name); ?></span></span>
-        <span class="datablock" ><span class="txt-resume"><?php echo __(esc_html(wpjobportal::$_data['fields']['job_category']), 'wp-job-portal'); ?>: </span><span class="txt notbold color"><?php echo __(esc_html($resume->cat_title),'wp-job-portal'); ?></span></span>
+        <span class="datablock" ><span class="txt-resume"><?php echo esc_html(__('Name', 'wp-job-portal')); ?>: </span><span class="txt notbold color"><?php echo esc_html($resume->first_name) . ' ' . esc_html($resume->last_name); ?></span></span>
+        <span class="datablock" ><span class="txt-resume"><?php echo esc_html(__(esc_html(wpjobportal::$_data['fields']['job_category']), 'wp-job-portal')); ?>: </span><span class="txt notbold color"><?php echo esc_html(__(esc_html($resume->cat_title),'wp-job-portal')); ?></span></span>
         <span class="datablock" ><span class="txt-resume">
         <?php
             if(!isset(wpjobportal::$_data['fields']['desired_salary'])){
                 wpjobportal::$_data['fields']['desired_salary'] = WPJOBPORTALincluder::getJSModel('fieldordering')->getFieldTitleByFieldAndFieldfor('desired_salary',3);
             }
-            echo __(esc_html(wpjobportal::$_data['fields']['salaryfixed']), 'wp-job-portal'); ?>: </span><span class="txt notbold color"><?php echo __(esc_html($resume->salary).' '.'Rs','wp-job-portal') ?></span> </span>
-        <span class="datablock job-que-category" ><span class="txt-resume"><?php echo __('Location', 'wp-job-portal'); ?>: </span><span class="txt notbold color"><?php echo esc_html(WPJOBPORTALincluder::getJSModel('city')->getLocationDataForView($resume->city)); ?></span></span>
+            echo esc_html(__(esc_html(wpjobportal::$_data['fields']['salaryfixed']), 'wp-job-portal')); ?>: </span><span class="txt notbold color"><?php echo esc_html(__(esc_html($resume->salary).' '.'Rs','wp-job-portal')) ?></span> </span>
+        <span class="datablock job-que-category" ><span class="txt-resume"><?php echo esc_html(__('Location', 'wp-job-portal')); ?>: </span><span class="txt notbold color"><?php echo esc_html(WPJOBPORTALincluder::getJSModel('city')->getLocationDataForView($resume->city)); ?></span></span>
     </div>
 </div>
 	<?php

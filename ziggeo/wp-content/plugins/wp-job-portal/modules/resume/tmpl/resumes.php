@@ -25,12 +25,12 @@ if (wpjobportal::$_error_flag == null) { ?>
                     $image = $image2;
                 }
                 $categoryarray = array(
-                    (object) array('id' => 1, 'text' => __('Application title', 'wp-job-portal')),
-                    (object) array('id' => 2, 'text' => __('First name', 'wp-job-portal')),
-                    (object) array('id' => 3, 'text' => __('Category', 'wp-job-portal')),
-                    (object) array('id' => 4, 'text' => __('Job type', 'wp-job-portal')),
-                    (object) array('id' => 5, 'text' => __('Location', 'wp-job-portal')),
-                    (object) array('id' => 6, 'text' => __('Created', 'wp-job-portal'))
+                    (object) array('id' => 1, 'text' => esc_html(__('Application title', 'wp-job-portal'))),
+                    (object) array('id' => 2, 'text' => esc_html(__('First name', 'wp-job-portal'))),
+                    (object) array('id' => 3, 'text' => esc_html(__('Category', 'wp-job-portal'))),
+                    (object) array('id' => 4, 'text' => esc_html(__('Job type', 'wp-job-portal'))),
+                    (object) array('id' => 5, 'text' => esc_html(__('Location', 'wp-job-portal'))),
+                    (object) array('id' => 6, 'text' => esc_html(__('Created', 'wp-job-portal')))
                 );
             // resume filters
                 WPJOBPORTALincluder::getTemplate('resume/views/frontend/filter',array(
@@ -45,9 +45,9 @@ if (wpjobportal::$_error_flag == null) { ?>
         </div>
         <?php
             if (isset(wpjobportal::$_data['fromtags'])) {
-                $heading = __('Resumes By Tag', 'wp-job-portal') . ' [' . wpjobportal::$_data['fromtags'] . ']';
+                $heading = esc_html(__('Resumes By Tag', 'wp-job-portal')) . ' [' . wpjobportal::$_data['fromtags'] . ']';
             }else {
-                $heading = __('Resumes', 'wp-job-portal');
+                $heading = esc_html(__('Resumes', 'wp-job-portal'));
             }
         ?>
         <div class="wjportal-resume-list-wrp">
@@ -57,7 +57,7 @@ if (wpjobportal::$_error_flag == null) { ?>
                 do_action('wpjobportal_addons_resume_search_save_form');
             }
             if (isset(wpjobportal::$_data[0]) && !empty(wpjobportal::$_data[0])) {?>
-                <form id="resume_form" method="post" action="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'resume','wpjobportallt'=>'resumes','wpjobportalpageid' =>wpjobportal::getPageid()))); ?>">
+                <form id="resume_form" method="post" action="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume','wpjobportallt'=>'resumes','wpjobportalpageid' =>wpjobportal::wpjobportal_getPageid()))); ?>">
                 <?php
                 foreach (wpjobportal::$_data[0] AS $myresume) {
                     //Load Template View Resume
@@ -73,15 +73,16 @@ if (wpjobportal::$_error_flag == null) { ?>
                 }
                 echo wp_kses(WPJOBPORTALformfield::hidden('sortby', wpjobportal::$_data['sortby']),WPJOBPORTAL_ALLOWED_TAGS);
                 echo wp_kses(WPJOBPORTALformfield::hidden('sorton', wpjobportal::$_data['sorton']),WPJOBPORTAL_ALLOWED_TAGS);
+                echo wp_kses(WPJOBPORTALformfield::hidden('jsformresumesearch', 1),WPJOBPORTAL_ALLOWED_TAGS);
                 echo wp_kses(WPJOBPORTALformfield::hidden('WPJOBPORTAL_form_search', 'WPJOBPORTAL_SEARCH'),WPJOBPORTAL_ALLOWED_TAGS);
                 echo wp_kses(WPJOBPORTALformfield::hidden('wpjobportallay', 'resumes'),WPJOBPORTAL_ALLOWED_TAGS);
-                echo wp_kses(WPJOBPORTALformfield::hidden('resume_filter', isset(wpjobportal::$_data['filter']) ? base64_encode(json_encode(wpjobportal::$_data['filter'])) : ''),WPJOBPORTAL_ALLOWED_TAGS);
+                echo wp_kses(WPJOBPORTALformfield::hidden('resume_filter', isset(wpjobportal::$_data['filter']) ? wpjobportalphplib::wpJP_safe_encoding(json_encode(wpjobportal::$_data['filter'])) : ''),WPJOBPORTAL_ALLOWED_TAGS);
 
                 ?>
                 </form>
                 <?php
             } else {
-                wp_kses(WPJOBPORTALlayout::getNoRecordFound(), WPJOBPORTAL_ALLOWED_TAGS);
+                WPJOBPORTALlayout::getNoRecordFound();
             }
         }
     ?>

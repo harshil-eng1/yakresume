@@ -130,10 +130,10 @@ class WPJOBPORTALCompanyModel {
     function getMyCompanies($uid) {
         if (!is_numeric($uid)) return false;
         //Filters
-        $searchcompany = isset(wpjobportal::$_search['mycompany']['searchcompany']) ? wpjobportal::$_search['mycompany']['searchcompany'] : '';
+        $searchcompany = isset(wpjobportal::$_search['search_filter']['searchcompany']) ? wpjobportal::$_search['search_filter']['searchcompany'] : '';
 
         //Front end search var
-        $wpjobportal_city = isset(wpjobportal::$_search['mycompany']['wpjobportal-city']) ? wpjobportal::$_search['mycompany']['wpjobportal-city'] : '';
+        $wpjobportal_city = isset(wpjobportal::$_search['search_filter']['wpjobportal_city']) ? wpjobportal::$_search['search_filter']['wpjobportal_city'] : '';
 
         $inquery = '';
         if ($searchcompany) {
@@ -143,7 +143,7 @@ class WPJOBPORTALCompanyModel {
             if(is_numeric($wpjobportal_city)){
                 $inquery .= " AND LOWER(company.city) LIKE '%$wpjobportal_city%'";
             }else{
-                $arr = explode( ',' , $wpjobportal_city);
+                $arr = wpjobportalphplib::wpJP_explode( ',' , $wpjobportal_city);
                 $cityQuery = false;
                 foreach($arr as $i){
                     if($cityQuery){
@@ -192,10 +192,9 @@ class WPJOBPORTALCompanyModel {
     }
 
     function sorting() {
-
         $pagenum = WPJOBPORTALrequest::getVar('pagenum');
-        wpjobportal::$_data['sorton'] = wpjobportal::$_search['company']['sorton'];
-        wpjobportal::$_data['sortby'] = wpjobportal::$_search['company']['sortby'];
+        wpjobportal::$_data['sorton'] = wpjobportal::$_search['search_filter']['sorton'] != '' ? wpjobportal::$_search['search_filter']['sorton']: 3;
+        wpjobportal::$_data['sortby'] = wpjobportal::$_search['search_filter']['sortby'] != '' ? wpjobportal::$_search['search_filter']['sortby']: 2;
 
         switch (wpjobportal::$_data['sorton']) {
             case 3: // created
@@ -213,6 +212,9 @@ class WPJOBPORTALCompanyModel {
             case 5: // status
                 wpjobportal::$_data['sorting'] = ' company.status ';
                 break;
+            default:
+                //wpjobportal::$_data['sorting'] = ' company.created ';
+            break;
         }
         if (wpjobportal::$_data['sortby'] == 1) {
             wpjobportal::$_data['sorting'] .= ' ASC ';
@@ -230,15 +232,15 @@ class WPJOBPORTALCompanyModel {
         }
 
         //Filters
-        $searchcompany = wpjobportal::$_search['company']['searchcompany'];
-        $searchjobcategory = wpjobportal::$_search['company']['searchjobcategory'];
-        $status = wpjobportal::$_search['company']['status'];
-        $datestart = wpjobportal::$_search['company']['datestart'];
-        $dateend = wpjobportal::$_search['company']['dateend'];
-        $featured = wpjobportal::$_search['company']['featured'];
+        $searchcompany = wpjobportal::$_search['search_filter']['searchcompany'];
+        $searchjobcategory = wpjobportal::$_search['search_filter']['searchjobcategory'];
+        $status = wpjobportal::$_search['search_filter']['status'];
+        $datestart = wpjobportal::$_search['search_filter']['datestart'];
+        $dateend = wpjobportal::$_search['search_filter']['dateend'];
+        $featured = wpjobportal::$_search['search_filter']['featured'];
         //Front end search var
-        $wpjobportal_company = wpjobportal::$_search['company']['wpjobportal_company'];
-        $wpjobportal_city = wpjobportal::$_search['company']['wpjobportal_city'];
+        $wpjobportal_company = wpjobportal::$_search['search_filter']['wpjobportal_company'];
+        $wpjobportal_city = wpjobportal::$_search['search_filter']['wpjobportal_city'];
         if ($searchjobcategory)
             if (is_numeric($searchjobcategory) == false)
                 return false;
@@ -253,7 +255,7 @@ class WPJOBPORTALCompanyModel {
 			if(is_numeric($wpjobportal_city)){
 				$inquery .= " AND company.city = $wpjobportal_city ";
 			}else{
-				$arr = explode( ',' , $wpjobportal_city);
+				$arr = wpjobportalphplib::wpJP_explode( ',' , $wpjobportal_city);
 				$cityQuery = false;
 				foreach($arr as $i){
 					if($cityQuery){
@@ -340,10 +342,10 @@ class WPJOBPORTALCompanyModel {
     function getAllUnapprovedCompanies() {
         $this->sorting();
         //Filters
-        $searchcompany = wpjobportal::$_search['company']['searchcompany'];
-        // $categoryid = wpjobportal::$_search['company']['searchjobcategory'];
-        $datestart = wpjobportal::$_search['company']['datestart'];
-        $dateend = wpjobportal::$_search['company']['dateend'];
+        $searchcompany = wpjobportal::$_search['search_filter']['searchcompany'];
+        // $categoryid = wpjobportal::$_search['search_filter']['searchjobcategory'];
+        $datestart = wpjobportal::$_search['search_filter']['datestart'];
+        $dateend = wpjobportal::$_search['search_filter']['dateend'];
 
         wpjobportal::$_data['filter']['searchcompany'] = $searchcompany;
         // wpjobportal::$_data['filter']['searchjobcategory'] = $categoryid;
@@ -460,8 +462,8 @@ class WPJOBPORTALCompanyModel {
             $data['alias'] = wpjobportal::$_common->stringToAlias(empty($data['alias']) ? $data['name'] : $data['alias']);
         # sanitize data
             $tempdesc = $data['description'];
-            $data = filter_var_array($data, FILTER_SANITIZE_STRING);
-            $data['description'] = wpautop(wptexturize(stripslashes($tempdesc)));
+            $data = wpjobportal::wpjobportal_sanitizeData($data);
+            $data['description'] = wpautop(wptexturize(wpjobportalphplib::wpJP_stripslashes($tempdesc)));
             $data = wpjobportal::$_common->stripslashesFull($data);
 
         # store in db
@@ -499,11 +501,11 @@ class WPJOBPORTALCompanyModel {
 
         # save company logo
             if(isset($data['company_logo_deleted'])){
-                $this->deleteCompanyLogo($companyid);
+                $this->deleteCompanyLogoModel($companyid);
             }
             if ($_FILES['logo']['size'] > 0) {
                 if(!isset($data['company_logo_deleted'])){
-                    $this->deleteCompanyLogo($companyid);
+                    $this->deleteCompanyLogoModel($companyid);
                 }
                 $res = $this->uploadFile($companyid);
                 if ($res == 6){
@@ -533,7 +535,7 @@ class WPJOBPORTALCompanyModel {
         $query = "SELECT cityid FROM " . wpjobportal::$_db->prefix . "wj_portal_companycities WHERE companyid = " . $companyid;
         $old_cities = wpjobportaldb::get_results($query);
 
-        $id_array = explode(",", $city_id);
+        $id_array = wpjobportalphplib::wpJP_explode(",", $city_id);
         $row = WPJOBPORTALincluder::getJSTable('companycities');
         $error = array();
 
@@ -602,6 +604,9 @@ class WPJOBPORTALCompanyModel {
         foreach ($ids as $id) {
             $query = "SELECT company.name,company.contactemail AS contactemail FROM `" . wpjobportal::$_db->prefix . "wj_portal_companies` AS company  WHERE company.id = " . $id;
             $companyinfo = wpjobportaldb::get_row($query);
+            if(empty($companyinfo)){
+                continue;
+            }
             $mailextradata['companyname'] = $companyinfo->name;
             /*$mailextradata['contactname'] = $companyinfo->contactname;*/
             $mailextradata['contactemail'] = $companyinfo->contactemail;
@@ -736,6 +741,29 @@ class WPJOBPORTALCompanyModel {
     }
 
     function deleteCompanyLogo($companyid = 0){
+        $nonce = WPJOBPORTALrequest::getVar('_wpnonce');
+        if (! wp_verify_nonce( $nonce, 'delete-company-logo') ) {
+            die( 'Security check Failed' );
+        }
+        if($companyid == 0){
+            $companyid = WPJOBPORTALrequest::getVar('companyid');
+        }
+        if(!is_numeric($companyid)){
+            return false;
+        }
+        $row = WPJOBPORTALincluder::getJSTable('company');
+        $data_directory = wpjobportal::$_config->getConfigValue('data_directory');
+        $wpdir = wp_upload_dir();
+        $path = $wpdir['basedir'] . '/' . $data_directory . '/data/employer/comp_' . $companyid . '/logo';
+        $files = glob($path . '/*.*');
+        array_map('unlink', $files);    // delete all file in the direcoty
+        $query = "UPDATE `".wpjobportal::$_db->prefix."wj_portal_companies` SET logofilename = '', logoisfile = -1 WHERE id = ".$companyid;
+        wpjobportal::$_db->query($query);
+        return true;
+    }
+
+    function deleteCompanyLogoModel($companyid = 0){
+
         if($companyid == 0){
             $companyid = WPJOBPORTALrequest::getVar('companyid');
         }
@@ -883,7 +911,7 @@ class WPJOBPORTALCompanyModel {
         $data['companyid'] = $companyid;
         $data['status'] = 1;
         $data['created'] = $curdate;
-
+        $data = wpjobportal::wpjobportal_sanitizeData($data);
         $row = WPJOBPORTALincluder::getJSTable('jobseekerviewcompany');
         if (!$row->bind($data)) {
             return false;
@@ -931,9 +959,9 @@ class WPJOBPORTALCompanyModel {
         if(! is_numeric($id))
             return '';
         $result = '';
-        $company_seo = str_replace( ' ', '', $company_seo);
-        $company_seo = str_replace( '[', '', $company_seo);
-        $array = explode(']', $company_seo);
+        $company_seo = wpjobportalphplib::wpJP_str_replace( ' ', '', $company_seo);
+        $company_seo = wpjobportalphplib::wpJP_str_replace( '[', '', $company_seo);
+        $array = wpjobportalphplib::wpJP_explode(']', $company_seo);
 
         $total = count($array);
         if($total > 3)
@@ -959,7 +987,7 @@ class WPJOBPORTALCompanyModel {
                 $data = wpjobportaldb::get_row($query);
                 if(isset($data->col)){
                     if($array[$i] == 'location'){
-                        $cityids = explode(',', $data->col);
+                        $cityids = wpjobportalphplib::wpJP_explode(',', $data->col);
                         $location = '';
                         for ($j=0; $j < count($cityids); $j++) {
                             if(is_numeric($cityids[$j])){
@@ -977,19 +1005,22 @@ class WPJOBPORTALCompanyModel {
                         $location = $common->removeSpecialCharacter($location);
                         if($location != ''){
                             if($result == '')
-                                $result .= str_replace(' ', '-', $location);
+                                $result .= wpjobportalphplib::wpJP_str_replace(' ', '-', $location);
                             else
-                                $result .= '-'.str_replace(' ', '-', $location);
+                                $result .= '-'.wpjobportalphplib::wpJP_str_replace(' ', '-', $location);
                         }
                     }else{
                         $val = $common->removeSpecialCharacter($data->col);
                         if($result == '')
-                            $result .= str_replace(' ', '-', $val);
+                            $result .= wpjobportalphplib::wpJP_str_replace(' ', '-', $val);
                         else
-                            $result .= '-'.str_replace(' ', '-', $val);
+                            $result .= '-'.wpjobportalphplib::wpJP_str_replace(' ', '-', $val);
                     }
                 }
             }
+        }
+        if($result != ''){
+            $result = wpjobportalphplib::wpJP_str_replace('_', '-', $result);
         }
         return $result;
     }
@@ -1084,7 +1115,7 @@ class WPJOBPORTALCompanyModel {
 
     function getSortArg($type, $sort) {
         $mat = array();
-        if (preg_match("/(\w+)(asc|desc)/i", $sort, $mat)) {
+        if (wpjobportalphplib::wpJP_preg_match("/(\w+)(asc|desc)/i", $sort, $mat)) {
             if ($type == $mat[1]) {
                 return ( $mat[2] == "asc" ) ? "{$type}desc" : "{$type}asc";
             } else {
@@ -1157,8 +1188,8 @@ class WPJOBPORTALCompanyModel {
                 $companycustomfields[] = $field->field;
             }
             foreach($jobformdata as $name => $value){
-                if(stristr($name, 'company_')){
-                    $companydata[str_replace('company_', '', $name)] = $value;
+                if(wpjobportalphplib::wpJP_stristr($name, 'company_')){
+                    $companydata[wpjobportalphplib::wpJP_str_replace('company_', '', $name)] = $value;
                 }elseif(in_array($name, $companycustomfields)){
                     $companydata[$name] = $value;
                 }
@@ -1180,8 +1211,9 @@ class WPJOBPORTALCompanyModel {
         $jsjp_search_array = array();
         $wpjp_search_cookie_data = '';
         if(isset($_COOKIE['jsjp_jobportal_search_data'])){
-            $wpjp_search_cookie_data = filter_var($_COOKIE['jsjp_jobportal_search_data'], FILTER_SANITIZE_STRING);
-            $wpjp_search_cookie_data = json_decode( base64_decode($wpjp_search_cookie_data) , true );
+            $wpjp_search_cookie_data = wpjobportal::wpjobportal_sanitizeData($_COOKIE['jsjp_jobportal_search_data']);
+            $wpjp_search_cookie_data = wpjobportalphplib::wpJP_safe_decoding($wpjp_search_cookie_data);
+            $wpjp_search_cookie_data = json_decode( $wpjp_search_cookie_data , true );
         }
         if($wpjp_search_cookie_data != '' && isset($wpjp_search_cookie_data['search_from_myapply_mycompanies']) && $wpjp_search_cookie_data['search_from_myapply_mycompanies'] == 1){
             $jsjp_search_array['searchcompany'] = $wpjp_search_cookie_data['searchcompany'];
@@ -1219,8 +1251,9 @@ class WPJOBPORTALCompanyModel {
         $jsjp_search_array = array();
         $wpjp_search_cookie_data = '';
         if(isset($_COOKIE['jsjp_jobportal_search_data'])){
-            $wpjp_search_cookie_data = filter_var($_COOKIE['jsjp_jobportal_search_data'], FILTER_SANITIZE_STRING);
-            $wpjp_search_cookie_data = json_decode( base64_decode($wpjp_search_cookie_data) , true );
+            $wpjp_search_cookie_data = wpjobportal::wpjobportal_sanitizeData($_COOKIE['jsjp_jobportal_search_data']);
+            $wpjp_search_cookie_data = wpjobportalphplib::wpJP_safe_decoding($wpjp_search_cookie_data);
+            $wpjp_search_cookie_data = json_decode( $wpjp_search_cookie_data , true );
         }
         if($wpjp_search_cookie_data != '' && isset($wpjp_search_cookie_data['search_from_admin_company']) && $wpjp_search_cookie_data['search_from_admin_company'] == 1){
             $jsjp_search_array['sorton'] = $wpjp_search_cookie_data['sorton'];

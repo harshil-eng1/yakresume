@@ -105,8 +105,8 @@ class WP_Job_Manager_Applications_Admin {
 	 * Enqueue admin scripts
 	 */
 	public function admin_enqueue_scripts() {
-		wp_enqueue_style( 'wp-job-manager-applications-menu', JOB_MANAGER_APPLICATIONS_PLUGIN_URL . '/assets/css/menu.css', '', JOB_MANAGER_APPLICATIONS_VERSION );
-		wp_enqueue_style( 'wp-job-manager-applications-admin', JOB_MANAGER_APPLICATIONS_PLUGIN_URL . '/assets/css/admin.css', '', JOB_MANAGER_APPLICATIONS_VERSION );
+		wp_enqueue_style( 'wp-job-manager-applications-menu', JOB_MANAGER_APPLICATIONS_PLUGIN_URL . '/assets/dist/css/menu.css', [ 'dashicons' ], JOB_MANAGER_APPLICATIONS_VERSION );
+		wp_enqueue_style( 'wp-job-manager-applications-admin', JOB_MANAGER_APPLICATIONS_PLUGIN_URL . '/assets/dist/css/admin.css', [ 'dashicons' ], JOB_MANAGER_APPLICATIONS_VERSION );
 	}
 
 	/**
@@ -195,7 +195,8 @@ class WP_Job_Manager_Applications_Admin {
 				echo '<span class="status">' . ( null != $status ? $status->label : $post->post_status ) . '</span>';
 				break;
 			case 'candidate':
-				echo '<a href="' . admin_url( 'post.php?post=' . $post->ID . '&action=edit' ) . '" class="tips candidate_name" data-tip="' . sprintf( __( 'Application ID: %d', 'wp-job-manager-applications' ), $post->ID ) . '">' . $post->post_title . '</a>';
+				$title = $post->post_title ?: '#' . $post->ID;
+				echo '<a href="' . admin_url( 'post.php?post=' . $post->ID . '&action=edit' ) . '" class="tips candidate_name" data-tip="' . sprintf( __( 'Application ID: %d', 'wp-job-manager-applications' ), $post->ID ) . '">' . $title . '</a>';
 
 				if ( $email = get_post_meta( $post->ID, '_candidate_email', true ) ) {
 					echo '<br/><a href="mailto:' . esc_attr( $email ) . '">' . esc_attr( $email ) . '</a>';
@@ -411,5 +412,6 @@ class WP_Job_Manager_Applications_Admin {
 			echo '});</script>';
 		}
 	}
+
 }
 new WP_Job_Manager_Applications_Admin();

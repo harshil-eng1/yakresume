@@ -6,6 +6,10 @@ if (!defined('ABSPATH'))
 class WPJOBPORTALUserCredits {
 
     function doAction($actionname) {
+        $nonce = WPJOBPORTALrequest::getVar('js_nonce');
+        if (! wp_verify_nonce( $nonce, 'wp-job-portal-nonce') ) {
+            die( 'Security check Failed' );
+        }
         $result = false;
         $id = WPJOBPORTALRequest::getVar('id');
         $payment = WPJOBPORTALRequest::getVar('payment');
@@ -28,6 +32,10 @@ class WPJOBPORTALUserCredits {
     }
 
     function getUserCreditsDetailForAction($actionname) {
+        $nonce = WPJOBPORTALrequest::getVar('js_nonce');
+        if (! wp_verify_nonce( $nonce, 'wp-job-portal-nonce') ) {
+            die( 'Security check Failed' );
+        }
         $isadmin = WPJOBPORTALrequest::getVar('isadmin');
         $id = WPJOBPORTALrequest::getVar('id');
         $themecall = WPJOBPORTALrequest::getVar('themecall');

@@ -57,19 +57,19 @@ if (wpjobportal::$_error_flag == null) {
                             ));
                         ?>
                         <div class="wjportal-cp-user-action">
-                            <a class="wjportal-cp-user-act-btn" href="<?php   echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'user', 'wpjobportallt'=>'formprofile'))) ?>" title="<?php echo __('Edit profile', 'wp-job-portal'); ?>">
-                                <?php echo __('Edit Profile', 'wp-job-portal'); ?>
+                            <a class="wjportal-cp-user-act-btn" href="<?php   echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'user', 'wpjobportallt'=>'formprofile'))) ?>" title="<?php echo esc_html(__('Edit profile', 'wp-job-portal')); ?>">
+                                <?php echo esc_html(__('Edit Profile', 'wp-job-portal')); ?>
                             </a>
                         </div>
                     </div>
                 <?php } ?>
                 <div class="wjportal-cp-short-links-wrp">
                     <div class="wjportal-cp-sec-title">
-                        <?php echo __('Short Links', 'wp-job-portal'); ?>
+                        <?php echo esc_html(__('Short Links', 'wp-job-portal')); ?>
                     </div>
                     <div class="wjportal-cp-short-links-list">
                         <?php
-                            $arrayList=array('1'=>array('formresume','myresumes','jobsearch','newestjobs','myappliedjobs','jobcat','listjobbytype','listjobshortlist','jsmessages','invoice','jsregister','empresume_rss','jobsloginlogout'));
+                            $arrayList = array('1'=>array('formresume','myresumes','jobsearch','newestjobs','myappliedjobs','mycoverletter','listallcompanies','jobcat','listjobbytype','jobsbycities','listjobshortlist','jsmessages','invoice','jsregister','empresume_rss','jobsloginlogout'));
                             WPJOBPORTALincluder::getTemplate('jobseeker/views/leftmenue',array(
                                 'layout' =>reset($arrayList)
                             ));
@@ -78,30 +78,38 @@ if (wpjobportal::$_error_flag == null) {
                 </div>
             </div>
             <div class="wjportal-cp-right">
-                <?php  if(WPJOBPORTALincluder::getObjectClass('user')->isjobseeker()){ ?>
+                <?php
+                // to show notification messages on jobseeker dashboard
+                // was showing notifications twice once with breadcrumbs at the top and once here
+                if(!WPJOBPORTALincluder::getObjectClass('user')->isjobseeker()){
+                    //WPJOBPORTALMessages::getLayoutMessage('user'); // showing double message once here once before breadcrumbs
+                }else{
+                    // $msgkey = WPJOBPORTALincluder::getJSModel('jobseeker')->getMessagekey();
+                    // WPJOBPORTALMessages::getLayoutMessage($msgkey);
+                 ?>
                 <!-- cp boxes -->
                 <div class="wjportal-cp-boxes">
                     <div class="wjportal-cp-box box1">
                         <div class="wjportal-cp-box-top">
-                            <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/jobseeker/cp-my-resume.png" alt="<?php echo __("my resume","wp-job-portal"); ?>">
+                            <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/jobseeker/cp-my-resume.png" alt="<?php echo esc_html(__("my resume",'wp-job-portal')); ?>">
                             <?php
                             if(in_array('multiresume', wpjobportal::$_active_addons)){
-                                $url = wpjobportal::makeUrl(array('wpjobportalme'=>'multiresume', 'wpjobportallt'=> 'myresumes'));
+                                $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multiresume', 'wpjobportallt'=> 'myresumes'));
                             }else{
-                                $url = wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes'));
+                                $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes'));
                             }
                             ?>
                             <div class="wjportal-cp-box-num">
                                 <?php echo isset(wpjobportal::$_data['totalresume']) ? esc_html(wpjobportal::$_data['totalresume']) : ''; ?>
                             </div>
                             <div class="wjportal-cp-box-tit">
-                                <?php echo __('My Resumes','wp-job-portal'); ?>
+                                <?php echo esc_html(__('My Resumes','wp-job-portal')); ?>
                             </div>
                         </div>
                         <div class="wjportal-cp-box-btm clearfix">
                             <a href="<?php echo esc_url($url); ?>" title="View detail">
                                 <span class="wjportal-cp-box-text">
-                                   <?php echo __('View Detail','wp-job-portal'); ?>
+                                   <?php echo esc_html(__('View Detail','wp-job-portal')); ?>
                                 </span>
                                 <i class="fa fa-arrow-right"></i>
                             </a>
@@ -109,18 +117,18 @@ if (wpjobportal::$_error_flag == null) {
                     </div>
                     <div class="wjportal-cp-box box2">
                         <div class="wjportal-cp-box-top">
-                            <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/jobseeker/cp-applied-job.png" alt="<?php echo __("applied job","wp-job-portal"); ?>">
+                            <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/jobseeker/cp-applied-job.png" alt="<?php echo esc_html(__("applied job","wp-job-portal")); ?>">
                             <div class="wjportal-cp-box-num">
                                <?php echo isset(wpjobportal::$_data['totaljobapply'])  ? esc_html(wpjobportal::$_data['totaljobapply']) : 0; ?>
                             </div>
                             <div class="wjportal-cp-box-tit">
-                               <?php echo __('Applied jobs','wp-job-portal'); ?>
+                               <?php echo esc_html(__('Applied jobs','wp-job-portal')); ?>
                             </div>
                         </div>
                         <div class="wjportal-cp-box-btm clearfix">
-                            <a href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'jobapply', 'wpjobportallt'=>'myappliedjobs'))); ?>" title="View detail">
+                            <a href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'jobapply', 'wpjobportallt'=>'myappliedjobs'))); ?>" title="View detail">
                                 <span class="wjportal-cp-box-text">
-                                   <?php echo __('View Detail','wp-job-portal'); ?>
+                                   <?php echo esc_html(__('View Detail','wp-job-portal')); ?>
                                 </span>
                                 <i class="fa fa-arrow-right"></i>
                             </a>
@@ -128,18 +136,18 @@ if (wpjobportal::$_error_flag == null) {
                     </div>
                     <div class="wjportal-cp-box box3">
                         <div class="wjportal-cp-box-top">
-                            <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/jobseeker/cp-newest-jobs.png" alt="<?php echo __("newest jobs","wp-job-portal"); ?>">
+                            <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/jobseeker/cp-newest-jobs.png" alt="<?php echo esc_html(__("newest jobs","wp-job-portal")); ?>">
                             <div class="wjportal-cp-box-num">
                                 <?php echo isset(wpjobportal::$_data['totalnewjobs']) ? esc_html(wpjobportal::$_data['totalnewjobs']) : 0 ; ?>
                             </div>
                             <div class="wjportal-cp-box-tit">
-                                <?php echo __('Newest Job','wp-job-portal'); ?>
+                                <?php echo esc_html(__('Newest Job','wp-job-portal')); ?>
                             </div>
                         </div>
                         <div class="wjportal-cp-box-btm clearfix">
-                            <a href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'newestjobs'))); ?>" title="View detail">
+                            <a href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'newestjobs'))); ?>" title="View detail">
                                 <span class="wjportal-cp-box-text">
-                                   <?php echo __('View Detail','wp-job-portal'); ?>
+                                   <?php echo esc_html(__('View Detail','wp-job-portal')); ?>
                                 </span>
                                 <i class="fa fa-arrow-right"></i>
                             </a>
@@ -149,18 +157,18 @@ if (wpjobportal::$_error_flag == null) {
                     if(in_array('shortlist', wpjobportal::$_active_addons)){ ?>
                         <div class="wjportal-cp-box box4">
                             <div class="wjportal-cp-box-top">
-                                <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/jobseeker/cp-shortlisted-jobs.png" alt="<?php echo __("shortlisted jobs","wp-job-portal"); ?>">
+                                <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/jobseeker/cp-shortlisted-jobs.png" alt="<?php echo esc_html(__("shortlisted jobs","wp-job-portal")); ?>">
                                 <div class="wjportal-cp-box-num">
                                     <?php echo isset(wpjobportal::$_data['totalshorlistjob']) ? esc_html(wpjobportal::$_data['totalshorlistjob']) : 0 ; ?>
                                 </div>
                                 <div class="wjportal-cp-box-tit">
-                                    <?php echo __('Shotlisted Jobs','wp-job-portal'); ?>
+                                    <?php echo esc_html(__('Shotlisted Jobs','wp-job-portal')); ?>
                                 </div>
                             </div>
                                 <div class="wjportal-cp-box-btm clearfix">
-                                    <a href=" <?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'shortlist', 'wpjobportallt'=> 'shortlistedjobs'))); ?>" title="<?php echo __('view detail','wp-job-portal') ?>">
+                                    <a href=" <?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'shortlist', 'wpjobportallt'=> 'shortlistedjobs'))); ?>" title="<?php echo esc_html(__('view detail','wp-job-portal')) ?>">
                                         <span class="wjportal-cp-box-text">
-                                            <?php echo __('View Detail','wp-job-portal') ?>
+                                            <?php echo esc_html(__('View Detail','wp-job-portal')) ?>
                                         </span>
                                         <i class="fa fa-arrow-right"></i>
                                     </a>
@@ -169,11 +177,11 @@ if (wpjobportal::$_error_flag == null) {
                          <?php } ?>
                 </div>
                 <?php } ?>
-                    <?php $print = jobseekercheckLinks('jsactivejobs_graph');
+                    <?php $print = wpjobportal_jobseekercheckLinks('jsactivejobs_graph');
                         if ($print) { ?>
                             <div id="job-applied-resume-wrapper" class="wjportal-cp-graph-wrp wjportal-cp-sect-wrp">
                                 <div class="wjportal-cp-sec-title">
-                                    <?php echo __('Jobs By Types','wp-job-portal'); ?>
+                                    <?php echo esc_html(__('Jobs By Types','wp-job-portal')); ?>
                                 </div>
                                 <div>
                                     <?php
@@ -187,7 +195,7 @@ if (wpjobportal::$_error_flag == null) {
                 ?>
                     <div id='wpjobportal-center' class="wjportal-cp-sect-wrp wjportal-applied-jobs-wrp">
                         <div class="wjportal-cp-sec-title">
-                            <?php echo __('Jobs Applied Recently','wp-job-portal'); ?>
+                            <?php echo esc_html(__('Jobs Applied Recently','wp-job-portal')); ?>
                         </div>
                         <div class="wjportal-cp-cnt">
                             <?php
@@ -198,12 +206,12 @@ if (wpjobportal::$_error_flag == null) {
                             ?>
                         </div>
                         <div class="wjportal-cp-view-btn-wrp">
-                            <a class="wjportal-cp-view-btn" href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'jobapply', 'wpjobportallt'=>'myappliedjobs'))); ?>" title="<?php echo __('view all','wp-job-portal'); ?>">
-                                <?php echo __('View All','wp-job-portal'); ?>
+                            <a class="wjportal-cp-view-btn" href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'jobapply', 'wpjobportallt'=>'myappliedjobs'))); ?>" title="<?php echo esc_html(__('view all','wp-job-portal')); ?>">
+                                <?php echo esc_html(__('View All','wp-job-portal')); ?>
                             </a>
                         </div>
                     <?php  } else {
-                                $msg = __('No record found','wp-job-portal');
+                                $msg = esc_html(__('No record found','wp-job-portal'));
                                 WPJOBPORTALlayout::getNoRecordFound($msg, '');
                             }
                     ?>
@@ -219,7 +227,7 @@ if (wpjobportal::$_error_flag == null) {
                     <div id="job-applied-resume-wrapper" class="wjportal-cp-sect-wrp wjportal-newest-jobs-wrp">
                 <?php } ?>
                         <div class="wjportal-cp-sec-title">
-                            <?php echo __('Newest Jobs','wp-job-portal'); ?>
+                            <?php echo esc_html(__('Newest Jobs','wp-job-portal')); ?>
                         </div>
                         <div class="wjportal-cp-cnt">
                             <?php
@@ -235,12 +243,12 @@ if (wpjobportal::$_error_flag == null) {
                             ?>
                         </div>
                         <div class="wjportal-cp-view-btn-wrp">
-                            <a class="wjportal-cp-view-btn" href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'newestjobs'))); ?>" title="<?php echo __('view all','wp-job-portal'); ?>">
-                                <?php echo __('View All','wp-job-portal'); ?>
+                            <a class="wjportal-cp-view-btn" href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'newestjobs'))); ?>" title="<?php echo esc_html(__('view all','wp-job-portal')); ?>">
+                                <?php echo esc_html(__('View All','wp-job-portal')); ?>
                             </a>
                         </div>
                      <?php  }else{
-                                $msg = __('No record found','wp-job-portal');
+                                $msg = esc_html(__('No record found','wp-job-portal'));
                                     WPJOBPORTALlayout::getNoRecordFound($msg, '');
                             }
                         ?>

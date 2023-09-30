@@ -3,16 +3,18 @@
  * Plugin Name: WP Job Manager - Resume Manager
  * Plugin URI: https://wpjobmanager.com/add-ons/resume-manager/
  * Description: Manage candidate resumes from the WordPress admin panel, and allow candidates to post their resumes directly to your site.
- * Version: 1.18.1
+ * Version: 1.19.0
  * Author: Automattic
  * Author URI: https://wpjobmanager.com
- * Requires at least: 4.7
- * Tested up to: 5.3
- * Requires PHP: 5.6
+ * Requires at least: 5.8
+ * Tested up to: 6.2
+ * Requires PHP: 7.4
+ * Text Domain: wp-job-manager-resumes
+ * Domain Path: /languages/
  *
  * WPJM-Product: wp-job-manager-resumes
  *
- * Copyright: 2019 Automattic
+ * Copyright: 2021 Automattic
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  *
@@ -35,9 +37,9 @@ class WP_Resume_Manager {
 	 */
 	public function __construct() {
 		// Define constants.
-		define( 'RESUME_MANAGER_VERSION', '1.18.0' );
+		define( 'RESUME_MANAGER_VERSION', '1.19.0' );
 		define( 'RESUME_MANAGER_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
-		define( 'RESUME_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
+		define( 'RESUME_MANAGER_PLUGIN_URL', untrailingslashit( plugins_url( '', ( __FILE__ ) ) ) );
 
 		// Includes.
 		include_once dirname( __FILE__ ) . '/includes/wp-resume-manager-functions.php';
@@ -99,10 +101,13 @@ class WP_Resume_Manager {
 		add_action( 'switch_theme', array( $this->post_types, 'register_post_types' ), 10 );
 		add_action( 'switch_theme', 'flush_rewrite_rules', 15 );
 		add_action( 'admin_init', array( $this, 'updater' ) );
+		add_action( 'rest_api_init', [ $this, 'rest_init' ] );
 
 		add_filter( 'job_manager_enhanced_select_enabled', array( $this, 'is_enhanced_select_required_on_page' ) );
 		add_filter( 'job_manager_enqueue_frontend_style', array( $this, 'is_frontend_style_required_on_page' ) );
 		add_action( 'wp_enqueue_scripts', array( $this, 'frontend_scripts' ) );
+
+		add_action( 'template_redirect', array( $this, 'disable_resume_post_type_page' ) );
 	}
 
 	/**
@@ -149,6 +154,14 @@ class WP_Resume_Manager {
 		if ( version_compare( RESUME_MANAGER_VERSION, get_option( 'wp_resume_manager_version' ), '>' ) ) {
 			include_once dirname( __FILE__ ) . '/includes/class-wp-resume-manager-install.php';
 		}
+	}
+
+	/**
+	 * Loads the REST API functionality.
+	 */
+	public function rest_init() {
+		include_once RESUME_MANAGER_PLUGIN_DIR . '/includes/class-wp-resume-manager-rest-api.php';
+		WP_Resume_Manager_REST_API::init();
 	}
 
 	/**
@@ -240,10 +253,10 @@ class WP_Resume_Manager {
 			$ajax_filter_deps[] = 'chosen';
 		}
 
-		wp_register_script( 'wp-resume-manager-ajax-filters', RESUME_MANAGER_PLUGIN_URL . '/assets/js/ajax-filters.min.js', $ajax_filter_deps, RESUME_MANAGER_VERSION, true );
-		wp_register_script( 'wp-resume-manager-candidate-dashboard', RESUME_MANAGER_PLUGIN_URL . '/assets/js/candidate-dashboard.min.js', array( 'jquery' ), RESUME_MANAGER_VERSION, true );
-		wp_register_script( 'wp-resume-manager-resume-submission', RESUME_MANAGER_PLUGIN_URL . '/assets/js/resume-submission.min.js', array( 'jquery', 'jquery-ui-sortable' ), RESUME_MANAGER_VERSION, true );
-		wp_register_script( 'wp-resume-manager-resume-contact-details', RESUME_MANAGER_PLUGIN_URL . '/assets/js/contact-details.min.js', array( 'jquery' ), RESUME_MANAGER_VERSION, true );
+		wp_register_script( 'wp-resume-manager-ajax-filters', RESUME_MANAGER_PLUGIN_URL . '/assets/dist/js/ajax-filters.js', $ajax_filter_deps, RESUME_MANAGER_VERSION, true );
+		wp_register_script( 'wp-resume-manager-candidate-dashboard', RESUME_MANAGER_PLUGIN_URL . '/assets/dist/js/candidate-dashboard.js', array( 'jquery' ), RESUME_MANAGER_VERSION, true );
+		wp_register_script( 'wp-resume-manager-resume-submission', RESUME_MANAGER_PLUGIN_URL . '/assets/dist/js/resume-submission.js', array( 'jquery', 'jquery-ui-sortable' ), RESUME_MANAGER_VERSION, true );
+		wp_register_script( 'wp-resume-manager-resume-contact-details', RESUME_MANAGER_PLUGIN_URL . '/assets/dist/js/contact-details.js', array( 'jquery' ), RESUME_MANAGER_VERSION, true );
 
 		wp_localize_script(
 			'wp-resume-manager-resume-submission',
@@ -270,10 +283,23 @@ class WP_Resume_Manager {
 			)
 		);
 
-		wp_enqueue_style( 'wp-job-manager-resume-frontend', RESUME_MANAGER_PLUGIN_URL . '/assets/css/frontend.css', array(), RESUME_MANAGER_VERSION );
+		wp_enqueue_style( 'wp-job-manager-resume-frontend', RESUME_MANAGER_PLUGIN_URL . '/assets/dist/css/frontend.css', [ 'dashicons' ], RESUME_MANAGER_VERSION );
 		if ( is_a( $post, 'WP_Post' ) && has_shortcode( $post->post_content, 'submit_resume_form' ) ) {
-			wp_enqueue_style( 'wp-resume-manager-resume-submission', RESUME_MANAGER_PLUGIN_URL . '/assets/css/resume-submission.css', array(), RESUME_MANAGER_VERSION );
+			wp_enqueue_style( 'wp-resume-manager-resume-submission', RESUME_MANAGER_PLUGIN_URL . '/assets/dist/css/resume-submission.css', array(), RESUME_MANAGER_VERSION );
 		}
+	}
+
+	public function disable_resume_post_type_page() {
+		if ( empty( $_GET['post_type'] ) || 'resume' !== $_GET['post_type'] ) {
+			return;
+		}
+
+		if ( resume_manager_user_can_browse_resumes() ) {
+			return;
+		}
+
+		wp_safe_redirect( home_url() );
+		exit;
 	}
 }
 

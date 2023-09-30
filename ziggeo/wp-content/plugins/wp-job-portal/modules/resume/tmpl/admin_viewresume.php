@@ -4,120 +4,126 @@ if (!defined('ABSPATH'))
 ?>
 <?php
 $filekey = WPJOBPORTALincluder::getJSModel('common')->getGoogleMapApiAddress();
-echo $filekey;
+//echo $filekey;
+wp_enqueue_script( 'google-map', $filekey, array(), '', false );
 ?>
-<script type="text/javascript">
-    var ajaxurl = "<?php echo admin_url('admin-ajax.php') ?>";
-    function makeExpiry() {
-        jQuery(".goldnew").hover(function () {
-            jQuery(this).find(".goldnew-onhover").show();
-        }, function () {
-            jQuery(this).find('span.goldnew-onhover').fadeOut("slow");
-        });
-        jQuery(".featurednew").hover(function () {
-            jQuery(this).find("span.featurednew-onhover").show();
-        }, function () {
-            jQuery(this).find('.featurednew-onhover').fadeOut("slow");
-        });
-    }
+<?php
+    wp_register_script( 'wpjobportal-inline-handle', '' );
+    wp_enqueue_script( 'wpjobportal-inline-handle' );
 
-    jQuery(document).ready(function(){
-        var print_link = document.getElementById('print-link');
-        if (print_link) {
-            var href = "<?php echo wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'printresume', 'wpjobportalid'=>wpjobportal::$_data[0]['personal_section']->id, 'wpjobportalpageid'=>wpjobportal::getPageid())) ?>";
-            print_link.addEventListener('click', function (event) {
-                print = window.open(href, 'print_win', 'width=1024, height=800, scrollbars=yes');
-                event.preventDefault();
-            }, false);
+    $inline_js_script = "
+        var ajaxurl = \"". admin_url('admin-ajax.php') ."\";
+        function makeExpiry() {
+            jQuery('.goldnew').hover(function () {
+                jQuery(this).find('.goldnew-onhover').show();
+            }, function () {
+                jQuery(this).find('span.goldnew-onhover').fadeOut('slow');
+            });
+            jQuery('.featurednew').hover(function () {
+                jQuery(this).find('span.featurednew-onhover').show();
+            }, function () {
+                jQuery(this).find('.featurednew-onhover').fadeOut('slow');
+            });
         }
-    });
-    function showPopupAndSetValues() {
-        jQuery("div#full_background").show();
-        jQuery("div#popup-main-outer.coverletter").show();
-        jQuery("div#popup-main.coverletter").slideDown('slow');
-        jQuery("div#full_background").click(function () {
-            closePopup();
-        });
-        jQuery("img#popup_cross").click(function () {
-            closePopup();
-        });
-    }
-    function closePopup() {
-        jQuery("div#popup-main-outer").slideUp('slow');
-        setTimeout(function () {
-            jQuery("div#full_background").hide();
-            jQuery("div#popup-main").hide();
-        }, 700);
-    }
 
-    function initialize(lat, lang, div) {
-        var myLatlng = new google.maps.LatLng(lat, lang);
-        var myOptions = {
-            zoom: 8,
-            center: myLatlng,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        }
-        var map = new google.maps.Map(document.getElementById(div), myOptions);
-        var marker = new google.maps.Marker({
-            map: map,
-            position: myLatlng
-        });
-    }
-    jQuery(document).ready(function () {
-        jQuery('div.resume-map div.row-title').click(function (e) {
-            e.preventDefault();
-            var img1 = '<?php echo WPJOBPORTAL_PLUGIN_URL . 'includes/images/resume/show-map.png'; ?>';
-            var img2 = '<?php echo WPJOBPORTAL_PLUGIN_URL . 'includes/images/resume/hide-map.png'; ?>';
-            var pdiv = jQuery(this).parent();
-            var mdiv = jQuery(pdiv).find('div.row-value');
-            if (jQuery(mdiv).css('display') == 'none') {
-                jQuery(mdiv).show();
-                jQuery(this).find('img').attr('src', img2);
-            } else {
-                jQuery(mdiv).hide();
-                jQuery(this).find('img').attr('src', img1);
+        jQuery(document).ready(function(){
+            var print_link = document.getElementById('print-link');
+            if (print_link) {
+                var href = \"". wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'printresume', 'wpjobportalid'=>wpjobportal::$_data[0]['personal_section']->id, 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())) ."\";
+                print_link.addEventListener('click', function (event) {
+                    print = window.open(href, 'print_win', 'width=1024, height=800, scrollbars=yes');
+                    event.preventDefault();
+                }, false);
             }
         });
-    });
-    function sendMessageJobseeker() {
-        jQuery("div#full_background").show();
-        jQuery("div#popup-main-outer.sendmessage").show();
-        jQuery("div#popup-main.sendmessage").slideDown('slow');
-        jQuery("div#full_background").click(function () {
-            closePopup();
-        });
-        jQuery("img#popup_cross").click(function () {
-            closePopup();
-        });
-    }
-    function sendMessage() {
-        var subject = jQuery('input#subject').val();
-        if (subject == '') {
-            alert("<?php echo __("Please fill the subject", "wp-job-portal"); ?>");
-            return false;
-        }
-        var message = tinyMCE.get('jobseekermessage').getContent();
-        if (message == '') {
-            alert("<?php echo __("Please fill the message", "wp-job-portal"); ?>");
-            return false;
-        }
-        var resumeid = "<?php echo wpjobportal::$_data[0]['personal_section']->id; ?>";
-        var uid = "<?php echo wpjobportal::$_data[0]['personal_section']->uid; ?>";
-        jQuery.post(ajaxurl, {action: "wpjobportal_ajax", wpjobportalme: "message", task: "sendmessageresume", subject: subject, message: message, resumeid: resumeid, uid: uid}, function (data) {
-            if (data) {
-                alert("<?php echo __("Message sent", "wp-job-portal"); ?>");
+        function showPopupAndSetValues() {
+            jQuery('div#full_background').show();
+            jQuery('div#popup-main-outer.coverletter').show();
+            jQuery('div#popup-main.coverletter').slideDown('slow');
+            jQuery('div#full_background').click(function () {
                 closePopup();
-            }else{
-                alert("<?php echo __("Message not sent", "wp-job-portal"); ?>");
+            });
+            jQuery('img#popup_cross').click(function () {
+                closePopup();
+            });
+        }
+        function closePopup() {
+            jQuery('div#popup-main-outer').slideUp('slow');
+            setTimeout(function () {
+                jQuery('div#full_background').hide();
+                jQuery('div#popup-main').hide();
+            }, 700);
+        }
+
+        function initialize(lat, lang, div) {
+            var myLatlng = new google.maps.LatLng(lat, lang);
+            var myOptions = {
+                zoom: 8,
+                center: myLatlng,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
             }
-
+            var map = new google.maps.Map(document.getElementById(div), myOptions);
+            var marker = new google.maps.Marker({
+                map: map,
+                position: myLatlng
+            });
+        }
+        jQuery(document).ready(function () {
+            jQuery('div.resume-map div.row-title').click(function (e) {
+                e.preventDefault();
+                var img1 = '". WPJOBPORTAL_PLUGIN_URL . "includes/images/resume/show-map.png';
+                var img2 = '". WPJOBPORTAL_PLUGIN_URL . "includes/images/resume/hide-map.png';
+                var pdiv = jQuery(this).parent();
+                var mdiv = jQuery(pdiv).find('div.row-value');
+                if (jQuery(mdiv).css('display') == 'none') {
+                    jQuery(mdiv).show();
+                    jQuery(this).find('img').attr('src', img2);
+                } else {
+                    jQuery(mdiv).hide();
+                    jQuery(this).find('img').attr('src', img1);
+                }
+            });
         });
-    }
-</script>
+        function sendMessageJobseeker() {
+            jQuery('div#full_background').show();
+            jQuery('div#popup-main-outer.sendmessage').show();
+            jQuery('div#popup-main.sendmessage').slideDown('slow');
+            jQuery('div#full_background').click(function () {
+                closePopup();
+            });
+            jQuery('img#popup_cross').click(function () {
+                closePopup();
+            });
+        }
+        function sendMessage() {
+            var subject = jQuery('input#subject').val();
+            if (subject == '') {
+                alert(\"". esc_html(__("Please fill the subject", 'wp-job-portal'))."\");
+                return false;
+            }
+            var message = tinyMCE.get('jobseekermessage').getContent();
+            if (message == '') {
+                alert(\"". esc_html(__("Please fill the message", 'wp-job-portal'))."\");
+                return false;
+            }
+            var resumeid = ". wpjobportal::$_data[0]['personal_section']->id .";
+            var uid = ". wpjobportal::$_data[0]['personal_section']->uid.";
+            jQuery.post(ajaxurl, {action: \"wpjobportal_ajax\", wpjobportalme: \"message\", task: \"sendmessageresume\", subject: subject, message: message, resumeid: resumeid, uid: uid, '_wpnonce':'". esc_attr(wp_create_nonce("send-message-resume"))."'}, function (data) {
+                if (data) {
+                    alert(\"". esc_html(__("Message sent", 'wp-job-portal'))."\");
+                    closePopup();
+                }else{
+                    alert(\"". esc_html(__("Message not sent", 'wp-job-portal'))."\");
+                }
 
+            });
+        }
+    ";
+    wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
+?>
 <?php
     // css front end
-    wpjobportal::addStyleSheets();
+    wpjobportal::wpjobportal_addStyleSheets();
     //include_once WPJOBPORTAL_PLUGIN_PATH. 'includes/css/style_color.php';
     wp_enqueue_style('wpjobportal-color', WPJOBPORTAL_PLUGIN_URL . 'includes/css/color.css');
     wp_enqueue_style('wpjobportal-jobseeker-style', WPJOBPORTAL_PLUGIN_URL . 'includes/css/jobseekercp.css');
@@ -154,27 +160,27 @@ if (wpjobportal::$_error_flag == null) {
                     <div id="wpjobportal-breadcrumbs">
                         <ul>
                             <li>
-                                <a href="<?php echo admin_url('admin.php?page=wpjobportal'); ?>" title="<?php echo __('dashboard','wp-job-portal'); ?>">
-                                    <?php echo __('Dashboard','wp-job-portal'); ?>
+                                <a href="<?php echo admin_url('admin.php?page=wpjobportal'); ?>" title="<?php echo esc_html(__('dashboard','wp-job-portal')); ?>">
+                                    <?php echo esc_html(__('Dashboard','wp-job-portal')); ?>
                                 </a>
                             </li>
-                            <li><?php echo __('View Resume','wp-job-portal'); ?></li>
+                            <li><?php echo esc_html(__('View Resume','wp-job-portal')); ?></li>
                         </ul>
                     </div>
                 </div>
                 <div id="wpjobportal-wrapper-top-right">
                     <div id="wpjobportal-config-btn">
-                        <a href="admin.php?page=wpjobportal_configuration" title="<?php echo __('configuration','wp-job-portal'); ?>">
+                        <a href="admin.php?page=wpjobportal_configuration" title="<?php echo esc_html(__('configuration','wp-job-portal')); ?>">
                             <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/dashboard/config.png">
                        </a>
                     </div>
                     <div id="wpjobportal-help-btn" class="wpjobportal-help-btn">
-                        <a href="admin.php?page=wpjobportal&wpjobportallt=help" title="<?php echo __('help','wp-job-portal'); ?>">
+                        <a href="admin.php?page=wpjobportal&wpjobportallt=help" title="<?php echo esc_html(__('help','wp-job-portal')); ?>">
                             <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/dashboard/help.png">
                        </a>
                     </div>
                     <div id="wpjobportal-vers-txt">
-                        <?php echo __('Version','wp-job-portal').': '; ?>
+                        <?php echo esc_html(__('Version','wp-job-portal')).': '; ?>
                         <span class="wpjobportal-ver"><?php echo esc_html(WPJOBPORTALincluder::getJSModel('configuration')->getConfigValue('versioncode')); ?></span>
                     </div>
                 </div>
@@ -192,7 +198,7 @@ if (wpjobportal::$_error_flag == null) {
                     $html .= $resumeviewlayout->getPersonalTopSection($isowner, 1);
                     $html .= '<div class="resume-section-title">
                                     <img class="heading-img" src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/personal-info.png" />
-                                    ' . __('Personal information', 'wp-job-portal') . '
+                                    ' . esc_html(__('Personal information', 'wp-job-portal')) . '
                                 </div>';
                     $html .= $resumeviewlayout->getPersonalSection(0, 1);
                     $show_section_that_have_value = wpjobportal::$_config->getConfigValue('show_only_section_that_have_value');

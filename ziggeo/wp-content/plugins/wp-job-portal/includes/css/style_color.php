@@ -21,9 +21,9 @@ function wpjpAdjustBrightness($hex, $steps) {
     // Steps should be between -255 and 255. Negative = darker, positive = lighter
     $steps = max(-255, min(255, $steps));
     // Normalize into a six character long hex string
-    $hex = str_replace('#', '', $hex);
-    if (strlen($hex) == 3) {
-        $hex = str_repeat(substr($hex, 0, 1), 2) . str_repeat(substr($hex, 1, 1), 2) . str_repeat(substr($hex, 2, 1), 2);
+    $hex = wpjobportalphplib::wpJP_str_replace('#', '', $hex);
+    if (wpjobportalphplib::wpJP_strlen($hex) == 3) {
+        $hex = wpjobportalphplib::wpJP_str_repeat(wpjobportalphplib::wpJP_substr($hex, 0, 1), 2) . wpjobportalphplib::wpJP_str_repeat(wpjobportalphplib::wpJP_substr($hex, 1, 1), 2) . wpjobportalphplib::wpJP_str_repeat(wpjobportalphplib::wpJP_substr($hex, 2, 1), 2);
     }
     // Split into three parts: R, G and B
     $color_parts = str_split($hex, 2);
@@ -58,6 +58,8 @@ $result = "
     .wjportal-show-contact-det-btn:hover {color: ".esc_attr($color7).";background: ".esc_attr($color2).";}
     div.wjportal-payment-action-wrp {border-top: 1px solid ".esc_attr($color5).";background: #fafafa;}
     div.wjportal-visitor-apply-job-message {border: 1px solid #8bb0e9;background: #c8dcfc;color: #1a3867;}
+    div.wjportal-visitor-apply-job-message {border: 1px solid #8bb0e9;background: #c8dcfc;color: #1a3867;}
+    div.visitor-apply-job-jobinforamtion-message {border: 1px solid #8bb0e9;background: #c8dcfc;color: #1a3867;}
     .wjportal-free {color: #f69292;}
     .wjportal-stripe {color: #008cdd;}
     .wjportal-paypal {color: #1e477a;}
@@ -392,6 +394,35 @@ $result = "
     div.wjportal-send-message-wrapper div.wjportal-message-history-wrp div.wjportal-msg-history div.wjportal-msg-history-cnt div.wjportal-msg-history-top span.wjportal-msg-history-status.pending {background: #f58634;}
     div.wjportal-send-message-wrapper div.wjportal-message-history-wrp div.wjportal-msg-history div.wjportal-msg-history-cnt div.wjportal-msg-history-top span.wjportal-msg-history-status.rejected {background: #ed3237;}
     div.wjportal-send-message-wrapper div.wjportal-message-history-wrp div.wjportal-msg-history div.wjportal-msg-history-cnt div.wjportal-msg-history-text {color: ".esc_attr($color3).";}
+
+
+
+
+    /***********************
+        coverletter list
+    **********************/
+    div.wjportal-coverletter-list {border: 1px solid ".esc_attr($color5).";background: ".esc_attr($color7).";}
+    div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp div.wjportal-coverletter-data div.wjportal-coverletter-title {color: ".esc_attr($color2).";}
+    div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp div.wjportal-coverletter-data div.wjportal-coverletter-info-data a.wjportal-companyname {color: ".esc_attr($color1).";}
+    div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp div.wjportal-coverletter-data div.wjportal-coverletter-info-data span.wjportal-coverletter-info-tit {color: ".esc_attr($color3).";}
+    div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp div.wjportal-coverletter-data div.wjportal-coverletter-info-data span.wjportal-coverletter-info-val {color: ".esc_attr($color2).";}
+    div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-middle-wrp div.wjportal-coverletter-data div.wjportal-coverletter-desc {color: ".esc_attr($color3).";}
+    div.wjportal-coverletter-list div.wjportal-coverletter-list-top-wrp div.wjportal-coverletter-cnt-wrp div.wjportal-coverletter-right-wrp div.wjportal-coverletter-info span.wjportal-coverletter-status {color: ".esc_attr($color7).";}
+    div.wjportal-coverletter-list div.wjportal-coverletter-list-btm-wrp {border-top: 1px solid ".esc_attr($color5).";background: #fafafa;}
+    div.wjportal-coverletter-list div.wjportal-coverletter-list-btm-wrp div.wjportal-coverletter-action-wrp a.wjportal-coverletter-act-btn {border: 1px solid ".esc_attr($color5).";background: ".esc_attr($color7).";color: ".esc_attr($color1).";}
+    div.wjportal-coverletter-list div.wjportal-coverletter-list-btm-wrp div.wjportal-coverletter-action-wrp a.wjportal-coverletter-act-btn:hover {border-color: ".esc_attr($color1).";background: ".esc_attr($color1).";color: ".esc_attr($color7).";}
+
+    /**********************
+        coverletter detail
+    **********************/
+    div.wjportal-coverletterdetail-wrapper div.wjportal-coverletter-data-wrp div.wjportal-coverletter-sec-title {color: ".esc_attr($color2).";}
+    div.wjportal-coverletterdetail-wrapper div.wjportal-coverletter-data-wrp div.wjportal-coverletter-data a.wjportal-companyname {color: ".esc_attr($color1).";}
+    div.wjportal-coverletterdetail-wrapper div.wjportal-coverletter-data-wrp div.wjportal-coverletter-data span.wjportal-coverletter-data-tit {color: ".esc_attr($color3).";}
+    div.wjportal-coverletterdetail-wrapper div.wjportal-coverletter-data-wrp div.wjportal-coverletter-data span.wjportal-coverletter-data-val {color: ".esc_attr($color2).";}
+    div.wjportal-coverletterdetail-wrapper div.wjportal-coverletter-data-wrp div.wjportal-coverletter-desc {color: ".esc_attr($color3).";}
+
+
+
 ";
 $result1 = "
 

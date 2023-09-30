@@ -23,7 +23,7 @@ class WPJOBPORTALCommonController {
                 case 'newinwpjobportal':
                     if(WPJOBPORTALincluder::getObjectClass('user')->isguest() && !$socialUser){
                         $link = get_permalink();
-                        $linktext = __('Login','wp-job-portal');
+                        $linktext = esc_html(__('Login','wp-job-portal'));
                         wpjobportal::$_error_flag_message = WPJOBPORTALLayout::setMessageFor(1 , $link , $linktext,1);
                         wpjobportal::$_error_flag = true;
                     }
@@ -31,7 +31,7 @@ class WPJOBPORTALCommonController {
             }
             $module = (wpjobportal::$_common->wpjp_isadmin()) ? 'page' : 'wpjobportalme';
             $module = WPJOBPORTALrequest::getVar($module, null, 'common');
-            $module = str_replace('wpjobportal_', '', $module);
+            $module = wpjobportalphplib::wpJP_str_replace('wpjobportal_', '', $module);
             WPJOBPORTALincluder::include_file($layout, $module);
         }
     }
@@ -164,7 +164,7 @@ class WPJOBPORTALCommonController {
             }
             $data['desired_layout'] = 'controlpanel';
         }
-        $url = wpjobportal::makeUrl(array('wpjobportalme'=>$data['desired_module'], 'wpjobportallt'=>$data['desired_layout']));
+        $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>$data['desired_module'], 'wpjobportallt'=>$data['desired_layout']));
         $msg = WPJOBPORTALMessages::getMessage($result, 'userrole');
         WPJOBPORTALMessages::setLayoutMessage($msg['message'], $msg['status'],$this->_msgkey);
         wp_redirect($url);

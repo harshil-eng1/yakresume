@@ -1,8 +1,8 @@
 === Resume Manager ===
-Contributors: mikejolley, kraftbj, tripflex, danjjohnson, aheckler, bryceadams, fitoussi, jakeom, alexsanford1
-Requires at least: 4.7
-Tested up to: 5.3
-Stable tag: 1.18.1
+Contributors: mikejolley, kraftbj, tripflex, danjjohnson, aheckler, bryceadams, fitoussi, jakeom, alexsanford1, onubrooks
+Requires at least: 5.0
+Tested up to: 6.2
+Stable tag: 1.19.0
 License: GNU General Public License v3.0
 
 Manage candidate resumes from the WordPress admin panel, and allow candidates to post their resumes directly to your site.
@@ -28,6 +28,42 @@ If you need help with customisation you will need to find and hire a developer c
 To install this plugin, please refer to the guide here: [http://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation](http://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation)
 
 == Changelog ==
+
+= 1.19.0 =
+- Dev: Added author support for the Post Type just like WPJM core
+- Fix: Fixed a typo in the installation text
+- Fix: Fix phpcs dependency issues
+- Fix: Template security improvements
+- Dev: Add language pack deploy command
+- Fix: Remove unused jQuery dependencies
+- Fix: Update jQuery deprecated functions
+- Dev: Add action to save resume skills to postmeta
+- Fix: Fix extra whitespace in 'Apply with Resume' textarea
+- Fix: Add user login to correct method call
+
+= 1.18.6 =
+- Fix: Ajax search check isset() like core for search fields
+
+= 1.18.5 =
+- Bump tested up to version to 5.8.
+- Dev: Improve the handling of meta data and add REST support. (@Gnodesign)
+- Dev: Add filters for [resumes] shortcode output, matching WP Job Manager core. (@tripflex)
+- Change: Use the new wp_robots filter when it's available instead of wp_no_robots().
+- Fix: Make category dropdown automatically resize based on window width on resumes page.
+- Feature: New skills input to search for resumes by skills on the frontend.
+- Feature: Ability to sort by skills and featured columns on admin.
+
+= 1.18.4 =
+- Fix: Add latitude and longitude on resume listing element to match WPJM core. (@tripflex)
+- Fix: Use standard WordPress search to fix issue with MySQL 8.
+
+= 1.18.3 =
+- Fix: jQuery 3.x compatibility.
+
+= 1.18.2 =
+- Fix: Remove resumes from WordPress 5.5 sitemaps.
+- Change: Redirect if user doesn't have access to resume post type page.
+- Dev: Add filter (`resume_manager_force_shortcode_action_handler`) to force shortcode action handler to run.
 
 = 1.18.1 =
 - Fix: Issue with guests being able to submit resumes.

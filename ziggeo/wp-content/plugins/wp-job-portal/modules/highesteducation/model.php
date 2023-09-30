@@ -106,7 +106,7 @@ class WPJOBPORTALHighesteducationModel {
             return WPJOBPORTAL_ALREADY_EXIST;
 
         $row = WPJOBPORTALincluder::getJSTable('highesteducation');
-        $data = filter_var_array($data, FILTER_SANITIZE_STRING);
+        $data = wpjobportal::wpjobportal_sanitizeData($data);
         $data = wpjobportal::$_common->stripslashesFull($data);// remove slashes with quotes.
         if (!$row->bind($data)) {
             return WPJOBPORTAL_SAVE_ERROR;
@@ -246,7 +246,7 @@ class WPJOBPORTALHighesteducationModel {
             return false;
         }
         $sorted_array = array();
-        parse_str($data['fields_ordering_new'],$sorted_array);
+        wpjobportalphplib::wpJP_parse_str($data['fields_ordering_new'],$sorted_array);
         $sorted_array = reset($sorted_array);
         if(!empty($sorted_array)){
             $row = WPJOBPORTALincluder::getJSTable('highesteducation');
@@ -265,7 +265,7 @@ class WPJOBPORTALHighesteducationModel {
         for ($i=0; $i < count($sorted_array) ; $i++) {
             $row->update(array('id' => $sorted_array[$i], $ordering_coloumn => $page_multiplier + $i));
         }
-        WPJOBPORTALMessages::setLayoutMessage(__('Ordering updated', 'wpjobportal'), 'updated', $this->getMessagekey());
+        WPJOBPORTALMessages::setLayoutMessage(esc_html(__('Ordering updated', 'wp-job-portal')), 'updated', $this->getMessagekey());
         return ;
     }
     // End Function
@@ -283,8 +283,9 @@ class WPJOBPORTALHighesteducationModel {
         $jsjp_search_array = array();
         $wpjp_search_cookie_data = '';
         if(isset($_COOKIE['jsjp_jobportal_search_data'])){
-            $wpjp_search_cookie_data = filter_var($_COOKIE['jsjp_jobportal_search_data'], FILTER_SANITIZE_STRING);
-            $wpjp_search_cookie_data = json_decode( base64_decode($wpjp_search_cookie_data) , true );
+            $wpjp_search_cookie_data = filter_var($_COOKIE['jsjp_jobportal_search_data']);
+            $wpjp_search_cookie_data = wpjobportalphplib::wpJP_safe_decoding($wpjp_search_cookie_data);
+            $wpjp_search_cookie_data = json_decode( $wpjp_search_cookie_data , true );
         }
         if($wpjp_search_cookie_data != '' && isset($wpjp_search_cookie_data['search_from_knowledge']) && $wpjp_search_cookie_data['search_from_knowledge'] == 1){
             $jsjp_search_array['title'] = $wpjp_search_cookie_data['title'];

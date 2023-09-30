@@ -4,6 +4,8 @@
  * @param company  company object - optional
  * @param Default Parameters
  */
+if (!defined('ABSPATH'))
+    die('Restricted Access');
 if (!isset($job)) {
     $job = null;
 }
@@ -18,7 +20,7 @@ foreach($fields AS $field){
     $content = '';
    switch ($field->field) {
         case "jobtitle":
-            $content = WPJOBPORTALformfield::text('title', isset($job->title) ? $job->title : '', array('class' => 'inputbox wjportal-form-input-field', 'data-validation' => $field->validation,'placeholder'=> __($field->placeholder,'wp-job-portal')));
+            $content = WPJOBPORTALformfield::text('title', isset($job->title) ? $job->title : '', array('class' => 'inputbox wjportal-form-input-field', 'data-validation' => $field->validation,'placeholder'=> wpjobportal::wpjobportal_getVariableValue($field->placeholder)));
         break;
         case 'jobcategory':
             $content = WPJOBPORTALformfield::select('jobcategory', WPJOBPORTALincluder::getJSModel('category')->getCategoryForCombobox(), isset($job->jobcategory)  ? $job->jobcategory : WPJOBPORTALincluder::getJSModel('category')->getDefaultCategoryId(), $field->placeholder, array('class' => 'inputbox wjportal-form-select-field', 'data-validation' => $field->validation));
@@ -27,14 +29,14 @@ foreach($fields AS $field){
             $uid = WPJOBPORTALincluder::getObjectClass('user')->uid();
             if(!WPJOBPORTALincluder::getObjectClass('user')->isguest()){
                 if (is_admin()) {
-                    $content = WPJOBPORTALformfield::select('companyid', WPJOBPORTALincluder::getJSModel('company')->getCompaniesForCombo(), isset($job->companyid) ? $job->companyid : 0, __('Select','wp-job-portal') .' '. __('Company','wp-job-portal'), array('class' => 'inputbox wjportal-form-select-field', 'data-validation' => $field->validation));
+                    $content = WPJOBPORTALformfield::select('companyid', WPJOBPORTALincluder::getJSModel('company')->getCompaniesForCombo(), isset($job->companyid) ? $job->companyid : 0, esc_html(__('Select','wp-job-portal')) .' '. esc_html(__('Company','wp-job-portal')), array('class' => 'inputbox wjportal-form-select-field', 'data-validation' => $field->validation));
                 } else {
                     if(in_array('multicompany',wpjobportal::$_active_addons)){
                        if(WPJOBPORTALincluder::getObjectClass('user')->isemployer()){
                             if (WPJOBPORTALincluder::getJSModel('company')->employerHaveCompany($uid)) {
-                                $content = WPJOBPORTALformfield::select('companyid', WPJOBPORTALincluder::getJSModel('company')->getCompanyForCombo($uid), isset($job->companyid) ? $job->companyid : '', __('Select','wp-job-portal') .' '. __('Company', 'wp-job-portal'), array('class' => 'inputbox wjportal-form-select-field', 'onchange' => 'getdepartments(\'departmentid\', this.value);', 'data-validation' => $field->validation));
+                                $content = WPJOBPORTALformfield::select('companyid', WPJOBPORTALincluder::getJSModel('company')->getCompanyForCombo($uid), isset($job->companyid) ? $job->companyid : '', esc_html(__('Select','wp-job-portal')) .' '. esc_html(__('Company', 'wp-job-portal')), array('class' => 'inputbox wjportal-form-select-field', 'onchange' => 'getdepartments(\'departmentid\', this.value);', 'data-validation' => $field->validation));
                             } else {
-                                $content = '<a href="'.wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'addcompany')).'">' . __('Add','wp-job-portal').' '. __('Company', 'wp-job-portal') . '</a><input type="hidden" name="companyid" id="companyid" data-validation="required" />';
+                                $content = '<a href="'.wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'addcompany')).'">' . esc_html(__('Add','wp-job-portal')).' '. esc_html(__('Company', 'wp-job-portal')) . '</a><input type="hidden" name="companyid" id="companyid" data-validation="required" />';
                             }
                         }
                     }else{
@@ -45,7 +47,7 @@ foreach($fields AS $field){
                          $content = "<div class='wjportal-form-text'>".$companyname ." </div>";
                             WPJOBPORTALformfield::hidden('companyid',$companyid);
                         }else{
-                              $content = '<a href="'.wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'addcompany')).'">' . __('Add','wp-job-portal').' '. __('Company', 'wp-job-portal') . '</a><input type="hidden" name="companyid" id="companyid" data-validation="required" />';
+                              $content = '<a href="'.wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'addcompany')).'">' . esc_html(__('Add','wp-job-portal')).' '. esc_html(__('Company', 'wp-job-portal')) . '</a><input type="hidden" name="companyid" id="companyid" data-validation="required" />';
                         }
                         
                     }
@@ -66,7 +68,7 @@ foreach($fields AS $field){
             $content .= "</div>";
         break;
         case 'experience':
-            $content = WPJOBPORTALformfield::text('experience', $job ? $job->experience : '', array('class' => 'inputbox wjportal-form-input-field','placeholder'=> __($field->placeholder,'wp-job-portal')));
+            $content = WPJOBPORTALformfield::text('experience', $job ? $job->experience : '', array('class' => 'inputbox wjportal-form-input-field','placeholder'=> wpjobportal::wpjobportal_getVariableValue($field->placeholder)));
         break;
         case 'map':
             if(in_array('addressdata', wpjobportal::$_active_addons)){
@@ -89,13 +91,13 @@ foreach($fields AS $field){
             $content = WPJOBPORTALformfield::select('jobtype', WPJOBPORTALincluder::getJSModel('jobtype')->getJobTypeForCombo(), isset($job->jobtype) ? $job->jobtype : WPJOBPORTALincluder::getJSModel('jobtype')->getDefaultJobTypeId(), $field->placeholder, array('class' => 'inputbox wjportal-form-select-field', 'data-validation' => $field->validation));
             break;
         case 'noofjobs':
-            $content = WPJOBPORTALformfield::text('noofjobs', isset($job->noofjobs) ? $job->noofjobs : '', array('class' => 'inputbox one wjportal-form-input-field', 'data-validation' => $field->validation,'placeholder'=> __($field->placeholder,'wp-job-portal')));
+            $content = WPJOBPORTALformfield::text('noofjobs', isset($job->noofjobs) ? $job->noofjobs : '', array('class' => 'inputbox one wjportal-form-input-field', 'data-validation' => $field->validation,'placeholder'=> wpjobportal::wpjobportal_getVariableValue($field->placeholder)));
             break;
         case 'jobstatus':
             $content = WPJOBPORTALformfield::select('jobstatus', WPJOBPORTALincluder::getJSModel('jobstatus')->getJobStatusForCombo(), isset($job->jobstatus) ? $job->jobstatus : WPJOBPORTALincluder::getJSModel('jobstatus')->getDefaultJobStatusId(), $field->placeholder, array('class' => 'inputbox wjportal-form-select-field', 'data-validation' => $field->validation));
             break;
         case 'duration':
-            $content = WPJOBPORTALformfield::text('duration', isset($job->duration) ? $job->duration : '', array('class' => 'inputbox wjportal-form-input-field', 'data-validation' => $field->validation,'placeholder'=> __($field->placeholder,'wp-job-portal')));
+            $content = WPJOBPORTALformfield::text('duration', isset($job->duration) ? $job->duration : '', array('class' => 'inputbox wjportal-form-input-field', 'data-validation' => $field->validation,'placeholder'=> wpjobportal::wpjobportal_getVariableValue($field->placeholder)));
             break;
         case 'description':
             $content = WPJOBPORTALformfield::editor('description', isset($job->description) ? $job->description : '', array('class' => 'inputbox one wjportal-form-textarea-field'));

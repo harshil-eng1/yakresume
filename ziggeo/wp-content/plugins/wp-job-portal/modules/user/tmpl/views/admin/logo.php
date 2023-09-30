@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
 * @param wp job portal Logo
@@ -19,7 +20,7 @@ switch ($layout) {
 		}
 		$html.= '<div class="wpjobportal-user-logo">
                     <a href='. admin_url('admin.php?page=wpjobportal_user&wpjobportallt=userdetail&id='.$user->id).'>
-                    	<img src='. $photo .' '. $padding .' alt='.__("logo","wp-job-portal").'>
+                    	<img src='. $photo .' '. $padding .' alt='.esc_html(__("logo","wp-job-portal")).'>
                     </a>
                 </div>';
 		break;

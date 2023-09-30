@@ -77,6 +77,19 @@ class WP_Job_Manager_Applications_Settings extends WP_Job_Manager_Settings {
 							'desc'     => __( 'If enabled, the apply form will be hidden after applying.', 'wp-job-manager-applications' ),
 							'type'     => 'checkbox',
 						],
+						[
+							'name'       => 'job_application_show_agreement_application_submission',
+							'std'        => '0',
+							'label'      => __( 'Terms and Conditions Checkbox', 'wp-job-manager-applications' ),
+							'cb_label'   => __( 'Enable required Terms and Conditions checkbox on the form', 'wp-job-manager-applications' ),
+							'desc'       => sprintf(
+								// translators: Placeholder %s is the URL to the page in WP Job Manager's settings to set the pages.
+								__( 'Require a Terms and Conditions checkbox to be marked before an application can be submitted. The linked page can be set from the <a href="%s">WP Job Manager\'s settings</a>.', 'wp-job-manager-applications' ),
+								esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-settings#settings-job_pages' ) )
+							),
+							'type'       => 'checkbox',
+							'attributes' => [],
+						],
 						'recaptcha' => [
 							'name'       => 'job_application_enable_recaptcha_application_submission',
 							'std'        => '0',
@@ -124,6 +137,18 @@ class WP_Job_Manager_Applications_Settings extends WP_Job_Manager_Settings {
 							),
 							'type'       => 'checkbox',
 							'attributes' => [],
+						],
+					],
+				],
+				'application_pages'      => [
+					__( 'Pages', 'wp-job-manager-applications' ),
+					[
+						[
+							'name'  => 'job_application_past_applications_page_id',
+							'std'   => '',
+							'label' => __( 'Past Applications Page', 'wp-job-manager-applications' ),
+							'desc'  => __( 'Select the page where you\'ve used the <code>[past_applications]</code> shortcode. This lets the plugin know the location of the page.', 'wp-job-manager-applications' ),
+							'type'  => 'page',
 						],
 					],
 				],

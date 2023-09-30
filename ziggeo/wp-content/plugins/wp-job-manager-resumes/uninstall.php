@@ -30,6 +30,7 @@ $options = array(
 	'resume_manager_contact_resume_capability',
 	'resume_manager_submit_page_slug',
 	'resume_manager_generate_username_from_email',
+	'resume_manager_show_agreement_resume_submission',
 );
 
 foreach ( $options as $option ) {

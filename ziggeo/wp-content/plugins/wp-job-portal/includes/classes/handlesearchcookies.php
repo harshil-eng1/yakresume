@@ -10,7 +10,7 @@ class WPJOBPORTALhandlesearchcookies {
 
     function __construct( ) {
         $this->_jsjp_search_array = array();
-        $this->_callfrom = 3;
+        $this->_callfrom = 3; // 3 means cookies will be reset
         $this->_setcookies = false;
         $this->init();
     }
@@ -18,24 +18,29 @@ class WPJOBPORTALhandlesearchcookies {
     function init(){
         $isadmin = wpjobportal::$_common->wpjp_isadmin();
         $jstlay = '';
-        if(isset($_REQUEST['page'])){
-            $jstlay = filter_var($_REQUEST['page'], FILTER_SANITIZE_STRING);
-        }elseif(isset($_REQUEST['wpjobportallt'])){
-            $jstlay = filter_var($_REQUEST['wpjobportallt'], FILTER_SANITIZE_STRING);
-        }elseif(isset($_REQUEST['wpjobportallay'])){
-            $jstlay = filter_var($_REQUEST['wpjobportallay'], FILTER_SANITIZE_STRING);
+        $page = WPJOBPORTALrequest::getVar('page');
+        $wpjobportallt = WPJOBPORTALrequest::getVar('wpjobportallt');
+        $wpjobportallay = WPJOBPORTALrequest::getVar('wpjobportallay');
+        if($page != '' ){ // page is for admin case
+            $jstlay = $page;
+        }elseif($wpjobportallt !=''){// for layouts
+            $jstlay = $wpjobportallt;
+        }elseif($wpjobportallay !=''){ // is for search, pagiantion and top sorting case
+            $jstlay = $wpjobportallay;
         }
 
-        $layoutname = explode("wpjobportal_", $jstlay);
+        $layoutname = wpjobportalphplib::wpJP_explode("wpjobportal_", $jstlay);// admin page has wpjobportal_ prefix
         if(isset($layoutname[1])){
             $jstlay = $layoutname[1];
         }
 
-        if(isset($_REQUEST['WPJOBPORTAL_form_search']) && $_REQUEST['WPJOBPORTAL_form_search'] == 'WPJOBPORTAL_SEARCH'){
+        $from_search = WPJOBPORTALrequest::getVar('WPJOBPORTAL_form_search');
+        if( $from_search != '' && $from_search == 'WPJOBPORTAL_SEARCH'){ // search form is submitted set callfrom =1 to set values in cookie
             $this->_callfrom = 1;
-        }elseif(WPJOBPORTALrequest::getVar('pagenum', 'get', null) != null){
+        }elseif(WPJOBPORTALrequest::getVar('pagenum', 'get', null) != null){ // pagination case
             $this->_callfrom = 2;
         }
+
         switch($jstlay){
             case 'jobs':
             case 'job':
@@ -51,10 +56,10 @@ class WPJOBPORTALhandlesearchcookies {
             case 'activitylog': // For activity log
                 $this->searchFormDataForCommonData($jstlay);
             break;
-            case 'mycompany': // For employer case
-            case 'company': // For admin case
-                $this->searchFormDataForCompanies();
-            break;
+            // case 'mycompany': // For employer case
+            // case 'company': // For admin case
+            //     $this->searchFormDataForCompanies();
+            // break;
             case 'careerlevel':
                 if(is_admin())
                     $this->searchFormDataForCareerLevel();
@@ -84,13 +89,27 @@ class WPJOBPORTALhandlesearchcookies {
                     $this->setSearchFormData($jstlay);
                 }
             break;
+            case 'departments':
+            case 'jobapply':
+            case 'coverletter':
+            case 'invoice':
+            case 'purchasehistory':
+            case 'folder':
+            case 'jobalert':
+            case 'message':
+            case 'company':
+            case 'mycompany':
+            case 'tag':
+                    $this->setSearchFormDataAdminListing();
+            break;
+
             default:
                 wpjobportal::removeusersearchcookies();
             break;
         }
 
         if($this->_setcookies){
-            wpjobportal::setusersearchcookies($this->_setcookies,$this->_jsjp_search_array);
+            wpjobportal::wpjobportal_setusersearchcookies($this->_setcookies,$this->_jsjp_search_array);
         }
     }
 
@@ -209,6 +228,17 @@ class WPJOBPORTALhandlesearchcookies {
         }
         WPJOBPORTALincluder::getJSModel($module)->setSearchVariableForSearch($this->_jsjp_search_array);
     }
+
+    private function setSearchFormDataAdminListing(){
+        if($this->_callfrom == 1){
+            $this->_jsjp_search_array = WPJOBPORTALincluder::getJSModel('common')->getSearchFormDataAdmin();
+            $this->_setcookies = true;
+        }elseif($this->_callfrom == 2){
+            $this->_jsjp_search_array = WPJOBPORTALincluder::getJSModel('common')->getCookiesSavedAdmin();
+        }
+        WPJOBPORTALincluder::getJSModel('common')->setSearchVariableAdmin($this->_jsjp_search_array);
+    }
+
 }
 
 ?>

@@ -110,9 +110,10 @@ class WPJOBPORTALEmployerModel {
                 WHERE company.uid = " . $uid;
         if(wpjobportal::$theme_chk == 1){
             $query .= " ORDER BY company.created DESC LIMIT 0,5";
-            wpjobportal::$_data[0] = wpjobportaldb::get_results($query); 
+            // setting data to $_data[0] was causing issues
+            $result_data = wpjobportaldb::get_results($query);
             $data = array();
-            foreach (wpjobportal::$_data[0] AS $d) {
+            foreach ($result_data AS $d) {
                 $d->location = WPJOBPORTALincluder::getJSModel('city')->getLocationDataForView($d->city); 
                 $data[] = $d;
             }
@@ -200,10 +201,10 @@ class WPJOBPORTALEmployerModel {
          WHERE `id`>0 LIMIT 0,3";
          $data = wpjobportaldb::get_results($query);
          wpjobportal::$_data['jobtype']=$data;
-         $html = "['" . __('Dates', 'wp-job-portal') . "'";
+         $html = "['" . esc_html(__('Dates', 'wp-job-portal')) . "'";
          ///Days Section In Graph
           foreach (wpjobportal::$_data['jobtype'] as $key ) {
-            $html .= ",'". __($key->title,'wp-job-portal')."'";
+            $html .= ",'". wpjobportal::wpjobportal_getVariableValue($key->title)."'";
             $jobtype[] = $key->id;
         }
         $query = "SELECT count(jobapply.id) AS job,MONTH(jobapply.apply_date) AS MONTH, YEAR(jobapply.apply_date) AS YEAR ,type.id AS jobtype
@@ -225,7 +226,7 @@ class WPJOBPORTALEmployerModel {
                 $prev_workstations = $crm_workstations;
                $crm_workstations;
             }
-           if(mb_strlen($parent->MONTH) <= 1){
+           if(wpjobportalphplib::wpJP_strlen($parent->MONTH) <= 1){
            $parent->MONTH = '0'.$parent->MONTH;
            }
             wpjobportal::$_data['datachart'][$crm_workstations][$parent->YEAR][$parent->MONTH] = $parent->job;
@@ -236,12 +237,12 @@ class WPJOBPORTALEmployerModel {
          ///////*****TO Show All Month Till Last Month ****////////
          for ($i=0; $i<=11; $i++) {
                 $Date = date('Y-m', strtotime("-$i month"));
-                $Time = explode('-',$Date);
+                $Time = wpjobportalphplib::wpJP_explode('-',$Date);
                 $Month = $Time[1];
                 $Year = $Time[0];
                 $dateObj = DateTime::createFromFormat('!m', $Month);
                 $monthName = $dateObj->format('F');
-                $MonthName = $monthName.'-'.substr($Year,-2);
+                $MonthName = $monthName.'-'.wpjobportalphplib::wpJP_substr($Year,-2);
                 /////******Passing Data To Graph*********//////////
                 $FullTime = isset(wpjobportal::$_data['jobtype'][0]->id) ? wpjobportal::$_data['jobtype'][0]->id : null;
                 $PartTime = isset(wpjobportal::$_data['jobtype'][1]->id) ? wpjobportal::$_data['jobtype'][1]->id : null;

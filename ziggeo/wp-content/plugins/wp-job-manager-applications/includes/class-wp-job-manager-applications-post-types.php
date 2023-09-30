@@ -21,6 +21,7 @@ class WP_Job_Manager_Applications_Post_Types {
 		add_filter( 'wpjm_the_job_title', [ $this, 'already_applied_title' ], 10, 2 );
 		add_action( 'single_job_listing_meta_after', [ $this, 'already_applied_message' ] );
 		add_action( 'init', [ $this, 'register_post_types' ], 20 );
+		add_action( 'init', [ $this, 'register_meta_fields' ], 20 );
 		if ( get_option( 'job_application_delete_with_job', 0 ) ) {
 			add_action( 'delete_post', [ $this, 'delete_post' ] );
 			add_action( 'wp_trash_post', [ $this, 'trash_post' ] );
@@ -68,6 +69,14 @@ class WP_Job_Manager_Applications_Post_Types {
 	 * register_post_types function.
 	 */
 	public function register_post_types() {
+		$this->register_application_post_type();
+		$this->register_application_form_post_type();
+	}
+
+	/**
+	 * Register Job Application post type and statuses.
+	 */
+	public function register_application_post_type() {
 		if ( post_type_exists( 'job_application' ) ) {
 			return;
 		}
@@ -80,23 +89,7 @@ class WP_Job_Manager_Applications_Post_Types {
 			apply_filters(
 				'register_post_type_job_application',
 				[
-					'labels'              => [
-						'name'               => $plural,
-						'singular_name'      => $singular,
-						'menu_name'          => $plural,
-						'all_items'          => sprintf( __( 'All %s', 'wp-job-manager-applications' ), $plural ),
-						'add_new'            => __( 'Add New', 'wp-job-manager-applications' ),
-						'add_new_item'       => sprintf( __( 'Add %s', 'wp-job-manager-applications' ), $singular ),
-						'edit'               => __( 'Edit', 'wp-job-manager-applications' ),
-						'edit_item'          => sprintf( __( 'Edit %s', 'wp-job-manager-applications' ), $singular ),
-						'new_item'           => sprintf( __( 'New %s', 'wp-job-manager-applications' ), $singular ),
-						'view'               => sprintf( __( 'View %s', 'wp-job-manager-applications' ), $singular ),
-						'view_item'          => sprintf( __( 'View %s', 'wp-job-manager-applications' ), $singular ),
-						'search_items'       => sprintf( __( 'Search %s', 'wp-job-manager-applications' ), $plural ),
-						'not_found'          => sprintf( __( 'No %s found', 'wp-job-manager-applications' ), $plural ),
-						'not_found_in_trash' => sprintf( __( 'No %s found in trash', 'wp-job-manager-applications' ), $plural ),
-						'parent'             => sprintf( __( 'Parent %s', 'wp-job-manager-applications' ), $singular ),
-					],
+					'labels'              => $this->create_post_type_labels( $singular, $plural ),
 					'description'         => __( 'This is where you can edit and view applications.', 'wp-job-manager-applications' ),
 					'public'              => false,
 					'show_ui'             => true,
@@ -135,6 +128,95 @@ class WP_Job_Manager_Applications_Post_Types {
 				)
 			);
 		}
+	}
+
+	/**
+	 * Register Application Form post type.
+	 */
+	public function register_application_form_post_type() {
+		if ( post_type_exists( 'job_application_form' ) ) {
+			return;
+		}
+
+		$plural   = __( 'Application Forms', 'wp-job-manager-applications' );
+		$singular = __( 'Application Form', 'wp-job-manager-applications' );
+
+		register_post_type(
+			'job_application_form',
+			apply_filters(
+				'register_post_type_job_application_form',
+				[
+					'labels'              => array_merge(
+						$this->create_post_type_labels( $singular, $plural ), [
+						'all_items' => $plural,
+					]),
+					'description'         => __( 'This is where you can edit and view application forms.', 'wp-job-manager-applications' ),
+					'public'              => false,
+					'show_ui'             => true,
+					'capabilities'        => [
+						'edit_post'              => 'manage_options',
+						'read_post'              => 'manage_options',
+						'delete_post'            => 'manage_options',
+						'edit_posts'             => 'manage_options',
+						'edit_others_posts'      => 'manage_options',
+						'publish_posts'          => 'manage_options',
+						'read_private_posts'     => 'manage_options',
+						'delete_posts'           => 'manage_options',
+						'delete_private_posts'   => 'manage_options',
+						'delete_published_posts' => 'manage_options',
+						'delete_others_posts'    => 'manage_options',
+						'edit_private_posts'     => 'manage_options',
+						'edit_published_posts'   => 'manage_options',
+					],
+					'map_meta_cap'        => false,
+					'publicly_queryable'  => false,
+					'exclude_from_search' => true,
+					'hierarchical'        => false,
+					'rewrite'             => false,
+					'query_var'           => false,
+					'supports'            => [ 'title' ],
+					'has_archive'         => false,
+					'show_in_nav_menus'   => false,
+					'delete_with_user'    => false,
+					'menu_position'       => 32,
+					'show_in_menu'        => 'edit.php?post_type=job_application',
+				]
+			)
+		);
+	}
+
+	private function create_post_type_labels( $singular, $plural ) {
+
+		$lower_case_plural = function_exists( 'mb_strtolower' ) ? mb_strtolower( $plural, 'UTF-8' ) : strtolower( $plural );
+
+		$labels = [
+			'name'               => $plural,
+			'singular_name'      => $singular,
+			'add_new'            => __( 'Add New', 'sensei-lms' ),
+			// translators: Placeholder is the singular post type label.
+			'add_new_item'       => sprintf( __( 'Add New %s', 'sensei-lms' ), $singular ),
+			'edit'               => __( 'Edit', 'wp-job-manager-applications' ),
+			// translators: Placeholder is the item title/name.
+			'edit_item'          => sprintf( __( 'Edit %s', 'sensei-lms' ), $singular ),
+			// translators: Placeholder is the singular post type label.
+			'new_item'           => sprintf( __( 'New %s', 'sensei-lms' ), $singular ),
+			// translators: Placeholder is the plural post type label.
+			'all_items'          => sprintf( __( 'All %s', 'wp-job-manager-applications' ), $plural ),
+			// translators: Placeholder is the singular post type label.
+			'view'               => sprintf( __( 'View %s', 'wp-job-manager-applications' ), $singular ),
+			// translators: Placeholder is the singular post type label.
+			'view_item'          => sprintf( __( 'View %s', 'sensei-lms' ), $singular ),
+			// translators: Placeholder is the plural post type label.
+			'search_items'       => sprintf( __( 'Search %s', 'sensei-lms' ), $plural ),
+			// translators: Placeholder is the lower-case plural post type label.
+			'not_found'          => sprintf( __( 'No %s found', 'sensei-lms' ), $lower_case_plural ),
+			// translators: Placeholder is the lower-case plural post type label.
+			'not_found_in_trash' => sprintf( __( 'No %s found in Trash', 'sensei-lms' ), $lower_case_plural ),
+			'parent'             => sprintf( __( 'Parent %s', 'wp-job-manager-applications' ), $singular ),
+			'menu_name'          => $plural,
+		];
+
+		return $labels;
 	}
 
 	/**
@@ -328,6 +410,159 @@ class WP_Job_Manager_Applications_Post_Types {
 		}
 
 		return $classes;
+	}
+
+	/**
+	 * Register application form meta fields.
+	 */
+	public function register_meta_fields() {
+		$fields = self::get_application_form_meta_fields();
+
+		foreach ( $fields as $meta_key => $field ) {
+			register_post_meta(
+				'job_application_form',
+				$meta_key,
+				[
+					'type'              => $field['data_type'],
+					'show_in_rest'      => $field['show_in_rest'],
+					'description'       => $field['label'],
+					'sanitize_callback' => $field['sanitize_callback'],
+					'auth_callback'     => $field['auth_callback'],
+					'single'            => true,
+					'show_in_admin'     => $field['show_in_admin'],
+				]
+			);
+		}
+	}
+
+	/**
+	 * Returns configuration for custom fields on Application Form posts.
+	 *
+	 * @return array
+	 */
+	public static function get_application_form_meta_fields() {
+		$default_field = [
+			'description'        => null,
+			'default'            => null,
+			'type'               => 'text',
+			'show_in_rest'       => false,
+			'auth_callback'      => [ __CLASS__, 'auth_check_can_edit_forms' ],//p
+			'sanitize_callback'  => [ __CLASS__, 'sanitize_meta_field_based_on_input_type' ],//p
+		];
+
+
+		$fields = [
+			'_form_fields'            => [
+				'label'             => __( 'Form Fields', 'wp-job-manager-applications' ),
+				'placeholder'       => '',
+				'description'       => '',
+				'priority'          => 1,
+				'data_type'         => 'array',
+				'sanitize_callback' => null,
+				'show_in_admin'     => true,
+				'show_in_rest'      => false,
+			],
+			'_employer_email_subject' => [
+				'label'         => __( 'Employer Email Subject', 'wp-job-manager-applications' ),
+				'placeholder'   => '',
+				'description'   => '',
+				'priority'      => 1,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => false,
+			],
+			'_employer_email_content'    => [
+				'label'         => __( 'Employer Email Content', 'wp-job-manager-applications' ),
+				'placeholder'   => '',
+				'description'   => '',
+				'priority'      => 1,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => false,
+			],
+			'_candidate_email_subject'    => [
+				'label'         => __( 'Candidate Email Subject', 'wp-job-manager-applications' ),
+				'placeholder'   => '',
+				'description'   => '',
+				'priority'      => 1,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => false,
+			],
+			'_candidate_email_content'    => [
+				'label'         => __( 'Candidate Email Content', 'wp-job-manager-applications' ),
+				'placeholder'   => '',
+				'description'   => '',
+				'priority'      => 1,
+				'data_type'     => 'string',
+				'show_in_admin' => true,
+				'show_in_rest'  => false,
+			],
+		];
+
+		// Set default fields.
+		foreach ( $fields as $key => $field ) {
+			$fields[ $key ] = array_merge( $default_field, $field );
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Checks if user can edit application forms.
+	 *
+	 * @param bool   $allowed   Whether the user can edit the meta.
+	 * @param string $meta_key  The meta key.
+	 * @param int    $post_id   Post ID.
+	 * @param int    $user_id   User ID.
+	 *
+	 * @return bool Whether the user can edit the meta.
+	 */
+	public static function auth_check_can_edit_forms( $allowed, $meta_key, $post_id, $user_id ) {
+		return current_user_can( 'manage_options' );
+	}
+
+	/**
+	 * Sanitize meta fields based on input type.
+	 *
+	 * @param mixed  $meta_value Value of meta field that needs sanitization.
+	 * @param string $meta_key   Meta key that is being sanitized.
+	 * @return mixed
+	 */
+	public static function sanitize_meta_field_based_on_input_type( $meta_value, $meta_key ) {
+		$fields = self::get_application_form_meta_fields();
+
+		if ( is_string( $meta_value ) ) {
+			$meta_value = trim( $meta_value );
+		}
+
+		$type = 'text';
+		if ( isset( $fields[ $meta_key ] ) ) {
+			$type = $fields[ $meta_key ]['type'];
+		}
+
+		if (
+			'textarea' === $type ||
+			'wp_editor' === $type ||
+			'_candidate_email_content' === $meta_key ||
+			'_employer_email_content' === $meta_key
+		) {
+			return wp_kses_post( wp_unslash( $meta_value ) );
+		}
+
+		if ( 'checkbox' === $type ) {
+			if ( $meta_value && '0' !== $meta_value ) {
+				return 1;
+			}
+
+			return 0;
+		}
+
+		if ( is_array( $meta_value ) ) {
+			return array_filter( array_map( 'sanitize_text_field', $meta_value ) );
+		}
+
+		return sanitize_text_field( $meta_value );
 	}
 
 }

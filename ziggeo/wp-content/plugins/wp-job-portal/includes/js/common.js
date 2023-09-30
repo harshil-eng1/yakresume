@@ -49,7 +49,7 @@ jQuery(document).ready(function () {
     //Close Payment PopUp
     jQuery("#wjportal-popup-close-btn, .modal-backdrop").click(function (e) {
         jQuery("div#wjportal-popup-background").hide();
-        jQuery("#payment-popup, #package-popup").slideUp('slow');
+        jQuery("#payment-popup, #package-popup, .wjportal-popup-wrp").slideUp('slow');
     });
 
     
@@ -134,8 +134,7 @@ function wpjobportalPopup(actionname, id) {
     var anchorid = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : '';
     var themecall = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : null;
     var pageid = arguments.length > 5 && arguments[5] !== undefined ? arguments[5] : null;
-    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax_popup', task: actionname, id: id, srcid: srcid,
-     anchorid: anchorid, themecall: themecall, wpjobportal_pageid: pageid }, function (data) {
+    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax_popup', task: actionname, id: id, srcid: srcid, anchorid: anchorid, themecall: themecall, wpjobportal_pageid: pageid, js_nonce: common.js_nonce }, function (data) {
         if (data) {
             if (null != themecall) {
                 jQuery("div#" + common.theme_chk_prefix + "-popup").html('');
@@ -198,8 +197,7 @@ function wpjobportalPopupAdmin(actionname, id, srcid, anchorid, payment) {
             return false;
     }
     var modal = jQuery('#package').val();
-    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax_popup', 
-        task: actionname, id: id, srcid: srcid, anchorid: anchorid, isadmin: 1, payment: payment, userid: userid,module:modal }, function (data) {
+    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax_popup', task: actionname, id: id, srcid: srcid, anchorid: anchorid, isadmin: 1, payment: payment, userid: userid,module:modal, js_nonce: common.js_nonce}, function (data) {
         if (data) {
             jQuery("body").append(data);
             jQuery("div#wpjobportal-popup-background").show().click(function () {
@@ -255,7 +253,11 @@ function wpjobportalClosePopup() {
         bkpop_div = "div#wpjobportal-popup-background";
     }
     jQuery(popup_div).slideUp();
+    jQuery("div#wjportal-listpopup").slideUp();// to handle tell a friend case
     jQuery(bkpop_div).hide();
+    // one layer remaind in some cases on popup close
+    jQuery('.modal-backdrop.show').hide();
+
     setTimeout(function () {
         jQuery(popup_div).html(' ');
     }, 350);
@@ -284,7 +286,7 @@ function wpjobportalPopupProceeds(actionname, objectid, srcid, anchorid, actioni
     } else {
         jQuery('div#wpjobportal-popup').prepend('<div class="loading"></div>');
     }
-    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax_popup_action', task: actionname, id: objectid, actiona: creditid }, function (data) {
+    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax_popup_action', task: actionname, id: objectid, actiona: creditid , js_nonce: common.js_nonce}, function (data) {
         if (data) {
             if (actionname == 'copy_job') {
                 location.reload();
@@ -337,7 +339,7 @@ function wpjobportalPopupProceedsAdmin(actionname, objectid, srcid, anchorid, ac
    
     jQuery('div#wpjobportal-popup').prepend('<div class="loading"></div>');
     var upakid = jQuery('#upakid').val();
-    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax_popup_action', task: actionname, id: objectid, actiona: creditid, isadmin: 1, payment: payment,upakid:upakid }, function (data) {
+    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax_popup_action', task: actionname, id: objectid, actiona: creditid, isadmin: 1, payment: payment,upakid:upakid , js_nonce: common.js_nonce}, function (data) {
         if (data) {
             //Copy Job Reload Process
             if (actionname == 'copy_job') {
@@ -382,7 +384,7 @@ function wpjobportalformpopupAdmin(actionname, formid) {
     }
     var userid = jQuery('form#' + formid).find('input.wpjobportal-form-save-btn').attr('credit_userid');
     var modal = jQuery('#package').val();
-    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax_popup', task: actionname, formid: formid, isadmin: 1, userid: userid,module:modal }, function (data) {
+    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax_popup', task: actionname, formid: formid, isadmin: 1, userid: userid,module:modal , js_nonce: common.js_nonce}, function (data) {
         if (data) {
             jQuery("body").append(data);
             /*alert(data);
@@ -427,7 +429,7 @@ function wpjobportalformpopup(actionname, formid) {
             return false;
         }
     }
-    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax_popup', task: actionname, formid: formid, themecall: themecall }, function (data) {
+    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax_popup', task: actionname, formid: formid, themecall: themecall, js_nonce: common.js_nonce }, function (data) {
         if (data) {
             jQuery("body").append(data);
             if (null != themecall) {
@@ -636,7 +638,7 @@ function wpjobportalPopupFormProceedsAdmin(formid, actionid, payment) {
 
 function getQuickViewByJobId(jobid, pageid) {
     jQuery("div#wpjobportal-popup-background").show();
-    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'job', task: 'getQuickViewByJobId', jobid: jobid, wpjobportalpageid: pageid }, function (data) {
+    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'job', task: 'getQuickViewByJobId', jobid: jobid, wpjobportalpageid: pageid, js_nonce: common.js_nonce }, function (data) {
         if (data) {
             var d = jQuery.parseJSON(data);
             jQuery("div#wpjobportal-listpopup span.popup-title span.title").html(d.title);
@@ -656,12 +658,12 @@ function getShortlistViewByJobid(jobid) {
     } else {
         jQuery("div#wjportal-popup-background").show();
     }
-    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'shortlist', task: task, jobid: jobid }, function (data) {
+    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'shortlist', task: task, jobid: jobid, js_nonce: common.js_nonce }, function (data) {
         if (data) {
             var d = jQuery.parseJSON(data);
-            if (null != themecall) {
+            if (1 == themecall) {
                 jQuery("div#" + common.theme_chk_prefix + "-popup").html('');
-                jQuery("div#" + common.theme_chk_prefix + "-popup").first().html(decodeURIComponent(escape(d.content)));
+                jQuery("div#" + common.theme_chk_prefix + "-popup").first().html(d.content);
                 jQuery("div#" + common.theme_chk_prefix + "-popup").slideDown("slow");
             } else {
                 jQuery("div#wjportal-listpopup div.wjportal-popup-title span.wjportal-popup-title2").html(d.title);
@@ -691,7 +693,7 @@ function saveJobShortlist() {
     rating = jQuery('#rating_' + jobid).width();
     rateintvalue = parseInt(rating);
     rate = rateintvalue / 20;
-    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'shortlist', task: task, jobid: jobid, comments: comments, rate: rate, slid: slid }, function (data) {
+    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'shortlist', task: task, jobid: jobid, comments: comments, rate: rate, slid: slid, js_nonce: common.js_nonce  }, function (data) {
         if (data) {
             if (null != themecall) {
                 jQuery('div#' + common.theme_chk_prefix + '-popup').find("div." + common.theme_chk_prefix + "-loading").remove();
@@ -709,7 +711,10 @@ function getApplyNowByJobid(jobid, pageid ,package = '') {
     }
     wpjobportalClosePopup();
     //var themecall = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
-    var themecall = null;
+    var themecall = common.theme_chk_flag;// theme check flag from main plugin file
+    if(themecall == 0){
+        themecall = null;
+    }
     if (null != themecall) {
         //jQuery("div#wpjobportal-popup-background").show();
        jQuery('div#' + common.theme_chk_prefix + '-popup-background').show();
@@ -722,21 +727,21 @@ function getApplyNowByJobid(jobid, pageid ,package = '') {
     if (typeof selected_pack !== 'undefined' && selected_pack !== false && selected_pack != 0) {
         package = selected_pack;
     }
-    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'jobapply', task: 'getApplyNowByJobid', jobid: jobid, jobpermalink: permalink, wpjobportal_pageid: pageid, themecall: themecall,upkid: package }, function (data) {
+    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'jobapply', task: 'getApplyNowByJobid', jobid: jobid, jobpermalink: permalink, wpjobportal_pageid: pageid, themecall: themecall,upkid: package, js_nonce: common.js_nonce }, function (data) {
         if (data) {
 
             var d = jQuery.parseJSON(data);
             if (null != themecall) {
                jQuery("div#" + common.theme_chk_prefix + "-popup").html('');
-               jQuery("div#" + common.theme_chk_prefix + "-popup").first().html(decodeURIComponent(escape(d.content)));
+               jQuery("div#" + common.theme_chk_prefix + "-popup").first().html(d.content);
                jQuery("div#" + common.theme_chk_prefix + "-popup").slideDown("slow");
 
             } else {
-                jQuery("div#wjportal-listpopup div.wjportal-popup-title span.wjportal-popup-title2").html(decodeURIComponent(escape(d.title)));
+                jQuery("div#wjportal-listpopup div.wjportal-popup-title span.wjportal-popup-title2").html(d.title);
                 jQuery("div#wjportal-listpopup div.wjportal-popup-job-list").html('');
-                jQuery("div#wjportal-listpopup div.wjportal-popup-job-list").first().html(decodeURIComponent(escape(d.popupjoblist)));
+                jQuery("div#wjportal-listpopup div.wjportal-popup-job-list").first().html(d.popupjoblist);
                 jQuery("div#wjportal-listpopup div.wjportal-popup-contentarea").html('');
-                jQuery("div#wjportal-listpopup div.wjportal-popup-contentarea").first().html(decodeURIComponent(escape(d.content)));
+                jQuery("div#wjportal-listpopup div.wjportal-popup-contentarea").first().html(d.content);
                 jQuery("div#wjportal-listpopup").slideDown("slow");
             }
         }
@@ -745,7 +750,7 @@ function getApplyNowByJobid(jobid, pageid ,package = '') {
 }
 
 function jobApply(jobid,upkid) {
-    var themecall = null;//arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
+    var themecall = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
     task = "jobapply";
     if (null != themecall) {
         jQuery('div#' + common.theme_chk_prefix + '-popup').prepend('<div class="transparentbg loading"></div>');
@@ -755,7 +760,7 @@ function jobApply(jobid,upkid) {
     }
     var cvid = jQuery('select#cvid').val();
     var coverletterid = jQuery('select#coverletterid').val();
-    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'jobapply', task: task, jobid: jobid, cvid: cvid, coverletterid: coverletterid, themecall: themecall,upkid: upkid }, function (data) {
+    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'jobapply', task: task, jobid: jobid, cvid: cvid, coverletterid: coverletterid, themecall: themecall,upkid: upkid , js_nonce: common.js_nonce}, function (data) {
         if (data) {
             if (null != themecall) {
                 jQuery("div." + common.theme_chk_prefix + "-visitor-msg-btn-wrp").html(data);
@@ -780,7 +785,7 @@ function getTellaFriend(jobid) {
         jQuery("div#wjportal-popup-background").show();
     }
     jQuery("div#wjportal-popup-background").show();
-    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'tellfriend', task: task, jobid: jobid }, function (data) {
+    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'tellfriend', task: task, jobid: jobid, js_nonce: common.js_nonce }, function (data) {
         if (data) {
             var d = jQuery.parseJSON(data);
             if (null != themecall) {
@@ -836,7 +841,7 @@ function getDataForDepandantFieldResume(parentf, childf, type) {
             val = jQuery("input[name=sec_" + section + "\\[" + parentf + "\\]]:checked").val();
         }
     }
-    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'fieldordering', task: 'DataForDepandantFieldResume', fvalue: val, child: childf, section: section, sectionid: sectionid, type: type, themecall: themecall }, function (data) {
+    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'fieldordering', task: 'DataForDepandantFieldResume', fvalue: val, child: childf, section: section, sectionid: sectionid, type: type, themecall: themecall, js_nonce: common.js_nonce}, function (data) {
         if (data) {
 
             var d = jQuery.parseJSON(data);
@@ -866,7 +871,7 @@ function getDataForDepandantField(parentf, childf, type) {
             var val = jQuery("input[name=" + parentf + "]:checked").val();
         }
     }
-    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'fieldordering', task: 'DataForDepandantField', fvalue: val, child: childf, themecall: themecall }, function (data) {
+    jQuery.post(common.ajaxurl, { action: 'wpjobportal_ajax', wpjobportalme: 'fieldordering', task: 'DataForDepandantField', fvalue: val, child: childf, themecall: themecall,js_nonce: common.js_nonce }, function (data) {
         if (data) {
 
             var d = jQuery.parseJSON(data);
@@ -947,7 +952,8 @@ function sendEmailToFriend() {
         femail4: femail4,
         femail5: femail5,
         jobtitle: jobtitle,
-        jobid: jobid
+        jobid: jobid,
+        js_nonce: common.js_nonce
     };
     if (name != '' && name != undefined) {
         data[name] = captch;

@@ -13,6 +13,7 @@ if (wpjobportal::$_error_flag == null) {
     ?>
     <div class="wjportal-main-wrapper wjportal-clearfix">
         <?php do_action('wpjobportal_addons_sendmessage_popup_main_outer'); ?>
+        <?php do_action('wpjobportal_addons_coverletter_popup_main_outer'); ?>
         <div class="wjportal-page-header">
             <div class="wjportal-page-header-cnt">
                 <?php
@@ -31,12 +32,12 @@ if (wpjobportal::$_error_flag == null) {
                     $image = $image2;
                 }
                 $categoryarray = array(
-                    (object) array('id' => 1, 'text' => __('Application title', 'wp-job-portal')),
-                    (object) array('id' => 2, 'text' => __('First name', 'wp-job-portal')),
-                    (object) array('id' => 3, 'text' => __('Category', 'wp-job-portal')),
-                    (object) array('id' => 4, 'text' => __('Job type', 'wp-job-portal')),
-                    (object) array('id' => 5, 'text' => __('Location', 'wp-job-portal')),
-                    (object) array('id' => 6, 'text' => __('Created', 'wp-job-portal'))
+                    (object) array('id' => 1, 'text' => esc_html(__('Application title', 'wp-job-portal'))),
+                    (object) array('id' => 2, 'text' => esc_html(__('First name', 'wp-job-portal'))),
+                    (object) array('id' => 3, 'text' => esc_html(__('Category', 'wp-job-portal'))),
+                    (object) array('id' => 4, 'text' => esc_html(__('Job type', 'wp-job-portal'))),
+                    (object) array('id' => 5, 'text' => esc_html(__('Location', 'wp-job-portal'))),
+                    (object) array('id' => 6, 'text' => esc_html(__('Created', 'wp-job-portal')))
                 );
             // resume filters
                 WPJOBPORTALincluder::getTemplate('jobapply/views/frontend/filter',array(
@@ -50,10 +51,10 @@ if (wpjobportal::$_error_flag == null) {
 
             </div>
         </div>
-        <form class="wjportal-form" id="job_form" method="post" action="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'jobapply','wpjobportallt'=>'jobappliedresume', 'jobid'=>$id))); ?>">
+        <form class="wjportal-form" id="job_form" method="post" action="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'jobapply','wpjobportallt'=>'jobappliedresume', 'jobid'=>$id))); ?>">
             <div id="job-applied-resume-wrapper" class="wjportal-job-applied-resume">
                 <div class="wjportal-section-heading">
-                    <?php echo __('Job Info','wp-job-portal'); ?>
+                    <?php echo esc_html(__('Job Info','wp-job-portal')); ?>
                 </div>
                 <?php
                    if (isset(wpjobportal::$_data[4]['jobinfo']) && !empty(wpjobportal::$_data[4]['jobinfo'])) {
@@ -76,7 +77,7 @@ if (wpjobportal::$_error_flag == null) {
                 <?php do_action('wpjobportal_addons_top_btn_action_popup'); ?>
                 <div class="wjportal-job-applied-resume-list">
                     <div class="wjportal-section-heading">
-                        <?php echo __('Resume Applied On Job','wp-job-portal'); ?>
+                        <?php echo esc_html(__('Resume Applied On Job','wp-job-portal')); ?>
                     </div>
                     <?php
                         if (isset(wpjobportal::$_data[0]['data']) && !empty(wpjobportal::$_data[0]['data'])) {

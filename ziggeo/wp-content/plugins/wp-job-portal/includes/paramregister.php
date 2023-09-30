@@ -98,20 +98,20 @@ if (!defined('ABSPATH'))
             $layout = $q->query_vars['wpjobportallayout'];
             $slug_prefix = WPJOBPORTALincluder::getJSModel('configuration')->getConfigValue('slug_prefix');
             $home_slug_prefix = WPJOBPORTALincluder::getJSModel('configuration')->getConfigValue('home_slug_prefix');
-            $length = strlen($home_slug_prefix);
-            if(substr($layout, 0, $length) === $home_slug_prefix){
-                $layout = substr($layout,$length);
+            $length = wpjobportalphplib::wpJP_strlen($home_slug_prefix);
+            if(wpjobportalphplib::wpJP_substr($layout, 0, $length) === $home_slug_prefix){
+                $layout = wpjobportalphplib::wpJP_substr($layout,$length);
             }
-            $length = strlen($slug_prefix);
-            if(substr($layout, 0, $length) === $slug_prefix){
+            $length = wpjobportalphplib::wpJP_strlen($slug_prefix);
+            if(wpjobportalphplib::wpJP_substr($layout, 0, $length) === $slug_prefix){
                 $slug_flag = WPJOBPORTALincluder::getJSModel('slug')->checkIfSlugExist($layout);
                 if($slug_flag != true){
-                    $layout = substr($layout,$length);
+                    $layout = wpjobportalphplib::wpJP_substr($layout,$length);
                 }
             }
 
-            //if(substr($layout, 0, 3) == 'jm-') {
-            //    $layout = substr($layout,3);
+            //if(wpjobportalphplib::wpJP_substr($layout, 0, 3) == 'jm-') {
+            //    $layout = wpjobportalphplib::wpJP_substr($layout,3);
             //}
 
             $layout = WPJOBPORTALincluder::getJSModel('slug')->getDefaultSlugFromSlug($layout);
@@ -127,7 +127,7 @@ if (!defined('ABSPATH'))
                 case 'wpjobportal-login':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'wpjobportal';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'login';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['wpjobportalredirecturl'] = $wpjobportal1;
                 }
@@ -160,12 +160,12 @@ if (!defined('ABSPATH'))
                 }
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = $mod;
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'resumes';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
-                    if(strstr($wpjobportal1, 'sortby')){
+                    if(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'sortby')){
                         wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal1;
                     }else{
-                        if(strstr($wpjobportal1, 'vt')){
+                        if(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'vt')){
                             wpjobportal::$_data['sanitized_args']['viewtype'] = $wpjobportal1;
                         }else{
                             wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -173,13 +173,13 @@ if (!defined('ABSPATH'))
                         }
                     }
                 }
-                $wpjobportal2 = str_replace('/', '',$q->query_vars['wpjobportal2']);
+                $wpjobportal2 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal2']);
                 /*if(!empty($wpjobportal2)){
                     wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal2;
                 }*/
 
-                if(strstr($wpjobportal1, 'package-')){
-                    $userpackageid = preg_replace('/[^\d]*/', '', $wpjobportal1);
+                if(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'package-')){
+                    $userpackageid = wpjobportalphplib::wpJP_preg_replace('/[^\d]*/', '', $wpjobportal1);
                     wpjobportal::$_data['sanitized_args']['userpackageid'] = $userpackageid;
                 }else{
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -189,7 +189,7 @@ if (!defined('ABSPATH'))
                 case 'newest-jobs':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'job';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'jobs';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
                 }
@@ -202,9 +202,9 @@ if (!defined('ABSPATH'))
                 }
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = $mod;
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'mycompanies';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
-                if(strstr($wpjobportal1, 'package-')){
-                    $userpackageid = preg_replace('/[^\d]*/', '', $wpjobportal1);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
+                if(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'package-')){
+                    $userpackageid = wpjobportalphplib::wpJP_preg_replace('/[^\d]*/', '', $wpjobportal1);
                     wpjobportal::$_data['sanitized_args']['userpackageid'] = $userpackageid;
                 }else{
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -218,9 +218,9 @@ if (!defined('ABSPATH'))
                 }
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = $mod;
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'addcompany';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
-                if(strstr($wpjobportal1, 'package-')){
-                    $userpackageid = preg_replace('/[^\d]*/', '', $wpjobportal1);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
+                if(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'package-')){
+                    $userpackageid = wpjobportalphplib::wpJP_preg_replace('/[^\d]*/', '', $wpjobportal1);
                     wpjobportal::$_data['sanitized_args']['userpackageid'] = $userpackageid;
                 }else{
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -229,7 +229,7 @@ if (!defined('ABSPATH'))
                 case 'my-jobs':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'job';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'myjobs';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal1;
                 }
@@ -237,9 +237,9 @@ if (!defined('ABSPATH'))
                 case 'add-job':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'job';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'addjob';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
-                 if(strstr($wpjobportal1, 'package-')){
-                    $userpackageid = preg_replace('/[^\d]*/', '', $wpjobportal1);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
+                 if(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'package-')){
+                    $userpackageid = wpjobportalphplib::wpJP_preg_replace('/[^\d]*/', '', $wpjobportal1);
                     wpjobportal::$_data['sanitized_args']['userpackageid'] = $userpackageid;
                 }else{
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -256,10 +256,10 @@ if (!defined('ABSPATH'))
                 case 'add-department':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'departments';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'adddepartment';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                     if(!empty($wpjobportal1)){
-                        if(strstr($wpjobportal1, 'package-')){
-                            $userpackageid = preg_replace('/[^\d]*/', '', $wpjobportal1);
+                        if(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'package-')){
+                            $userpackageid = wpjobportalphplib::wpJP_preg_replace('/[^\d]*/', '', $wpjobportal1);
                             wpjobportal::$_data['sanitized_args']['userpackageid'] = $userpackageid;
                         }else{
                             wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -269,18 +269,18 @@ if (!defined('ABSPATH'))
                 case 'department':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'departments';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'viewdepartment';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'company':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'company';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'viewcompany';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'resume':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'resume';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'viewresume';
-                $wpjobportal1 = str_replace('/', '', $q->query_vars['wpjobportal1']);
-                $wpjobportal2 = str_replace('/', '', $q->query_vars['wpjobportal2']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '', $q->query_vars['wpjobportal1']);
+                $wpjobportal2 = wpjobportalphplib::wpJP_str_replace('/', '', $q->query_vars['wpjobportal2']);
                 if(!empty($wpjobportal2)){
                     wpjobportal::$_data['sanitized_args']['jobid'] = $wpjobportal1;
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal2;
@@ -291,7 +291,7 @@ if (!defined('ABSPATH'))
                 case 'job':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'job';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'viewjob';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'my-folders':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'folder';
@@ -300,7 +300,7 @@ if (!defined('ABSPATH'))
                 case 'add-folder':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'folder';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'addfolder';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
                 }
@@ -308,12 +308,12 @@ if (!defined('ABSPATH'))
                 case 'folder':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'folder';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'viewfolder';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'folder-resumes':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'folderresume';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'folderresume';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'jobseeker-messages':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'message';
@@ -326,12 +326,12 @@ if (!defined('ABSPATH'))
                 case 'message':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'message';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'sendmessage';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'job-messages':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'message';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'jobmessages';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'job-types':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'job';
@@ -393,9 +393,9 @@ if (!defined('ABSPATH'))
                 }
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = $mod;
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'addresume';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
-                if(strstr($wpjobportal1, 'package-')){
-                    $userpackageid = preg_replace('/[^\d]*/', '', $wpjobportal1);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
+                if(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'package-')){
+                    $userpackageid = wpjobportalphplib::wpJP_preg_replace('/[^\d]*/', '', $wpjobportal1);
                     wpjobportal::$_data['sanitized_args']['userpackageid'] = $userpackageid;
                 }else{
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -409,25 +409,25 @@ if (!defined('ABSPATH'))
                 }
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = $mod;
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'myresumes';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal1;
                 }
                 break;
               case 'companies':
-                wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'company';
+                wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'multicompany';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'companies';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
-                    if(strstr($wpjobportal1, 'company-')){
+                    if(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'company-')){
                         wpjobportal::$_data['sanitized_args']['wpjobportal-company'] = $wpjobportal1;
-                    }elseif(strstr($wpjobportal1, 'city-')){
+                    }elseif(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'city-')){
                         wpjobportal::$_data['sanitized_args']['wpjobportal-city'] = $wpjobportal1;
                     }else{
                         wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal1;
                     }
                 }
-                $wpjobportal2 = str_replace('/', '',$q->query_vars['wpjobportal2']);
+                $wpjobportal2 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal2']);
                 if(!empty($wpjobportal2)){
                     wpjobportal::$_data['sanitized_args']['wpjobportal-city'] = $wpjobportal2;
                 }
@@ -435,7 +435,7 @@ if (!defined('ABSPATH'))
                 case 'my-applied-jobs':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'jobapply';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'myappliedjobs';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal1;
                 }
@@ -443,20 +443,20 @@ if (!defined('ABSPATH'))
                 case 'job-applied-resume':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'jobapply';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'jobappliedresume';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['jobid'] = $wpjobportal1;
                 }
-                $wpjobportal2 = str_replace('/', '',$q->query_vars['wpjobportal2']);
+                $wpjobportal2 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal2']);
                     //var_dump($wpjobportal2);
                 if(!empty($wpjobportal2)){
-                    if(strstr($wpjobportal2, 'sortby')){
+                    if(wpjobportalphplib::wpJP_strstr($wpjobportal2, 'sortby')){
                         wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal2;
                     }else{
                         wpjobportal::$_data['sanitized_args']['ta'] = $wpjobportal2;
                     }
                 }
-                $wpjobportal3 = str_replace('/', '',$q->query_vars['wpjobportal3']);
+                $wpjobportal3 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal3']);
                 if(!empty($wpjobportal3)){
                     wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal3;
                 }
@@ -472,9 +472,9 @@ if (!defined('ABSPATH'))
                 case 'job-alert':
                     wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'jobalert';
                     wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'jobalert';
-                     $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
-                     if(strstr($wpjobportal1, 'package-')){
-                            $userpackageid = preg_replace('/[^\d]*/', '', $wpjobportal1);
+                     $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
+                     if(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'package-')){
+                            $userpackageid = wpjobportalphplib::wpJP_preg_replace('/[^\d]*/', '', $wpjobportal1);
                             wpjobportal::$_data['sanitized_args']['userpackageid'] = $userpackageid;
                         }else{
                             wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -497,13 +497,13 @@ if (!defined('ABSPATH'))
                     wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'jobsbytypes';
                 break;
                 case 'jobs-by-cities':
-                    wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'city';
+                    wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'job';
                     wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'jobsbycities';
                 break;
                 case 'resume-pdf':
                     wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'pdf';
                     wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'pdf';
-                    $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                    $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                     if(!empty($wpjobportal1)){
                         wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
                     }
@@ -511,7 +511,7 @@ if (!defined('ABSPATH'))
                 case 'resume-print':
                     wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'resume';
                     wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'printresume';
-                    $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                    $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                     if(!empty($wpjobportal1)){
                         wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
                     }
@@ -535,7 +535,7 @@ if (!defined('ABSPATH'))
                 case 'company-payment':
                     wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'purchasehistory';
                     wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'paycompany';
-                    $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                    $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                     if(!empty($wpjobportal1)){
                         $wpjobportal1 = wpjobportal::$_common->parseID($wpjobportal1);
                         wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -544,7 +544,7 @@ if (!defined('ABSPATH'))
                 case 'featuredcompany-payment':
                     wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'purchasehistory';
                     wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'payfeaturedcompany';
-                    $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                    $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                     if(!empty($wpjobportal1)){
                         $wpjobportal1 = wpjobportal::$_common->parseID($wpjobportal1);
                         wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -553,7 +553,16 @@ if (!defined('ABSPATH'))
                 case 'department-payment':
                     wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'purchasehistory';
                     wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'paydepartment';
-                    $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                    $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
+                    if(!empty($wpjobportal1)){
+                        $wpjobportal1 = wpjobportal::$_common->parseID($wpjobportal1);
+                        wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
+                    }
+                break;
+                case 'coverletter-payment':
+                    wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'purchasehistory';
+                    wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'paycoverletter';
+                    $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                     if(!empty($wpjobportal1)){
                         $wpjobportal1 = wpjobportal::$_common->parseID($wpjobportal1);
                         wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -562,7 +571,7 @@ if (!defined('ABSPATH'))
                 case 'featuredjob-payment':
                     wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'purchasehistory';
                     wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'payfeaturedjob';
-                    $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                    $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                     if(!empty($wpjobportal1)){
                         $wpjobportal1 = wpjobportal::$_common->parseID($wpjobportal1);
                         wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -571,7 +580,7 @@ if (!defined('ABSPATH'))
                 case 'job-payment':
                     wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'purchasehistory';
                     wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'payjob';
-                    $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                    $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                     if(!empty($wpjobportal1)){
                         $wpjobportal1 = wpjobportal::$_common->parseID($wpjobportal1);
                         wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -580,7 +589,7 @@ if (!defined('ABSPATH'))
                 case 'featuredresume-payment':
                     wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'purchasehistory';
                     wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'payfeaturedresume';
-                    $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                    $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                     if(!empty($wpjobportal1)){
                         $wpjobportal1 = wpjobportal::$_common->parseID($wpjobportal1);
                         wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -589,7 +598,7 @@ if (!defined('ABSPATH'))
                 case 'jobapply-payment':
                     wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'purchasehistory';
                     wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'payjobapply';
-                    $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                    $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                     if(!empty($wpjobportal1)){
                         $wpjobportal1 = wpjobportal::$_common->parseID($wpjobportal1);
                         wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -598,7 +607,7 @@ if (!defined('ABSPATH'))
                 case 'resume-payment':
                     wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'purchasehistory';
                     wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'payresume';
-                     $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                     $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                     if(!empty($wpjobportal1)){
                         $wpjobportal1 = wpjobportal::$_common->parseID($wpjobportal1);
                         wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -607,12 +616,30 @@ if (!defined('ABSPATH'))
                 case 'resumesavesearch-payment':
                     wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'purchasehistory';
                     wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'payresumesearch';
-                    $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                    $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                     if(!empty($wpjobportal1)){
                         $wpjobportal1 = wpjobportal::$_common->parseID($wpjobportal1);
                         wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
                     }
                 break;
+                case 'my-coverletters':
+                    wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'coverletter';
+                    wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'mycoverletters';
+                break;
+                case 'add-coverletter':
+                    wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'coverletter';
+                    wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'addcoverletter';
+                    $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                    if(!empty($wpjobportal1)){
+                        wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
+                    }
+                break;
+                case 'coverletter':
+                    wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'coverletter';
+                    wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'viewcoverletter';
+                    wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                break;
+
                 default:
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'jobseeker';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'controlpanel';
@@ -628,7 +655,7 @@ if (!defined('ABSPATH'))
                 case 'wpjobportal-login':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'wpjobportal';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'login';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['wpjobportalredirecturl'] = $wpjobportal1;
                 }
@@ -652,12 +679,12 @@ if (!defined('ABSPATH'))
                 case 'resumes':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'resume';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'resumes';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
-                    if(strstr($wpjobportal1, 'sortby')){
+                    if(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'sortby')){
                         wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal1;
                     }else{
-                        if(strstr($wpjobportal1, 'vt')){
+                        if(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'vt')){
                             wpjobportal::$_data['sanitized_args']['viewtype'] = $wpjobportal1;
                         }else{
                             wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
@@ -665,7 +692,7 @@ if (!defined('ABSPATH'))
                         }
                     }
                 }
-                $wpjobportal2 = str_replace('/', '',$q->query_vars['wpjobportal2']);
+                $wpjobportal2 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal2']);
                 if(!empty($wpjobportal2)){
                     wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal2;
                 }
@@ -673,7 +700,7 @@ if (!defined('ABSPATH'))
                 case 'jobs':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'job';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'jobs';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
                 }
@@ -685,7 +712,7 @@ if (!defined('ABSPATH'))
                 case 'add-company':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'company';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'addcompany';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
                 }
@@ -693,7 +720,7 @@ if (!defined('ABSPATH'))
                 case 'my-jobs':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'job';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'myjobs';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal1;
                 }
@@ -701,7 +728,7 @@ if (!defined('ABSPATH'))
                 case 'add-job':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'job';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'addjob';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
                 }
@@ -713,7 +740,7 @@ if (!defined('ABSPATH'))
                 case 'add-department':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'departments';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'adddepartment';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
                 }
@@ -721,23 +748,23 @@ if (!defined('ABSPATH'))
                 case 'department':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'departments';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'viewdepartment';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'cover-letter':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'coverletter';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'viewcoverletter';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'company':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'company';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'viewcompany';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'resume':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'resume';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'viewresume';
-                $wpjobportal1 = str_replace('/', '', $q->query_vars['wpjobportal1']);
-                $wpjobportal2 = str_replace('/', '', $q->query_vars['wpjobportal2']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '', $q->query_vars['wpjobportal1']);
+                $wpjobportal2 = wpjobportalphplib::wpJP_str_replace('/', '', $q->query_vars['wpjobportal2']);
                 if(!empty($wpjobportal2)){
                     wpjobportal::$_data['sanitized_args']['jobid'] = $wpjobportal1;
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal2;
@@ -748,7 +775,7 @@ if (!defined('ABSPATH'))
                 case 'job':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'job';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'viewjob';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'my-folders':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'folder';
@@ -757,7 +784,7 @@ if (!defined('ABSPATH'))
                 case 'add-folder':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'folder';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'addfolder';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
                 }
@@ -765,12 +792,12 @@ if (!defined('ABSPATH'))
                 case 'folder':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'folder';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'viewfolder';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'folder-resumes':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'folderresume';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'folderresume';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'jobseeker-messages':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'message';
@@ -783,12 +810,12 @@ if (!defined('ABSPATH'))
                 case 'message':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'message';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'sendmessage';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'job-messages':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'message';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'jobmessages';
-                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                wpjobportal::$_data['sanitized_args']['wpjobportalid'] = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 break;
                 case 'job-types':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'job';
@@ -849,7 +876,7 @@ if (!defined('ABSPATH'))
                 case 'add-resume':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'resume';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'addresume';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
                 }
@@ -857,7 +884,7 @@ if (!defined('ABSPATH'))
                 case 'my-resumes':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'resume';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'myresumes';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal1;
                 }
@@ -865,7 +892,7 @@ if (!defined('ABSPATH'))
                 case 'add-cover-letter':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'coverletter';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'addcoverletter';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
                 }
@@ -873,15 +900,15 @@ if (!defined('ABSPATH'))
                 case 'companies':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'company';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'companies';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
-                    if(strstr($wpjobportal1, 'company-')){
+                    if(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'company-')){
                         wpjobportal::$_data['sanitized_args']['wpjobportal-company'] = $wpjobportal1;
-                    }elseif(strstr($wpjobportal1, 'city-')){
+                    }elseif(wpjobportalphplib::wpJP_strstr($wpjobportal1, 'city-')){
                         wpjobportal::$_data['sanitized_args']['wpjobportal-city'] = $wpjobportal1;
                     }
                 }
-                $wpjobportal2 = str_replace('/', '',$q->query_vars['wpjobportal2']);
+                $wpjobportal2 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal2']);
                 if(!empty($wpjobportal2)){
                     wpjobportal::$_data['sanitized_args']['wpjobportal-city'] = $wpjobportal2;
                 }
@@ -889,7 +916,7 @@ if (!defined('ABSPATH'))
                 case 'my-applied-jobs':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'jobapply';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'myappliedjobs';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal1;
                 }
@@ -897,20 +924,20 @@ if (!defined('ABSPATH'))
                 case 'job-applied-resume':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'jobapply';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'jobappliedresume';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['jobid'] = $wpjobportal1;
                 }
-                $wpjobportal2 = str_replace('/', '',$q->query_vars['wpjobportal2']);
+                $wpjobportal2 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal2']);
                     //var_dump($wpjobportal2);
                 if(!empty($wpjobportal2)){
-                    if(strstr($wpjobportal2, 'sortby')){
+                    if(wpjobportalphplib::wpJP_strstr($wpjobportal2, 'sortby')){
                         wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal2;
                     }else{
                         wpjobportal::$_data['sanitized_args']['ta'] = $wpjobportal2;
                     }
                 }
-                $wpjobportal3 = str_replace('/', '',$q->query_vars['wpjobportal3']);
+                $wpjobportal3 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal3']);
                 if(!empty($wpjobportal3)){
                     wpjobportal::$_data['sanitized_args']['sortby'] = $wpjobportal3;
                 }
@@ -974,7 +1001,7 @@ if (!defined('ABSPATH'))
                 case 'resume-pdf':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'resume';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'pdf';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
                 }
@@ -982,7 +1009,7 @@ if (!defined('ABSPATH'))
                 case 'resume-print':
                 wpjobportal::$_data['sanitized_args']['wpjobportalme'] = 'resume';
                 wpjobportal::$_data['sanitized_args']['wpjobportallt'] = 'printresume';
-                $wpjobportal1 = str_replace('/', '',$q->query_vars['wpjobportal1']);
+                $wpjobportal1 = wpjobportalphplib::wpJP_str_replace('/', '',$q->query_vars['wpjobportal1']);
                 if(!empty($wpjobportal1)){
                     wpjobportal::$_data['sanitized_args']['wpjobportalid'] = $wpjobportal1;
                 }
@@ -1017,7 +1044,7 @@ if (!defined('ABSPATH'))
             */
             $ret = false;
             foreach($array AS $layout){
-                if(strstr($requested_url, $layout)){
+                if(wpjobportalphplib::wpJP_strstr($requested_url, $layout)){
                     $ret = true;
                     break;
                 }

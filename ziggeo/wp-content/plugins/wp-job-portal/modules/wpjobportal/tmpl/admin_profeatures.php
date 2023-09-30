@@ -7,14 +7,14 @@
             <span class="js-admin-title">
                 <span class="heading">
                     <a href="<?php echo admin_url("admin.php?page=wpjobportal");?>"><img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/back-icon.png" /></a>
-                    <span class="text-heading"><?php echo __('Pro Features', 'wp-jobs'); ?></span>
+                    <span class="text-heading"><?php echo esc_html(__('Pro Features', 'wp-job-portal')); ?></span>
                 </span>
                 <?php WPJOBPORTALincluder::getClassesInclude('wpjobportaladminsidemenu'); ?>
             </span>
             <div id="js_profeature_main_wrapper">
         		<div id="proheading" class="proheading">
-        			<span class="headtext"><?php echo __('WP JOB PORTAL PRO FEATURES','wp-jobs');?></span>
-        			<a class="buynow" target="_blank" href="http://www.joomsky.com/products/wp-job-portal-pro-wp.html"><img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/pro/buy-now.png"> <?php echo __('BUY NOW','wp-jobs');?></a>
+        			<span class="headtext"><?php echo esc_html(__('WP JOB PORTAL PRO FEATURES', 'wp-job-portal'));?></span>
+        			<a class="buynow" target="_blank" href="https://wpjobportal.com/pricing/"><img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/pro/buy-now.png"> <?php echo esc_html(__('BUY NOW', 'wp-job-portal'));?></a>
         		</div>
             	<div class="topimage bgwhite"><img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/pro/image-1.png"></div>
             	<div class="pro_wrapper">

@@ -23,16 +23,16 @@ if (wpjobportal::$_error_flag == null) {
     <div class="wjportal-main-wrapper wjportal-clearfix">
         <div class="wjportal-page-header">
             <div class="wjportal-page-heading">
-                <?php echo esc_html(__( $title , 'wp-job-portal')); ?>
+                <?php echo wpjobportal::wpjobportal_getVariableValue( $title); ?>
             </div>
         </div>
         <div class="wjportal-form-wrp wjportal-new-login-form">
-            <form class="wjportal-form" id="coverletter_form" method="post" action="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'common', 'task'=>'savenewinwpjobportal'))); ?>">
-                <div class="wjportal-form-sec-heading"><?php echo __('Are you new in', 'wp-job-portal').' '.__( $title,'wp-job-portal'); ?></div>
+            <form class="wjportal-form" id="coverletter_form" method="post" action="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'common', 'task'=>'savenewinwpjobportal'))); ?>">
+                <div class="wjportal-form-sec-heading"><?php echo esc_html(__('Are you new in', 'wp-job-portal')).' '.wpjobportal::wpjobportal_getVariableValue( $title); ?></div>
                 <div class="wjportal-form-row">                
-                    <div class="wjportal-form-title"><?php echo __('Please select your role', 'wp-job-portal'); ?> <font >*</font></div>
+                    <div class="wjportal-form-title"><?php echo esc_html(__('Please select your role', 'wp-job-portal')); ?> <font >*</font></div>
                     <div class="wjportal-form-value">
-                        <?php echo wp_kses(WPJOBPORTALformfield::select('roleid', WPJOBPORTALincluder::getJSModel('common')->getRolesForCombo(''), '', __('Select Role'), array('class' => 'inputbox wjportal-form-select-field', 'data-validation' => 'required')),WPJOBPORTAL_ALLOWED_TAGS); ?>
+                        <?php echo wp_kses(WPJOBPORTALformfield::select('roleid', WPJOBPORTALincluder::getJSModel('common')->getRolesForCombo(''), '', esc_html(__('Select Role', 'wp-job-portal')), array('class' => 'inputbox wjportal-form-select-field', 'data-validation' => 'required')),WPJOBPORTAL_ALLOWED_TAGS); ?>
                     </div>
                 </div>
                 <?php echo wp_kses(WPJOBPORTALformfield::hidden('desired_module', $module),WPJOBPORTAL_ALLOWED_TAGS); ?>
@@ -52,7 +52,7 @@ if (wpjobportal::$_error_flag == null) {
                     }
                 ?>
                 <div class="wjportal-form-btn-wrp">
-                    <?php echo wp_kses(WPJOBPORTALformfield::submitbutton('save', __('Submit', 'wp-job-portal'), array('class' => 'button wjportal-form-btn wjportal-save-btn')),WPJOBPORTAL_ALLOWED_TAGS); ?>
+                    <?php echo wp_kses(WPJOBPORTALformfield::submitbutton('save', esc_html(__('Submit', 'wp-job-portal')), array('class' => 'button wjportal-form-btn wjportal-save-btn')),WPJOBPORTAL_ALLOWED_TAGS); ?>
                 </div>
             </form>
         </div>

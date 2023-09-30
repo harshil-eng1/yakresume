@@ -1,4 +1,6 @@
 <?php
+if (!defined('ABSPATH'))
+    die('Restricted Access');
 /**
 * @param wp-job-portal Optional
 * ==>Detail
@@ -15,7 +17,7 @@
 		<?php echo wp_kses($data->description, WPJOBPORTAL_ALLOWED_TAGS); ?>
 	</td>
 	<td>
-		<?php echo ucwords(esc_html($data->referencefor)); ?>
+		<?php echo wpjobportalphplib::wpJP_ucwords(esc_html($data->referencefor)); ?>
 	</td>
 	<td>
 		<?php echo esc_html($data->created); ?>

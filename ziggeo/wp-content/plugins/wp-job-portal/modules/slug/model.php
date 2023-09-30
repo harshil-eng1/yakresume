@@ -117,17 +117,22 @@ class WPJOBPORTALslugModel {
     }
 
     function getOptionsForEditSlug() {
+
+        $nonce = WPJOBPORTALrequest::getVar('_wpnonce');
+        if (! wp_verify_nonce( $nonce, 'get-options-for-edit-slug') ) {
+            die( 'Security check Failed' );
+        }
         $slug = WPJOBPORTALrequest::getVar('slug');
         $html = '<span class="popup-top">
-                    <span id="popup_title" >' . __("Edit","wp-job-portal")." ". __("Slug", "wp-job-portal") . '</span>
+                    <span id="popup_title" >' . esc_html(__("Edit","wp-job-portal"))." ". esc_html(__("Slug", "wp-job-portal")) . '</span>
                         <img id="popup_cross" alt="popup cross" onClick="closePopup();" src="' . WPJOBPORTAL_PLUGIN_URL . 'includes/images/popup-close.png"></span>';
 
         $html .= '<div class="popup-field-wrapper">
-                    <div class="popup-field-title">' . __('Slug','wp-job-portal').' '. __('Name', 'wp-job-portal') . ' <span style="color: red;"> *</span></div>
-                         <div class="popup-field-obj">' . WPJOBPORTALformfield::text('slugedit', isset($slug) ? trim($slug) : 'text', '', array('class' => 'inputbox one', 'data-validation' => 'required')) . '</div>
+                    <div class="popup-field-title">' . esc_html(__('Slug','wp-job-portal')).' '. esc_html(__('Name', 'wp-job-portal')) . ' <span style="color: red;"> *</span></div>
+                         <div class="popup-field-obj">' . WPJOBPORTALformfield::text('slugedit', isset($slug) ? wpjobportalphplib::wpJP_trim($slug) : 'text', '', array('class' => 'inputbox one', 'data-validation' => 'required')) . '</div>
                     </div>';
         $html .='<div class="popup-act-btn-wrp">
-                    ' . WPJOBPORTALformfield::button('save', __('Save', 'wp-job-portal'), array('class' => 'button savebutton popup-act-btn','onClick'=>'getFieldValue();'));
+                    ' . WPJOBPORTALformfield::button('save', esc_html(__('Save', 'wp-job-portal')), array('class' => 'button savebutton popup-act-btn','onClick'=>'getFieldValue();'));
         $html .='</div>';
         return json_encode($html);
     }
@@ -175,7 +180,7 @@ class WPJOBPORTALslugModel {
                     if($home_page == 1){
                         $slug->value = $homeprefix.$slug->value;
                     }
-                    if(strpos($rules,$slug->value) === false){
+                    if(wpjobportalphplib::wpJP_strpos($rules,$slug->value) === false){
                         $string .= $bstring. $slug->value;
                     }else{
                         $string .= $bstring.$prefix. $slug->value;
@@ -215,8 +220,9 @@ class WPJOBPORTALslugModel {
         $jsjp_search_array = array();
         $wpjp_search_cookie_data = '';
         if(isset($_COOKIE['jsjp_jobportal_search_data'])){
-            $wpjp_search_cookie_data = filter_var($_COOKIE['jsjp_jobportal_search_data'], FILTER_SANITIZE_STRING);
-            $wpjp_search_cookie_data = json_decode( base64_decode($wpjp_search_cookie_data) , true );
+            $wpjp_search_cookie_data = wpjobportal::wpjobportal_sanitizeData($_COOKIE['jsjp_jobportal_search_data']);
+            $wpjp_search_cookie_data = wpjobportalphplib::wpJP_safe_decoding($wpjp_search_cookie_data);
+            $wpjp_search_cookie_data = json_decode( $wpjp_search_cookie_data , true );
         }
         if($wpjp_search_cookie_data != '' && isset($wpjp_search_cookie_data['search_from_slug']) && $wpjp_search_cookie_data['search_from_slug'] == 1){
             $jsjp_search_array['slug'] = $wpjp_search_cookie_data['slug'];

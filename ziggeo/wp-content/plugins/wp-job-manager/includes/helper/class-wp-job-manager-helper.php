@@ -10,10 +10,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Handles Job Manager's Ajax endpoints.
+ * Helper functions used in WP Job Manager regarding addons, licenses and renewals.
  *
  * @package wp-job-manager
- * @since 1.29.0
+ * @since   1.29.0
  */
 class WP_Job_Manager_Helper {
 	/**
@@ -71,9 +71,10 @@ class WP_Job_Manager_Helper {
 	 * Loads the class, runs on init.
 	 */
 	public function init() {
-		include_once dirname( __FILE__ ) . '/class-wp-job-manager-helper-options.php';
-		include_once dirname( __FILE__ ) . '/class-wp-job-manager-helper-api.php';
-		include_once dirname( __FILE__ ) . '/class-wp-job-manager-helper-language-packs.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper-options.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper-api.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper-language-packs.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/helper/class-wp-job-manager-helper-renewals.php';
 
 		$this->api = WP_Job_Manager_Helper_API::instance();
 
@@ -95,8 +96,8 @@ class WP_Job_Manager_Helper {
 	public function admin_init() {
 		$this->load_language_pack_helper();
 		add_action( 'plugin_action_links', [ $this, 'plugin_links' ], 10, 2 );
-		add_action( 'admin_notices', [ $this, 'licence_error_notices' ] );
 		$this->handle_admin_request();
+		$this->maybe_add_license_error_notices();
 	}
 
 	/**
@@ -118,7 +119,7 @@ class WP_Job_Manager_Helper {
 	private function get_plugin_versions() {
 		return array_filter(
 			array_map(
-				function( $plugin ) {
+				function ( $plugin ) {
 					return $plugin['Version'];
 				},
 				$this->get_installed_plugins( false )
@@ -164,8 +165,8 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Tell the add-on when to check for and display and core WPJM version notices.
 	 *
-	 * @param bool   $do_check                       True if the add-on should do a core version check.
-	 * @param string $minimum_required_core_version  Minimum version the plugin is reporting it requires.
+	 * @param bool   $do_check                      True if the add-on should do a core version check.
+	 * @param string $minimum_required_core_version Minimum version the plugin is reporting it requires.
 	 * @return bool
 	 */
 	public function addon_core_version_check( $do_check, $minimum_required_core_version = null ) {
@@ -198,6 +199,7 @@ class WP_Job_Manager_Helper {
 	 * @return array
 	 */
 	public function check_for_updates( $check_for_updates_data ) {
+		$available_addon_updates = [];
 		// Set version variables.
 		foreach ( $this->get_installed_plugins() as $product_slug => $plugin_data ) {
 			$response = $this->get_plugin_version( $plugin_data['_filename'] );
@@ -205,11 +207,14 @@ class WP_Job_Manager_Helper {
 			if (
 				$response
 				&& isset( $response['new_version'] )
+				&& ! empty( $response['new_version'] )
 				&& version_compare( $response['new_version'], $plugin_data['Version'], '>' )
 			) {
+				$available_addon_updates[ $product_slug ]                      = $response;
 				$check_for_updates_data->response[ $plugin_data['_filename'] ] = (object) $response;
 			}
 		}
+		set_site_transient( 'wpjm_addon_updates_available', $available_addon_updates ); // No expiration set.
 
 		return $check_for_updates_data;
 	}
@@ -286,9 +291,9 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Fetches the plugin information for WPJM plugins.
 	 *
-	 * @param false|object|array $response  The result object or array. Default false.
-	 * @param string             $action    The type of information being requested from the Plugin Install API.
-	 * @param object             $args      Plugin API arguments.
+	 * @param false|object|array $response The result object or array. Default false.
+	 * @param string             $action   The type of information being requested from the Plugin Install API.
+	 * @param object             $args     Plugin API arguments.
 	 *
 	 * @return false|object|array
 	 */
@@ -351,10 +356,7 @@ class WP_Job_Manager_Helper {
 		if ( ! $this->is_product_installed( $product_slug ) ) {
 			return false;
 		}
-		$args = $this->get_plugin_licence( $product_slug );
-		if ( empty( $args['licence_key'] ) || empty( $args['email'] ) ) {
-			return false;
-		}
+		$args                   = $this->get_plugin_licence( $product_slug );
 		$args['api_product_id'] = $product_slug;
 
 		$response = $this->api->plugin_information( $args );
@@ -430,7 +432,7 @@ class WP_Job_Manager_Helper {
 	public function has_plugin_licence( $product_slug ) {
 		$licence = $this->get_plugin_licence( $product_slug );
 
-		return ! empty( $licence['licence_key'] ) && ! empty( $licence['email'] );
+		return ! empty( $licence['licence_key'] );
 	}
 
 	/**
@@ -498,55 +500,149 @@ class WP_Job_Manager_Helper {
 			$this->handle_request();
 		}
 		$licenced_plugins = $this->get_installed_plugins();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended -- No need for nonce here.
+		$search_term        = sanitize_text_field( wp_unslash( $_REQUEST['s'] ?? '' ) );
+		$licenced_plugins   = $this->search_licenced_plugins( $licenced_plugins, $search_term );
+		$active_plugins     = array_filter(
+			$licenced_plugins,
+			function ( $product_slug ) {
+				return $this->has_plugin_licence( $product_slug );
+			},
+			ARRAY_FILTER_USE_KEY
+		);
+		$inactive_plugins   = array_filter(
+			$licenced_plugins,
+			function ( $product_slug ) {
+				return ! $this->has_plugin_licence( $product_slug );
+			},
+			ARRAY_FILTER_USE_KEY
+		);
+		$show_bulk_activate = $this->show_bulk_activation_form( $licenced_plugins );
 		include_once dirname( __FILE__ ) . '/views/html-licences.php';
 	}
 
 	/**
+	 * Search for the list of licenced plugins.
+	 *
+	 * @param array  $licenced_plugins The array of licenced plugins to filter.
+	 * @param string $search_term      The search term to filter by.
+	 * @return array The filtered list of licenced plugins.
+	 */
+	private function search_licenced_plugins( $licenced_plugins, $search_term ) {
+		if ( ! empty( $search_term ) ) {
+			$search_term      = strtolower( $search_term );
+			$licenced_plugins = array_filter(
+				$licenced_plugins,
+				function ( $plugin ) use ( $search_term ) {
+					return str_contains( strtolower( $plugin['Name'] ), $search_term )
+						|| str_contains( strtolower( $plugin['Description'] ), $search_term )
+						|| str_contains( strtolower( $plugin['Author'] ), $search_term );
+				}
+			);
+		}
+		return $licenced_plugins;
+	}
+
+	/**
+	 * Return if we should show or not the bulk activation form.
+	 *
+	 * @param array $licenced_plugins The list of licensed plugins to handle.
+	 *
+	 * @return bool If we should show the bulk activation form or not.
+	 */
+	private function show_bulk_activation_form( $licenced_plugins ) {
+		foreach ( array_keys( $licenced_plugins ) as $product_slug ) {
+			$licence = self::get_plugin_licence( $product_slug );
+			if ( empty( $licence['licence_key'] ) && apply_filters( 'wpjm_display_license_form_for_addon', true, $product_slug ) ) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+
+	/**
 	 * Outputs unset license key notices.
+	 *
+	 * @deprecated 1.33.0 Use maybe_add_license_error_notices() instead.
 	 */
 	public function licence_error_notices() {
-		$screen = get_current_screen();
-		if ( null === $screen || in_array( $screen->id, [ 'job_listing_page_job-manager-addons' ], true ) ) {
-			return;
-		}
+		_deprecated_function( __METHOD__, '1.33.0', 'maybe_add_license_error_notices()' );
+		$this->maybe_add_license_error_notices();
+	}
+
+
+	/**
+	 * Outputs unset licence key notices.
+	 */
+	public function maybe_add_license_error_notices() {
 		foreach ( $this->get_installed_plugins() as $product_slug => $plugin_data ) {
 			$licence = $this->get_plugin_licence( $product_slug );
 			if ( ! WP_Job_Manager_Helper_Options::get( $product_slug, 'hide_key_notice' ) ) {
 				if ( empty( $licence['licence_key'] ) ) {
-					include 'views/html-licence-key-notice.php';
+					add_filter(
+						'wpjm_admin_notices',
+						function ( $notices ) use ( $product_slug, $plugin_data ) {
+							return $this->add_missing_license_notice( $notices, $product_slug, $plugin_data );
+						}
+					);
 				} elseif ( ! empty( $licence['errors'] ) ) {
-					include 'views/html-licence-key-error.php';
+					add_filter(
+						'wpjm_admin_notices',
+						function ( $notices ) use ( $product_slug, $plugin_data ) {
+							return $this->add_error_license_notice( $notices, $product_slug, $plugin_data );
+						}
+					);
 				}
 			}
 		}
 	}
 
 	/**
-	 * Handles a request on the manage license key screen.
+	 * Handles a request on the manage licence key screen.
+	 *
+	 * @return void
 	 */
 	private function handle_request() {
+		if (
+			empty( $_POST['action'] )
+			|| empty( $_POST['_wpnonce'] )
+			|| ! check_admin_referer( 'wpjm-manage-licence' )
+		) {
+			return;
+		}
+		if ( str_starts_with( sanitize_text_field( wp_unslash( $_POST['action'] ) ), 'bulk_' ) ) {
+			$this->handle_bulk_request();
+		} else {
+			$this->handle_single_request();
+		}
+	}
+
+	/**
+	 * Handle a request for a single product on the manage licence key screen.
+	 *
+	 * @return void
+	 */
+	private function handle_single_request() {
 		$licenced_plugins = $this->get_installed_plugins();
 		if (
-			empty( $_POST )
+			empty( $_POST['action'] )
 			|| empty( $_POST['_wpnonce'] )
-			|| empty( $_POST['action'] )
+			|| ! check_admin_referer( 'wpjm-manage-licence' )
 			|| empty( $_POST['product_slug'] )
 			|| ! isset( $licenced_plugins[ $_POST['product_slug'] ] )
-			|| ! wp_verify_nonce( wp_unslash( $_POST['_wpnonce'] ), 'wpjm-manage-licence' ) // phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- Nonce should not be modified.
 		) {
-			return false;
+			return;
 		}
-
 		$product_slug = sanitize_text_field( wp_unslash( $_POST['product_slug'] ) );
 		switch ( $_POST['action'] ) {
 			case 'activate':
-				if ( empty( $_POST['email'] ) || empty( $_POST['licence_key'] ) ) {
-					$this->add_error( $product_slug, __( 'Please enter a valid license key and email address in order to activate this plugin\'s license.', 'wp-job-manager' ) );
+				if ( empty( $_POST['licence_key'] ) ) {
+					$this->add_error( $product_slug, __( 'Please enter a valid license key in order to activate this plugin\'s license.', 'wp-job-manager' ) );
 					break;
 				}
-				$email       = sanitize_email( wp_unslash( $_POST['email'] ) );
 				$licence_key = sanitize_text_field( wp_unslash( $_POST['licence_key'] ) );
-				$this->activate_licence( $product_slug, $licence_key, $email );
+				$this->activate_licence( $product_slug, $licence_key, '' );
 				break;
 			case 'deactivate':
 				$this->deactivate_licence( $product_slug );
@@ -555,13 +651,85 @@ class WP_Job_Manager_Helper {
 	}
 
 	/**
+	 * Handle a bulk request on the manage licence key screen.
+	 *
+	 * @return void
+	 */
+	private function handle_bulk_request() {
+		if (
+			empty( $_POST['action'] )
+			|| 'bulk_activate' !== $_POST['action']
+			|| empty( $_POST['_wpnonce'] )
+			|| ! check_admin_referer( 'wpjm-manage-licence' )
+			|| empty( $_POST['product_slugs'] )
+			|| ! is_array( $_POST['product_slugs'] ) ) {
+			return;
+		}
+		$product_slugs = array_map( 'sanitize_text_field', wp_unslash( $_POST['product_slugs'] ) );
+		if ( empty( $_POST['licence_key'] ) ) {
+			foreach ( $product_slugs as $product_slug ) {
+				$this->add_error( $product_slug, __( 'Please enter a valid license key in order to activate the licenses of the plugins.', 'wp-job-manager' ) );
+			}
+			return;
+		}
+		$licence_key = sanitize_text_field( wp_unslash( $_POST['licence_key'] ) );
+		$this->bulk_activate_licence( $licence_key, $product_slugs );
+	}
+
+	/**
+	 * Activate multiple WPJM add-on plugins with a single licence key.
+	 *
+	 * @param string   $licence_key   The licence key to activate.
+	 * @param string[] $product_slugs The product slugs to activate.
+	 * @return void
+	 */
+	public function bulk_activate_licence( $licence_key, $product_slugs ) {
+		$response = $this->api->bulk_activate(
+			$licence_key,
+			$product_slugs
+		);
+		if ( false === $response ) {
+			// If response is false, the request failed, then we can consider that we returned the same error message
+			// for every product slug.
+			$response = array_fill_keys(
+				$product_slugs,
+				[
+					'error_code'    => 'connection_error',
+					'error_message' => __( 'There was an error activating your license key. Please try again later.', 'wp-job-manager' ),
+				]
+			);
+		}
+		$error_messages       = array_column( $response, 'error_message' );
+		$skip_invalid_product = true;
+		// We only handle bulk errors if there are multiple products to activate, and if all products returned the same
+		// error.
+		if ( 1 < count( $product_slugs ) && count( $product_slugs ) === count( $error_messages ) ) {
+			// If there's an error for each product, then we want to show the errors for invalid products too.
+			$skip_invalid_product  = false;
+			$error_messages_unique = array_unique( $error_messages );
+			// Now, if we ONLY HAVE one kind of error, then we just print it once, in the bulk form.
+			if ( 1 === count( $error_messages_unique ) ) {
+				$this->add_error( 'bulk-activate', $error_messages_unique[0] );
+				return;
+			}
+		}
+		foreach ( $product_slugs as $product_slug ) {
+			$result = $response && isset( $response[ $product_slug ] ) ? $response[ $product_slug ] : false;
+			if ( $skip_invalid_product && false !== $result && ! $result['success'] && 'invalid_product' === $result['error_code'] ) {
+				continue;
+			}
+			$this->handle_product_activation_response( $result, $product_slug, $licence_key, false );
+		}
+	}
+
+	/**
 	 * Activate a licence key for a WPJM add-on plugin.
 	 *
-	 * @param string $product_slug
-	 * @param string $licence_key
-	 * @param string $email
+	 * @param string $product_slug The slug of the product to activate.
+	 * @param string $licence_key  The licence key to activate.
+	 * @param string $email        The e-mail associated with the license. Optional (and actually not used).
 	 */
-	public function activate_licence( $product_slug, $licence_key, $email ) {
+	public function activate_licence( $product_slug, $licence_key, $email = '' ) {
 		$response = $this->api->activate(
 			[
 				'api_product_id' => $product_slug,
@@ -570,31 +738,7 @@ class WP_Job_Manager_Helper {
 			]
 		);
 
-		$error = false;
-		if ( false === $response ) {
-			$error = 'connection_failed';
-			$this->add_error( $product_slug, __( 'Connection failed to the License Key API server - possible server issue.', 'wp-job-manager' ) );
-		} elseif ( isset( $response['error_code'] ) && isset( $response['error'] ) ) {
-			$error = $response['error_code'];
-			$this->add_error( $product_slug, $response['error'] );
-		} elseif ( ! empty( $response['activated'] ) ) {
-			WP_Job_Manager_Helper_Options::update( $product_slug, 'licence_key', $licence_key );
-			WP_Job_Manager_Helper_Options::update( $product_slug, 'email', $email );
-			WP_Job_Manager_Helper_Options::delete( $product_slug, 'errors' );
-			WP_Job_Manager_Helper_Options::delete( $product_slug, 'hide_key_notice' );
-			$this->add_success( $product_slug, __( 'Plugin license has been activated.', 'wp-job-manager' ) );
-		} else {
-			$error = 'unknown';
-			$this->add_error( $product_slug, __( 'An unknown error occurred while attempting to activate the license', 'wp-job-manager' ) );
-		}
-
-		$event_properties = [ 'slug' => $product_slug ];
-		if ( false !== $error ) {
-			$event_properties['error'] = $error;
-			self::log_event( 'license_activation_error', $event_properties );
-		} else {
-			self::log_event( 'license_activated', $event_properties );
-		}
+		$this->handle_product_activation_response( $response, $product_slug, $licence_key );
 	}
 
 	/**
@@ -604,7 +748,7 @@ class WP_Job_Manager_Helper {
 	 */
 	private function deactivate_licence( $product_slug ) {
 		$licence = $this->get_plugin_licence( $product_slug );
-		if ( empty( $licence['licence_key'] ) || empty( $licence['email'] ) ) {
+		if ( empty( $licence['licence_key'] ) ) {
 			$this->add_error( $product_slug, __( 'license is not active.', 'wp-job-manager' ) );
 			return;
 		}
@@ -634,8 +778,8 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Handle errors from the API.
 	 *
-	 * @param  string $product_slug
-	 * @param  array  $response
+	 * @param string $product_slug
+	 * @param array  $response
 	 */
 	private function handle_api_errors( $product_slug, $response ) {
 		$plugin_products = $this->get_installed_plugins();
@@ -662,7 +806,7 @@ class WP_Job_Manager_Helper {
 	 * Add an error message.
 	 *
 	 * @param string $product_slug The plugin slug.
-	 * @param string $message Your error message.
+	 * @param string $message      Your error message.
 	 */
 	private function add_error( $product_slug, $message ) {
 		$this->add_message( 'error', $product_slug, $message );
@@ -672,7 +816,7 @@ class WP_Job_Manager_Helper {
 	 * Add a success message.
 	 *
 	 * @param string $product_slug The plugin slug.
-	 * @param string $message Your error message.
+	 * @param string $message      Your error message.
 	 */
 	private function add_success( $product_slug, $message ) {
 		$this->add_message( 'success', $product_slug, $message );
@@ -681,9 +825,9 @@ class WP_Job_Manager_Helper {
 	/**
 	 * Add a message.
 	 *
-	 * @param string $type Message type.
+	 * @param string $type         Message type.
 	 * @param string $product_slug The plugin slug.
-	 * @param string $message Your error message.
+	 * @param string $message      Your error message.
 	 */
 	private function add_message( $type, $product_slug, $message ) {
 		if ( ! isset( $this->licence_messages[ $product_slug ] ) ) {
@@ -721,6 +865,115 @@ class WP_Job_Manager_Helper {
 		}
 
 		WP_Job_Manager_Usage_Tracking::log_event( $event_name, $properties );
+	}
+
+	/**
+	 * Handle the response of the product activation API on WPJobManager.com.
+	 *
+	 * @param array|boolean $response             The response to handle.
+	 * @param string        $product_slug         The slug of the product.
+	 * @param string        $licence_key          The licence key being activated.
+	 * @param boolean       $show_success_message Whether to show a success message or not.
+	 * @return void
+	 */
+	private function handle_product_activation_response( $response, $product_slug, $licence_key, $show_success_message = true ) {
+		$error = false;
+		if ( ! isset( $response['error_message'] ) && isset( $response['error'] ) ) {
+			$response['error_message'] = $response['error'];
+		}
+		if ( ! isset( $item['activated'] ) && isset( $response['success'] ) ) {
+			$response['activated'] = $response['success'];
+		}
+		if ( false === $response ) {
+			$error = 'connection_failed';
+			$this->add_error( $product_slug, __( 'Connection failed to the License Key API server - possible server issue.', 'wp-job-manager' ) );
+		} elseif ( isset( $response['error_code'] ) && isset( $response['error_message'] ) ) {
+			$error = $response['error_code'];
+			$this->add_error( $product_slug, $response['error_message'] );
+		} elseif ( ! empty( $response['activated'] ) ) {
+			WP_Job_Manager_Helper_Options::update( $product_slug, 'licence_key', $licence_key );
+			WP_Job_Manager_Helper_Options::delete( $product_slug, 'errors' );
+			WP_Job_Manager_Helper_Options::delete( $product_slug, 'hide_key_notice' );
+			if ( $show_success_message ) {
+				$this->add_success( $product_slug, __( 'Plugin license has been activated.', 'wp-job-manager' ) );
+			}
+		} else {
+			$error = 'unknown';
+			$this->add_error( $product_slug, __( 'An unknown error occurred while attempting to activate the license', 'wp-job-manager' ) );
+		}
+
+		$event_properties = [ 'slug' => $product_slug ];
+		if ( false !== $error ) {
+			$event_properties['error'] = $error;
+			self::log_event( 'license_activation_error', $event_properties );
+		} else {
+			self::log_event( 'license_activated', $event_properties );
+		}
+	}
+
+
+	/**
+	 * Add a notice to the admin if a licence key is missing.
+	 *
+	 * @param array  $notices     Notices to be displayed.
+	 * @param string $product_slug The plugin slug.
+	 * @param array  $plugin_data The plugin data.
+	 * @return array
+	 */
+	private function add_missing_license_notice( $notices, $product_slug, $plugin_data ) {
+		$notice = [
+			'level'       => 'info',
+			'dismissible' => true,
+			'conditions'  => [
+				[
+					'type'         => 'user_cap',
+					'capabilities' => [ 'update_plugins' ],
+				],
+			],
+			'message'     => sprintf(
+				wp_kses_post(
+				// translators: %1$s is the URL to the licence key page, %2$s is the plugin name.
+					__( '<a href="%1$s">Please enter your license key</a> to get updates for "%2$s".', 'wp-job-manager' )
+				),
+				esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper#' . sanitize_title( $product_slug . '_row' ) ) ),
+				esc_html( $plugin_data['Name'] )
+			),
+		];
+		$notices[ 'wpjm_missing_license_notice_' . $product_slug ] = $notice;
+
+		return $notices;
+	}
+
+	/**
+	 * Add a notice to the admin if a licence key is missing.
+	 *
+	 * @param array  $notices     Notices to be displayed.
+	 * @param string $product_slug The plugin slug.
+	 * @param array  $plugin_data The plugin data.
+	 * @return array
+	 */
+	private function add_error_license_notice( $notices, $product_slug, $plugin_data ) {
+		$notice = [
+			'level'       => 'error',
+			'dismissible' => true,
+			'conditions'  => [
+				[
+					'type'         => 'user_cap',
+					'capabilities' => [ 'update_plugins' ],
+				],
+			],
+			'message'     => sprintf(
+				wp_kses_post(
+				// translators: %1$s is the plugin name, %2$s is the URL to the licence key page.
+					__( 'There is a problem with the license for "%1$s". Please <a href="%2$s">manage the license</a> to check for a solution and continue receiving updates.', 'wp-job-manager' )
+				),
+				esc_html( $plugin_data['Name'] ),
+				esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-addons&section=helper#' . sanitize_title( $product_slug . '_row' ) ) )
+			),
+		];
+		$notices[ 'wpjm_license_error_notice_' . $product_slug ] = $notice;
+
+		return $notices;
 	}
 }
 

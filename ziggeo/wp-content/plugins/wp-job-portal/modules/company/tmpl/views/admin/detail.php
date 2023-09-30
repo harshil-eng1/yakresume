@@ -1,4 +1,6 @@
 <?php
+if (!defined('ABSPATH'))
+    die('Restricted Access');
 /**
 * @param Detail Body
 * wpjobportalPopupAdmin
@@ -17,7 +19,7 @@
         <div class="wpjobportal-company-data">
             <div class="wpjobportal-company-data-text">
                 <span class="wpjobportal-company-data-title">
-                    <?php echo __('Location','wp-job-portal'). ' : '; ?>
+                    <?php echo esc_html(__('Location','wp-job-portal')). ' : '; ?>
                 </span>
                 <span class="wpjobportal-company-data-value">
                     <?php echo esc_html(WPJOBPORTALincluder::getJSModel('city')->getLocationDataForView($company->city)); ?>
@@ -29,13 +31,13 @@
         <div class="wpjobportal-company-status">
             <?php
                 if ($company->status == 0) {
-                    echo '<span class="wpjobportal-company-status-txt pending">' . __('Pending', 'wp-job-portal') . '</span>';
+                    echo '<span class="wpjobportal-company-status-txt pending">' . esc_html(__('Pending', 'wp-job-portal')) . '</span>';
                 } elseif ($company->status == 1) {
-                    echo '<span class="wpjobportal-company-status-txt approved">' . __('Approved', 'wp-job-portal') . '</span>';
+                    echo '<span class="wpjobportal-company-status-txt approved">' . esc_html(__('Approved', 'wp-job-portal')) . '</span>';
                 } elseif ($company->status == -1) {
-                    echo '<span class="wpjobportal-company-status-txt rejected">' . __('Rejected', 'wp-job-portal') . '</span>';
+                    echo '<span class="wpjobportal-company-status-txt rejected">' . esc_html(__('Rejected', 'wp-job-portal')) . '</span>';
                 }elseif ($company->status == 3) {
-                    echo '<span class="wpjobportal-company-status-txt pending-payment">' . __('Pending Payment', 'wp-job-portal') . '</span>';
+                    echo '<span class="wpjobportal-company-status-txt pending-payment">' . esc_html(__('Pending Payment', 'wp-job-portal')) . '</span>';
                 }
             ?> 
         </div>

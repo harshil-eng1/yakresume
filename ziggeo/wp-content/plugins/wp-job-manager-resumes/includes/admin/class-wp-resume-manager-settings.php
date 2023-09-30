@@ -249,6 +249,19 @@ class WP_Resume_Manager_Settings extends WP_Job_Manager_Settings {
 							'attributes'  => [],
 							'placeholder' => __( 'No limit', 'wp-job-manager-resumes' ),
 						],
+						[
+							'name'       => 'resume_manager_show_agreement_resume_submission',
+							'std'        => '0',
+							'label'      => __( 'Terms and Conditions Checkbox', 'wp-job-manager-resumes' ),
+							'cb_label'   => __( 'Enable required Terms and Conditions checkbox on the form', 'wp-job-manager-resumes' ),
+							'desc'       => sprintf(
+								// translators: Placeholder %s is the URL to the page in WP Job Manager's settings to set the pages.
+								__( 'Require a Terms and Conditions checkbox to be marked before a resume can be submitted. The linked page can be set from the <a href="%s">WP Job Manager\'s settings</a>.', 'wp-job-manager-resumes' ),
+								esc_url( admin_url( 'edit.php?post_type=job_listing&page=job-manager-settings#settings-job_pages' ) )
+							),
+							'type'       => 'checkbox',
+							'attributes' => [],
+						],
 						'recaptcha' => [
 							'name'       => 'resume_manager_enable_recaptcha_resume_submission',
 							'std'        => '0',
@@ -374,7 +387,7 @@ class WP_Resume_Manager_Settings extends WP_Job_Manager_Settings {
 						],
 						[
 							'name'       => 'resume_manager_discourage_resume_search_indexing',
-							'std'        => '0',
+							'std'        => '1',
 							'label'      => __( 'Search Engine Visibility', 'wp-job-manager-resumes' ),
 							'cb_label'   => __( 'Discourage search engines from indexing resume listings', 'wp-job-manager-resumes' ),
 							'desc'       => __( 'Search engines choose whether to honor this request.', 'wp-job-manager-resumes' ),

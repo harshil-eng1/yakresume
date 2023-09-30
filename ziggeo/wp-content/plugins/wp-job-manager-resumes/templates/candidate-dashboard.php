@@ -31,7 +31,7 @@ $submit_resume_form_page_id = get_option( 'resume_manager_submit_resume_form_pag
 		<tbody>
 			<?php if ( ! $resumes ) : ?>
 				<tr>
-					<td colspan="<?php echo count( $candidate_dashboard_columns ); ?>"><?php _e( 'You do not have any active resume listings.', 'wp-job-manager-resumes' ); ?></td>
+					<td colspan="<?php echo count( $candidate_dashboard_columns ); ?>"><?php esc_html_e( 'You do not have any active resume listings.', 'wp-job-manager-resumes' ); ?></td>
 				</tr>
 			<?php else : ?>
 				<?php foreach ( $resumes as $resume ) : ?>
@@ -39,7 +39,7 @@ $submit_resume_form_page_id = get_option( 'resume_manager_submit_resume_form_pag
 						<?php foreach ( $candidate_dashboard_columns as $key => $column ) : ?>
 							<td class="<?php echo esc_attr( $key ); ?>">
 								<?php if ( 'resume-title' === $key ) : ?>
-									<?php if ( $resume->post_status == 'publish' ) : ?>
+									<?php if ( 'publish' == $resume->post_status ) : ?>
 										<a href="<?php echo get_permalink( $resume->ID ); ?>"><?php echo esc_html( $resume->post_title ); ?></a>
 									<?php else : ?>
 										<?php echo esc_html( $resume->post_title ); ?> <small>(<?php the_resume_status( $resume ); ?>)</small>
@@ -109,7 +109,7 @@ $submit_resume_form_page_id = get_option( 'resume_manager_submit_resume_form_pag
 												if ( $value['nonce'] ) {
 													$action_url = wp_nonce_url( $action_url, 'resume_manager_my_resume_actions' );
 												}
-												echo '<li><a href="' . $action_url . '" class="candidate-dashboard-action-' . $action . '">' . $value['label'] . '</a></li>';
+												echo '<li><a href="' . esc_url( $action_url ) . '" class="candidate-dashboard-action-' . esc_attr( $action ) . '">' . esc_html( $value['label'] ) . '</a></li>';
 											}
 											?>
 									</ul>
@@ -142,7 +142,7 @@ $submit_resume_form_page_id = get_option( 'resume_manager_submit_resume_form_pag
 			<tfoot>
 				<tr>
 					<td colspan="<?php echo count( $candidate_dashboard_columns ); ?>">
-						<a href="<?php echo esc_url( get_permalink( $submit_resume_form_page_id ) ); ?>"><?php _e( 'Add Resume', 'wp-job-manager-resumes' ); ?></a>
+						<a href="<?php echo esc_url( get_permalink( $submit_resume_form_page_id ) ); ?>"><?php esc_html_e( 'Add Resume', 'wp-job-manager-resumes' ); ?></a>
 					</td>
 				</tr>
 			</tfoot>

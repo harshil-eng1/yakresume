@@ -4,33 +4,39 @@
         return;
     }
 ?>   
-<script >
-    jQuery(document).ready(function () {
-        jQuery("span#showhidefilter").click(function (e) {
-            e.preventDefault();
-            var img2 = "<?php echo WPJOBPORTAL_PLUGIN_URL . "includes/images/filter-up.png"; ?>";
-            var img1 = "<?php echo WPJOBPORTAL_PLUGIN_URL . "includes/images/filter-down.png"; ?>";
-            if (jQuery('.default-hidden').is(':visible')) {
-                jQuery(this).find('img').attr('src', img1);
-            } else {
-                jQuery(this).find('img').attr('src', img2);
-            }
-            jQuery(".default-hidden").toggle();
-            var height = jQuery(this).height();
-            var imgheight = jQuery(this).find('img').height();
-            var currenttop = (height - imgheight) / 2;
-            jQuery(this).find('img').css('top', currenttop);
+<?php
+    wp_register_script( 'wpjobportal-inline-handle', '' );
+    wp_enqueue_script( 'wpjobportal-inline-handle' );
+
+    $inline_js_script = "
+        jQuery(document).ready(function () {
+            jQuery('span#showhidefilter').click(function (e) {
+                e.preventDefault();
+                var img2 = '". WPJOBPORTAL_PLUGIN_URL . "includes/images/filter-up.png';
+                var img1 = '". WPJOBPORTAL_PLUGIN_URL . "includes/images/filter-down.png';
+                if (jQuery('.default-hidden').is(':visible')) {
+                    jQuery(this).find('img').attr('src', img1);
+                } else {
+                    jQuery(this).find('img').attr('src', img2);
+                }
+                jQuery('.default-hidden').toggle();
+                var height = jQuery(this).height();
+                var imgheight = jQuery(this).find('img').height();
+                var currenttop = (height - imgheight) / 2;
+                jQuery(this).find('img').css('top', currenttop);
+            });
         });
-    });
-    function resetFrom() {
-        document.getElementById('searchname').value = '';
-        document.getElementById('searchusername').value = '';
-        document.getElementById('searchcompany').value = '';
-        document.getElementById('searchresume').value = '';
-        document.getElementById('searchrole').value = '';
-        document.getElementById('wpjobportalform').submit();
-    }
-</script>
+        function resetFrom() {
+            document.getElementById('searchname').value = '';
+            document.getElementById('searchusername').value = '';
+            document.getElementById('searchcompany').value = '';
+            document.getElementById('searchresume').value = '';
+            document.getElementById('searchrole').value = '';
+            document.getElementById('wpjobportalform').submit();
+        }
+    ";
+    wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
+?>
 <!-- main wrapper -->
 <div id="wpjobportaladmin-wrapper">
     <!-- left menu -->
@@ -44,27 +50,27 @@
                 <div id="wpjobportal-breadcrumbs">
                     <ul>
                         <li>
-                            <a href="<?php echo admin_url('admin.php?page=wpjobportal'); ?>" title="<?php echo __('dashboard','wp-job-portal'); ?>">
-                                <?php echo __('Dashboard','wp-job-portal'); ?>
+                            <a href="<?php echo admin_url('admin.php?page=wpjobportal'); ?>" title="<?php echo esc_html(__('dashboard','wp-job-portal')); ?>">
+                                <?php echo esc_html(__('Dashboard','wp-job-portal')); ?>
                             </a>
                         </li>
-                        <li><?php echo __('Users','wp-job-portal'); ?></li>
+                        <li><?php echo esc_html(__('Users','wp-job-portal')); ?></li>
                     </ul>
                 </div>
             </div>    
             <div id="wpjobportal-wrapper-top-right">
                 <div id="wpjobportal-config-btn">
-                    <a href="admin.php?page=wpjobportal_configuration" title="<?php echo __('configuration','wp-job-portal'); ?>">
+                    <a href="admin.php?page=wpjobportal_configuration" title="<?php echo esc_html(__('configuration','wp-job-portal')); ?>">
                         <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/dashboard/config.png">
                    </a>
                 </div>
                 <div id="wpjobportal-help-btn" class="wpjobportal-help-btn">
-                    <a href="admin.php?page=wpjobportal&wpjobportallt=help" title="<?php echo __('help','wp-job-portal'); ?>">
+                    <a href="admin.php?page=wpjobportal&wpjobportallt=help" title="<?php echo esc_html(__('help','wp-job-portal')); ?>">
                         <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/dashboard/help.png">
                    </a>
                 </div>
                 <div id="wpjobportal-vers-txt">
-                    <?php echo __('Version','wp-job-portal').': '; ?>
+                    <?php echo esc_html(__('Version','wp-job-portal')).': '; ?>
                     <span class="wpjobportal-ver"><?php echo esc_html(WPJOBPORTALincluder::getJSModel('configuration')->getConfigValue('versioncode')); ?></span>
                 </div>
             </div>    
@@ -87,8 +93,8 @@
                         WPJOBPORTALincluder::getTemplate('templates/admin/pagination',array('module' => 'user','pagination' => wpjobportal::$_data[1]));
                     }
                 } else {
-                    $msg = __('No record found','wp-job-portal');
-                    echo wp_kses(WPJOBPORTALlayout::getNoRecordFound($msg), WPJOBPORTAL_ALLOWED_TAGS); 
+                    $msg = esc_html(__('No record found','wp-job-portal'));
+                    WPJOBPORTALlayout::getNoRecordFound($msg);
                 }
             ?>
         </div>

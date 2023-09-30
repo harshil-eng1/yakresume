@@ -84,7 +84,14 @@ class WP_Resume_Manager_Shortcodes {
 	public function shortcode_action_handler() {
 		global $post;
 
-		if ( is_page() && strstr( $post->post_content, '[candidate_dashboard' ) ) {
+		/**
+		 * Force the shortcode handler to run.
+		 *
+		 * @param bool $force_shortcode_action_handler Whether it should be forced to run.
+		 */
+		$force_shortcode_action_handler = apply_filters( 'resume_manager_force_shortcode_action_handler', false );
+
+		if ( is_page() && strstr( $post->post_content, '[candidate_dashboard' ) || $force_shortcode_action_handler ) {
 			$this->candidate_dashboard_handler();
 		}
 	}
@@ -348,6 +355,7 @@ class WP_Resume_Manager_Shortcodes {
 		$categories = array_filter( array_map( 'trim', explode( ',', $categories ) ) );
 		$keywords   = '';
 		$location   = '';
+		$skills     = '';
 
 		// String and bool handling
 		$show_filters              = $this->string_to_bool( $show_filters );
@@ -372,6 +380,10 @@ class WP_Resume_Manager_Shortcodes {
 			$selected_category = sanitize_text_field( $_GET['search_category'] );
 		}
 
+		if ( ! empty( $_GET['search_skills'] ) ) {
+			$skills = sanitize_text_field( $_GET['search_skills'] );
+		}
+
 		if ( $show_filters ) {
 
 			get_job_manager_template(
@@ -387,6 +399,7 @@ class WP_Resume_Manager_Shortcodes {
 					'location'                  => $location,
 					'keywords'                  => $keywords,
 					'show_category_multiselect' => $show_category_multiselect,
+					'skills'                    => $skills,
 				],
 				'wp-job-manager-resumes',
 				RESUME_MANAGER_PLUGIN_DIR . '/templates/'
@@ -460,11 +473,34 @@ class WP_Resume_Manager_Shortcodes {
 		if ( ! is_null( $featured ) ) {
 			$data_attributes['featured'] = $featured ? 'true' : 'false';
 		}
+
+		/**
+		 * Pass additional data to the resume listing <div> wrapper.
+		 *
+		 * @since 1.18.5
+		 *
+		 * @param array $data_attributes {
+		 *     Key => Value array of data attributes to pass.
+		 *
+		 *     @type string $$key Value to pass as a data attribute.
+		 * }
+		 * @param array $atts            Attributes for the shortcode.
+		 */
+		$data_attributes = apply_filters( 'job_manager_resumes_shortcode_data_attributes', $data_attributes, $atts );
+
 		foreach ( $data_attributes as $key => $value ) {
 			$data_attributes_string .= 'data-' . esc_attr( $key ) . '="' . esc_attr( $value ) . '" ';
 		}
 
-		return '<div class="resumes" ' . $data_attributes_string . '>' . ob_get_clean() . '</div>';
+		/**
+		 * Get current output buffer contents ( ob_get_clean() )
+		 *
+		 * @since 1.18.5
+		 *
+		 */
+		$resume_listings_output = apply_filters( 'job_manager_resume_listings_output', ob_get_clean() );
+
+		return '<div class="resumes" ' . $data_attributes_string . '>' . $resume_listings_output . '</div>';
 	}
 
 	/**

@@ -15,27 +15,27 @@ $data = wpjobportal::$_data[0];
                 <div id="wpjobportal-breadcrumbs">
                     <ul>
                         <li>
-                            <a href="<?php echo admin_url('admin.php?page=wpjobportal'); ?>" title="<?php echo __('dashboard','wp-job-portal'); ?>">
-                                <?php echo __('Dashboard','wp-job-portal'); ?>
+                            <a href="<?php echo admin_url('admin.php?page=wpjobportal'); ?>" title="<?php echo esc_html(__('dashboard','wp-job-portal')); ?>">
+                                <?php echo esc_html(__('Dashboard','wp-job-portal')); ?>
                             </a>
                         </li>
-                        <li><?php echo __('Stats','wp-job-portal'); ?></li>
+                        <li><?php echo esc_html(__('Stats','wp-job-portal')); ?></li>
                     </ul>
                 </div>
             </div>
             <div id="wpjobportal-wrapper-top-right">
                 <div id="wpjobportal-config-btn">
-                    <a href="admin.php?page=wpjobportal_configuration" title="<?php echo __('configuration','wp-job-portal'); ?>">
+                    <a href="admin.php?page=wpjobportal_configuration" title="<?php echo esc_html(__('configuration','wp-job-portal')); ?>">
                         <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/dashboard/config.png">
                    </a>
                 </div>
                 <div id="wpjobportal-help-btn" class="wpjobportal-help-btn">
-                    <a href="admin.php?page=wpjobportal&wpjobportallt=help" title="<?php echo __('help','wp-job-portal'); ?>">
+                    <a href="admin.php?page=wpjobportal&wpjobportallt=help" title="<?php echo esc_html(__('help','wp-job-portal')); ?>">
                         <img src="<?php echo WPJOBPORTAL_PLUGIN_URL; ?>includes/images/control_panel/dashboard/help.png">
                    </a>
                 </div>
                 <div id="wpjobportal-vers-txt">
-                    <?php echo __('Version','wp-job-portal').': '; ?>
+                    <?php echo esc_html(__('Version','wp-job-portal')).': '; ?>
                     <span class="wpjobportal-ver"><?php echo esc_html(WPJOBPORTALincluder::getJSModel('configuration')->getConfigValue('versioncode')); ?></span>
                 </div>
             </div>
@@ -48,20 +48,20 @@ $data = wpjobportal::$_data[0];
                 <thead>
                     <tr>
                         <th class="wpjobportal-text-left">
-                            <?php echo __('Title', 'wp-job-portal'); ?>
+                            <?php echo esc_html(__('Title', 'wp-job-portal')); ?>
                         </th>
                         <th>
-                            <?php echo __('Total', 'wp-job-portal'); ?>
+                            <?php echo esc_html(__('Total', 'wp-job-portal')); ?>
                         </th>
                         <th>
-                            <?php echo __('Active', 'wp-job-portal'); ?>
+                            <?php echo esc_html(__('Active', 'wp-job-portal')); ?>
                         </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td class="wpjobportal-text-left">
-                            <?php echo __('Companies', 'wp-job-portal'); ?>
+                            <?php echo esc_html(__('Companies', 'wp-job-portal')); ?>
                         </td>
                         <td>
                             <?php echo esc_html($data['companies']->totalcompanies); ?>   
@@ -73,19 +73,19 @@ $data = wpjobportal::$_data[0];
                     <?php if (in_array('featuredcompany',wpjobportal::$_active_addons) && in_array('credits', wpjobportal::$_active_addons)) { ?>
                         <tr>
                             <td class="wpjobportal-text-left">
-                                <?php echo __('Featured Companies', 'wp-job-portal'); ?>
+                                <?php echo esc_html(__('Featured Companies', 'wp-job-portal')); ?>
                             </td>
                             <td>
-                                <?php echo esc_html($data['featuredcompanies']->totalfeaturedcompanies); ?>
+                                <?php echo isset($data['featuredcompanies']->totalfeaturedcompanies) ? esc_html($data['featuredcompanies']->totalfeaturedcompanies): '' ; ?>
                             </td>
                             <td>
-                                <?php echo esc_html($data['featuredcompanies']->activefeaturedcompanies); ?>
+                                <?php echo isset($data['featuredcompanies']->activefeaturedcompanies) ? esc_html($data['featuredcompanies']->activefeaturedcompanies): '' ; ?>
                             </td>
                         </tr>
                     <?php } ?>
                     <tr>
                         <td class="wpjobportal-text-left">
-                            <?php echo __('Jobs', 'wp-job-portal'); ?>
+                            <?php echo esc_html(__('Jobs', 'wp-job-portal')); ?>
                         </td>
                         <td>
                             <?php echo esc_html($data['jobs']->totaljobs); ?>
@@ -97,7 +97,7 @@ $data = wpjobportal::$_data[0];
                     <?php if (in_array('featuredjob',wpjobportal::$_active_addons) && in_array('credits', wpjobportal::$_active_addons)) { ?>
                         <tr>
                             <td class="wpjobportal-text-left">
-                                <?php echo __('Featured Jobs', 'wp-job-portal'); ?>
+                                <?php echo esc_html(__('Featured Jobs', 'wp-job-portal')); ?>
                             </td>
                             <td>
                                 <?php echo esc_html($data['featuredjobs']->totalfeaturedjobs); ?>
@@ -109,7 +109,7 @@ $data = wpjobportal::$_data[0];
                     <?php } ?>
                     <tr>
                         <td class="wpjobportal-text-left">
-                            <?php echo __('Resume', 'wp-job-portal'); ?>
+                            <?php echo esc_html(__('Resume', 'wp-job-portal')); ?>
                         </td>
                         <td>
                             <?php echo esc_html($data['resumes']->totalresumes); ?>
@@ -121,7 +121,7 @@ $data = wpjobportal::$_data[0];
                     <?php if (in_array('featureresume',wpjobportal::$_active_addons) && in_array('credits', wpjobportal::$_active_addons)) { ?>
                         <tr>
                             <td class="wpjobportal-text-left">
-                                <?php echo __('Featured Resume', 'wp-job-portal'); ?>
+                                <?php echo esc_html(__('Featured Resume', 'wp-job-portal')); ?>
                             </td>
                             <td>
                                 <?php echo esc_html($data['featuredresumes']->totalfeaturedresumes); ?>
@@ -133,7 +133,7 @@ $data = wpjobportal::$_data[0];
                     <?php } ?>
                     <tr>
                         <td class="wpjobportal-text-left">
-                            <?php echo __('Employer', 'wp-job-portal'); ?>
+                            <?php echo esc_html(__('Employer', 'wp-job-portal')); ?>
                         </td>
                         <td>
                             <?php echo esc_html($data['totalemployer']->totalemployer); ?>
@@ -144,7 +144,7 @@ $data = wpjobportal::$_data[0];
                     </tr>
                     <tr>
                         <td class="wpjobportal-text-left">
-                            <?php echo __('Jobseeker', 'wp-job-portal'); ?>
+                            <?php echo esc_html(__('Jobseeker', 'wp-job-portal')); ?>
                         </td>
                         <td>
                             <?php echo esc_html($data['totaljobseeker']->totaljobseeker); ?>

@@ -72,7 +72,7 @@ class WPJOBPORTALformfield {
             $id = $name;
         }
         if(is_array($value)){
-            if(strstr($name, '[]')){
+            if(wpjobportalphplib::wpJP_strstr($name, '[]')){
                 for ($i=0; $i < count($value) ; $i++) { 
                     $textfield .= "<input type='hidden' name='" . $name . "' id='" . $id . "' value='" . $value[$i] . "' /> ";
                 }
@@ -132,9 +132,9 @@ class WPJOBPORTALformfield {
         if (!empty($list))
             foreach ($list AS $record) {
                 if ((is_array($defaultvalue) && in_array($record->id, $defaultvalue)) || $defaultvalue == $record->id)
-                    $selectfield .= '<option selected="selected" value="' . $record->id . '">' . __($record->text,'wp-job-portal') . '</option>';
+                    $selectfield .= '<option selected="selected" value="' . $record->id . '">' . wpjobportal::wpjobportal_getVariableValue($record->text) . '</option>';
                 else
-                    $selectfield .= '<option value="' . $record->id . '">' . __($record->text,'wp-job-portal') . '</option>';
+                    $selectfield .= '<option value="' . $record->id . '">' . wpjobportal::wpjobportal_getVariableValue($record->text) . '</option>';
             }
 
         $selectfield .= '</select>';
@@ -164,9 +164,9 @@ class WPJOBPORTALformfield {
             foreach ($list AS $record) {
                 $class=isset($record->class)?$record->class:"";
                 if ((is_array($defaultvalue) && in_array($record->id, $defaultvalue)) || $defaultvalue == $record->id)
-                    $selectfield .= '<option class="' . $class . '"  selected="selected" value="' . $record->id . '">' . __($record->text,'wp-job-portal') . '</option>';
+                    $selectfield .= '<option class="' . $class . '"  selected="selected" value="' . $record->id . '">' . wpjobportal::wpjobportal_getVariableValue($record->text) . '</option>';
                 else
-                    $selectfield .= '<option class="' . $class . '" value="' . $record->id . '">' . __($record->text,'wp-job-portal') . '</option>';
+                    $selectfield .= '<option class="' . $class . '" value="' . $record->id . '">' . wpjobportal::wpjobportal_getVariableValue($record->text) . '</option>';
             }
 
         $selectfield .= '</select>';

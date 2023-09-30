@@ -9457,3 +9457,7 @@ msgstr "Supprimer le chat"
 
 msgid "Sub-Cat"
 msgstr "Sous-chat"
+
+msgid "Register an account"
+msgstr "Créer un compte"
+

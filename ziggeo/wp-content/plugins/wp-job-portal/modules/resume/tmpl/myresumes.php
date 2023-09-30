@@ -25,13 +25,13 @@ $subtype = wpjobportal::$_config->getConfigValue('submission_type');
                             $image = $image2;
                         }
                         $categoryarray = array(
-                            (object) array('id' => 1, 'text' => __('Application title', 'wp-job-portal')),
-                            (object) array('id' => 2, 'text' => __('First name', 'wp-job-portal')),
-                            (object) array('id' => 3, 'text' => __('Category', 'wp-job-portal')),
-                            (object) array('id' => 4, 'text' => __('Job type', 'wp-job-portal')),
-                            (object) array('id' => 5, 'text' => __('Location', 'wp-job-portal')),
-                            (object) array('id' => 6, 'text' => __('Created', 'wp-job-portal')),
-                            (object) array('id' => 7, 'text' => __('Status', 'wp-job-portal'))
+                            (object) array('id' => 1, 'text' => esc_html(__('Application title', 'wp-job-portal'))),
+                            (object) array('id' => 2, 'text' => esc_html(__('First name', 'wp-job-portal'))),
+                            (object) array('id' => 3, 'text' => esc_html(__('Category', 'wp-job-portal'))),
+                            (object) array('id' => 4, 'text' => esc_html(__('Job type', 'wp-job-portal'))),
+                            (object) array('id' => 5, 'text' => esc_html(__('Location', 'wp-job-portal'))),
+                            (object) array('id' => 6, 'text' => esc_html(__('Created', 'wp-job-portal'))),
+                            (object) array('id' => 7, 'text' => esc_html(__('Status', 'wp-job-portal')))
                         );
                         // resume filters
                         WPJOBPORTALincluder::getTemplate('resume/views/frontend/filter',array(
@@ -56,7 +56,7 @@ $subtype = wpjobportal::$_config->getConfigValue('submission_type');
         <div class="wjportal-resume-list-wrp wjportal-my-resume-wrp">
             <?php
             if(!empty(wpjobportal::$_data[0])){ ?>
-                <form id="resume_form" method="post" action="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>'resume','wpjobportallt'=>'myresumes','wpjobportalpageid' =>wpjobportal::getPageid()))); ?>">
+                <form id="resume_form" method="post" action="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume','wpjobportallt'=>'myresumes','wpjobportalpageid' =>wpjobportal::wpjobportal_getPageid()))); ?>">
                 <?php
                     $dateformat = wpjobportal::$_configuration['date_format'];
                     foreach (wpjobportal::$_data[0] AS $myresume) {
@@ -82,17 +82,17 @@ $subtype = wpjobportal::$_config->getConfigValue('submission_type');
                 </form>
             <?php
             } else {
-                $msg = __('No record found','wp-job-portal');
+                $msg = esc_html(__('No record found','wp-job-portal'));
                 if(in_array('multiresume', wpjobportal::$_active_addons)){
                     $mod = "multiresume";
                 }else{
                     $mod = "resume";
                 }
                 $links[] = array(
-                        'link' => wpjobportal::makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'addresume', 'wpjobportalpageid'=>wpjobportal::getPageid())),
-                        'text' => __('Add New','wp-job-portal') .' '. __('Resume', 'wp-job-portal')
+                        'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'addresume', 'wpjobportalpageid'=>wpjobportal::wpjobportal_getPageid())),
+                        'text' => esc_html(__('Add New','wp-job-portal')) .' '. esc_html(__('Resume', 'wp-job-portal'))
                     );
-                echo wp_kses(WPJOBPORTALlayout::getNoRecordFound($msg,$links), WPJOBPORTAL_ALLOWED_TAGS);
+                WPJOBPORTALlayout::getNoRecordFound($msg,$links);
             }?>
         </div>
 

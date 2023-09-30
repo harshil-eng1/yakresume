@@ -37,6 +37,19 @@ class WPJOBPORTALJobseekerModel {
         wpjobportal::$_data[0]['resume']['info'] = wpjobportaldb::get_results($query);
     }
 
+    // tried using the above getResumeStatusByUid function
+    //but setting data in "wpjobportal::$_data[0]['resume']" causes listings to break
+    // listings have foreach on "wpjobportal::$_data[0]"
+    function getResumeInfoForJobSeekerLeftMenu($uid){
+        if (!is_numeric($uid))
+            return false;
+        $query = "SELECT resume.id as resumeid, resume.application_title as application_title
+                    FROM " . wpjobportal::$_db->prefix . "wj_portal_resume AS resume
+                    WHERE `uid`='$uid'
+                    ORDER BY resume.id DESC";
+        wpjobportal::$_data['resume_info_menu'] = wpjobportaldb::get_row($query);
+     }
+
     function getLatestJobs() {
         $query = "SELECT DISTINCT job.id AS jobid,job.tags AS jobtags,job.title,job.created,job.city,job.currency,
         CONCAT(job.alias,'-',job.id) AS jobaliasid,job.noofjobs,job.endfeatureddate,
@@ -72,7 +85,7 @@ class WPJOBPORTALJobseekerModel {
                  company.id AS companyid, company.name AS companyname,company.logofilename,category.cat_title,
                  jobtype.title AS jobtypetitle, jobstatus.title AS jobstatustitle,resume.id AS resumeid,resume.salaryfixed as salary,resume.application_title,job.params,job.created,LOWER(jobtype.title) AS jobtype
                 ,jobapply.id AS id,resume.first_name,resume.last_name,job.salarymin,job.salarymax,job.salarytype,
-                salaryrangetype.title AS srangetypetitle,job.endfeatureddate,job.isfeaturedjob,job.status,job.startpublishing,job.stoppublishing,jobtype.color AS jobtypecolor
+                                salaryrangetype.title AS srangetypetitle,job.endfeatureddate,job.isfeaturedjob,job.status,job.startpublishing,job.stoppublishing,jobtype.color AS jobtypecolor,jobapply.coverletterid
                 FROM `" . wpjobportal::$_db->prefix . "wj_portal_jobapply` AS jobapply
                  JOIN `" . wpjobportal::$_db->prefix . "wj_portal_jobs` AS job ON job.id = jobapply.jobid
                  JOIN `" . wpjobportal::$_db->prefix . "wj_portal_resume` AS resume ON resume.id = jobapply.cvid
@@ -88,6 +101,9 @@ class WPJOBPORTALJobseekerModel {
         $data = array();
         foreach ($results AS $d) {
             $d->location = WPJOBPORTALincluder::getJSModel('city')->getLocationDataForView($d->city);
+            if(in_array('coverletter', wpjobportal::$_active_addons)){
+                $d->coverlettertitle = WPJOBPORTALincluder::getJSModel('coverletter')->getCoverLetterTitleFromID($d->coverletterid);
+            }
             $data[] = $d;
         }
         wpjobportal::$_data[0]['appliedjobs'] = $data;
@@ -154,9 +170,9 @@ class WPJOBPORTALJobseekerModel {
          WHERE `id`>0 LIMIT 0,3";
          $data = wpjobportaldb::get_results($query);
          wpjobportal::$_data['jobtype'] = $data;
-         $html = "['" . __('Dates', 'wp-job-portal') . "'";
+         $html = "['" . esc_html(__('Dates', 'wp-job-portal')) . "'";
           foreach (wpjobportal::$_data['jobtype'] as $key ) {
-            $html .= ",'". __($key->title,'wp-job-portal')."'";
+            $html .= ",'". wpjobportal::wpjobportal_getVariableValue($key->title)."'";
             $jobtype[] = $key->id;
         }
         $query = "SELECT count(job.id) AS job,MONTH(job.created) AS MONTH, YEAR(job.created) AS YEAR ,type.id AS jobtype
@@ -173,9 +189,12 @@ class WPJOBPORTALJobseekerModel {
                 $prev_workstations = $crm_workstations;
                $crm_workstations;
             }
-           if(mb_strlen($parent->MONTH) <= 1){
-           $parent->MONTH='0'.$parent->MONTH;
-           }
+            // php 8 issue md_strlen function
+            if($parent->MONTH != ''){
+                if(wpjobportalphplib::wpJP_strlen($parent->MONTH) <= 1){
+                    $parent->MONTH='0'.$parent->MONTH;
+                }
+            }
             wpjobportal::$_data['datachart'][$crm_workstations][$parent->YEAR][$parent->MONTH]=$parent->job;
         }
         $html.="]";
@@ -184,12 +203,12 @@ class WPJOBPORTALJobseekerModel {
          ///////*****TO Show All Month Till Last Month ****////////
          for ($i=0; $i<=11; $i++) {
             $Date = date('Y-m', strtotime("-$i month"));
-            $Time = explode('-',$Date);
+            $Time = wpjobportalphplib::wpJP_explode('-',$Date);
             $Month = $Time[1];
             $Year = $Time[0];
             $dateObj = DateTime::createFromFormat('!m', $Month);
             $monthName = $dateObj->format('F');
-             $MonthName=$monthName.'-'.substr($Year,-2);
+             $MonthName=$monthName.'-'.wpjobportalphplib::wpJP_substr($Year,-2);
             /////******Passing Data To Graph*********//////////
             $FullTime = wpjobportal::$_data['jobtype'][0]->id;
             $PartTime = wpjobportal::$_data['jobtype'][1]->id;

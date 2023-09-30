@@ -9,6 +9,7 @@ class WPJOBPORTALjobapplyTable extends WPJOBPORTALtable {
     public $jobid = '';
     public $uid = '';
     public $cvid = '';
+    public $coverletterid = '';
     public $apply_date = '';
     public $resumeview = '';
     public $action_status = '';

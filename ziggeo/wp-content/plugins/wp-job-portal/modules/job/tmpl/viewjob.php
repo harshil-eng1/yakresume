@@ -38,7 +38,9 @@ if (wpjobportal::$_error_flag == null) {
     ?>
     <?php
 } else {
-    echo wp_kses_post(wpjobportal::$_error_flag_message);
+    if(wpjobportal::$_error_flag_message !=''){
+        echo wp_kses_post(wpjobportal::$_error_flag_message);
+    }
  }
 ?>
 </div>

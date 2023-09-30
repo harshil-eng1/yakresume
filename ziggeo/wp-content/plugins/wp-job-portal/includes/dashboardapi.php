@@ -8,7 +8,7 @@ function wpjobportal_dashboard_widgets_totalstats() {
 
     wp_add_dashboard_widget(
             'wpjobportal_dashboard_widgets_totalstats', // Widget slug.
-            __('Total Stats', 'wp-job-portal'), // Title.
+            esc_html(__('Total Stats', 'wp-job-portal')), // Title.
             'wpjobportal_dashboard_widget_function_totalstats' // Display function.
     );
 }
@@ -16,7 +16,7 @@ function wpjobportal_dashboard_widgets_totalstats() {
 add_action('wp_dashboard_setup', 'wpjobportal_dashboard_widgets_totalstats');
 
 function wpjobportal_dashboard_widget_function_totalstats() {
-    wpjobportal::addStyleSheets();
+    wpjobportal::wpjobportal_addStyleSheets();
     $data = WPJOBPORTALincluder::getJSModel('wpjobportal')->widgetTotalStatsData();
     if ($data == true) {
         $html = '<div id="wp-job-portal-widget-wrapper">
@@ -27,7 +27,7 @@ function wpjobportal_dashboard_widget_function_totalstats() {
 								' . wpjobportal::$_data['widget']['jobs']->totaljobs . '
 							</div>
 							<div class="data-text">
-								' . __('Jobs', 'wp-job-portal') . '
+								' . esc_html(__('Jobs', 'wp-job-portal')) . '
 							</div>
 						</div>
 					</div>
@@ -38,7 +38,7 @@ function wpjobportal_dashboard_widget_function_totalstats() {
 								' . wpjobportal::$_data['widget']['companies']->totalcompanies . '
 							</div>
 							<div class="data-text">
-								' . __('Companies', 'wp-job-portal') . '
+								' . esc_html(__('Companies', 'wp-job-portal')) . '
 							</div>
 						</div>
 					</div>
@@ -49,7 +49,7 @@ function wpjobportal_dashboard_widget_function_totalstats() {
 								' . wpjobportal::$_data['widget']['resumes']->totalresumes . '
 							</div>
 							<div class="data-text">
-								' . __('Resume', 'wp-job-portal') . '
+								' . esc_html(__('Resume', 'wp-job-portal')) . '
 							</div>
 						</div>
 					</div>
@@ -60,7 +60,7 @@ function wpjobportal_dashboard_widget_function_totalstats() {
 								' . wpjobportal::$_data['widget']['jobs']->activejobs . '
 							</div>
 							<div class="data-text">
-								' . __('Active Jobs', 'wp-job-portal') . '
+								' . esc_html(__('Active Jobs', 'wp-job-portal')) . '
 							</div>
 						</div>
 					</div>
@@ -71,14 +71,14 @@ function wpjobportal_dashboard_widget_function_totalstats() {
 								' . wpjobportal::$_data['widget']['aplliedjobs']->appliedjobs . '
 							</div>
 							<div class="data-text">
-								' . __('Applied Jobs', 'wp-job-portal') . '
+								' . esc_html(__('Applied Jobs', 'wp-job-portal')) . '
 							</div>
 						</div>
 					</div>
 				</div>';
         echo wp_kses($html, WPJOBPORTAL_ALLOWED_TAGS);
     } else {
-    	$msg = __('No record found','wp-job-portal');
+    	$msg = esc_html(__('No record found','wp-job-portal'));
         WPJOBPORTALlayout::getNoRecordFound($msg);
     }
 }

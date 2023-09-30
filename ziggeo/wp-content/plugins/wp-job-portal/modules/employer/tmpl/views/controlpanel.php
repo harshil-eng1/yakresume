@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 switch ($layouts) {
 	case 'logo':
@@ -15,15 +16,15 @@ switch ($layouts) {
 		}
 		echo '
 			<div class="wjportal-user-logo">
-        	 	<img src='. esc_url($img) .' alt="'.__("User image","wp-job-portal").'" title="'.__("User image","wp-job-portal").'" class="wjportal-user-logo-image" />
+        	 	<img src='. esc_url($img) .' alt="'.esc_html(__("User image",'wp-job-portal')).'" title="'.esc_html(__("User image",'wp-job-portal')).'" class="wjportal-user-logo-image" />
         	</div> 
         ';
         if(isset($profile->first_name) && $profile->first_name != ''){
 			echo '<div class="wjportal-user-name">
-					'.  esc_html(__($profile->first_name,'wp-job-portal')).' '.esc_html(__($profile->last_name,'wp-job-portal')) .'
+					'.  esc_html(wpjobportal::wpjobportal_getVariableValue($profile->first_name)).' '.esc_html(wpjobportal::wpjobportal_getVariableValue($profile->last_name)) .'
 				</div>';
            	echo '<div class="wjportal-user-tagline">
-           		'. esc_html(__($profile->emailaddress,'wp-job-portal')).'
+           		'. esc_html(wpjobportal::wpjobportal_getVariableValue($profile->emailaddress)).'
            		</div>
         	';
         }

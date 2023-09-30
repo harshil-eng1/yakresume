@@ -124,7 +124,7 @@ class WPJOBPORTALCategoryModel {
             foreach ($kbcategories as $cat) {
                 $subrecord = (object) array();
                 $subrecord->id = $cat->id;
-                $subrecord->cat_title = $prefix . __($cat->cat_title, 'wp-job-portal');
+                $subrecord->cat_title = $prefix . wpjobportal::wpjobportal_getVariableValue($cat->cat_title);
                 $subrecord->alias = $cat->alias;
                 $subrecord->isactive = $cat->isactive;
                 $subrecord->isdefault = $cat->isdefault;
@@ -227,13 +227,14 @@ class WPJOBPORTALCategoryModel {
         else
             $cat_title_alias = WPJOBPORTALincluder::getJSModel('common')->removeSpecialCharacter($data['cat_title']);
 
-        $cat_title_alias = strtolower(str_replace(' ', '-', $cat_title_alias));
-        $cat_title_alias = strtolower(str_replace('/', '-', $cat_title_alias));
+        $cat_title_alias = wpjobportalphplib::wpJP_strtolower(wpjobportalphplib::wpJP_str_replace(' ', '-', $cat_title_alias));
+        $cat_title_alias = wpjobportalphplib::wpJP_strtolower(wpjobportalphplib::wpJP_str_replace('/', '-', $cat_title_alias));
+        $cat_title_alias = wpjobportalphplib::wpJP_strtolower(wpjobportalphplib::wpJP_str_replace('_', '-', $cat_title_alias));
         $data['alias'] = $cat_title_alias;
 
         $row = WPJOBPORTALincluder::getJSTable('categories');
 
-        $data = filter_var_array($data, FILTER_SANITIZE_STRING);
+        $data = wpjobportal::wpjobportal_sanitizeData($data);
         $data = WPJOBPORTALincluder::getJSmodel('common')->stripslashesFull($data);// remove slashes with quotes.
         if (!$row->bind($data)) {
             return WPJOBPORTAL_SAVE_ERROR;
@@ -386,9 +387,9 @@ class WPJOBPORTALCategoryModel {
             $html .= '<div class="'.$prefix.$main_wrap.'jobs-subcategory-wrapper">';
             foreach ($result AS $cat) {
                 if ($resume == 1) {
-                    $link = wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'resumes', 'category'=>$cat->aliasid, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('wpjobportalpageid')));
+                    $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'resumes', 'category'=>$cat->aliasid, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('wpjobportalpageid')));
                 } else {
-                    $link = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs', 'category'=>$cat->aliasid, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('wpjobportalpageid')));
+                    $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs', 'category'=>$cat->aliasid, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('wpjobportalpageid')));
                 }
                 $html .= '  <div class="'.$prefix.'category-wrapper" style="width:100%;">
                                 <a href="' . $link . '">
@@ -409,7 +410,7 @@ class WPJOBPORTALCategoryModel {
             }
             if ($count > $subcategory_limit) {
                 $html .= '  <div class="showmore-wrapper">
-                                <a href="#" class="showmorebutton" data-title="' . $cat_title . '" data-id="' . $categoryalias . '">' . __('Show More', 'wp-job-portal') . '</a>
+                                <a href="#" class="showmorebutton" data-title="' . $cat_title . '" data-id="' . $categoryalias . '">' . esc_html(__('Show More', 'wp-job-portal')) . '</a>
                             </div>';
             }
             $html .= '</div>';
@@ -432,6 +433,14 @@ class WPJOBPORTALCategoryModel {
     }
 
     function getsubcategorypopup() {
+        $nonce = WPJOBPORTALrequest::getVar('_wpnonce');
+        if (! wp_verify_nonce( $nonce, 'get-subcategory-popup') ) {
+            die( 'Security check Failed' );
+        }
+        $nonce = WPJOBPORTALrequest::getVar('_wpnonce');
+        if (! wp_verify_nonce( $nonce, 'get-subcategory-popup') ) {
+            die( 'Security check Failed' );
+        }
         $category = WPJOBPORTALrequest::getVar('category');
         $categoryid = WPJOBPORTALincluder::getJSModel('job')->parseid($category);
         $config_array = WPJOBPORTALincluder::getJSModel('configuration')->getConfigByFor('category');
@@ -480,14 +489,14 @@ class WPJOBPORTALCategoryModel {
             }
             foreach ($result AS $cat) {
                 if ($resume == 1) {
-                    $link = wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'resumes', 'category'=>$cat->aliasid, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('page_id')));
+                    $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'resumes', 'category'=>$cat->aliasid, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('page_id')));
                 } else {
-                    $link = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs', 'category'=>$cat->aliasid, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('page_id')));
+                    $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs', 'category'=>$cat->aliasid, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('page_id')));
                 }
                 $html .= '  <div data-id="' . $cat->aliasid . '" class="'.$prefix.'by-category-wrp" style="width:50%;">
                                 <a href="' . $link . '">
                                 <div class="'.$prefix.'by-category-item">
-                                    <span class="'.$prefix.'by-category-item-title">' . __($cat->cat_title,'wp-job-portal') . '</span>';
+                                    <span class="'.$prefix.'by-category-item-title">' . wpjobportal::wpjobportal_getVariableValue($cat->cat_title) . '</span>';
                         if ($resume == 1) {
                             if($config_array['categories_numberofresumes'] == 1){
                                 $html .= '<span class="'.$prefix.'by-category-item-number">(' . $cat->totaljobs . ')</span>';
@@ -505,14 +514,14 @@ class WPJOBPORTALCategoryModel {
                     $subcount = 0;
                     foreach ($cat->subcat AS $sub_cat) {
                         if($resume == 1){
-                            $link = wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'resumes', 'category'=>$sub_cat->aliasid, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('page_id')));
+                            $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'resumes', 'category'=>$sub_cat->aliasid, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('page_id')));
                         }else{
-                            $link = wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs', 'category'=>$sub_cat->aliasid, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('page_id')));
+                            $link = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobs', 'category'=>$sub_cat->aliasid, 'wpjobportalpageid'=>WPJOBPORTALRequest::getVar('page_id')));
                         }
                         $html .= '  <div class="'.$prefix.'by-category-wrp" style="width:100%;">
                                         <a href="' . $link . '">
                                         <div class="'.$prefix.'by-category-item">
-                                            <span class="'.$prefix.'by-category-item-title">' . __($sub_cat->cat_title,'wp-job-portal') . '</span>';
+                                            <span class="'.$prefix.'by-category-item-title">' . wpjobportal::wpjobportal_getVariableValue($sub_cat->cat_title) . '</span>';
                         if ($resume == 1) {
                             if($config_array['categories_numberofresumes'] == 1){
                                 $html .= '<span class="'.$prefix.'by-category-item-number">(' . $sub_cat->totaljobs . ')</span>';
@@ -529,7 +538,7 @@ class WPJOBPORTALCategoryModel {
                     }
                     if ($subcount >= $subcategory_limit) {
                         $html .= '  <div class="'.$prefix.'by-category-item-btn">
-                                        <a href="#" class="'.$prefix.'wjportal-by-category-item-btn-wrp" onclick="getPopupAjax(\'' . $cat->aliasid . '\', \'' . $cat->cat_title . '\');">' . __('Show More', 'wp-job-portal') . '</a>
+                                        <a href="#" class="'.$prefix.'wjportal-by-category-item-btn-wrp" onclick="getPopupAjax(\'' . $cat->aliasid . '\', \'' . $cat->cat_title . '\');">' . esc_html(__('Show More', 'wp-job-portal')) . '</a>
                                     </div>';
                     }
                     $html .= '</div>';
@@ -592,7 +601,7 @@ class WPJOBPORTALCategoryModel {
             return false;
         }
         $sorted_array = array();
-        parse_str($data['fields_ordering_new'],$sorted_array);
+        wpjobportalphplib::wpJP_parse_str($data['fields_ordering_new'],$sorted_array);
         $sorted_array = reset($sorted_array);
         if(!empty($sorted_array)){
             $row = WPJOBPORTALincluder::getJSTable('categories');
@@ -611,7 +620,7 @@ class WPJOBPORTALCategoryModel {
         for ($i=0; $i < count($sorted_array) ; $i++) {
             $row->update(array('id' => $sorted_array[$i], $ordering_coloumn => $page_multiplier + $i));
         }
-        WPJOBPORTALMessages::setLayoutMessage(__('Ordering updated', 'wp-job-portal'), 'updated', $this->getMessagekey());
+        WPJOBPORTALMessages::setLayoutMessage(esc_html(__('Ordering updated', 'wp-job-portal')), 'updated', $this->getMessagekey());
         return ;
     }
 
@@ -628,8 +637,9 @@ class WPJOBPORTALCategoryModel {
         $jsjp_search_array = array();
         $wpjp_search_cookie_data = '';
         if(isset($_COOKIE['jsjp_jobportal_search_data'])){
-            $wpjp_search_cookie_data = filter_var($_COOKIE['jsjp_jobportal_search_data'], FILTER_SANITIZE_STRING);
-            $wpjp_search_cookie_data = json_decode( base64_decode($wpjp_search_cookie_data) , true );
+            $wpjp_search_cookie_data = wpjobportal::wpjobportal_sanitizeData($_COOKIE['jsjp_jobportal_search_data']);
+            $wpjp_search_cookie_data = wpjobportalphplib::wpJP_safe_decoding($wpjp_search_cookie_data);
+            $wpjp_search_cookie_data = json_decode( $wpjp_search_cookie_data , true );
         }
         if($wpjp_search_cookie_data != '' && isset($wpjp_search_cookie_data['search_from_category']) && $wpjp_search_cookie_data['search_from_category'] == 1){
             $jsjp_search_array['searchname'] = $wpjp_search_cookie_data['searchname'];

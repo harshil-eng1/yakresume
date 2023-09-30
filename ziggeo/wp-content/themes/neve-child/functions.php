@@ -66,26 +66,20 @@ function resume_rate_candidate_metabox(){
  */
 add_action( 'save_post', 'sp_resume_rate_candidate_save_meta_box' );
 function sp_resume_rate_candidate_save_meta_box($post_id){ 
-
-    $post_types = array('resume');  
-
+    $post_types = array('resume'); 
     $post_type = get_post_type($post_id);
-
     if(!isset($_POST['sp_nonce_field']) || !wp_verify_nonce($_POST[ 'sp_nonce_field' ], 'sp_nonce')  || !current_user_can( 'edit_post', $post_id ) || !in_array($post_type,$post_types) || (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) ){
         return;
-    } 
-
+    }
     if(isset($_POST['resume_rate_candidate']) && $post_type=='resume'){ 
        update_post_meta($post_id,'_resume_rate_candidate',$_POST['resume_rate_candidate']); 
-    } 
-    
+    }     
 }
 
 /****** Custom Post type 'Resume' update Rating ******/
 
 add_action("wp_ajax_sp_resumeRateCandidate", "sp_resumeRateCandidate");
 add_action("wp_ajax_nopriv_sp_resumeRateCandidate", "sp_resumeRateCandidate");
-
 function sp_resumeRateCandidate() {
 	$res_post_id = $_POST['post_id'];
 	$rateCandidVal = $_POST['rate_candidate'];
@@ -94,9 +88,6 @@ function sp_resumeRateCandidate() {
 
 	//echo $res_post_id." res_post_id".' === '. $rateCandidVal." rateCandidVal".' === '.$emailCandid." emailCandid".' === '. $candidJobId." candidJobId".' === ';
  	$data_lang = $_POST['data_lang'];
-
-
- 	
 
 	if($candidJobId && $rateCandidVal){
 		$appliID = getApplicantRating($emailCandid, $candidJobId);
@@ -117,7 +108,6 @@ function sp_resumeRateCandidate() {
 			}
 
 		}
-
 	}
 	die;
 }
@@ -129,16 +119,13 @@ add_action("wp_ajax_sp_catedidatvideoseen", "sp_catedidateVideoSeen");
 add_action("wp_ajax_nopriv_sp_catedidatvideoseen", "sp_catedidateVideoSeen");
 
 function sp_catedidateVideoSeen() {
-
 	$jobApp_post_id = $_POST['japost_id'];
-
 	if($jobApp_post_id){		
 		update_post_meta($jobApp_post_id,'_candidateVideoSeen', 'seen');
 		echo 'success';
 	}
 	die;
 }
-
 
 /******* Get job application Post Id ********/
 function getApplicantRating($emailCandid, $candidJobId){
@@ -159,10 +146,17 @@ function getApplicantRating($emailCandid, $candidJobId){
 		    )
 		);
 		$argsQuery = new WP_Query( $args );
-
 		foreach ($argsQuery->posts as $key => $value) {			
 			return $value->ID;
 		}
-
+}
+// hide_menu_for_candidate
+add_action( 'wp','hide_menu_for_candidate');
+function hide_menu_for_candidate(){
+	$user = wp_get_current_user();
+	if(in_array('candidate',$user->roles)){
+		echo "<style>#menu-item-55{ display:none; }</style>";
+	}
+	//print_r($user);	
 }
 ?>

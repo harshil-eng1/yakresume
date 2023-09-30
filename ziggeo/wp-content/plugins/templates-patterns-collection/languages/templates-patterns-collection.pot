@@ -2,16 +2,16 @@
 # This file is distributed under the GPLv3.
 msgid ""
 msgstr ""
-"Project-Id-Version: Templates Patterns Collection 1.1.35\n"
+"Project-Id-Version: Templates Patterns Collection 1.1.39\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/templates-patterns-collection\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2023-02-27T13:51:32+00:00\n"
+"POT-Creation-Date: 2023-06-19T06:58:58+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"X-Generator: WP-CLI 2.7.1\n"
+"X-Generator: WP-CLI 2.8.1\n"
 "X-Domain: templates-patterns-collection\n"
 
 #. Plugin Name of the plugin
@@ -30,275 +30,276 @@ msgstr ""
 msgid "https://themeisle.com"
 msgstr ""
 
-#: includes/Admin.php:192
-#: includes/Admin.php:193
-#: assets/src/Components/Header.js:23
+#: includes/Admin.php:333
+#: includes/Admin.php:334
+#: assets/src/Components/Header.js:25
 msgid "Starter Sites"
 msgstr ""
 
-#: includes/Admin.php:205
-#: includes/Elementor.php:83
+#: includes/Admin.php:344
+#: includes/Admin.php:345
+#: includes/Elementor.php:90
 #: includes/TI_Beaver.php:402
-#: assets/src/Components/Header.js:28
+#: assets/src/Components/Header.js:30
 msgid "My Library"
 msgstr ""
 
 #. translators: %s - Theme name
-#: includes/Admin.php:295
+#: includes/Admin.php:455
 msgid "Choose from multiple unique demos, specially designed for you, that can be installed with a single click. You just need to choose your favorite, and we will take care of everything else."
 msgstr ""
 
-#: includes/Admin.php:422
+#: includes/Admin.php:592
 msgid "Great news!  Now you can export your own custom designs to the cloud and then reuse them on other sites."
 msgstr ""
 
 #. translators: %s: Templates Cloud
-#: includes/Admin.php:425
+#: includes/Admin.php:595
 msgid "Open %s"
 msgstr ""
 
-#: includes/Admin.php:533
+#: includes/Admin.php:703
 msgid "Hi! We've noticed you were using a child theme of Zelle before. To make your transition easier, we can help you keep the same homepage settings you had before but in original Zelle's style, by converting it into an Elementor template."
 msgstr ""
 
-#: includes/Admin.php:563
+#: includes/Admin.php:733
 #: includes/TI_Beaver.php:412
 #: assets/src/Components/StarterSiteCard.js:61
 msgid "Preview"
 msgstr ""
 
-#: includes/Admin.php:564
+#: includes/Admin.php:734
 #: includes/TI_Beaver.php:413
 #: assets/src/Components/PreviewFrame.js:95
 #: assets/src/Components/StarterSiteCard.js:69
 msgid "Import"
 msgstr ""
 
-#: includes/Admin.php:565
+#: includes/Admin.php:735
 msgid "Get the PRO version!"
 msgstr ""
 
-#: includes/Admin.php:566
+#: includes/Admin.php:736
 msgid "Importing"
 msgstr ""
 
-#: includes/Admin.php:567
-#: includes/Elementor.php:93
+#: includes/Admin.php:737
+#: includes/Elementor.php:100
 #: includes/TI_Beaver.php:391
 #: assets/src/Components/Migration.js:165
 msgid "Cancel"
 msgstr ""
 
-#: includes/Admin.php:568
+#: includes/Admin.php:738
 msgid "Loading"
 msgstr ""
 
-#: includes/Admin.php:569
-#: assets/src/Components/ImportModal.js:736
+#: includes/Admin.php:739
+#: assets/src/Components/ImportModal.js:737
 #: assets/src/Components/Migration.js:198
 msgid "View Website"
 msgstr ""
 
-#: includes/Admin.php:570
-#: assets/src/Components/ImportModal.js:740
+#: includes/Admin.php:740
+#: assets/src/Components/ImportModal.js:741
 msgid "Add your own content"
 msgstr ""
 
-#: includes/Admin.php:571
+#: includes/Admin.php:741
 msgid "Back to Sites Library"
 msgstr ""
 
-#: includes/Admin.php:572
+#: includes/Admin.php:742
 msgid "Note"
 msgstr ""
 
-#: includes/Admin.php:573
+#: includes/Admin.php:743
 msgid "Advanced Options"
 msgstr ""
 
-#: includes/Admin.php:574
-#: assets/src/Components/ImportModal.js:360
+#: includes/Admin.php:744
+#: assets/src/Components/ImportModal.js:361
 msgid "Plugins"
 msgstr ""
 
-#: includes/Admin.php:575
+#: includes/Admin.php:745
 msgid "General"
 msgstr ""
 
-#: includes/Admin.php:576
+#: includes/Admin.php:746
 msgid "Keep current layout"
 msgstr ""
 
-#: includes/Admin.php:577
-#: includes/Elementor.php:108
+#: includes/Admin.php:747
+#: includes/Elementor.php:115
 #: includes/TI_Beaver.php:425
 msgid "Search"
 msgstr ""
 
-#: includes/Admin.php:578
+#: includes/Admin.php:748
 #: assets/src/Components/ImportModal.js:205
 msgid "Content"
 msgstr ""
 
-#: includes/Admin.php:579
+#: includes/Admin.php:749
 #: assets/src/Components/ImportModal.js:213
 msgid "Customizer"
 msgstr ""
 
-#: includes/Admin.php:580
+#: includes/Admin.php:750
 #: assets/src/Components/ImportModal.js:217
 msgid "Widgets"
 msgstr ""
 
-#: includes/Admin.php:581
+#: includes/Admin.php:751
 #: assets/src/Components/ImportModal.js:207
 msgid "We recommend you backup your website content before attempting a full site import."
 msgstr ""
 
-#: includes/Admin.php:582
+#: includes/Admin.php:752
 msgid "Due to copyright issues, some of the demo images will not be imported and will be replaced by placeholder images."
 msgstr ""
 
-#: includes/Admin.php:583
+#: includes/Admin.php:753
 msgid "Some of the demo images will not be imported and will be replaced by placeholder images."
 msgstr ""
 
-#: includes/Admin.php:584
+#: includes/Admin.php:754
 msgid "Here is our own collection of related images you can use for your site."
 msgstr ""
 
-#: includes/Admin.php:585
+#: includes/Admin.php:755
 #: assets/src/Components/Migration.js:131
 msgid "Content was successfully imported. Enjoy your new site!"
 msgstr ""
 
-#: includes/Admin.php:586
+#: includes/Admin.php:756
 msgid "Available in the PRO version"
 msgstr ""
 
-#: includes/Admin.php:587
+#: includes/Admin.php:757
 msgid "Copy error code"
 msgstr ""
 
-#: includes/Admin.php:588
+#: includes/Admin.php:758
 msgid "Download error log"
 msgstr ""
 
-#: includes/Admin.php:589
+#: includes/Admin.php:759
 msgid "To import this demo you have to install the following plugins:"
 msgstr ""
 
 #. translators: 1 - 'here'.
-#: includes/Admin.php:592
+#: includes/Admin.php:762
 msgid "It seems that Rest API is not working properly on your website. Read about how you can fix it %1$s."
 msgstr ""
 
-#: includes/Admin.php:593
+#: includes/Admin.php:763
 msgid "here"
 msgstr ""
 
 #. translators: 1 - 'get in touch'.
-#: includes/Admin.php:597
+#: includes/Admin.php:767
 msgid "Hi! It seems there is a configuration issue with your server that's causing the import to fail. Please %1$s with us with the error code below, so we can help you fix this."
 msgstr ""
 
-#: includes/Admin.php:598
-#: includes/Admin.php:608
+#: includes/Admin.php:768
+#: includes/Admin.php:778
 msgid "get in touch"
 msgstr ""
 
 #. translators: 1 - 'troubleshooting guide'.
-#: includes/Admin.php:602
+#: includes/Admin.php:772
 msgid "Hi! It seems there is a configuration issue with your server that's causing the import to fail. Take a look at our %1$s to see if any of the proposed solutions work."
 msgstr ""
 
-#: includes/Admin.php:603
+#: includes/Admin.php:773
 msgid "troubleshooting guide"
 msgstr ""
 
 #. translators: 1 - 'get in touch'.
-#: includes/Admin.php:607
+#: includes/Admin.php:777
 msgid "If none of the solutions in the guide work, please %1$s with us with the error code below, so we can help you fix this."
 msgstr ""
 
 #. translators: %s - 'WP_Filesystem'.
-#: includes/Admin.php:612
+#: includes/Admin.php:782
 msgid "It seems that %s is not available. You can contact your site administrator or hosting provider to help you enable it."
 msgstr ""
 
 #. translators: %s: Templates Cloud
-#: includes/Elementor.php:59
-#: includes/Elementor.php:89
+#: includes/Elementor.php:66
+#: includes/Elementor.php:96
 #: includes/TI_Beaver.php:406
 msgid "Save to %s"
 msgstr ""
 
-#: includes/Elementor.php:60
+#: includes/Elementor.php:67
 #: includes/TI_Beaver.php:386
 msgid "Save Templates"
 msgstr ""
 
-#: includes/Elementor.php:61
+#: includes/Elementor.php:68
 #: includes/TI_Beaver.php:387
 msgid "Template Name"
 msgstr ""
 
-#: includes/Elementor.php:62
-#: includes/Elementor.php:123
+#: includes/Elementor.php:69
+#: includes/Elementor.php:130
 #: includes/TI_Beaver.php:388
 #: includes/TI_Beaver.php:482
 #: editor/src/extension.js:113
 msgid "Template"
 msgstr ""
 
-#: includes/Elementor.php:63
-#: includes/Elementor.php:112
+#: includes/Elementor.php:70
+#: includes/Elementor.php:119
 #: includes/TI_Beaver.php:389
 #: includes/TI_Beaver.php:430
 msgid "Save"
 msgstr ""
 
-#: includes/Elementor.php:64
+#: includes/Elementor.php:71
 #: includes/TI_Beaver.php:390
 msgid "Automatically sync to the cloud"
 msgstr ""
 
-#: includes/Elementor.php:65
+#: includes/Elementor.php:72
 msgid "Template Saved."
 msgstr ""
 
-#: includes/Elementor.php:66
+#: includes/Elementor.php:73
 #: editor/src/extension.js:361
 msgid "Template Published."
 msgstr ""
 
-#: includes/Elementor.php:67
+#: includes/Elementor.php:74
 #: editor/src/extension.js:360
 msgid "Template Unpublished."
 msgstr ""
 
 #. translators: %s: Templates Cloud
-#: includes/Elementor.php:72
+#: includes/Elementor.php:79
 msgid "Import from %s"
 msgstr ""
 
 #. translators: %s: Templates Cloud
-#: includes/Elementor.php:78
+#: includes/Elementor.php:85
 msgid "Add Template from %s:"
 msgstr ""
 
-#: includes/Elementor.php:82
+#: includes/Elementor.php:89
 #: includes/TI_Beaver.php:401
-#: assets/src/Components/Header.js:24
+#: assets/src/Components/Header.js:26
 msgid "Page Templates"
 msgstr ""
 
-#: includes/Elementor.php:86
+#: includes/Elementor.php:93
 #: includes/TI_Beaver.php:405
 msgid "Sync Library"
 msgstr ""
 
-#: includes/Elementor.php:92
+#: includes/Elementor.php:99
 #: includes/TI_Beaver.php:408
 #: assets/src/Components/CloudLibrary/DemoSiteTemplatesImport.js:191
 #: assets/src/Components/InstallModal.js:163
@@ -308,86 +309,86 @@ msgstr ""
 msgid "Close"
 msgstr ""
 
-#: includes/Elementor.php:94
+#: includes/Elementor.php:101
 #: includes/TI_Beaver.php:409
 #: assets/src/Components/CloudLibrary/ImportTemplatesModal.js:215
 msgid "Edit"
 msgstr ""
 
-#: includes/Elementor.php:95
+#: includes/Elementor.php:102
 msgid "Duplicate"
 msgstr ""
 
-#: includes/Elementor.php:96
+#: includes/Elementor.php:103
 #: includes/TI_Beaver.php:410
 msgid "Delete"
 msgstr ""
 
-#: includes/Elementor.php:97
+#: includes/Elementor.php:104
 msgid "Insert"
 msgstr ""
 
-#: includes/Elementor.php:98
+#: includes/Elementor.php:105
 msgid "Back to Library"
 msgstr ""
 
-#: includes/Elementor.php:101
+#: includes/Elementor.php:108
 #: includes/TI_Beaver.php:416
 msgid "Sort by"
 msgstr ""
 
-#: includes/Elementor.php:103
+#: includes/Elementor.php:110
 #: includes/TI_Beaver.php:418
 msgid "Name"
 msgstr ""
 
-#: includes/Elementor.php:104
+#: includes/Elementor.php:111
 #: includes/TI_Beaver.php:419
 msgid "Date"
 msgstr ""
 
-#: includes/Elementor.php:105
+#: includes/Elementor.php:112
 #: includes/TI_Beaver.php:420
 msgid "Last Modified"
 msgstr ""
 
-#: includes/Elementor.php:106
+#: includes/Elementor.php:113
 #: includes/TI_Beaver.php:421
 msgid "Actions"
 msgstr ""
 
-#: includes/Elementor.php:109
+#: includes/Elementor.php:116
 #: includes/TI_Beaver.php:426
 msgid "Search Templates"
 msgstr ""
 
 #. translators: %s: Templates Cloud
-#: includes/Elementor.php:115
+#: includes/Elementor.php:122
 #: includes/TI_Beaver.php:431
 msgid "Save your page to %s"
 msgstr ""
 
-#: includes/Elementor.php:118
+#: includes/Elementor.php:125
 msgid "Enter Template Name"
 msgstr ""
 
-#: includes/Elementor.php:119
+#: includes/Elementor.php:126
 #: includes/TI_Beaver.php:432
 msgid "Screenshot URL"
 msgstr ""
 
-#: includes/Elementor.php:120
+#: includes/Elementor.php:127
 #: includes/TI_Beaver.php:433
 msgid "Site Slug"
 msgstr ""
 
-#: includes/Elementor.php:121
+#: includes/Elementor.php:128
 #: includes/TI_Beaver.php:434
 #: editor/src/extension.js:393
 msgid "Publish"
 msgstr ""
 
-#: includes/Elementor.php:122
+#: includes/Elementor.php:129
 #: includes/TI_Beaver.php:435
 #: editor/src/extension.js:389
 msgid "Unpublish"
@@ -405,7 +406,7 @@ msgstr ""
 
 #: includes/TI_Beaver.php:35
 #: includes/TI_Beaver.php:37
-#: assets/src/Components/Header.js:164
+#: assets/src/Components/Header.js:166
 msgid "Templates Cloud"
 msgstr ""
 
@@ -456,16 +457,6 @@ msgstr ""
 #: includes/TI_Beaver.php:453
 #: editor/src/extension.js:427
 msgid "Save to Templates Cloud"
-msgstr ""
-
-#: tests/digital-test.php:62
-#: tests/rest-test.php:59
-msgid "Ready to use pre-built websites with 1-click installation"
-msgstr ""
-
-#: tests/digital-test.php:63
-#: tests/rest-test.php:60
-msgid "With Neve, you can choose from multiple unique demos, specially designed for you, that can be installed with a single click. You just need to choose your favorite, and we will take care of everything else."
 msgstr ""
 
 #: assets/src/Components/CloudLibrary/DemoSiteTemplatesImport.js:100
@@ -594,16 +585,16 @@ msgstr ""
 msgid "Builder Logo"
 msgstr ""
 
-#: assets/src/Components/Header.js:106
+#: assets/src/Components/Header.js:108
 msgid "Re-sync Library"
 msgstr ""
 
-#: assets/src/Components/Header.js:114
+#: assets/src/Components/Header.js:116
 msgid "Sync"
 msgstr ""
 
-#: assets/src/Components/Header.js:127
-#: assets/src/Components/Header.js:135
+#: assets/src/Components/Header.js:129
+#: assets/src/Components/Header.js:137
 #: assets/src/Components/License.js:150
 msgid "License"
 msgstr ""
@@ -649,76 +640,76 @@ msgstr ""
 msgid "Import settings"
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:403
+#: assets/src/Components/ImportModal.js:404
 msgid "Additional plugins are required for this Starter Site in order to work properly. "
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:444
+#: assets/src/Components/ImportModal.js:445
 #: assets/src/Components/InstallModal.js:52
 msgid "Could not install theme."
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:465
+#: assets/src/Components/ImportModal.js:466
 #: assets/src/Components/InstallModal.js:67
 msgid "Could not activate theme."
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:648
+#: assets/src/Components/ImportModal.js:649
 msgid "Something went wrong while cleaning the previous import."
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:652
+#: assets/src/Components/ImportModal.js:653
 #: assets/src/Components/Migration.js:47
 msgid "Something went wrong while installing the necessary plugins."
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:656
+#: assets/src/Components/ImportModal.js:657
 #: assets/src/Components/Migration.js:63
 msgid "Something went wrong while importing the website content."
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:660
+#: assets/src/Components/ImportModal.js:661
 msgid "Something went wrong while updating the customizer settings."
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:664
+#: assets/src/Components/ImportModal.js:665
 msgid "Something went wrong while importing the widgets."
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:668
+#: assets/src/Components/ImportModal.js:669
 msgid "Something went wrong while installing the performance addon."
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:727
+#: assets/src/Components/ImportModal.js:728
 msgid "View Website & Subscribe"
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:731
+#: assets/src/Components/ImportModal.js:732
 msgid "Skip and add your own content"
 msgstr ""
 
 #. translators: name of starter site
-#: assets/src/Components/ImportModal.js:802
+#: assets/src/Components/ImportModal.js:803
 msgid "Import %s as a complete site"
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:809
+#: assets/src/Components/ImportModal.js:810
 msgid "Content was successfully imported"
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:866
+#: assets/src/Components/ImportModal.js:867
 msgid "Stay up-to-date on news, tips and product updates"
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:869
+#: assets/src/Components/ImportModal.js:870
 msgid "Enter your email"
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:893
+#: assets/src/Components/ImportModal.js:894
 msgid "I want to import just the templates"
 msgstr ""
 
-#: assets/src/Components/ImportModal.js:911
+#: assets/src/Components/ImportModal.js:912
 msgid "Import entire site"
 msgstr ""
 

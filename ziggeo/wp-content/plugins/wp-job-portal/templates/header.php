@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
  * @param module 		module name - optional
@@ -35,7 +36,7 @@ show menu for jobseeker and employer
 /*
 if there is any error, show error and return from page
 */
-if (wpjobportal::$_error_flag != null) {
-    echo wp_kses_post(wpjobportal::$_error_flag_message);
+if (wpjobportal::$_error_flag != null &&  wpjobportal::$_error_flag_message != null) {
+	echo wp_kses_post(wpjobportal::$_error_flag_message);
     return false;
 }

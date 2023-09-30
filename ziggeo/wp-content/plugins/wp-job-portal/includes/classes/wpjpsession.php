@@ -9,6 +9,7 @@ class WPJOBPORTALwpjpsession {
     public $sessionexpire;
     private $sessiondata;
     private $datafor;
+    private $nextsessionexpire;
 
     function __construct( ) {
         $this->init();
@@ -20,9 +21,9 @@ class WPJOBPORTALwpjpsession {
 
     function init(){
         if (isset($_COOKIE['_wpjsjp_session_'])) {
-            $cookie = stripslashes(filter_var($_COOKIE['_wpjsjp_session_'], FILTER_SANITIZE_STRING));
-            $user_cookie = explode('/', $cookie);
-            $this->sessionid = preg_replace("/[^A-Za-z0-9_]/", '', $user_cookie[0]);
+            $cookie = wpjobportalphplib::wpJP_stripslashes(wpjobportal::wpjobportal_sanitizeData($_COOKIE['_wpjsjp_session_']));
+            $user_cookie = wpjobportalphplib::wpJP_explode('/', $cookie);
+            $this->sessionid = wpjobportalphplib::wpJP_preg_replace("/[^A-Za-z0-9_]/", '', $user_cookie[0]);
             $this->sessionexpire = absint($user_cookie[1]);
             $this->nextsessionexpire = absint($user_cookie[2]);
             // Update options session expiration
@@ -44,14 +45,15 @@ class WPJOBPORTALwpjpsession {
     }
 
     private function jsjp_generate_id(){
-        require_once( ABSPATH . 'wp-includes/class-phpass.php' );
+        do_action('wpjobportal_load_phpass');
+
         $hash = new PasswordHash( 16, false );
 
-        return md5( $hash->get_random_bytes( 32 ) );
+        return wpjobportalphplib::wpJP_md5( $hash->get_random_bytes( 32 ) );
     }
 
     private function jshd_set_user_cookies(){
-        setcookie( '_wpjsjp_session_', $this->sessionid . '/' . $this->sessionexpire . '/' . $this->nextsessionexpire , $this->sessionexpire, COOKIEPATH, COOKIE_DOMAIN);
+        wpjobportalphplib::wpJP_setcookie( '_wpjsjp_session_', $this->sessionid . '/' . $this->sessionexpire . '/' . $this->nextsessionexpire , $this->sessionexpire, COOKIEPATH, COOKIE_DOMAIN);
         $count = get_option( '_wpjsjp_session_', 0 );
         update_option( '_wpjsjp_session_', ++$count);
     }

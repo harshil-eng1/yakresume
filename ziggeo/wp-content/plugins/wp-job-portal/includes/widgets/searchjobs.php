@@ -10,9 +10,9 @@ class WPJOBPORTALjobssearchjobs_widget extends WP_Widget {
                 // Base ID of your widget
                 'WPJOBPORTALjobssearchjobs_widget',
                 // Widget name will appear in UI
-                __('Job Search', 'wp-job-portal'),
+                esc_html(__('Job Search', 'wp-job-portal')),
                 // Widget description
-                array('description' => __('Search jobs form WP Job Portal database', 'wp-job-portal'),)
+                array('description' => esc_html(__('Search jobs form WP Job Portal database', 'wp-job-portal')),)
         );
     }
 
@@ -46,7 +46,7 @@ class WPJOBPORTALjobssearchjobs_widget extends WP_Widget {
         if (locate_template('wp-job-portal/widget-searchjobs.php', 1, 0)) {
             $defaulthtml = false;
         }else{
-            wpjobportal::addStyleSheets();
+            wpjobportal::wpjobportal_addStyleSheets();
             $modules_html = WPJOBPORTALincluder::getJSModel('jobsearch')->getSearchJobs_Widget($title, $showtitle, $jobtitle, $category, $jobtype, $jobstatus, $salaryrange, $shift, $duration, $startpublishing, $stoppublishing, $company, $address, $columnperrow);
             echo wp_kses($modules_html, WPJOBPORTAL_ALLOWED_TAGS);
         }
@@ -57,7 +57,7 @@ class WPJOBPORTALjobssearchjobs_widget extends WP_Widget {
     }
     // Widget Backend
     public function form($instance) {
-        $title = (isset($instance['title'])) ? $instance['title'] : __('Search Job', 'wp-job-portal');
+        $title = (isset($instance['title'])) ? $instance['title'] : esc_html(__('Search Job', 'wp-job-portal'));
         $showtitle = (isset($instance['showtitle'])) ? $instance['showtitle'] : 1;
         $jobtitle = (isset($instance['jobtitle'])) ? $instance['jobtitle'] : 1;
         $category = (isset($instance['category'])) ? $instance['category'] : 1;
@@ -73,81 +73,81 @@ class WPJOBPORTALjobssearchjobs_widget extends WP_Widget {
         ?>
         <!-- widgets admin form options -->
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php echo __('Title', 'wp-job-portal'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('title')); ?>"><?php echo esc_html(__('Title', 'wp-job-portal')); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('title')); ?>" name="<?php echo esc_attr($this->get_field_name('title')); ?>" type="text" value="<?php echo esc_attr($title); ?>" />
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('showtitle')); ?>"><?php echo __('Show Title', 'wp-job-portal'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('showtitle')); ?>"><?php echo esc_html(__('Show Title', 'wp-job-portal')); ?></label>
             <select class="widefat" id="<?php echo esc_attr($this->get_field_id('showtitle')); ?>" name="<?php echo esc_attr($this->get_field_name('showtitle')); ?>">
-                <option value="0" <?php if (esc_attr($showtitle) == 0) echo "selected"; ?>><?php echo __('Hide', 'wp-job-portal'); ?></option>
-                <option value="1" <?php if (esc_attr($showtitle) == 1) echo "selected"; ?>><?php echo __('Show', 'wp-job-portal'); ?></option>
+                <option value="0" <?php if (esc_attr($showtitle) == 0) echo "selected"; ?>><?php echo esc_html(__('Hide', 'wp-job-portal')); ?></option>
+                <option value="1" <?php if (esc_attr($showtitle) == 1) echo "selected"; ?>><?php echo esc_html(__('Show', 'wp-job-portal')); ?></option>
             </select>
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('jobtitle')); ?>"><?php echo __('Title', 'wp-job-portal'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('jobtitle')); ?>"><?php echo esc_html(__('Title', 'wp-job-portal')); ?></label>
             <select class="widefat" id="<?php echo esc_attr($this->get_field_id('jobtitle')); ?>" name="<?php echo esc_attr($this->get_field_name('jobtitle')); ?>">
-                <option value="0" <?php if (esc_attr($jobtitle) == 0) echo "selected"; ?>><?php echo __('Hide', 'wp-job-portal'); ?></option>
-                <option value="1" <?php if (esc_attr($jobtitle) == 1) echo "selected"; ?>><?php echo __('Show', 'wp-job-portal'); ?></option>
+                <option value="0" <?php if (esc_attr($jobtitle) == 0) echo "selected"; ?>><?php echo esc_html(__('Hide', 'wp-job-portal')); ?></option>
+                <option value="1" <?php if (esc_attr($jobtitle) == 1) echo "selected"; ?>><?php echo esc_html(__('Show', 'wp-job-portal')); ?></option>
             </select>
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('category')); ?>"><?php echo __('Category', 'wp-job-portal'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('category')); ?>"><?php echo esc_html(__('Category', 'wp-job-portal')); ?></label>
             <select class="widefat" id="<?php echo esc_attr($this->get_field_id('category')); ?>" name="<?php echo esc_attr($this->get_field_name('category')); ?>">
-                <option value="0" <?php if (esc_attr($category) == 0) echo "selected"; ?>><?php echo __('Hide', 'wp-job-portal'); ?></option>
-                <option value="1" <?php if (esc_attr($category) == 1) echo "selected"; ?>><?php echo __('Show', 'wp-job-portal'); ?></option>
+                <option value="0" <?php if (esc_attr($category) == 0) echo "selected"; ?>><?php echo esc_html(__('Hide', 'wp-job-portal')); ?></option>
+                <option value="1" <?php if (esc_attr($category) == 1) echo "selected"; ?>><?php echo esc_html(__('Show', 'wp-job-portal')); ?></option>
             </select>
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('jobtype')); ?>"><?php echo __('Job type', 'wp-job-portal'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('jobtype')); ?>"><?php echo esc_html(__('Job type', 'wp-job-portal')); ?></label>
             <select class="widefat" id="<?php echo esc_attr($this->get_field_id('jobtype')); ?>" name="<?php echo esc_attr($this->get_field_name('jobtype')); ?>">
-                <option value="0" <?php if (esc_attr($jobtype) == 0) echo "selected"; ?>><?php echo __('Hide', 'wp-job-portal'); ?></option>
-                <option value="1" <?php if (esc_attr($jobtype) == 1) echo "selected"; ?>><?php echo __('Show', 'wp-job-portal'); ?></option>
+                <option value="0" <?php if (esc_attr($jobtype) == 0) echo "selected"; ?>><?php echo esc_html(__('Hide', 'wp-job-portal')); ?></option>
+                <option value="1" <?php if (esc_attr($jobtype) == 1) echo "selected"; ?>><?php echo esc_html(__('Show', 'wp-job-portal')); ?></option>
             </select>
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('jobstatus')); ?>"><?php echo __('Job Status', 'wp-job-portal'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('jobstatus')); ?>"><?php echo esc_html(__('Job Status', 'wp-job-portal')); ?></label>
             <select class="widefat" id="<?php echo esc_attr($this->get_field_id('jobstatus')); ?>" name="<?php echo esc_attr($this->get_field_name('jobstatus')); ?>">
-                <option value="0" <?php if (esc_attr($jobstatus) == 0) echo "selected"; ?>><?php echo __('Hide', 'wp-job-portal'); ?></option>
-                <option value="1" <?php if (esc_attr($jobstatus) == 1) echo "selected"; ?>><?php echo __('Show', 'wp-job-portal'); ?></option>
+                <option value="0" <?php if (esc_attr($jobstatus) == 0) echo "selected"; ?>><?php echo esc_html(__('Hide', 'wp-job-portal')); ?></option>
+                <option value="1" <?php if (esc_attr($jobstatus) == 1) echo "selected"; ?>><?php echo esc_html(__('Show', 'wp-job-portal')); ?></option>
             </select>
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('salaryrange')); ?>"><?php echo __('Salary Range', 'wp-job-portal'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('salaryrange')); ?>"><?php echo esc_html(__('Salary Range', 'wp-job-portal')); ?></label>
             <select class="widefat" id="<?php echo esc_attr($this->get_field_id('salaryrange')); ?>" name="<?php echo esc_attr($this->get_field_name('salaryrange')); ?>">
-                <option value="0" <?php if (esc_attr($salaryrange) == 0) echo "selected"; ?>><?php echo __('Hide', 'wp-job-portal'); ?></option>
-                <option value="1" <?php if (esc_attr($salaryrange) == 1) echo "selected"; ?>><?php echo __('Show', 'wp-job-portal'); ?></option>
+                <option value="0" <?php if (esc_attr($salaryrange) == 0) echo "selected"; ?>><?php echo esc_html(__('Hide', 'wp-job-portal')); ?></option>
+                <option value="1" <?php if (esc_attr($salaryrange) == 1) echo "selected"; ?>><?php echo esc_html(__('Show', 'wp-job-portal')); ?></option>
             </select>
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('shift')); ?>"><?php echo __('Shift', 'wp-job-portal'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('shift')); ?>"><?php echo esc_html(__('Shift', 'wp-job-portal')); ?></label>
             <select class="widefat" id="<?php echo esc_attr($this->get_field_id('shift')); ?>" name="<?php echo esc_attr($this->get_field_name('shift')); ?>">
-                <option value="0" <?php if (esc_attr($shift) == 0) echo "selected"; ?>><?php echo __('Hide', 'wp-job-portal'); ?></option>
-                <option value="1" <?php if (esc_attr($shift) == 1) echo "selected"; ?>><?php echo __('Show', 'wp-job-portal'); ?></option>
+                <option value="0" <?php if (esc_attr($shift) == 0) echo "selected"; ?>><?php echo esc_html(__('Hide', 'wp-job-portal')); ?></option>
+                <option value="1" <?php if (esc_attr($shift) == 1) echo "selected"; ?>><?php echo esc_html(__('Show', 'wp-job-portal')); ?></option>
             </select>
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('duration')); ?>"><?php echo __('Duration', 'wp-job-portal'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('duration')); ?>"><?php echo esc_html(__('Duration', 'wp-job-portal')); ?></label>
             <select class="widefat" id="<?php echo esc_attr($this->get_field_id('duration')); ?>" name="<?php echo esc_attr($this->get_field_name('duration')); ?>">
-                <option value="0" <?php if (esc_attr($duration) == 0) echo "selected"; ?>><?php echo __('Hide', 'wp-job-portal'); ?></option>
-                <option value="1" <?php if (esc_attr($duration) == 1) echo "selected"; ?>><?php echo __('Show', 'wp-job-portal'); ?></option>
+                <option value="0" <?php if (esc_attr($duration) == 0) echo "selected"; ?>><?php echo esc_html(__('Hide', 'wp-job-portal')); ?></option>
+                <option value="1" <?php if (esc_attr($duration) == 1) echo "selected"; ?>><?php echo esc_html(__('Show', 'wp-job-portal')); ?></option>
             </select>
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('company')); ?>"><?php echo __('Company', 'wp-job-portal'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('company')); ?>"><?php echo esc_html(__('Company', 'wp-job-portal')); ?></label>
             <select class="widefat" id="<?php echo esc_attr($this->get_field_id('company')); ?>" name="<?php echo esc_attr($this->get_field_name('company')); ?>">
-                <option value="0" <?php if (esc_attr($company) == 0) echo "selected"; ?>><?php echo __('Hide', 'wp-job-portal'); ?></option>
-                <option value="1" <?php if (esc_attr($company) == 1) echo "selected"; ?>><?php echo __('Show', 'wp-job-portal'); ?></option>
+                <option value="0" <?php if (esc_attr($company) == 0) echo "selected"; ?>><?php echo esc_html(__('Hide', 'wp-job-portal')); ?></option>
+                <option value="1" <?php if (esc_attr($company) == 1) echo "selected"; ?>><?php echo esc_html(__('Show', 'wp-job-portal')); ?></option>
             </select>
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('address')); ?>"><?php echo __('Address', 'wp-job-portal'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('address')); ?>"><?php echo esc_html(__('Address', 'wp-job-portal')); ?></label>
             <select class="widefat" id="<?php echo esc_attr($this->get_field_id('address')); ?>" name="<?php echo esc_attr($this->get_field_name('address')); ?>">
-                <option value="0" <?php if (esc_attr($address) == 0) echo "selected"; ?>><?php echo __('Hide', 'wp-job-portal'); ?></option>
-                <option value="1" <?php if (esc_attr($address) == 1) echo "selected"; ?>><?php echo __('Show', 'wp-job-portal'); ?></option>
+                <option value="0" <?php if (esc_attr($address) == 0) echo "selected"; ?>><?php echo esc_html(__('Hide', 'wp-job-portal')); ?></option>
+                <option value="1" <?php if (esc_attr($address) == 1) echo "selected"; ?>><?php echo esc_html(__('Show', 'wp-job-portal')); ?></option>
             </select>
         </p>
         <p>
-            <label for="<?php echo esc_attr($this->get_field_id('columnperrow')); ?>"><?php echo __('Column per row', 'wp-job-portal'); ?></label>
+            <label for="<?php echo esc_attr($this->get_field_id('columnperrow')); ?>"><?php echo esc_html(__('Column per row', 'wp-job-portal')); ?></label>
             <input class="widefat" id="<?php echo esc_attr($this->get_field_id('columnperrow')); ?>" name="<?php echo esc_attr($this->get_field_name('columnperrow')); ?>" type="text" value="<?php echo esc_attr($columnperrow); ?>" />
         </p>
         <?php

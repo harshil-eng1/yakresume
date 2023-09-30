@@ -1,4 +1,6 @@
 <?php
+if (!defined('ABSPATH'))
+    die('Restricted Access');
  /**
  * @param job      job object - optional
  */
@@ -37,9 +39,9 @@ switch ($layout) {
             $class = isset($classname) ? $classname : '';
             if ($class == "") {
            	    ?>
-           	    <a href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$company->aliasid))); ?>">
+           	    <a href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$company->aliasid))); ?>">
            	        <?php } ?>
-               		<img src="<?php echo esc_url($logopath); ?>" class="<?php echo esc_attr($class);?>" alt="<?php echo __('Company logo','wp-job-portal'); ?>" />
+               		<img src="<?php echo esc_url($logopath); ?>" class="<?php echo esc_attr($class);?>" alt="<?php echo esc_html(__('Company logo','wp-job-portal')); ?>" />
                     <?php if ($class=="") { ?>
             	</a>
     	   <?php } ?>

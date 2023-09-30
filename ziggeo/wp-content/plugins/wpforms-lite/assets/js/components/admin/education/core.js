@@ -262,18 +262,22 @@ WPFormsEducation.core = window.WPFormsEducation.core || ( function( document, wi
 		 */
 		activateModal: function( $button  ) {
 
-			var feature = $button.data( 'name' );
+			var feature = $button.data( 'name' ),
+				message = $button.data( 'message' );
+
+			const canActivateAddons = wpforms_education.can_activate_addons;
 
 			$.alert( {
 				title  : false,
-				content: wpforms_education.activate_prompt.replace( /%name%/g, feature ),
+				content: message ? message : wpforms_education.activate_prompt.replace( /%name%/g, feature ),
 				icon   : 'fa fa-info-circle',
 				type   : 'blue',
 				buttons: {
 					confirm: {
 						text    : wpforms_education.activate_confirm,
-						btnClass: 'btn-confirm',
+						btnClass: 'btn-confirm' + ( ! canActivateAddons ? ' hidden' : '' ),
 						keys    : [ 'enter' ],
+						isHidden: ! canActivateAddons,
 						action  : function() {
 
 							this.$$confirm
@@ -421,6 +425,7 @@ WPFormsEducation.core = window.WPFormsEducation.core || ( function( document, wi
 		installModal: function( $button ) {
 
 			var feature = $button.data( 'name' ),
+				message = $button.data( 'message' ),
 				url = $button.data( 'url' ),
 				licenseType = $button.data( 'license' );
 
@@ -429,18 +434,20 @@ WPFormsEducation.core = window.WPFormsEducation.core || ( function( document, wi
 				return;
 			}
 
+			const canInstallAddons = wpforms_education.can_install_addons;
+
 			$.alert( {
 				title   : false,
-				content : wpforms_education.install_prompt.replace( /%name%/g, feature ),
+				content : message ? message : wpforms_education.install_prompt.replace( /%name%/g, feature ),
 				icon    : 'fa fa-info-circle',
 				type    : 'blue',
 				boxWidth: '425px',
 				buttons : {
 					confirm: {
 						text    : wpforms_education.install_confirm,
-						btnClass: 'btn-confirm',
+						btnClass: 'btn-confirm' + ( ! canInstallAddons ? ' hidden' : '' ),
 						keys    : [ 'enter' ],
-						isHidden: ! wpforms_education.can_install_addons,
+						isHidden: ! canInstallAddons,
 						action  : function() {
 
 							this.$$confirm.prop( 'disabled', true )

@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
  * @param wpjob portal      job object - optional
@@ -53,9 +54,9 @@
             <div class="wjportal-job-company-info">
                 <?php 
                 if(in_array('multicompany', wpjobportal::$_active_addons)){
-                    $url = wpjobportal::makeUrl(array('wpjobportalme'=>'multicompany', 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$job->companyid));
+                    $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'multicompany', 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$job->companyid));
                 }else{
-                    $url = wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$job->companyid));
+                    $url = wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$job->companyid));
                 }
                 ?>
                 <a class="wjportal-job-company-name" href="<?php echo esc_url($url);?>">
@@ -67,14 +68,14 @@
                 if ($config_array['comp_email_address'] == 1) :
             ?>
                     <div class="wjportal-job-company-info">
-                        <span class="wjportal-job-company-info-tit"><?php echo __("Email",'wp-job-portal') ?>:</span>
+                        <span class="wjportal-job-company-info-tit"><?php echo esc_html(__("Email",'wp-job-portal')) ?>:</span>
                         <span class="wjportal-job-company-info-val"><?php echo esc_html($job->companyemail); ?></span>
                     </div>
                 <?php endif; ?>
             <?php endif; ?>
             <?php if(isset($job) && !empty($job->url)) :?>
                     <div class="wjportal-job-company-info">
-                        <span class="wjportal-job-company-info-tit"><?php echo __("Website",'wp-job-portal') ?>:</span>
+                        <span class="wjportal-job-company-info-tit"><?php echo esc_html(__("Website",'wp-job-portal')) ?>:</span>
                         <span class="wjportal-job-company-info-val"><?php echo esc_html($job->companyurl); ?></span>
                     </div>
             <?php endif; ?>

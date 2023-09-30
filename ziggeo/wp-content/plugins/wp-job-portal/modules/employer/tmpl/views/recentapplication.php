@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
  * @param job      job object - optional
@@ -11,7 +12,7 @@ if((WPJOBPORTALincluder::getObjectClass('user')->isemployer()) && count(wpjobpor
             $jobtype = wpjobportal::$_data[0]['jobid'];
             foreach ($jobtype as $key=>$value) { ?>
                 <div class="wjportal-resume-app-title" id="jobid<?php $value->jobid?>">
-                    <?php echo esc_html(__($value->title,'wp-job-portal')); ?>
+                    <?php echo esc_html(wpjobportal::wpjobportal_getVariableValue($value->title)); ?>
                 </div>
                 <?php
                 foreach (wpjobportal::$_data[0]['data'][$value->jobid] AS $resume) {
@@ -28,7 +29,7 @@ if((WPJOBPORTALincluder::getObjectClass('user')->isemployer()) && count(wpjobpor
     </div>
         <?php
 } else {
-    $msg = __('No record found','wp-job-portal');
+    $msg = esc_html(__('No record found','wp-job-portal'));
     WPJOBPORTALlayout::getNoRecordFound($msg, '');
   }
 ?>

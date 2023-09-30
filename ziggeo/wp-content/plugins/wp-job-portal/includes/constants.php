@@ -182,6 +182,7 @@ if (!defined('WPJOBPORTAL_FILE_TYPE_ERROR')) {
             'data-dismiss' => array(),
             'data-validation-optional' => array(),
             'style' => array(),
+            'disbled' => array(),
         ),
         'textarea'     => array(
             'rows' => array(),
@@ -215,6 +216,7 @@ if (!defined('WPJOBPORTAL_FILE_TYPE_ERROR')) {
             'required' => array(),
             'multiple' => array(),
             'style' => array(),
+            'disabled' => array(),
         ),
         'option'      => array(
             'id' => array(),

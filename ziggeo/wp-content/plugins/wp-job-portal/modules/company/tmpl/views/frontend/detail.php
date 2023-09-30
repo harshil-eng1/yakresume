@@ -1,4 +1,6 @@
 <?php
+if (!defined('ABSPATH'))
+    die('Restricted Access');
 /**
 * @param wp job portal 
 * Company => Detail via Template 
@@ -24,7 +26,7 @@ switch ($layout) {
         <div class="wjportal-company-data-wrp">
             <?php if (wpjobportal::$_data['companycontactdetail'] == true){?>
                 <div class="wjportal-company-sec-title">
-                    <?php echo __('Company Info','wp-job-portal'); ?>
+                    <?php echo esc_html(__('Company Info','wp-job-portal')); ?>
                 </div>
             <?php } 
                 $dateformat = wpjobportal::$_configuration['date_format'];
@@ -34,20 +36,20 @@ switch ($layout) {
                             if (wpjobportal::$_data['companycontactdetail'] == true)
                                 if ($config_array['comp_email_address'] == 1)
                                     if(isset( wpjobportal::$_data[0]) && !empty( wpjobportal::$_data[0]->contactemail)){
-                                        echo wp_kses(getDataRow(__($val, 'wp-job-portal'), wpjobportal::$_data[0]->contactemail), WPJOBPORTAL_ALLOWED_TAGS);
+                                        echo wp_kses(getDataRow(wpjobportal::wpjobportal_getVariableValue($val), wpjobportal::$_data[0]->contactemail), WPJOBPORTAL_ALLOWED_TAGS);
                                     }
                                     
                             break;
                         case 'address1':
                             if (wpjobportal::$_data['companycontactdetail'] == true)
                                 if(isset( wpjobportal::$_data[0]) && !empty( wpjobportal::$_data[0]->address1)){
-                                    echo wp_kses(getDataRow(__($val, 'wp-job-portal'), wpjobportal::$_data[0]->address1), WPJOBPORTAL_ALLOWED_TAGS);
+                                    echo wp_kses(getDataRow(wpjobportal::wpjobportal_getVariableValue($val), wpjobportal::$_data[0]->address1), WPJOBPORTAL_ALLOWED_TAGS);
                                 }
                             break;
                         case 'address2':
                             if (wpjobportal::$_data['companycontactdetail'] == true)
                                 if(isset( wpjobportal::$_data[0]) && !empty( wpjobportal::$_data[0]->address2)){
-                                    echo wp_kses(getDataRow(__($val, 'wp-job-portal'), wpjobportal::$_data[0]->address2), WPJOBPORTAL_ALLOWED_TAGS);
+                                    echo wp_kses(getDataRow(wpjobportal::wpjobportal_getVariableValue($val), wpjobportal::$_data[0]->address2), WPJOBPORTAL_ALLOWED_TAGS);
                                 }
                             break;
                         default: // handle the user fields data
@@ -70,7 +72,7 @@ switch ($layout) {
         ?>
             <div class="wjportal-company-data-wrp">
                 <div class="wjportal-company-sec-title">
-                    <?php echo __('Description','wp-job-portal'); ?>
+                    <?php echo esc_html(__('Description','wp-job-portal')); ?>
                 </div>
                 <div class="wjportal-company-desc">
                     <?php echo wp_kses(wpjobportal::$_data[0]->description, WPJOBPORTAL_ALLOWED_TAGS); ?>
@@ -94,51 +96,56 @@ switch ($layout) {
                 <div class="wjportal-company-data"> 
                     <?php if (wpjobportal::$_config->getConfigValue('comp_name')) { ?>
                         <span class="wjportal-company-title">
-                            <a href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$company->aliasid))); ?>">
+                            <a href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$company->aliasid))); ?>">
                                 <?php echo esc_html($company->name); ?>
                             </a>
                         </span>
-                        <?php } 
-                        do_action('wpjobportal_addons_lable_comp_feature',$company);
+                        <?php }
+                        if(WPJOBPORTALincluder::getObjectClass('user')->isemployer()){
+                            do_action('wpjobportal_addons_lable_comp_feature',$company);
+                        }
                     ?>
                 </div>
                 <div class="wjportal-company-data">
                     <?php if(!isset($showcreated) || $showcreated): ?>
                         <div class="wjportal-company-data-text">
                             <span class="wjportal-company-data-title">
-                                <?php echo __('Created', 'wp-job-portal') . ':'; ?>
+                                <?php echo esc_html(__('Created', 'wp-job-portal')) . ':'; ?>
                             </span>
                             <span class="wjportal-company-data-value">
-                                <?php echo esc_html(human_time_diff(strtotime($company->created))).' '.__("Ago",'wp-job-portal'); ?>
+                                <?php echo esc_html(human_time_diff(strtotime($company->created))).' '.esc_html(__("Ago",'wp-job-portal')); ?>
                             </span>
                         </div>
                     <?php endif; ?>
+
+                    <?php if(WPJOBPORTALincluder::getObjectClass('user')->isjobseeker()){ ?>
                     <div class="wjportal-company-data-text">
                         <span class="wjportal-company-data-title">
-                            <?php echo __('Status', 'wp-job-portal') . ':'; ?>
+                            <?php echo esc_html(__('Status', 'wp-job-portal')) . ':'; ?>
                         </span>
                         <?php
                             $color = ($company->status == 1) ? "green" : "red";
                             if ($company->status == 1) {
-                                $statusCheck = __('Approved', 'wp-job-portal');
+                                $statusCheck = esc_html(__('Approved', 'wp-job-portal'));
                             } elseif ($company->status == 0) {
-                                $statusCheck = __('Waiting for approval', 'wp-job-portal');
+                                $statusCheck = esc_html(__('Waiting for approval', 'wp-job-portal'));
                             }elseif($company->status == 2){
-                                 $statusCheck = __('Pending For Approval of Payment', 'wp-job-portal');
+                                 $statusCheck = esc_html(__('Pending For Approval of Payment', 'wp-job-portal'));
                             }elseif ($company->status == 3) {
-                                $statusCheck = __('Pending Due To Payment', 'wp-job-portal');
+                                $statusCheck = esc_html(__('Pending Due To Payment', 'wp-job-portal'));
                             }else {
-                                $statusCheck = __('Rejected', 'wp-job-portal');
+                                $statusCheck = esc_html(__('Rejected', 'wp-job-portal'));
                             }
                         ?>
                         <span class="wjportal-company-data-value <?php echo esc_attr($color); ?>">
                             <?php echo esc_html($statusCheck); ?>
                         </span>
                     </div>
+                    <?php } ?>
                 <?php if(isset($company) && !empty($company->location) && $config_array['comp_city'] == 1): ?>
                     <div class="wjportal-company-data-text">
                         <span class="wjportal-company-data-title">
-                            <?php echo __('Location', 'wp-job-portal') . ':'; ?>
+                            <?php echo esc_html(__('Location', 'wp-job-portal')) . ':'; ?>
                         </span>
                         <span class="wjportal-company-data-value">
                             <?php echo esc_html($company->location); ?>
@@ -159,8 +166,8 @@ switch ($layout) {
             </div>
             <div class="wjportal-company-right-wrp">
                 <div class="wjportal-company-action">
-                    <a class="wjportal-company-act-btn" href="<?php echo esc_url(wpjobportal::makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$company->aliasid))); ?>" title="<?php echo __('View company','wp-job-portal'); ?>">
-                        <?php echo __('View Company','wp-job-portal'); ?>
+                    <a class="wjportal-company-act-btn" href="<?php echo esc_url(wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>$mod, 'wpjobportallt'=>'viewcompany', 'wpjobportalid'=>$company->aliasid))); ?>" title="<?php echo esc_html(__('View company','wp-job-portal')); ?>">
+                        <?php echo esc_html(__('View Company','wp-job-portal')); ?>
                     </a>
                 </div>
             </div>

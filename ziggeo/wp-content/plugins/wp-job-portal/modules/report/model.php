@@ -115,8 +115,8 @@ class WPJOBPORTALReportModel {
             $job = $jobs[$i];
             /*$company = $companies[$i];*/
             $resum = $resume[$i];
-            wpjobportal::$_data['catbar1'] .= "['" . $job->cat_title . "', " . $job->jobs . ", '" . $colors[$i] . "', '" . __('Jobs', 'wp-job-portal') . "' ],";
-            wpjobportal::$_data['catbar2'] .= "['" . $resum->cat_title . "', " . $resum->resumes . ", '" . $colors[$i] . "', '" . __('Jobs', 'wp-job-portal') . "' ],";
+            wpjobportal::$_data['catbar1'] .= "['" . $job->cat_title . "', " . $job->jobs . ", '" . $colors[$i] . "', '" . esc_html(__('Jobs', 'wp-job-portal')) . "' ],";
+            wpjobportal::$_data['catbar2'] .= "['" . $resum->cat_title . "', " . $resum->resumes . ", '" . $colors[$i] . "', '" . esc_html(__('Jobs', 'wp-job-portal')) . "' ],";
             /*wpjobportal::$_data['catpie'] .= "['" . $company->cat_title . "', " . $company->companies . "],";*/
         }
 
@@ -139,8 +139,8 @@ class WPJOBPORTALReportModel {
             $job = $jobs[$i];
             $company = $companies[$i];
             $resum = $resume[$i];
-            wpjobportal::$_data['citybar1'] .= "['" . $job->cityName . "', " . $job->jobs . ", '" . $colors[$i] . "', '" . __('Jobs', 'wp-job-portal') . "' ],";
-            wpjobportal::$_data['citybar2'] .= "['" . $resum->cityName . "', " . $resum->resumes . ", '" . $colors[$i] . "', '" . __('Jobs', 'wp-job-portal') . "' ],";
+            wpjobportal::$_data['citybar1'] .= "['" . $job->cityName . "', " . $job->jobs . ", '" . $colors[$i] . "', '" . esc_html(__('Jobs', 'wp-job-portal')) . "' ],";
+            wpjobportal::$_data['citybar2'] .= "['" . $resum->cityName . "', " . $resum->resumes . ", '" . $colors[$i] . "', '" . esc_html(__('Jobs', 'wp-job-portal')) . "' ],";
             wpjobportal::$_data['citypie'] .= "['" . $company->cityName . "', " . $company->companies . "],";
         }
 
@@ -158,8 +158,8 @@ class WPJOBPORTALReportModel {
             if (isset($jobs[$i]) && isset($jobs[$i])) {
                 $job = $jobs[$i];
                 $resum = $resume[$i];
-                wpjobportal::$_data['jobtypebar1'] .= "['" . $job->title . "', " . $job->jobs . ", '" . $colors[$i] . "', '" . __('Jobs', 'wp-job-portal') . "' ],";
-                wpjobportal::$_data['jobtypebar2'] .= "['" . $resum->title . "', " . $resum->resumes . ", '" . $colors[$i] . "', '" . __('Jobs', 'wp-job-portal') . "' ],";
+                wpjobportal::$_data['jobtypebar1'] .= "['" . $job->title . "', " . $job->jobs . ", '" . $colors[$i] . "', '" . esc_html(__('Jobs', 'wp-job-portal')) . "' ],";
+                wpjobportal::$_data['jobtypebar2'] .= "['" . $resum->title . "', " . $resum->resumes . ", '" . $colors[$i] . "', '" . esc_html(__('Jobs', 'wp-job-portal')) . "' ],";
             }
         }
     }

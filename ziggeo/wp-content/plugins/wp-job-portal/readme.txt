@@ -3,8 +3,8 @@ Contributors: wpjobportal
 Donate link: https://wpjobportal.com/pricing/
 Tags: jobs, job board, board, job, job listing, jobs listing, list jobs, job portal, career portal, career, job add, positions, job management, job manager, recruiting, company, employer, candidate, resume, cv, wp jobs, wp job manager, employees, employment, recruitment, resume,  talent, vacancy application, freelance
 Requires at least: 4.5 
-Tested up to: 6.0.3
-Stable tag: 1.1.9
+Tested up to: 6.3
+Stable tag: 2.0.4
 License: GPLv2
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -226,6 +226,27 @@ Automatic updates should work like a charm; as always though, ensure you backup 
 
 
 == Changelog ==
+= 2.0.4 =
+* Security fix
+
+= 2.0.3 =
+* Bug fix
+
+= 2.0.2 =
+* Security fix
+
+= 2.0.1 =
+* Multi Language Job Apply Bug fix
+
+
+= 2.0.0 =
+* PHP 8.2 compatability
+* Coverletter Addon added
+* Jobs By Cities page added
+* Jobs By Types page added
+* Email notifications bug fixed
+* Search results pagination bug fixed
+
 = 1.1.9 =
 * CSS improve
 * Custom field bug fix

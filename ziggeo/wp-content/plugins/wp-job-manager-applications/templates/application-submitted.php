@@ -8,7 +8,7 @@
  * @author      Automattic
  * @package     wp-job-manager-applications
  * @category    Template
- * @version     2.0.1
+ * @version     3.0.0
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -16,5 +16,5 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 ?>
 <p class="job-manager-message">
-	<?php _e( 'Your job application has been submitted successfully', 'wp-job-manager-applications' ); ?>
+	<?php esc_html_e( 'Your job application has been submitted successfully', 'wp-job-manager-applications' ); ?>
 </p>

@@ -25,6 +25,20 @@ class WP_Job_Manager {
 	private static $instance = null;
 
 	/**
+	 * Forms.
+	 *
+	 * @var WP_Job_Manager_Forms
+	 */
+	public $forms;
+
+	/**
+	 * Post types.
+	 *
+	 * @var WP_Job_Manager_Post_Types
+	 */
+	public $post_types;
+
+	/**
 	 * Main WP Job Manager Instance.
 	 *
 	 * Ensures only one instance of WP Job Manager is loaded or can be loaded.
@@ -60,6 +74,7 @@ class WP_Job_Manager {
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/abstracts/abstract-wp-job-manager-email-template.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-email-notifications.php';
 		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-data-exporter.php';
+		include_once JOB_MANAGER_PLUGIN_DIR . '/includes/class-wp-job-manager-com-api.php';
 
 		if ( is_admin() ) {
 			include_once JOB_MANAGER_PLUGIN_DIR . '/includes/admin/class-wp-job-manager-admin.php';

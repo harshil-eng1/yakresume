@@ -84,65 +84,65 @@ if ($menu == 'employer') {
     if (is_user_logged_in()) { // Login user
         if ($config_array['tmenu_emcontrolpanel'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'employer', 'wpjobportallt'=>'controlpanel')),
-                'title' => __('Control Panel', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'employer', 'wpjobportallt'=>'controlpanel')),
+                'title' => esc_html(__('Control Panel', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_emnewjob'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'addjob')),
-                'title' => __('Add','wp-job-portal') .' '. __('Job', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'addjob')),
+                'title' => esc_html(__('Add','wp-job-portal')) .' '. esc_html(__('Job', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_emmyjobs'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs')),
-                'title' => __('My Jobs', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs')),
+                'title' => esc_html(__('My Jobs', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_emmycompanies'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies')),
-                'title' => __('My Companies', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies')),
+                'title' => esc_html(__('My Companies', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_emsearchresume'] == 1) {
             if(in_array('resumesearch',wpjobportal::$_active_addons)){
                 $linkarray[] = array(
-                    'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'resumesearch', 'wpjobportallt'=>'resumesearch')),
-                    'title' => __('Resume Search', 'wp-job-portal'),
+                    'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resumesearch', 'wpjobportallt'=>'resumesearch')),
+                    'title' => esc_html(__('Resume Search', 'wp-job-portal')),
                 );
             }
         }
     } else { // user is visitor
         if ($config_array['tmenu_vis_emcontrolpanel'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'employer', 'wpjobportallt'=>'controlpanel')),
-                'title' => __('Control Panel', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'employer', 'wpjobportallt'=>'controlpanel')),
+                'title' => esc_html(__('Control Panel', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_vis_emnewjob'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'visitorcanaddjob', 'wpjobportallt'=>'visitoraddjob')),
-                'title' => __('Add','wp-job-portal') .' '. __('Job', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'visitorcanaddjob', 'wpjobportallt'=>'visitoraddjob')),
+                'title' => esc_html(__('Add','wp-job-portal')) .' '. esc_html(__('Job', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_vis_emmyjobs'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs')),
-                'title' => __('My Jobs', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'myjobs')),
+                'title' => esc_html(__('My Jobs', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_vis_emmycompanies'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies')),
-                'title' => __('My Companies', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'company', 'wpjobportallt'=>'mycompanies')),
+                'title' => esc_html(__('My Companies', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_vis_emsearchresume'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'resumesearch', 'wpjobportallt'=>'resumesearch')),
-                'title' => __('Search Resume', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resumesearch', 'wpjobportallt'=>'resumesearch')),
+                'title' => esc_html(__('Search Resume', 'wp-job-portal')),
             );
         }
     }
@@ -150,63 +150,63 @@ if ($menu == 'employer') {
     if (is_user_logged_in()) {
         if ($config_array['tmenu_jscontrolpanel'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'jobseeker', 'wpjobportallt'=>'controlpanel')),
-                'title' => __('Control Panel', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'jobseeker', 'wpjobportallt'=>'controlpanel')),
+                'title' => esc_html(__('Control Panel', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_wpjobportalcategory'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobsbycategories')),
-                'title' => __('Jobs By Categories', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobsbycategories')),
+                'title' => esc_html(__('Jobs By Categories', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_jssearchjob'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'jobsearch', 'wpjobportallt'=>'jobsearch')),
-                'title' => __('Job Search', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'jobsearch', 'wpjobportallt'=>'jobsearch')),
+                'title' => esc_html(__('Job Search', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_jsnewestjob'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'newestjobs')),
-                'title' => __('Newest Jobs', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'newestjobs')),
+                'title' => esc_html(__('Newest Jobs', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_jsmyresume'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'addresume')),
-                'title' => __('My Resumes', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'addresume')),
+                'title' => esc_html(__('My Resumes', 'wp-job-portal')),
             );
         }
     } else { // user is visitor
         if ($config_array['tmenu_vis_jscontrolpanel'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'jobseeker', 'wpjobportallt'=>'controlpanel')),
-                'title' => __('Control Panel', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'jobseeker', 'wpjobportallt'=>'controlpanel')),
+                'title' => esc_html(__('Control Panel', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_vis_wpjobportalcategory'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobsbycategories')),
-                'title' => __('Jobs By Categories', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'jobsbycategories')),
+                'title' => esc_html(__('Jobs By Categories', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_vis_jssearchjob'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'jobsearch', 'wpjobportallt'=>'jobsearch')),
-                'title' => __('Job Search', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'jobsearch', 'wpjobportallt'=>'jobsearch')),
+                'title' => esc_html(__('Job Search', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_vis_jsnewestjob'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'newestjobs')),
-                'title' => __('Newest Jobs', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'job', 'wpjobportallt'=>'newestjobs')),
+                'title' => esc_html(__('Newest Jobs', 'wp-job-portal')),
             );
         }
         if ($config_array['tmenu_vis_jsmyresume'] == 1) {
             $linkarray[] = array(
-                'link' => wpjobportal::makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes')),
-                'title' => __('My Resume', 'wp-job-portal'),
+                'link' => wpjobportal::wpjobportal_makeUrl(array('wpjobportalme'=>'resume', 'wpjobportallt'=>'myresumes')),
+                'title' => esc_html(__('My Resumes', 'wp-job-portal')),
             );
         }
     }

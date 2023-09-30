@@ -1,8 +1,8 @@
 <?php return array(
     'root' => array(
         'name' => 'codeinwp/templates-patterns-collection',
-        'pretty_version' => '1.1.35',
-        'version' => '1.1.35.0',
+        'pretty_version' => '1.1.39',
+        'version' => '1.1.39.0',
         'reference' => NULL,
         'type' => 'library',
         'install_path' => __DIR__ . '/../../',
@@ -11,8 +11,8 @@
     ),
     'versions' => array(
         'codeinwp/templates-patterns-collection' => array(
-            'pretty_version' => '1.1.35',
-            'version' => '1.1.35.0',
+            'pretty_version' => '1.1.39',
+            'version' => '1.1.39.0',
             'reference' => NULL,
             'type' => 'library',
             'install_path' => __DIR__ . '/../../',
@@ -20,9 +20,9 @@
             'dev_requirement' => false,
         ),
         'codeinwp/themeisle-sdk' => array(
-            'pretty_version' => '3.2.35',
-            'version' => '3.2.35.0',
-            'reference' => 'e9e15f96cfbb9b2bbcad465599f0b766b5899023',
+            'pretty_version' => '3.3.0',
+            'version' => '3.3.0.0',
+            'reference' => '68dc5d11c1d7a20a13f3ae730183f61ff309d574',
             'type' => 'library',
             'install_path' => __DIR__ . '/../codeinwp/themeisle-sdk',
             'aliases' => array(),

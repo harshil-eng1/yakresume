@@ -1,4 +1,6 @@
 <?php
+if (!defined('ABSPATH'))
+    die('Restricted Access');
 /**
  * @param wp job portal      job object - optional
  * & section wise Company Detail

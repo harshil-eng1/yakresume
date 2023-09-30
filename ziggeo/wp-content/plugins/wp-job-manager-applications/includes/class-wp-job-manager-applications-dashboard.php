@@ -63,7 +63,7 @@ class WP_Job_Manager_Applications_Dashboard {
 	 * @return void
 	 */
 	public function frontend_scripts() {
-		wp_register_script( 'wp-job-manager-applications-dashboard', JOB_MANAGER_APPLICATIONS_PLUGIN_URL . '/assets/js/application-dashboard.min.js', [ 'jquery' ], JOB_MANAGER_APPLICATIONS_VERSION, true );
+		wp_register_script( 'wp-job-manager-applications-dashboard', JOB_MANAGER_APPLICATIONS_PLUGIN_URL . '/assets/dist/js/application-dashboard.js', [ 'jquery' ], JOB_MANAGER_APPLICATIONS_VERSION, true );
 
 		wp_localize_script(
 			'wp-job-manager-applications-dashboard',
@@ -78,7 +78,7 @@ class WP_Job_Manager_Applications_Dashboard {
 			]
 		);
 
-		wp_enqueue_style( 'wp-job-manager-applications-frontend', JOB_MANAGER_APPLICATIONS_PLUGIN_URL . '/assets/css/frontend.css' );
+		wp_enqueue_style( 'wp-job-manager-applications-frontend', JOB_MANAGER_APPLICATIONS_PLUGIN_URL . '/assets/dist/css/frontend.css', [ 'dashicons' ], JOB_MANAGER_APPLICATIONS_VERSION );
 	}
 
 	/**

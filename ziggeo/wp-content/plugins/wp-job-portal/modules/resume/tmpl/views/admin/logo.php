@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
  * @param job      job object - optional
@@ -16,7 +17,7 @@
 <?php echo wp_kses($resumeque, WPJOBPORTAL_ALLOWED_TAGS) ?>
     
 		<a href="<?php echo esc_url(admin_url('admin.php?page=wpjobportal_resume&wpjobportallt=formresume&wpjobportalid='.$resume->id)); ?>">
-			<img src="<?php echo esc_url($photo); ?>" alt="<?php echo __('logo','wp-job-portal'); ?>" />
+			<img src="<?php echo esc_url($photo); ?>" alt="<?php echo esc_html(__('logo','wp-job-portal')); ?>" />
 		</a>
 		<div class="wpjobportal-resume-crt-date">
 			<?php echo esc_html(date_i18n(wpjobportal::$_configuration['date_format'], strtotime($resume->created))); ?>

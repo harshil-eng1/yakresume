@@ -1,3 +1,4 @@
+<?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
 <?php
 /**
  * @param job      job object - optional
@@ -12,7 +13,7 @@
             $isowner = (WPJOBPORTALincluder::getObjectClass('user')->uid() == wpjobportal::$_data[0]['personal_section']->uid) ? 1 : 0;
             $html .= $resumeviewlayout->getPersonalTopSection($isowner, 1);
             $html .= '<div class="resume-section-title wjportal-resume-section-title">
-                        ' . __('Personal Information', 'wp-job-portal') . '
+                        ' . esc_html(__('Personal Information', 'wp-job-portal')) . '
                     </div>';
             $html .= $resumeviewlayout->getPersonalSection(0, 1);
             $show_section_that_have_value = wpjobportal::$_config->getConfigValue('show_only_section_that_have_value');

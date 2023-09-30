@@ -3,16 +3,18 @@
  * Plugin Name: WP Job Manager - Applications
  * Plugin URI: https://wpjobmanager.com/add-ons/applications/
  * Description: Lets candidates submit applications to jobs which are stored on the employers jobs page, rather than simply emailed. Works standalone with it's built in application form.
- * Version: 2.5.0
+ * Version: 3.0.0
  * Author: Automattic
  * Author URI: https://wpjobmanager.com
- * Requires at least: 4.7
- * Tested up to: 5.2
- * Requires PHP: 5.6
+ * Requires at least: 5.8
+ * Tested up to: 6.2
+ * Requires PHP: 7.4
+ * Text Domain: wp-job-manager-applications
+ * Domain Path: /languages/
  *
  * WPJM-Product: wp-job-manager-applications
  *
- * Copyright: 2019 Automattic
+ * Copyright: 2020 Automattic
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  */
@@ -33,10 +35,10 @@ class WP_Job_Manager_Applications {
 	 */
 	public function __construct() {
 		// Define constants
-		define( 'JOB_MANAGER_APPLICATIONS_VERSION', '2.5.0' );
+		define( 'JOB_MANAGER_APPLICATIONS_VERSION', '3.0.0' );
 		define( 'JOB_MANAGER_APPLICATIONS_FILE', __FILE__ );
 		define( 'JOB_MANAGER_APPLICATIONS_PLUGIN_DIR', untrailingslashit( plugin_dir_path( __FILE__ ) ) );
-		define( 'JOB_MANAGER_APPLICATIONS_PLUGIN_URL', untrailingslashit( plugins_url( basename( plugin_dir_path( __FILE__ ) ), basename( __FILE__ ) ) ) );
+		define( 'JOB_MANAGER_APPLICATIONS_PLUGIN_URL', untrailingslashit( plugins_url( '', ( __FILE__ ) ) ) );
 
 		// Check requirements
 		if ( version_compare( phpversion(), '5.3', '<' ) ) {
@@ -52,7 +54,7 @@ class WP_Job_Manager_Applications {
 		add_action( 'admin_notices', array( $this, 'version_check' ) );
 
 		// Activate
-		register_activation_hook( __FILE__, array( $this, 'install' ) );
+		register_activation_hook( basename( __DIR__ ) . '/' . basename( __FILE__ ), array( $this, 'install' ) );
 	}
 
 	/**
@@ -72,15 +74,21 @@ class WP_Job_Manager_Applications {
 		include_once __DIR__ . '/includes/wp-job-manager-applications-functions.php';
 		include_once __DIR__ . '/includes/class-wp-job-manager-applications-integration.php';
 		include_once __DIR__ . '/includes/class-wp-job-manager-applications-privacy.php';
+		include_once __DIR__ . '/includes/class-wp-job-manager-applications-deprecated-hooks.php';
+		include_once __DIR__ . '/includes/class-wp-job-manager-applications-job-submission.php';
+		include_once __DIR__ . '/includes/class-wp-job-manager-applications-application-form.php';
+		include_once __DIR__ . '/includes/class-wp-job-manager-applications-default-form.php';
 
 		// Init classes
 		$this->post_types = new WP_Job_Manager_Applications_Post_Types();
 		WP_Job_Manager_Applications_Privacy::init();
+		WP_Job_Manager_Applications_Deprecated_Hooks::init();
 
 		// Add actions
 		add_action( 'init', array( $this, 'load_admin' ), 12 );
 		add_action( 'after_setup_theme', array( $this, 'template_functions' ) );
 		add_action( 'admin_init', array( $this, 'updater' ) );
+		add_filter( 'job_manager_enqueue_frontend_style', array( $this, 'is_frontend_style_required_on_page' ) );
 	}
 
 	/**
@@ -142,6 +150,26 @@ class WP_Job_Manager_Applications {
 		if ( version_compare( JOB_MANAGER_APPLICATIONS_VERSION, get_option( 'wp_job_manager_applications_version' ), '>' ) ) {
 			$this->install();
 		}
+	}
+
+	/**
+	 * Filters if WPJM's front-end styles are needed on this page.
+	 *
+	 * @since 2.6.0
+	 * @access private
+	 *
+	 * @param bool $is_frontend_style_enabled Whether or not to load WPJM's front-end styles.
+	 * @return bool
+	 */
+	public function is_frontend_style_required_on_page( $is_frontend_style_enabled ) {
+		if (
+				is_active_widget( false, false, 'widget_featured_jobs', true ) ||
+				is_active_widget( false, false, 'widget_recent_jobs', true )
+			) {
+				return true;
+			}
+
+			return $is_frontend_style_enabled;
 	}
 
 	/**

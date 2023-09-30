@@ -1,16 +1,16 @@
 <?php if (!defined('ABSPATH')) die('Restricted Access'); ?>
-<span class="js-admin-title"><?php echo __('User Stats Resume', 'wp-job-portal') ?></span>
+<span class="js-admin-title"><?php echo esc_html(__('User Stats Resume', 'wp-job-portal')) ?></span>
 <?php
 if (!empty(wpjobportal::$_data[0])) {
     ?>
     <table id="js-table">
         <thead>
             <tr>
-                <th class="left-row"><?php echo __('Name', 'wp-job-portal'); ?></th>
-                <th><?php echo __('Application Title', 'wp-job-portal'); ?></th>
-                <th><?php echo __('Category', 'wp-job-portal'); ?></th>
-                <th><?php echo __('Created', 'wp-job-portal'); ?></th>
-                <th><?php echo __('Status', 'wp-job-portal'); ?></th>
+                <th class="left-row"><?php echo esc_html(__('Name', 'wp-job-portal')); ?></th>
+                <th><?php echo esc_html(__('Application Title', 'wp-job-portal')); ?></th>
+                <th><?php echo esc_html(__('Category', 'wp-job-portal')); ?></th>
+                <th><?php echo esc_html(__('Created', 'wp-job-portal')); ?></th>
+                <th><?php echo esc_html(__('Status', 'wp-job-portal')); ?></th>
             </tr>
         </thead>
         <tbody>
@@ -46,7 +46,7 @@ if (!empty(wpjobportal::$_data[0])) {
         echo '<div class="tablenav"><div class="tablenav-pages">' . wp_kses_post(wpjobportal::$_data[1]) . '</div></div>';
     }
 } else {
-    $msg = __('No record found','wp-job-portal');
-    echo wp_kses(WPJOBPORTALlayout::getNoRecordFound($msg), WPJOBPORTAL_ALLOWED_TAGS);
+    $msg = esc_html(__('No record found','wp-job-portal'));
+    WPJOBPORTALlayout::getNoRecordFound($msg);
 }
 ?>

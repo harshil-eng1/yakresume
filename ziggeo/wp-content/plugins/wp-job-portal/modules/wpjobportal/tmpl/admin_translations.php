@@ -101,84 +101,90 @@ if(!defined('ABSPATH'))
         </div>
     </div>
 </div>
-<script >
-    var ajaxurl = "<?php echo admin_url('admin-ajax.php') ?>";
-    jQuery(document).ready(function(){
-        jQuery('#gettranslation').click(function(){
-            jsShowLoading();
-            jQuery.post(ajaxurl, {action: 'wpjobportal_ajax', wpjobportalme: 'wpjobportal', task: 'getListTranslations'}, function (data) {
-                if (data) {
-                    jsHideLoading();
-                    data = JSON.parse(data);
-                    if(data['error']){
-                        jQuery('#js-emessage-wrapper div').html(data['error']);
-                        jQuery('#js-emessage-wrapper').show();
-                    }else{
-                        jQuery('#js-emessage-wrapper').hide();
-                        jQuery('#gettranslation').hide();
-                        jQuery('div#js_ddl').show();
-                        jQuery('span#js_combo').html('<?php echo __("'+data['data']+'", "wp-job-portal") ?>');
+<?php
+    wp_register_script( 'wpjobportal-inline-handle', '' );
+    wp_enqueue_script( 'wpjobportal-inline-handle' );
+
+    $inline_js_script = "
+        var ajaxurl = \"". admin_url('admin-ajax.php') ."\";
+        jQuery(document).ready(function(){
+            jQuery('#gettranslation').click(function(){
+                jsShowLoading();
+                jQuery.post(ajaxurl, {action: 'wpjobportal_ajax', wpjobportalme: 'wpjobportal', task: 'getListTranslations', '_wpnonce':'". esc_attr(wp_create_nonce("get-list-translations"))."'}, function (data) {
+                    if (data) {
+                        jsHideLoading();
+                        data = JSON.parse(data);
+                        if(data['error']){
+                            jQuery('#js-emessage-wrapper div').html(data['error']);
+                            jQuery('#js-emessage-wrapper').show();
+                        }else{
+                            jQuery('#js-emessage-wrapper').hide();
+                            jQuery('#gettranslation').hide();
+                            jQuery('div#js_ddl').show();
+                            jQuery('span#js_combo').html(\"". __("'+data['data']+'", "wp-job-portal") ."\");
+                        }
                     }
+                });
+            });
+
+            jQuery(document).on('change', 'select#translations' ,function() {
+                var lang_name = jQuery( this ).val();
+                if(lang_name != ''){
+                    jQuery('#js-emessage-wrapper_ok').hide();
+                    jsShowLoading();
+                    jQuery.post(ajaxurl, {action: 'wpjobportal_ajax', wpjobportalme: 'wpjobportal', task: 'validateandshowdownloadfilename',langname:lang_name, '_wpnonce':'". esc_attr(wp_create_nonce("validate-and-show-download-filename"))."'}, function (data) {
+                        if (data) {
+                            jsHideLoading();
+                            data = JSON.parse(data);
+                            if(data['error']){
+                                jQuery('#js-emessage-wrapper div').html(data['error']);
+                                jQuery('#js-emessage-wrapper').show();
+                                jQuery('#jscodeinputbox').slideUp('400' , 'swing' , function(){
+                                    jQuery('input#languagecode').val('');
+                                });
+                            }else{
+                                jQuery('#js-emessage-wrapper').hide();
+                                jQuery('#jscodeinputbox').html(data['path']+': '+data['input']);
+                                jQuery('#jscodeinputbox').slideDown();
+                            }
+                        }
+                    });
+                }
+            });
+
+            jQuery('#jsdownloadbutton').click(function(){
+                jQuery('#js-emessage-wrapper_ok').hide();
+                var lang_name = jQuery('#translations').val();
+                var file_name = jQuery('#languagecode').val();
+                if(lang_name != '' && file_name != ''){
+                    jsShowLoading();
+                    jQuery.post(ajaxurl, {action: 'wpjobportal_ajax', wpjobportalme: 'wpjobportal', task: 'getlanguagetranslation',langname:lang_name , filename: file_name, '_wpnonce':'". esc_attr(wp_create_nonce("get-language-translation"))."'}, function (data) {
+                        if (data) {
+                            jsHideLoading();
+                            data = JSON.parse(data);
+                            if(data['error']){
+                                jQuery('#js-emessage-wrapper div').html(data['error']);
+                                jQuery('#js-emessage-wrapper').show();
+                            }else{
+                                jQuery('#js-emessage-wrapper').hide();
+                                jQuery('#js-emessage-wrapper_ok div').html(data['data']);
+                                jQuery('#js-emessage-wrapper_ok').slideDown();
+                            }
+                        }
+                    });
                 }
             });
         });
 
-        jQuery(document).on('change', 'select#translations' ,function() {
-            var lang_name = jQuery( this ).val();
-            if(lang_name != ''){
-                jQuery('#js-emessage-wrapper_ok').hide();
-                jsShowLoading();
-                jQuery.post(ajaxurl, {action: 'wpjobportal_ajax', wpjobportalme: 'wpjobportal', task: 'validateandshowdownloadfilename',langname:lang_name}, function (data) {
-                    if (data) {
-                        jsHideLoading();
-                        data = JSON.parse(data);
-                        if(data['error']){
-                            jQuery('#js-emessage-wrapper div').html(data['error']);
-                            jQuery('#js-emessage-wrapper').show();
-                            jQuery('#jscodeinputbox').slideUp('400' , 'swing' , function(){
-                                jQuery('input#languagecode').val("");
-                            });
-                        }else{
-                            jQuery('#js-emessage-wrapper').hide();
-                            jQuery('#jscodeinputbox').html(data['path']+': '+data['input']);
-                            jQuery('#jscodeinputbox').slideDown();
-                        }
-                    }
-                });
-            }
-        });
+        function jsShowLoading(){
+            jQuery('div#black_wrapper_translation').show();
+            jQuery('div#jstran_loading').show();
+        }
 
-        jQuery('#jsdownloadbutton').click(function(){
-            jQuery('#js-emessage-wrapper_ok').hide();
-            var lang_name = jQuery('#translations').val();
-            var file_name = jQuery('#languagecode').val();
-            if(lang_name != '' && file_name != ''){
-                jsShowLoading();
-                jQuery.post(ajaxurl, {action: 'wpjobportal_ajax', wpjobportalme: 'wpjobportal', task: 'getlanguagetranslation',langname:lang_name , filename: file_name}, function (data) {
-                    if (data) {
-                        jsHideLoading();
-                        data = JSON.parse(data);
-                        if(data['error']){
-                            jQuery('#js-emessage-wrapper div').html(data['error']);
-                            jQuery('#js-emessage-wrapper').show();
-                        }else{
-                            jQuery('#js-emessage-wrapper').hide();
-                            jQuery('#js-emessage-wrapper_ok div').html(data['data']);
-                            jQuery('#js-emessage-wrapper_ok').slideDown();
-                        }
-                    }
-                });
-            }
-        });
-    });
-
-    function jsShowLoading(){
-        jQuery('div#black_wrapper_translation').show();
-        jQuery('div#jstran_loading').show();
-    }
-
-    function jsHideLoading(){
-        jQuery('div#black_wrapper_translation').hide();
-        jQuery('div#jstran_loading').hide();
-    }
-</script>
+        function jsHideLoading(){
+            jQuery('div#black_wrapper_translation').hide();
+            jQuery('div#jstran_loading').hide();
+        }
+    ";
+    wp_add_inline_script( 'wpjobportal-inline-handle', $inline_js_script );
+?>
