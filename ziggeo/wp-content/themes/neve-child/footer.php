@@ -86,6 +86,67 @@ jQuery(document).ready(function() {
     jQuery('fieldset[class*="_video"]').hide();
     jQuery('.fieldset-candidate_video').show();
 
+
+    /////// Privew case video show edit page
+    onResumeEditPage()
+    function onResumeEditPage(){
+        var languages = jQuery("#resume_languages").val();
+        setTimeout(() => {
+            //jQuery("#candidate_video").show()
+            var candidate_video = jQuery("#candidate_video").val();
+            var parts = candidate_video.split('/');
+            var videoToken = parts[parts.length - 2];
+
+            if(videoToken!='' && videoToken!= undefined){
+                jQuery('.fieldset-candidate_video .field .ba-videorecorder-chooser-button-0 span').text("Redo")
+                jQuery(".fieldset-candidate_video .field").prepend('<ziggeoplayer ziggeo-video="'+videoToken+'" ziggeo-theme="modern" ziggeo-themecolor="red"> </ziggeoplayer>')
+                //console.log(videoToken)
+            }
+
+
+
+
+        }, 500);      
+
+        console.log(languages);
+        for (var i = 0; i < languages.length; i++) {
+            var toLowerCaseVal = languages[i].toLowerCase();
+            var getQuestion = jQuery("#_"+toLowerCaseVal+"_skill_question").val();
+            jQuery('.fieldset-' + toLowerCaseVal + '_video').addClass('topQuestion');
+            jQuery('.fieldset-' + toLowerCaseVal + '_video').show();
+            //jQuery('.text-' + toLowerCaseVal + '_video').hide();
+
+            var lang_video_old = jQuery("#"+ toLowerCaseVal +"_video").val();
+            var langVideoSplit = lang_video_old.split('/');
+            var langVideoToken = langVideoSplit[langVideoSplit.length - 2];  
+
+            if(langVideoToken!='' && langVideoToken!= undefined){
+                jQuery("#"+ toLowerCaseVal +"_video").hide()
+                jQuery('<ziggeoplayer ziggeo-video="'+langVideoToken+'" ziggeo-theme="modern" ziggeo-themecolor="red"> </ziggeoplayer>').insertBefore("#"+ toLowerCaseVal +"_video")  
+              }
+                       
+            // console.log(langVideoToken);           
+
+            if (jQuery('#' + toLowerCaseVal + '_videoRec').length == 0) {
+
+                var recoredButText = '<div class="recoButTxt ' + toLowerCaseVal +
+                    '_butTxt">A question will appear on the video based on the skill selected. Please press Start Recording</div>';
+                var recorederButton = '<div class="recoButton ' + toLowerCaseVal +
+                    '_videoRec11" data-lang="' + toLowerCaseVal + '">Redo</div>';
+                var recorederdiv = '<div id="' + toLowerCaseVal +
+                    '_videoRec" class="topMagClas hideVideo topqueset"></div>';
+
+                jQuery('#' + toLowerCaseVal + '_video').before(recoredButText);
+                jQuery('#' + toLowerCaseVal + '_video').after(recorederdiv);
+                jQuery('#' + toLowerCaseVal + '_video').after(recorederButton);
+
+                jQuery("ul.mylist-" + toLowerCaseVal + " li").hide();
+
+            }
+        
+        }
+    }    
+
     jQuery('body').on('change', '#resume_languages', function() {
 
         console.log(jQuery(this).val());
@@ -277,14 +338,14 @@ function getRandomNumber(quesLength) {
         function onResumeEditPage(){
             var languages = jQuery("#resume_languages").val();
             setTimeout(() => {
-                jQuery("#candidate_video").show()
+                //jQuery("#candidate_video").show()
                 var candidate_video = jQuery("#candidate_video").val();
                 var parts = candidate_video.split('/');
                 var videoToken = parts[parts.length - 2];
 
-                jQuery('.fieldset-candidate_video .field .ba-videorecorder-chooser-button-0 span').text("Re Do")
-                jQuery(".fieldset-candidate_video .field").prepend('<ziggeoplayer ziggeo-video="'+videoToken+'" ziggeo-width=320 ziggeo-height=180 ziggeo-theme="modern" ziggeo-themecolor="red"> </ziggeoplayer>')
-                console.log(videoToken)
+                jQuery('.fieldset-candidate_video .field .ba-videorecorder-chooser-button-0 span').text("Redo")
+                jQuery(".fieldset-candidate_video .field").prepend('<ziggeoplayer ziggeo-video="'+videoToken+'" ziggeo-theme="modern" ziggeo-themecolor="red"> </ziggeoplayer>')
+                //console.log(videoToken)
             }, 500);
            
 
@@ -296,12 +357,22 @@ function getRandomNumber(quesLength) {
                 jQuery('.fieldset-' + toLowerCaseVal + '_video').show();
                 //jQuery('.text-' + toLowerCaseVal + '_video').hide();
 
+                var lang_video_old = jQuery("#"+ toLowerCaseVal +"_video").val();
+                var langVideoSplit = lang_video_old.split('/');
+                var langVideoToken = langVideoSplit[langVideoSplit.length - 2];    
+                jQuery("#"+ toLowerCaseVal +"_video").hide()
+
+
+                jQuery('<ziggeoplayer ziggeo-video="'+langVideoToken+'" ziggeo-theme="modern" ziggeo-themecolor="red"> </ziggeoplayer>').insertBefore("#"+ toLowerCaseVal +"_video")
+                 
+                // console.log(langVideoToken);           
+
                 if (jQuery('#' + toLowerCaseVal + '_videoRec').length == 0) {
 
                     var recoredButText = '<div class="recoButTxt ' + toLowerCaseVal +
                         '_butTxt">A question will appear on the video based on the skill selected. Please press Start Recording</div>';
                     var recorederButton = '<div class="recoButton ' + toLowerCaseVal +
-                        '_videoRec11" data-lang="' + toLowerCaseVal + '">Start Recorder</div>';
+                        '_videoRec11" data-lang="' + toLowerCaseVal + '">Redo</div>';
                     var recorederdiv = '<div id="' + toLowerCaseVal +
                         '_videoRec" class="topMagClas hideVideo topqueset"></div>';
 
@@ -400,14 +471,15 @@ function getRandomNumber(quesLength) {
             // Resume Add time Hide the Save Changes button on the form submit when video processing
             recorder.on("recording", function() {
                 console.log('recording started111');
-                jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'button').hide();
+                //jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'button').hide();
+                jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'button').val('Video Still Processing…').addClass('butGrayAdd');
             });
 
             recorder.on("processed", function() {
                 console.log('processed111');
                 setTimeout(() => {
-                    jQuery("#submit-resume-form [name='submit_resume']").attr("type",
-                        'submit').show();
+                    //jQuery("#submit-resume-form [name='submit_resume']").attr("type",'submit').show();
+                    jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'submit').removeClass('butGrayAdd').val('Save changes').show();  
                 }, 500);
             });
 

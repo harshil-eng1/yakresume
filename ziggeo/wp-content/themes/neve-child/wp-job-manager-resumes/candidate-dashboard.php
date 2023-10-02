@@ -28,7 +28,7 @@ $submit_resume_form_page_id = get_option( 'resume_manager_submit_resume_form_pag
 				<?php endforeach; ?>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody>			
 			<?php if ( ! $resumes ) : ?>
 				<tr>
 					<td colspan="<?php echo count( $candidate_dashboard_columns ); ?>"><?php esc_html_e( 'You do not have any active resume listings.', 'wp-job-manager-resumes' ); ?></td>

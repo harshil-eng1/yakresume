@@ -192,12 +192,23 @@ fieldset.fieldset-databricks_video .field {
 fieldset.topQuestion .field {
     position: relative;    
 }
-.topQuestion small.description {
+.page-id-65 .topQuestion small.description {
+    position: absolute;
+    top: auto;
+    z-index: 999;
+    font-size: 16px !important;
+    font-weight: bold;
+    bottom: 47%;
+}
+.page-id-64 .topQuestion small.description {
     position: absolute;
     top: -36px;
     z-index: 999;
     font-size: 16px !important;
     font-weight: bold;
+}
+.job-manager-form fieldset .ba-commoncss-full-width {
+    width: 100%!important;
 }
 .topMagClas{
     margin-top: 70px;
@@ -351,6 +362,11 @@ span.notavil {
     padding: 10px;
     font-size: 20px;
 }
+
+.benefits-section-outer .wp-block-cover img {
+    width: 100%;
+}
+
 @media (max-width: 576px) {
     #rateCandidate .carousel-content {
         padding: 20px 0px 20px 0px;

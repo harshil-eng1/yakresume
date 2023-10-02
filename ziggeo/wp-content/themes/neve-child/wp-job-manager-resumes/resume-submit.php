@@ -17,6 +17,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 wp_enqueue_script( 'wp-resume-manager-resume-submission' );
 ?>
+<?php 
+
+$resumesCount = resume_manager_count_user_resumes();
+$resumeIdEdit = $_GET['resume_id'];
+
+if($resumesCount>=1 && empty($resumeIdEdit)){
+	echo "<h3>You can't add multiple resume</h3>";
+	die;
+}
+	
+?>
 <form action="<?php echo esc_url( $action ); ?>" method="post" id="submit-resume-form" class="job-manager-form" enctype="multipart/form-data">
 
 	<?php do_action( 'submit_resume_form_start' ); ?>
@@ -59,3 +70,4 @@ wp_enqueue_script( 'wp-resume-manager-resume-submission' );
 
 	<?php do_action( 'submit_resume_form_end' ); ?>
 </form>
+<?php //} ?>
