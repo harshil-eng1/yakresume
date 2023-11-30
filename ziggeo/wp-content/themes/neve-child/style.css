@@ -13,7 +13,9 @@ Text Domain:  neve
 */
 
 /*-- rateCandidate Section CSS --*/
-
+pre{
+    line-height: normal;
+}
 #rateCandidate {
     padding: 30px 0px 20px;    
 }
@@ -193,7 +195,7 @@ fieldset.topQuestion .field {
     position: relative;    
 }
 .page-id-65 .topQuestion small.description {
-    position: absolute;
+/*    position: absolute;*/
     top: auto;
     z-index: 999;
     font-size: 16px !important;
@@ -201,7 +203,7 @@ fieldset.topQuestion .field {
     bottom: 47%;
 }
 .page-id-64 .topQuestion small.description {
-    position: absolute;
+/*    position: absolute;*/
     top: -36px;
     z-index: 999;
     font-size: 16px !important;
@@ -392,10 +394,12 @@ span.notavil {
 .custom-slider {
     position: relative;
     padding-left: 30px;
+    padding-top: 30px;
+    
 }
 .custom-slider .prev-btn{
     position: absolute;
-    top: 50%;
+    top: 200px;
     transform: translateY(-50%);
     z-index: 99;
     left: 25px;
@@ -403,7 +407,7 @@ span.notavil {
 }
 .custom-slider .next-btn{
     position: absolute;
-    top: 50%;
+    top: 200px;
     transform: translateY(-50%);
     right: 25px;
     margin: 0;
@@ -411,7 +415,7 @@ span.notavil {
 
 .inner-custom-slider .inner-prev-btn{
     position: absolute;
-    top: 50%;
+    top: 200px;
     transform: translateY(-50%);
     z-index: 9;
     left: 30px;
@@ -420,7 +424,7 @@ span.notavil {
 
 .inner-custom-slider .inner-next-btn{
     position: absolute;
-   top: 50%;
+    top: 200px;
     transform: translateY(-50%);
     right: 30px;
     color: #fff;
@@ -463,4 +467,18 @@ span.notavil {
   cursor: not-allowed;
     opacity: 0.5;
     background: #ccc;
+}
+
+.page-id-65 .job-manager-message a{
+    display: none;
+}
+#custom_professional_title option{
+    font-weight: 100;
+}
+.ba-commoncss-full-width{
+    height: 400px;
+}
+
+.ba-commoncss-full-width .ba-videoplayer-container {
+    height: 400px;
 }

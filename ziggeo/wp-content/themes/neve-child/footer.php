@@ -49,7 +49,7 @@ if ( apply_filters( 'neve_filter_toggle_content_parts', true, 'footer' ) === tru
      *
      * @since 1.0.0
      */
-    do_action( 'neve_do_footer' );
+   do_action( 'neve_do_footer' );
 
     /**
      * Executes actions after the footer was rendered.
@@ -72,7 +72,63 @@ wp_footer();
  * @since 2.11
  */
 do_action( 'neve_body_end_before' );
+?>
+<script>
 
+    jQuery("footer .hfg_footer #cb-row--footer-bottom .item--inner .component-wrap").html("<div><p>© Copyright 2023 Yakresume.</p></div>")
+    let recentRecordingId = '';
+    let processingVideo=processedVideo=0;
+
+    jQuery('#custom_professional_title').select2()
+    function htmlEntities(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/ /g, '&nbsp;')  // Replace space with &nbsp;
+        .replace(/\n/g, '<br>'); // Replace line break with <br>
+    }
+    function showPreviewBtn() {
+        if(processingVideo==processedVideo){
+            jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'submit').removeClass('butGrayAdd').val('Preview →').show();
+        }
+            
+        //});
+    }
+    jQuery(document).ready(function($) {
+        if($('#ziggeojobmanager_recorder').length){
+        var element = document.getElementById('ziggeojobmanager_recorder');
+        var embedding = ZiggeoApi.V2.Recorder.findByElement(element);
+
+        embedding.on("recording", function() {
+            recentRecordingId = 'ziggeojobmanager_recorder';
+            //$("#submit-resume-form [name='submit_resume']").attr("type", 'button').hide();
+            $("#submit-resume-form [name='submit_resume']").attr("type", 'button').val('Video Still Processing…').addClass('butGrayAdd');
+            // $("#submit-resume-form [name='submit_resume']").addClass('butGrayAdd');
+            processingVideo++
+            console.log(processingVideo);
+        });
+
+        embedding.on("processed", function() {
+            processedVideo++
+            setTimeout(() => {
+                showPreviewBtn()
+            }, 500);
+
+        });
+        }
+
+    
+        /*jQuery(document).on("click",".resume-title a:first",function(e){
+            e.preventDefault()
+            $(".resume-title .candidate-dashboard-actions li:first a").data
+        })*/
+        
+
+    })
+</script>
+<?php
 if(get_the_ID() == 64){ 
 ?>
 <style type="text/css">
@@ -108,7 +164,7 @@ jQuery(document).ready(function() {
 
         }, 500);      
 
-        console.log(languages);
+        // console.log(languages);
         for (var i = 0; i < languages.length; i++) {
             var toLowerCaseVal = languages[i].toLowerCase();
             var getQuestion = jQuery("#_"+toLowerCaseVal+"_skill_question").val();
@@ -125,7 +181,7 @@ jQuery(document).ready(function() {
                 jQuery('<ziggeoplayer ziggeo-video="'+langVideoToken+'" ziggeo-theme="modern" ziggeo-themecolor="red"> </ziggeoplayer>').insertBefore("#"+ toLowerCaseVal +"_video")  
               }
                        
-            // console.log(langVideoToken);           
+              
 
             if (jQuery('#' + toLowerCaseVal + '_videoRec').length == 0) {
 
@@ -149,8 +205,8 @@ jQuery(document).ready(function() {
 
     jQuery('body').on('change', '#resume_languages', function() {
 
-        console.log(jQuery(this).val());
-        console.log(jQuery(this).val().length);
+        // console.log(jQuery(this).val());
+        // console.log(jQuery(this).val().length);
 
         var languages = jQuery(this).val();
 
@@ -166,6 +222,8 @@ jQuery(document).ready(function() {
             //console.log(toLowerCaseVal);  
 
             jQuery('.fieldset-' + toLowerCaseVal + '_video').show();
+            jQuery('.fieldset-' + toLowerCaseVal + '_video').show();
+           
             jQuery('.text-' + toLowerCaseVal + '_video').hide();
 
             if (jQuery('#' + toLowerCaseVal + '_videoRec').length == 0) {
@@ -195,6 +253,12 @@ jQuery(document).ready(function() {
 
         jQuery("ul.mylist-" + toLowerCaseVal + " li").hide();
 
+           
+        if(!jQuery(this).closest(".field").hasClass('inner-video-field')){
+            jQuery(this).closest(".field").addClass('inner-video-field')
+        }
+        recentRecordingId = toLowerCaseVal + "_videoRec";
+
         var recorder = new ZiggeoApi.V2.Recorder({
             element: document.getElementById(toLowerCaseVal + "_videoRec"),
             attrs: {
@@ -205,6 +269,8 @@ jQuery(document).ready(function() {
                 allowupload: false,
                 allowscreen: false,
                 countdown: 30,
+                flipscreen : false,
+                picksnashots : true,
             }
         });
         recorder.activate();
@@ -223,7 +289,8 @@ jQuery(document).ready(function() {
 
             /** Question addd hidden filed**/
             var res = jQuery('.text-' + toLowerCaseVal + '_video-description .mylist-' +
-                toLowerCaseVal + ' li[style=""]').text();
+                toLowerCaseVal + ' li[style=""]').attr('id');
+            console.log(res)
             jQuery('#' + toLowerCaseVal + '_skill_question').val(res);
 
 
@@ -236,12 +303,16 @@ jQuery(document).ready(function() {
             //jQuery("#submit-resume-form [name='submit_resume']").val('Video Still Processing…');
             jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'button').val('Video Still Processing…').addClass('butGrayAdd');
             //jQuery("#submit-resume-form [name='submit_resume']").addClass('butGrayAdd');
+            processingVideo++
+            
         });
 
         recorder.on("processed", function() {
             console.log('processedddd');
-            setTimeout(() => {                
-                jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'submit').removeClass('butGrayAdd').val('Preview →').show();                
+            processedVideo++
+            setTimeout(() => {       
+                showPreviewBtn()         
+              //  jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'submit').removeClass('butGrayAdd').val('Preview →').show();                
             }, 500);
         });
 
@@ -314,25 +385,43 @@ function getRandomNumber(quesLength) {
     .topQuestion .field small.description{
         margin-top: 95px;
     }
+    .page-id-65 .topQuestion small.description{
+        position: unset;
+
+    }
+
+    .topMagClas{
+        margin-top : 0px;
+    }
+    .topQuestion .field small.description{
+        margin-top: 0px;
+    }
+    
     </style>
     <?php
     $resumeId=$_GET['resume_id'];
     $language=get_post_meta( $resumeId, '_resume_languages',true);
+    $getCustomProfessionalTitle=json_encode(get_post_meta( $resumeId, '_custom_professional_title',true));
+    //$getCustomProfessionalTitle;
 
     // echo '<ziggeoplayer ziggeo-video="cc0e885aa20445f92ce134373e51d713" ziggeo-width=320 ziggeo-height=180 ziggeo-theme="modern" ziggeo-themecolor="red"> </ziggeoplayer>'; 
 
     foreach($language as $lang){
         $key = '_'.strtolower($lang).'_skill_question';
         $question =get_post_meta( $resumeId, $key,true);
-        echo '<input type="hidden" id="'.$key.'" value="'.$question.'">';
+        echo '<input type="hidden" id="'.$key.'" value="'.$question.'" class="aaaaaaaaaa">';
     }
     ?>
 
     <script>
     jQuery(document).ready(function() {
+        let getCustomProfessionalTitle = '<?= $getCustomProfessionalTitle?>'
 
+        let getCustomTitleArr = JSON.parse(getCustomProfessionalTitle);
+        
         jQuery('fieldset[class*="_video"]').hide();
         jQuery('.fieldset-candidate_video').show();
+        jQuery('#custom_professional_title').val(getCustomTitleArr).trigger('change');
 
         onResumeEditPage()
         function onResumeEditPage(){
@@ -352,20 +441,34 @@ function getRandomNumber(quesLength) {
             console.log(languages);
             for (var i = 0; i < languages.length; i++) {
                 var toLowerCaseVal = languages[i].toLowerCase();
+
                 var getQuestion = jQuery("#_"+toLowerCaseVal+"_skill_question").val();
                 jQuery('.fieldset-' + toLowerCaseVal + '_video').addClass('topQuestion');
                 jQuery('.fieldset-' + toLowerCaseVal + '_video').show();
                 //jQuery('.text-' + toLowerCaseVal + '_video').hide();
-
+                //console.log(getQuestion)
                 var lang_video_old = jQuery("#"+ toLowerCaseVal +"_video").val();
                 var langVideoSplit = lang_video_old.split('/');
                 var langVideoToken = langVideoSplit[langVideoSplit.length - 2];    
                 jQuery("#"+ toLowerCaseVal +"_video").hide()
 
+                var getQuestionHtml = jQuery("#"+getQuestion).html()
+                console.log(getQuestionHtml);
 
-                jQuery('<ziggeoplayer ziggeo-video="'+langVideoToken+'" ziggeo-theme="modern" ziggeo-themecolor="red"> </ziggeoplayer>').insertBefore("#"+ toLowerCaseVal +"_video")
+                jQuery('<div class="preview-old-question-video"><small class="old-preview-question">'+getQuestionHtml+'</small><ziggeoplayer class="preview-old-video" ziggeo-video="'+langVideoToken+'" ziggeo-theme="modern" ziggeo-themecolor="red"> </ziggeoplayer></div>').insertBefore("#"+ toLowerCaseVal +"_video")
                  
-                // console.log(langVideoToken);           
+                // console.log(langVideoToken);      
+                  console.log('#' + toLowerCaseVal + '_videoRec');  
+                  
+                  
+                
+                  setTimeout(() => {
+                    var questionHtml=jQuery(".text-"+toLowerCaseVal+"_video-description").clone()
+                     jQuery(".text-"+toLowerCaseVal+"_video-description").remove()
+                    jQuery(questionHtml).insertBefore("#"+ toLowerCaseVal +"_videoRec")
+                  }, 1500);
+                 // console.log(questionHtml)
+                 // jQuery("#"+ toLowerCaseVal +"_videoRec").prepend(questionHtml)
 
                 if (jQuery('#' + toLowerCaseVal + '_videoRec').length == 0) {
 
@@ -408,6 +511,13 @@ function getRandomNumber(quesLength) {
                 jQuery('.fieldset-' + toLowerCaseVal + '_video').show();
                 jQuery('.text-' + toLowerCaseVal + '_video').hide();
 
+                setTimeout(() => {
+                    var questionHtml=jQuery(".text-"+toLowerCaseVal+"_video-description").clone()
+                    jQuery(".text-"+toLowerCaseVal+"_video-description").remove()
+                    jQuery(questionHtml).insertBefore("#"+ toLowerCaseVal +"_videoRec")
+                }, 500);
+              
+
                 if (jQuery('#' + toLowerCaseVal + '_videoRec').length == 0) {
 
                     var recoredButText = '<div class="recoButTxt ' + toLowerCaseVal +
@@ -430,9 +540,14 @@ function getRandomNumber(quesLength) {
 
         /********* On click Function ********/
         jQuery("body").on('click', '.recoButton', function() {
+
+            console.log("recoding stated");
             var toLowerCaseVal = jQuery(this).attr('data-lang');
-            //console.log('ssss '+toLowerCaseVal);
             jQuery("ul.mylist-" + toLowerCaseVal + " li").hide();
+             if(!jQuery(this).closest(".field").hasClass('inner-video-field')){
+                jQuery(this).closest(".field").addClass('inner-video-field')
+            }
+            recentRecordingId = toLowerCaseVal + "_videoRec";
 
             var recorder = new ZiggeoApi.V2.Recorder({
                 element: document.getElementById(toLowerCaseVal + "_videoRec"),
@@ -444,6 +559,8 @@ function getRandomNumber(quesLength) {
                     allowupload: false,
                     allowscreen: false,
                     countdown: 30,
+                    flipscreen : false,
+                    picksnashots : true,
                 }
             });
             recorder.activate();
@@ -462,7 +579,8 @@ function getRandomNumber(quesLength) {
 
                 /** Question addd hidden filed**/
                 var res = jQuery('.text-' + toLowerCaseVal + '_video-description .mylist-' +
-                    toLowerCaseVal + ' li[style=""]').text();
+                    toLowerCaseVal + ' li[style=""]').attr('id');
+                console.log(res)
                 jQuery('#' + toLowerCaseVal + '_skill_question').val(res);
 
 
@@ -473,13 +591,15 @@ function getRandomNumber(quesLength) {
                 console.log('recording started111');
                 //jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'button').hide();
                 jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'button').val('Video Still Processing…').addClass('butGrayAdd');
+                processingVideo++
             });
 
             recorder.on("processed", function() {
-                console.log('processed111');
+                processedVideo++
                 setTimeout(() => {
                     //jQuery("#submit-resume-form [name='submit_resume']").attr("type",'submit').show();
-                    jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'submit').removeClass('butGrayAdd').val('Save changes').show();  
+                    showPreviewBtn()
+                  //  jQuery("#submit-resume-form [name='submit_resume']").attr("type", 'submit').removeClass('butGrayAdd').val('Save changes').show();  
                 }, 500);
             });
 
@@ -556,29 +676,7 @@ function getRandomNumber(quesLength) {
 
 <!-- Hide the preview button on the form submit when video processing  -->
 <script>
-jQuery(document).ready(function($) {
-    var element = document.getElementById('ziggeojobmanager_recorder');
-    var embedding = ZiggeoApi.V2.Recorder.findByElement(element);
 
-    embedding.on("recording", function() {
-        console.log('recording started');
-        //$("#submit-resume-form [name='submit_resume']").attr("type", 'button').hide();
-        $("#submit-resume-form [name='submit_resume']").attr("type", 'button').val('Video Still Processing…').addClass('butGrayAdd');
-        // $("#submit-resume-form [name='submit_resume']").addClass('butGrayAdd');
-
-    });
-
-    embedding.on("processed", function() {
-        console.log('processed');
-        setTimeout(() => {
-            $("#submit-resume-form [name='submit_resume']").attr("type", 'submit').removeClass('butGrayAdd').val('Preview →').show();
-            // $("#submit-resume-form [name='submit_resume']").val('Preview →');
-            // $("#submit-resume-form [name='submit_resume']").removeClass('butGrayAdd');
-        }, 500);
-
-    });
-
-})
 </script>
 </body>
 

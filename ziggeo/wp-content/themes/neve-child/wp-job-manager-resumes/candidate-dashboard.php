@@ -37,10 +37,10 @@ $submit_resume_form_page_id = get_option( 'resume_manager_submit_resume_form_pag
 				<?php foreach ( $resumes as $resume ) : ?>
 					<tr>
 						<?php foreach ( $candidate_dashboard_columns as $key => $column ) : ?>
-							<td class="<?php echo esc_attr( $key ); ?>">
+							<td class="<?php echo esc_attr( $key ); ?> ">
 								<?php if ( 'resume-title' === $key ) : ?>
 									<?php if ( 'publish' == $resume->post_status ) : ?>
-										<a href="<?php echo get_permalink( $resume->ID ); ?>"><?php echo esc_html( $resume->post_title ); ?></a>
+										<a href=" /my-resumes/?action=edit&resume_id=<?php echo $resume->ID; ?>"><?php echo esc_html( $resume->post_title ); ?></a>
 									<?php else : ?>
 										<?php echo esc_html( $resume->post_title ); ?> <small>(<?php the_resume_status( $resume ); ?>)</small>
 									<?php endif; ?>

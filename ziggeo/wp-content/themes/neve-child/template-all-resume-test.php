@@ -1,7 +1,6 @@
 <?php
 /*Template Name: View All Resume Candidate Test*/
 get_header();
-
 ?>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.10.2/css/all.css">
 <!-- Bootstrap CSS -->
@@ -10,7 +9,15 @@ get_header();
 <!-- Owl Stylesheets -->
 <link rel="stylesheet" href="<?php echo get_stylesheet_directory_uri(); ?>/css/owl.carousel.min.css">
 <link rel="stylesheet" href="<?php echo get_stylesheet_directory_uri(); ?>/css/owl.theme.default.min.css">
-
+<style>
+    .inner-prev-btn.disabled,
+    .prev-btn.disabled,
+    .inner-next-btn.disabled,
+    .next-btn.disabled{
+        display:none !important;
+    }
+    
+</style>
 
 <!-- Bootstrap JS -->
 <script src="<?php echo get_stylesheet_directory_uri(); ?>/js/popper.min.js"></script>
@@ -55,7 +62,7 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
     <section id="rateCandidate">
         <div class="container">
             <div class="row">
-                <div class="leftsidefilt col-3">
+                <div class="leftsidefilt col-2">
                     <form method="get">
                         <div class="filterRatingRe">
                             <h3>Filter Rating</h3>
@@ -66,7 +73,7 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
 
                             <select class="selRatFilt" name="rating">
                                 <option value="">All</option>
-                                <option class="resfiltCandid" data-rate_candidate="Notrated" value="">Not rated</option>
+                                <option class="resfiltCandid" data-rate_candidate="Notrated" value="no_ratting" <?= $_GET['rating'] == 'no_ratting'?'selected':'' ?>>Not rated</option>
                                 <option class="resfiltCandid" data-rate_candidate="1" value="1" <?php if($_GET['rating'] == 1){ ?>selected <?php } ?>>1</option>
                                 <option class="resfiltCandid" data-rate_candidate="2" value="2" <?php if($_GET['rating'] == 2){ ?>selected <?php } ?>>2</option>
                                 <option class="resfiltCandid" data-rate_candidate="3" value="3" <?php if($_GET['rating'] == 3){ ?>selected <?php } ?>>3</option>
@@ -121,7 +128,7 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
                     </form>                     
                                       
                 </div>
-                <div class="col-9">  
+                <div class="col-10">  
                                 
                 <?php //echo do_shortcode("[ziggeovideowall pre_set_list='fb7e921b95e64df6e2b0b6e51e65da7f,b0654155bbe961065ddf0eaebb5d97e6,8ca00c62ee93adef3ddfc54b256abbbc' autoplay='true' wall_design='slide_wall']"); ?>                 
 
@@ -147,8 +154,10 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
                             if($_GET['postseen']){
                                 $filterbyseen = true;
                             }
-                            if($_GET['rating']){
+                            if(!empty($_GET['rating']) && $_GET['rating'] != 'not_ratted'){
                                 $filterbyrating = true;
+                            }else if(!empty($_GET['rating']) && $_GET['rating'] == 'not_ratted'){
+                                 $filterbyrating = true;
                             }
                             if(isset($_GET['skills'])){
 
@@ -230,7 +239,8 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
                             $postseen = get_post_meta($jobAppPostId,'_candidateVideoSeen', true);
                             $postRating = get_post_meta($jobAppPostId,'_rating', true);
 
-                            if($filterbyseen || $filterbyrating){
+                            if(!empty($filterbyseen) || !empty($filterbyrating)){
+                                $getPostRatting = $_GET['rating']=='no_ratting'?0:$_GET['rating'];
                                 if($filterbyseen && !$filterbyrating){                                   
                                     if($postseen == $_GET['postseen']){ 
                                         $resumeArray[get_the_ID()]['post_id'] = get_the_ID();
@@ -239,14 +249,14 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
                                         //$x++;
                                     }
                                 }else if(!$filterbyseen && $filterbyrating){
-                                    if($_GET['rating'] == $postRating){
+                                    if($getPostRatting == $postRating){
                                         $resumeArray[get_the_ID()]['post_id'] = get_the_ID();
                                         $resumeArray[get_the_ID()]['jobAppPostId'] = $jobAppPostId;
                                         $resumeArray[get_the_ID()]['catedidatvideoid'] = $catedidatvideoid;
                                        // $x++;
                                     }                                    
                                 }else if($filterbyseen && $filterbyrating){                                    
-                                    if($postseen == $_GET['postseen'] && $_GET['rating'] == $postRating){
+                                    if($postseen == $_GET['postseen'] && $getPostRatting == $postRating){
                                         $resumeArray[get_the_ID()]['post_id'] = get_the_ID();
                                         $resumeArray[get_the_ID()]['jobAppPostId'] = $jobAppPostId;
                                         $resumeArray[get_the_ID()]['catedidatvideoid'] = $catedidatvideoid;
@@ -304,6 +314,7 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
                             if ( $post_query1->have_posts() ) :
                                 while ( $post_query1->have_posts() ) : $post_query1->the_post(); 
                                     $cadidatevidoe1 =  get_post_meta($post->ID,'_candidate_video', true);
+                                    $getCandidateLocation =  get_post_meta($post->ID,'_candidate_location', true);
                                     $catdidatevideoArr1 = explode('/', $cadidatevidoe1);
                                     $catdidatevideoArrIndex1 = count($catdidatevideoArr1) - 2;
                                     $catedidatvideoid1 = $catdidatevideoArr1[$catdidatevideoArrIndex1];
@@ -312,40 +323,27 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
                                    
                                 <div class="custom-slider-item <?= $i==1?'active':'' ?>" id="<?php echo $i ?>" style="width: 80%; background: #f7f7f7;margin:auto;text-align: center;">
                                     <div class="resume-aside">
-                                        <div class="top-bar-sec"> 
-                                            <div class="top-bar-sec-left"> 
-                                                <?php the_candidate_photo(); ?>
-                                                <div class="sec-detail">
-                                                    <p class="job-title"><?php the_candidate_title(); ?></p>
-                                                    <p class="location"><?php the_candidate_location(); ?></p>
-                                                </div>
-                                            </div>
-                                            <div class="top-bar-sec-right"> 
-                                                <?php the_resume_links(); ?>
-                                            </div>
-                                        </div>
                                        <?php if(!isset($getskills)){ ?>
                                        <?php if($i == 1){ ?>
                                        <div id="candidateVideo">
                                         <?php } ?>
                                         <?php //the_candidate_video(); ?>
                                         
-                                        <ziggeoplayer ziggeo-video="<?php echo $catedidatvideoid1 ?>" <?php if($i == 1){ ?>autoplay='false' <?php } ?> id="candidate_intro_<?php echo $i ?>"  ziggeo-theme="modern" ziggeo-themecolor="red"> </ziggeoplayer>
+                                        <ziggeoplayer ziggeo-video="<?php echo $catedidatvideoid1 ?>" <?php if($i == 1){ ?>autoplay='true' <?php } ?> id="candidate_intro_<?php echo $i ?>"  ziggeo-theme="modern" ziggeo-themecolor="red"> </ziggeoplayer>
                                          <script>
                                             setTimeout(function(){
                                                 var element_by_intro = document.getElementById('candidate_intro_<?php echo $i ?>');
                                                 var embedding_intro = ZiggeoApi.V2.Player.findByElement(element_by_intro);
                                                 embedding_intro.on("ended", function (healthy) {
                                                     console.log('aaaaa_ '+'candidate_intro_<?php echo $i ?>')
-                                                   
-                                                    jQuery('.next-btn').click();
-                                                    var element_by_intro_next = document.getElementById('candidate_intro_<?php echo $i+1 ?>');
-                                                    var embedding_intro_next = ZiggeoApi.V2.Player.findByElement(element_by_intro_next);
-                                                    embedding_intro_next.play();
+                                                    jQuery('.next-btn:not(.disabled)').click();
+                                                    // var element_by_intro_next = document.getElementById('candidate_intro_<?php echo $i+1 ?>');
+                                                    // var embedding_intro_next = ZiggeoApi.V2.Player.findByElement(element_by_intro_next);
+                                                    // embedding_intro_next.play();
                                                    
                                                 });
                                                
-                                            }, 2000);
+                                            }, 3000);
                                          </script>                                        
 
                                          <?php if($i == 1){ ?>
@@ -361,7 +359,7 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
                                             <div id="candidateVideo">
                                             <?php } ?>
                                                 <?php //the_candidate_video(); ?>
-                                               <ziggeoplayer ziggeo-video="<?php echo $catedidatvideoid1 ?>" <?php if($i == 1){ ?>autoplay='false' <?php } ?> id="<?php echo $i ?>_skills_videoId_1"  ziggeo-theme="modern" ziggeo-themecolor="red"> </ziggeoplayer>
+                                               <ziggeoplayer ziggeo-video="<?php echo $catedidatvideoid1 ?>" <?php if($i == 1){ ?>autoplay='true' <?php } ?> id="<?php echo $i ?>_skills_videoId_1"  ziggeo-theme="modern" ziggeo-themecolor="red"> </ziggeoplayer>
 
 
                                                 <script>
@@ -378,18 +376,17 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
                                                             if(jQuery('<?php echo "#".$i ?> > .resume-aside > .inner-custom-slider > .inner-custom-slider-item.active').next('.inner-custom-slider-item').length){
                                                                 jQuery('<?php echo "#".$i ?> > .resume-aside > .inner-custom-slider > .inner-next-btn').click();
 
-                                                                var getID=jQuery(".custom-slider-item.active .inner-custom-slider-item.active > ziggeoplayer").attr("id")
-                                                                console.log(getID); 
-                                                                // var element_by_skills_next = document.getElementById('<?php echo $i ?>_skills_videoId_<?php echo $i+1 ?>');
-                                                                var element_by_skills_next = document.getElementById(getID);
-                                                                var embedding_skills_next = ZiggeoApi.V2.Player.findByElement(element_by_skills_next);
-                                                                embedding_skills_next.play();
+                                                                // var getID=jQuery(".custom-slider-item.active .inner-custom-slider-item.active > ziggeoplayer").attr("id")
+                                                                // console.log(getID); 
+                                                                // var element_by_skills_next = document.getElementById(getID);
+                                                                // var embedding_skills_next = ZiggeoApi.V2.Player.findByElement(element_by_skills_next);
+                                                                // embedding_skills_next.play();
                                                             }else if(jQuery(".custom-slider-item.active").next(".custom-slider-item").length){
-                                                                jQuery(".next-btn").click()
-                                                                var getID=jQuery(".custom-slider-item.active .inner-custom-slider-item.active > ziggeoplayer").attr("id")
-                                                                var element_by_skills_next = document.getElementById(getID);
-                                                                var embedding_skills_next = ZiggeoApi.V2.Player.findByElement(element_by_skills_next);
-                                                                embedding_skills_next.play();
+                                                                jQuery(".next-btn:not(.disabled)").click()
+                                                                // var getID=jQuery(".custom-slider-item.active .inner-custom-slider-item.active > ziggeoplayer").attr("id")
+                                                                // var element_by_skills_next = document.getElementById(getID);
+                                                                // var embedding_skills_next = ZiggeoApi.V2.Player.findByElement(element_by_skills_next);
+                                                                // embedding_skills_next.play();
                                                             }
                                                            
                                                            
@@ -405,6 +402,7 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
                                             <?php $candEmail = get_post_meta($post->ID,'_candidate_email', true); 
 
                                             $candidateEmail = get_post_meta($post->ID,'_candidate_email', true); 
+                                            $getUploadResume = get_post_meta($post->ID,'_upload_resume', true); 
 
                                             $ApplicatepostID = getApplicantRating($candidateEmail, $jobPostId);
                                                
@@ -428,9 +426,16 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
                                                 <a href="javascript:void(0)" class="resRateCandid <?php echo $selected5; ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="5" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $jobPostId; ?>">5</a>
                                             
                                             </div>                                            
-                                        </div>   
-
+                                        </div> 
+                                        <?php
+                                        if(!empty($getUploadResume) && in_array("content-type: application/pdf", get_headers($getUploadResume))) {
+                                        ?> 
+                                        <!-- <div class="resume-viewer">
+                                            <h2><?php _e( 'Candidate Resume ', 'wp-job-manager-resumes' ); ?></h2>
+                                            <iframe src="<?=  $getUploadResume ?>" width="1000" height="600"></iframe>
+                                        </div>   -->
                                         <?php   
+                                        }
                                         //echo $filterbyskills .' _ssssssss';
                                         if($filterbyskills){
                                             
@@ -446,55 +451,62 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
                                                $langName = strtolower($langVideo);
 
                                                if(in_array($langName, $filterkillArr)){
+                                                    $languageQuestionID = get_page_by_title($langName.'_video', OBJECT, 'jmfe_custom_fields');
+                                                    $allQuestion=get_post_meta( $languageQuestionID->ID,'description',true);
+
                                                     $langVideoVal = get_post_meta($post->ID, '_'.$langName.'_video', true );
                                                     $langvideoArr = explode('/', $langVideoVal);
                                                     $langvideoArrIndex = count($langvideoArr) - 2;
                                                     $langvideoid = $langvideoArr[$langvideoArrIndex];
                                                     if($langvideoid != ''){
-                                                    ?>
-                                                    <div class="inner-custom-slider-item <?= $j==1?'active':'' ?>" id="<?php echo $i ?>_p_<?php echo $j ?>">
-                                                        <?php 
                                                         $allSkillQues = get_post_meta($post->ID,'_'.$langName.'_skill_question', true);
+                                                    ?>
+                                                    <div class="inner-custom-slider-item <?= $j==1?'active':'' ?>" id="<?php echo $i ?>_p_<?php echo $j ?>" data-qusId="<?php echo $allSkillQues; ?>">
+                                                        <?php 
+                                                        //$allSkillQues = get_post_meta($post->ID,'_'.$langName.'_skill_question', true);
 
                                                         //$pythonSkillQues = get_post_meta($post->ID,'_python_skill_question', true);
                                                         //$databricksSkillQues = get_post_meta($post->ID,'_databricks_skill_question', true);
                                                         ?>
-                                                        <div class="skillLangQues"><?php echo $allSkillQues; ?></div>
-
-
-                                                        <ziggeoplayer ziggeo-video="<?php echo  $langvideoid; ?>"  ziggeo-width=100% ziggeo-theme="modern" id="<?php echo $i ?>_skills_videoId_<?php echo $j ?>" ziggeo-themecolor="red"> </ziggeoplayer>
-
+                                                        <div class="slider-qus-video-box">
+                                                            <ziggeoplayer ziggeo-video="<?php echo  $langvideoid; ?>"  ziggeo-width=100% ziggeo-theme="modern" id="<?php echo $i ?>_skills_videoId_<?php echo $j ?>" ziggeo-themecolor="red"> </ziggeoplayer>
+                                                            <div class="skillLangQues"><?php echo $allQuestion; ?></div>
+                                                        </div>
                                                         <script>
                                                             setTimeout(function(){
                                                                 var element_by_skills12 = document.getElementById('<?php echo $i ?>_skills_videoId_<?php echo $j ?>');
                                                                 var embedding_skills12 = ZiggeoApi.V2.Player.findByElement(element_by_skills12);
                                                                 embedding_skills12.on("ended", function (healthy) {
+                                                                    
+                                                                    // <?php if($j == count($resumeLanguages)+1){ ?>
+                                                                    //     jQuery('.custom-slider > .next-btn').click();
+                                                                    //     var element_by_skills11_next = document.getElementById('<?php echo $i+1?>_skills_videoId_1');
+                                                                    //     var embedding_skills11_next = ZiggeoApi.V2.Player.findByElement(element_by_skills11_next);
+                                                                    //     embedding_skills11_next.play();
+                                                                    // <?php }else{ ?>
+                                                                    // jQuery('<?php echo "#".$i ?> > .resume-aside > .owl-carousel2 > .owl-nav > .owl-next').click();
+                                                                    // var element_by_skills1_next = document.getElementById('<?php echo $i ?>_skills_videoId_<?php echo $j+1 ?>');
+                                                                    // var embedding_skills1_next = ZiggeoApi.V2.Player.findByElement(element_by_skills1_next);
+                                                                    // embedding_skills1_next.play();
+                                                                    // <?php } ?>
+                                                                    console.log(jQuery('<?php echo "#".$i ?> > .resume-aside > .inner-custom-slider > .inner-custom-slider-item.active').next('.inner-custom-slider-item').length)
 
-                                                                     console.log(<?php echo $j ?>);
-                                                                    <?php if($j == count($resumeLanguages)+1){ ?>
-                                                                        console.log('aaaaaaaaaaaaaaaaaaaa')
-                                                                        console.log('<?php echo $i+1 ?>_skills_videoId_1');
-                                                                        
-                                                                        // jQuery('.owl-carousel > .owl-nav > .owl-next').click();
-                                                                        jQuery('.custom-slider > .next-btn').click();
-                                                                        
-                                                                       
+                                                                    if(jQuery('<?php echo "#".$i ?> > .resume-aside > .inner-custom-slider > .inner-custom-slider-item.active').next('.inner-custom-slider-item').length){
+                                                                        jQuery('<?php echo "#".$i ?> > .resume-aside > .inner-custom-slider > .inner-next-btn').click();
 
-                                                                        var element_by_skills11_next = document.getElementById('<?php echo $i+1?>_skills_videoId_1');
-                                                                        var embedding_skills11_next = ZiggeoApi.V2.Player.findByElement(element_by_skills11_next);
-                                                                        embedding_skills11_next.play();
-                                                                        
+                                                                        // var getID=jQuery(".custom-slider-item.active .inner-custom-slider-item.active > ziggeoplayer").attr("id")
+                                                                        // console.log(getID); 
+                                                                        // var element_by_skills_next = document.getElementById(getID);
+                                                                        // var embedding_skills_next = ZiggeoApi.V2.Player.findByElement(element_by_skills_next);
+                                                                        // embedding_skills_next.play();
+                                                                    }else if(jQuery(".custom-slider-item.active").next(".custom-slider-item").length){
+                                                                        jQuery(".next-btn").click()
+                                                                        // var getID=jQuery(".custom-slider-item.active .inner-custom-slider-item.active > ziggeoplayer").attr("id")
+                                                                        // var element_by_skills_next = document.getElementById(getID);
+                                                                        // var embedding_skills_next = ZiggeoApi.V2.Player.findByElement(element_by_skills_next);
+                                                                        // embedding_skills_next.play();
+                                                                    }
 
-                                                                    <?php }else{ ?>
-                                                                   
-                                                                    jQuery('<?php echo "#".$i ?> > .resume-aside > .owl-carousel2 > .owl-nav > .owl-next').click();
-                                                                    var element_by_skills1_next = document.getElementById('<?php echo $i ?>_skills_videoId_<?php echo $j+1 ?>');
-                                                                    var embedding_skills1_next = ZiggeoApi.V2.Player.findByElement(element_by_skills1_next);
-                                                                    embedding_skills1_next.play();
-
-                                                                    <?php } ?>
-
-                                                                   
                                                                 });
                                                                
                                                             }, 2000);
@@ -551,6 +563,9 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
                                     <?php $candEmail = get_post_meta($post->ID,'_candidate_email', true); 
 
                                     $candidateEmail = get_post_meta($post->ID,'_candidate_email', true); 
+                                    $getUploadResume = get_post_meta($post->ID,'_upload_resume', true); 
+
+                                    
 
                                     $ApplicatepostID = getApplicantRating($candidateEmail, $jobPostId);
                                        
@@ -574,8 +589,17 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
                                         <a href="javascript:void(0)" class="resRateCandid <?php echo $selected5; ?> resume_<?php echo $post->ID; ?>" data-rate_candidate="5" data-post_id="<?php echo $post->ID; ?>" data-email_candidate="<?php echo $candEmail; ?>" data-jobId_candidate="<?php echo $jobPostId; ?>">5</a>
                                     
                                     </div> 
-                                    <?php } ?>     
-                                    <?php if ( ( $skills = wp_get_object_terms( $post->ID, 'resume_skill', [ 'fields' => 'names' ] ) ) && is_array( $skills ) ) : ?>
+                                    <?php } 
+                                    if(!empty($getUploadResume) && in_array("content-type: application/pdf", get_headers($getUploadResume))) {
+                                    ?> 
+                                    <div class="resume-viewer">
+                                        <h2><?php _e( 'Candidate Resume ', 'wp-job-manager-resumes' ); ?></h2>
+                                        <iframe src="<?=  $getUploadResume ?>" width="1000" height="600"></iframe>
+                                    </div>  
+                                    <?php 
+                                    }
+
+                                    if ( ( $skills = wp_get_object_terms( $post->ID, 'resume_skill', [ 'fields' => 'names' ] ) ) && is_array( $skills ) ) : ?>
                                         <h2><?php _e( 'Skills', 'wp-job-manager-resumes' ); ?></h2>
                                         <ul class="resume-manager-skills">
                                             <?php echo '<li>' . implode( '</li><li>', $skills ) . '</li>'; ?>
@@ -674,6 +698,12 @@ print_r(get_option('_transient_jmfe_fields_custom')['job']['skill_language']['op
         </div>
     </section>
 </div>
+<style type="text/css">
+.disabled1 {
+    cursor: not-allowed;
+    pointer-events: none;
+}
+</style>
 
 <script type="text/javascript">    
 jQuery(document).ready( function() {
@@ -709,7 +739,7 @@ jQuery(document).ready( function() {
             //console.log(res);
             if(res){
                 //console.log('asdfdsf');
-                alert('Rate Update Successfully');
+               // alert('Rate Update Successfully');
                //jQuery("#vote_counter").html(response.vote_count)
             }
          }
@@ -726,25 +756,64 @@ jQuery(document).ready( function() {
         nextPrevHideShow()
         function nextPrevHideShow(){
             var length= $(".custom-slider-item.active .inner-custom-slider .inner-custom-slider-item").length;
+            var outerLength= $(".custom-slider .custom-slider-item.active").next('.custom-slider-item').length;
+
+            if(outerLength<=0){
+                $(".next-btn").addClass('disabled')
+            }
 
            if(length<2){
             $(".custom-slider-item.active .inner-custom-slider .inner-prev-btn").hide()
             $(".custom-slider-item.active .inner-custom-slider .inner-next-btn").hide()
            }else{
-            $(".custom-slider-item.active .inner-custom-slider .inner-prev-btn").show()
-            $(".custom-slider-item.active .inner-custom-slider .inner-next-btn").show()
+            setTimeout(function(){
+                $(".custom-slider-item.active .inner-custom-slider .inner-prev-btn").show()
+                $(".custom-slider-item.active .inner-custom-slider .inner-next-btn").show()
+            },2000);
            }
         }
+        function addClassOnInnerNextBtn(){
 
+            $(".skillLangQues ul li").hide();
+            var qusId = $(".custom-slider-item.active .inner-custom-slider .inner-custom-slider-item.active").attr('data-qusId')
+            $(".custom-slider-item.active .inner-custom-slider .inner-custom-slider-item.active .skillLangQues ul li#"+qusId).show()
+
+            $(".inner-next-btn").removeClass('change-btn-postion')
+            if($(".inner-custom-slider-item.active .slider-qus-video-box").length){
+                $(".inner-custom-slider-item.active").closest(".inner-custom-slider").find(".inner-next-btn").addClass('change-btn-postion')
+            }
+        }
 
         $(document).on("click", ".next-btn", function (e) {
+            
             var that = $(this);
+            that.hide();
+            var preBtn = $(".prev-btn");
+            preBtn.hide();   
+            $('.inner-prev-btn').hide();         
+            $('.inner-next-btn').hide();         
+            setTimeout(function(){
+                that.show();
+                preBtn.show();
+                $('.inner-prev-btn').show();         
+                $('.inner-next-btn').show(); 
+
+            },2000);
+
             var current = that.closest('.custom-slider').find('.custom-slider-item.active');
             var cuurentPlayViedeo=$('.custom-slider .custom-slider-item.active .inner-custom-slider-item.active ziggeoplayer').attr('id')
+            //console.log('bbbbbbbb '+cuurentPlayViedeo);
         
             if (current.next('.custom-slider-item').length) {
                 current.next('.custom-slider-item').addClass('active');
                 current.removeClass('active');
+                if( current.next('.custom-slider-item').find(".resume-aside .inner-custom-slider .inner-custom-slider-item:first").length){
+                    current.find(".inner-custom-slider-item").removeClass("active")
+                     current.next('.custom-slider-item').find(".resume-aside .inner-custom-slider .inner-custom-slider-item:first").addClass("active")
+                     current.next('.custom-slider-item').find(".resume-aside .inner-custom-slider .inner-prev-btn").addClass('disabled')
+                     current.next('.custom-slider-item').find(".resume-aside .inner-custom-slider .inner-next-btn").removeClass('disabled')
+                }
+
                 nextPrevHideShow()
             }
             $(".prev-btn").removeClass('disabled')
@@ -753,37 +822,92 @@ jQuery(document).ready( function() {
             } else{
                 $(".next-btn").addClass('disabled')
             }  
+            addClassOnInnerNextBtn()
+           // console.log("click trigger");
             
             setTimeout(function(){        
             var mouse_click = !(e.originalEvent === undefined); 
-                if (mouse_click) {
-                    console.log(jQuery('.custom-slider > .custom-slider-item.active').attr('id'));
+            //console.log(mouse_click);
+                // if (mouse_click) {
+                    //console.log(jQuery('.custom-slider > .custom-slider-item.active').attr('id'));
 
                     var ids = parseInt(jQuery('.custom-slider > .custom-slider-item.active').attr('id'))-1;
 
-                    console.log('custom-slider'+ids);
+                    //console.log('custom-slider'+ids);
 
                     var element_by_intro1 = document.getElementById('candidate_intro_'+ids);
-                    console.log(element_by_intro1)
+                    //console.log(element_by_intro1)
                     if(element_by_intro1==null || element_by_intro1==undefined){
                         element_by_intro1 = document.getElementById(cuurentPlayViedeo);
+
+                        console.log('next box '+element_by_intro1+'ID='+cuurentPlayViedeo);
                     }
                     var embedding_intro1 = ZiggeoApi.V2.Player.findByElement(element_by_intro1);
-                    embedding_intro1.pause();
-                }            
+                    embedding_intro1.stop();
+                    setTimeout(function(){   
+
+                        if(element_by_intro1==null || element_by_intro1==undefined){
+                            //console.log('1111111111');
+                            var cuurentPlayViedeo1=$('.custom-slider .custom-slider-item.active .inner-custom-slider-item.active ziggeoplayer').attr('id')
+                            var element_by_intro_current = document.getElementById(cuurentPlayViedeo1);
+                            var embedding_intro_current = ZiggeoApi.V2.Player.findByElement(element_by_intro_current);
+                            embedding_intro_current.play();
+                        }else{
+                            //console.log('22222222222222');
+                            var cuurentPlayViedeo1=$('.custom-slider .custom-slider-item.active .resume-aside ziggeoplayer').attr('id')
+                            var element_by_intro_current = document.getElementById(cuurentPlayViedeo1);
+                            var embedding_intro_current = ZiggeoApi.V2.Player.findByElement(element_by_intro_current);
+                            embedding_intro_current.play();
+                        }
+
+                    },300); 
+
+                // }                 
 
             },500); 
 
 
 
         });
+
+        function stopAllVideo(){
+            $( "ziggeoplayer" ).each(function( index ) {
+                var element_by_intro1 = document.getElementById($(this).attr("id"));
+                var embedding_intro1 = ZiggeoApi.V2.Player.findByElement(element_by_intro1);
+                embedding_intro1.stop();
+
+            });
+        }
+
+        
+
         $(document).on("click", ".prev-btn", function (e) {
+
             var that = $(this);
+            var nxtBtn = $(".next-btn");
+            that.hide();
+            nxtBtn.hide(); 
+            $('.inner-prev-btn').hide();         
+            $('.inner-next-btn').hide();            
+            setTimeout(function(){
+                that.show();
+                nxtBtn.show(); 
+                $('.inner-prev-btn').show();         
+                $('.inner-next-btn').show();                
+            },2000);
+
             var current = that.closest('.custom-slider').find('.custom-slider-item.active');
-            var cuurentPlayViedeo=$('.custom-slider .custom-slider-item.active .inner-custom-slider-item.active ziggeoplayer').attr('id')
+            var cuurentPlayViedeo=$('.custom-slider .custom-slider-item.active .inner-custom-slider-item.active ziggeoplayer').attr('id');
             if (current.prev('.custom-slider-item').length) {
                 current.prev('.custom-slider-item').addClass('active');
                 current.removeClass('active');
+
+               if( current.prev('.custom-slider-item').find(".resume-aside .inner-custom-slider .inner-custom-slider-item:first").length){
+                    current.find(".inner-custom-slider-item").removeClass("active")
+                    current.prev('.custom-slider-item').find(".resume-aside .inner-custom-slider .inner-custom-slider-item:first").addClass("active")
+                    current.prev('.custom-slider-item').find(".resume-aside .inner-custom-slider .inner-prev-btn").addClass('disabled')
+                    current.prev('.custom-slider-item').find(".resume-aside .inner-custom-slider .inner-next-btn").removeClass('disabled')
+                }
                 nextPrevHideShow()
             }
             $(".next-btn").removeClass('disabled')
@@ -792,31 +916,68 @@ jQuery(document).ready( function() {
             } else{
                 $(".prev-btn").addClass('disabled')
             }  
+            addClassOnInnerNextBtn()
 
             setTimeout(function(){      
                 var mouse_click = !(e.originalEvent === undefined);           
                     if (mouse_click) {
                         
-                        console.log(jQuery('.custom-slider > .custom-slider-item.active').attr('id'));
+                        // console.log(jQuery('.custom-slider > .custom-slider-item.active').attr('id'));
                         
-                        var ids = parseInt(jQuery('.custom-slider > .custom-slider-item.active').attr('id'))+1;
-
-                        
+                        var ids = parseInt(jQuery('.custom-slider > .custom-slider-item.active').attr('id'))+1;                  
+                       // console.log(ids);
 
                         var element_by_intro1 = document.getElementById('candidate_intro_'+ids);
                         if(element_by_intro1==null || element_by_intro1==undefined){
                             element_by_intro1 = document.getElementById(cuurentPlayViedeo);
+                            console.log('next box '+element_by_intro1+'ID='+cuurentPlayViedeo);
                         }
                         var embedding_intro1 = ZiggeoApi.V2.Player.findByElement(element_by_intro1);
+                        embedding_intro1.stop();
 
-                       
-                        embedding_intro1.pause();
+                        // stopAllVideo()
+
+                        // console.log('showing all video');
+
+                        setTimeout(function(){  
+
+                            if(element_by_intro1==null || element_by_intro1==undefined){
+                                var cuurentPlayViedeo1=$('.custom-slider .custom-slider-item.active .inner-custom-slider-item.active ziggeoplayer').attr('id')
+                                var element_by_intro_current = document.getElementById(cuurentPlayViedeo1);
+                                var embedding_intro_current = ZiggeoApi.V2.Player.findByElement(element_by_intro_current);
+                                embedding_intro_current.play();
+                            }else{
+                                //console.log('444444444');
+                                var cuurentPlayViedeo1=$('.custom-slider .custom-slider-item.active .resume-aside ziggeoplayer').attr('id')
+                                var element_by_intro_current = document.getElementById(cuurentPlayViedeo1);
+                                var embedding_intro_current = ZiggeoApi.V2.Player.findByElement(element_by_intro_current);
+                                embedding_intro_current.play();
+                            }
+
+                        },300); 
+
+
                     } 
             },500);   
         });
 
         $(document).on("click", ".inner-next-btn", function (e) {
             var that = $(this);
+
+            
+            var innerPreBtn = $(".inner-prev-btn");
+            that.hide()
+            innerPreBtn.hide();
+            $(".prev-btn").hide()
+            $(".next-btn").hide()
+            setTimeout(function(){
+                that.show();
+                innerPreBtn.show();
+                $(".prev-btn").show();
+                $(".next-btn").show();
+
+            },2000);
+
             var current = that.closest('.inner-custom-slider').find('.inner-custom-slider-item.active');
             var cuurentPlayViedeo=$('.custom-slider .custom-slider-item.active .inner-custom-slider-item.active ziggeoplayer').attr('id')
             if (current.next('.inner-custom-slider-item').length) {
@@ -829,31 +990,55 @@ jQuery(document).ready( function() {
             } else{
                 that.closest(".inner-custom-slider").find(".inner-next-btn").addClass('disabled')
             }  
-            setTimeout(function(){        
+            addClassOnInnerNextBtn()
+            setTimeout(function(){
             var mouse_click = !(e.originalEvent === undefined); 
-                if (mouse_click) {
+              //  if (mouse_click) {
                    
-                    console.log(jQuery('.custom-slider > .custom-slider-item.active > .inner-custom-slider > .inner-custom-slider-item.active').attr('id'));
+                    // console.log(jQuery('.custom-slider > .custom-slider-item.active > .inner-custom-slider > .inner-custom-slider-item.active').attr('id'));
 
                     var ids = parseInt(jQuery('.custom-slider > .custom-slider-item.active > .inner-custom-slider > .inner-custom-slider-item.active').attr('id'))-1;
 
-                    console.log('custom-slider'+ids);
+                    //console.log('custom-slider'+ids);
 
                     var element_by_intro1 = document.getElementById('candidate_intro_'+ids);
                     if(element_by_intro1==null || element_by_intro1==undefined){
+                        
+                        //console.log('pppppp '+cuurentPlayViedeo);
+
                         element_by_intro1 = document.getElementById(cuurentPlayViedeo);
                     }
                     var embedding_intro1 = ZiggeoApi.V2.Player.findByElement(element_by_intro1);
-                    embedding_intro1.pause();
-                }            
+                    embedding_intro1.stop();
+
+                    setTimeout(function(){   
+                        var cuurentPlayViedeo1=$('.custom-slider .custom-slider-item.active .inner-custom-slider-item.active ziggeoplayer').attr('id')
+                        var element_by_intro_current = document.getElementById(cuurentPlayViedeo1);
+                        var embedding_intro_current = ZiggeoApi.V2.Player.findByElement(element_by_intro_current);
+                        embedding_intro_current.play();
+                    },300); 
+               // }            
 
             },500); 
         });
         $(document).on("click", ".inner-prev-btn", function (e) {
             var that = $(this);
+
+            var nextPreBtn = $(".inner-next-btn");
+            that.hide();
+            nextPreBtn.hide();
+            $(".prev-btn").hide();
+            $(".next-btn").hide();
+            setTimeout(function(){
+                    that.show();
+                    nextPreBtn.show();
+                    $(".prev-btn").show();
+                    $(".next-btn").show();
+            },2000);
+
             var current = that.closest('.inner-custom-slider').find('.inner-custom-slider-item.active');
             var cuurentPlayViedeo=$('.custom-slider .custom-slider-item.active .inner-custom-slider-item.active ziggeoplayer').attr('id')
-            console.log(current.prev('.inner-custom-slider-item').length);
+
             if (current.prev('.inner-custom-slider-item').length) {
                 current.prev('.inner-custom-slider-item').addClass('active');
                 current.removeClass('active');
@@ -863,27 +1048,41 @@ jQuery(document).ready( function() {
                 that.closest(".inner-custom-slider").find(".inner-prev-btn").removeClass('disabled')
             } else{
                 that.closest(".inner-custom-slider").find(".inner-prev-btn").addClass('disabled')
-            }  
+            }
+            addClassOnInnerNextBtn() 
 
             setTimeout(function(){      
                 var mouse_click = !(e.originalEvent === undefined);           
                     if (mouse_click) {
                         
-                        console.log(jQuery('.custom-slider > .custom-slider-item.active > .inner-custom-slider > .inner-custom-slider-item.active').attr('id'));
+                        // console.log(jQuery('.custom-slider > .custom-slider-item.active > .inner-custom-slider > .inner-custom-slider-item.active').attr('id'));
                         
                         var ids = parseInt(jQuery('.custom-slider > .custom-slider-item.active > .inner-custom-slider > .inner-custom-slider-item.active').attr('id'))+1;
 
-                        console.log('custom-slider'+ids);
+                        //console.log('custom-slider'+ids);
 
                         var element_by_intro1 = document.getElementById('candidate_intro_'+ids);
                             if(element_by_intro1==null || element_by_intro1==undefined){
                                 element_by_intro1 = document.getElementById(cuurentPlayViedeo);
+                                //console.log('cccccccccc '+element_by_intro1);
                             }
                         var embedding_intro1 = ZiggeoApi.V2.Player.findByElement(element_by_intro1);
-                        embedding_intro1.pause();
+                        embedding_intro1.stop();
+                        
+                        setTimeout(function(){                            
+                            var cuurentPlayViedeo1=$('.custom-slider .custom-slider-item.active .inner-custom-slider-item.active ziggeoplayer').attr('id')
+                            var element_by_intro_current = document.getElementById(cuurentPlayViedeo1);
+                            var embedding_intro_current = ZiggeoApi.V2.Player.findByElement(element_by_intro_current);
+                            embedding_intro_current.play();
+                        },300); 
                     } 
             },500);   
         });
+
+
+        $(document).on("change",".selRatFilt",function(){
+            $(this).closest("form").submit()
+        })
     })
 </script>
 <?php get_footer(); ?>

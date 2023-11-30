@@ -45,7 +45,8 @@ if($resumesCount>=1 && empty($resumeIdEdit)){
 
 		<?php foreach ( $resume_fields as $key => $field ) : ?>
 			<fieldset class="fieldset-<?php echo esc_attr( $key ); ?>">
-				<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) . apply_filters( 'submit_resume_form_required_label', $field['required'] ? '' : ' <small>' . esc_html__( '(optional)', 'wp-job-manager-resumes' ) . '</small>', $field ); ?></label>
+				<label for="<?php echo esc_attr( $key ); ?>"><?php echo esc_html( $field['label'] ) . apply_filters( 'submit_resume_form_required_label', $field['required'] ? '' : ' <small>' . esc_html__( '(optional)', 'wp-job-manager-resumes' ) . '</small>', $field ); ?></label>				
+
 				<div class="field">
 					<?php $class->get_field_template( $key, $field ); ?>
 				</div>

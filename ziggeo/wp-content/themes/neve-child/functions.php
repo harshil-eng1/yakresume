@@ -159,4 +159,53 @@ function hide_menu_for_candidate(){
 	}
 	//print_r($user);	
 }
-?>
+
+/****** New Item add in Menu Login/LogOut ******/
+
+add_filter( 'wp_nav_menu_items', 'add_loginout_link', 10, 2 );
+function add_loginout_link( $items, $args ) {
+    if (is_user_logged_in() && $args->theme_location == 'primary') {
+        $items .= '<li><a href="'. wp_logout_url(home_url()) .'">Log Out</a></li>';
+    }
+    elseif (!is_user_logged_in() && $args->theme_location == 'primary') {
+        $items .= '<li><a href="'.wp_login_url(home_url()).'">Log In</a></li>';
+    }
+    return $items;
+}
+
+/****** Remove Admin Bar ******/
+
+add_action('after_setup_theme', 'remove_admin_bar_sp');
+function remove_admin_bar_sp() {
+	if (!current_user_can('administrator') && !is_admin()) {
+	  show_admin_bar(false);
+	}
+}
+
+/**** Login page Logo Url Change ****/
+add_filter('login_headerurl', 'custom_loginlogo_url');
+function custom_loginlogo_url($url) {
+     return home_url();
+}
+
+/***** Login page Logo Image Change ******/
+
+function sp_custom_login_logo() { ?>
+<style type="text/css">
+#login h1 a, .login h1 a {
+background-image: url(<?php echo get_stylesheet_directory_uri(); ?>/assets/img/ziggeo-logo.png);
+height:65px;
+width:320px;
+background-size: 320px 65px;
+background-repeat: no-repeat;
+padding-bottom: 30px;
+}
+</style>
+<?php }
+add_action( 'login_enqueue_scripts', 'sp_custom_login_logo' );
+
+/***** Change Mail From Name ******/
+add_filter('wp_mail_from_name', 'custom_wp_mail_from_name');
+function custom_wp_mail_from_name($original_email_from) {
+    return 'Yak Resume';
+}
